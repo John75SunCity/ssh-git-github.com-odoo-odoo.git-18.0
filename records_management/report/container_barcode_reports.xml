@@ -6,8 +6,8 @@
       <field name="name">Container Barcode Label (4x1.33 inch)</field>
       <field name="default" eval="False"/>
       <field name="format">custom</field>
-      <field name="page_width">101.6</field>  <!-- 4 inches = 101.6mm -->
-      <field name="page_height">33.78</field>  <!-- 1.33 inches = 33.78mm -->
+      <field name="page_width">102</field>  <!-- 4 inches = 101.6mm, rounded -->
+      <field name="page_height">34</field>  <!-- 1.33 inches = 33.78mm, rounded -->
       <field name="orientation">Landscape</field>
       <field name="margin_top">1</field>
       <field name="margin_bottom">1</field>

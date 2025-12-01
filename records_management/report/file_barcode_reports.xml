@@ -6,8 +6,8 @@
       <field name="name">File Folder Label (2.6x1 inch)</field>
       <field name="default" eval="False"/>
       <field name="format">custom</field>
-      <field name="page_width">65.87</field>  <!-- 2.5935 inches = 65.87mm -->
-      <field name="page_height">25.4</field>  <!-- 1 inch = 25.4mm -->
+      <field name="page_width">66</field>  <!-- 2.5935 inches = 65.87mm, rounded -->
+      <field name="page_height">25</field>  <!-- 1 inch = 25.4mm, rounded -->
       <field name="orientation">Landscape</field>
       <field name="margin_top">1</field>
       <field name="margin_bottom">1</field>
@@ -24,8 +24,8 @@
       <field name="name">QR Code Label (1x1.25 inch)</field>
       <field name="default" eval="False"/>
       <field name="format">custom</field>
-      <field name="page_width">25.4</field>  <!-- 1 inch = 25.4mm -->
-      <field name="page_height">31.75</field>  <!-- 1.25 inches = 31.75mm -->
+      <field name="page_width">25</field>  <!-- 1 inch = 25.4mm, rounded -->
+      <field name="page_height">32</field>  <!-- 1.25 inches = 31.75mm, rounded -->
       <field name="orientation">Portrait</field>
       <field name="margin_top">1</field>
       <field name="margin_bottom">1</field>
