@@ -4,18 +4,27 @@
     <template id="report_file_barcode_template">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
-                <div style="display:inline-block;width:200px;height:110px;border:1px solid #000;margin:4px;padding:4px;font-size:11px;vertical-align:top;">
-                    <div style="font-weight:bold;">File Folder Barcode</div>
-                    <div t-if="doc.barcode or doc.temp_barcode" style="font-size:14px;">[[ doc.barcode or doc.temp_barcode ]]</div>
-                    <div t-if="not doc.barcode and not doc.temp_barcode" style="color:red;">NO BARCODE</div>
-                    <div style="margin-top:4px;">
-                        <img t-if="doc.barcode or doc.temp_barcode" t-att-src="'/report/barcode/Code128/%s?width=250&amp;height=50' % (doc.barcode or doc.temp_barcode)" style="max-width:100%;height:50px;"/>
+                <t t-set="barcode_value" t-value="doc.barcode or doc.temp_barcode"/>
+                <div style="display:inline-block;width:200px;height:130px;border:1px solid #000;margin:4px;padding:8px;font-size:11px;vertical-align:top;">
+                    <div style="font-weight:bold;text-align:center;margin-bottom:4px;">File Folder Barcode</div>
+                    <div t-if="barcode_value" style="font-size:14px;text-align:center;font-weight:bold;">
+                        <t t-esc="barcode_value"/>
                     </div>
-                    <div style="margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">[[ doc.name ]]</div>
-                    <div style="font-size:9px;">Container: [[ doc.container_id.name or 'N/A' ]]</div>
-                    <div style="font-size:9px;">[[ doc.partner_id.name or '' ]]</div>
+                    <div t-if="not barcode_value" style="color:red;text-align:center;">NO BARCODE</div>
+                    <div t-if="barcode_value" style="margin-top:4px;text-align:center;">
+                        <img t-att-src="'/report/barcode/Code128/%s?width=180&amp;height=40' % barcode_value" style="max-width:100%;height:40px;"/>
+                    </div>
+                    <div style="margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;">
+                        <t t-esc="doc.name"/>
+                    </div>
+                    <div style="font-size:9px;text-align:center;">
+                        Container: <t t-esc="doc.container_id.name or 'N/A'"/>
+                    </div>
+                    <div style="font-size:9px;text-align:center;">
+                        <t t-esc="doc.partner_id.name or ''"/>
+                    </div>
                 </div>
-                <t t-if="(doc_index + 1) % 15 == 0"><div style="page-break-after:always;"></div></t>
+                <t t-if="(doc_index + 1) % 12 == 0"><div style="page-break-after:always;"></div></t>
             </t>
         </t>
     </template>
@@ -34,15 +43,21 @@
     <template id="report_file_qrcode_template">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
-                <div style="display:inline-block;width:200px;height:200px;border:1px solid #000;margin:4px;padding:8px;text-align:center;vertical-align:top;">
+                <t t-set="barcode_value" t-value="doc.barcode or doc.temp_barcode"/>
+                <t t-set="portal_url" t-value="'%s/my/inventory/file/%s' % (doc.get_base_url(), doc.id)"/>
+                <div style="display:inline-block;width:200px;height:220px;border:1px solid #000;margin:4px;padding:8px;text-align:center;vertical-align:top;">
                     <div style="font-weight:bold;font-size:12px;margin-bottom:5px;">File Folder QR Code</div>
                     <div style="font-size:10px;color:#666;margin-bottom:5px;">Scan to view details (login required)</div>
                     <div style="margin:8px 0;">
-                        <t t-set="portal_url" t-value="'%s/my/inventory/file/%s' % (doc.get_base_url(), doc.id)"/>
                         <img t-att-src="'/report/qr/?value=%s&amp;width=150&amp;height=150' % portal_url" style="width:150px;height:150px;"/>
                     </div>
-                    <div style="font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:5px;">[[ doc.name ]]</div>
-                    <div style="font-size:8px;color:#999;">[[ doc.barcode or doc.temp_barcode or 'ID: %s' % doc.id ]]</div>
+                    <div style="font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:5px;">
+                        <t t-esc="doc.name"/>
+                    </div>
+                    <div style="font-size:8px;color:#999;">
+                        <t t-if="barcode_value" t-esc="barcode_value"/>
+                        <t t-else="">ID: <t t-esc="doc.id"/></t>
+                    </div>
                 </div>
                 <t t-if="(doc_index + 1) % 9 == 0"><div style="page-break-after:always;"></div></t>
             </t>

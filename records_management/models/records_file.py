@@ -551,7 +551,7 @@ class RecordsFile(models.Model):
             'name': _('Documents in File: %s') % self.name,
             'type': 'ir.actions.act_window',
             'res_model': 'records.document',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('file_id', '=', self.id)],
             'context': {'default_file_id': self.id},
         }
@@ -567,7 +567,7 @@ class RecordsFile(models.Model):
             'name': _('Movement History: %s') % self.name,
             'type': 'ir.actions.act_window',
             'res_model': 'stock.move.line',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('lot_id', '=', self.quant_id.lot_id.id)],
         }
 
@@ -638,17 +638,8 @@ class RecordsFile(models.Model):
             # Generate temp barcode if none exists
             self.temp_barcode = self.env['ir.sequence'].next_by_code('records.file.temp.barcode') or f"FILE-{self.id}"
         
-        # Use existing barcode or temp barcode for printing
-        barcode_to_print = self.barcode or self.temp_barcode
-        
-        # Return print action (this would need a proper report template)
-        return {
-            'type': 'ir.actions.report',
-            'report_name': 'records_management.report_file_barcode',
-            'report_type': 'qweb-pdf',
-            'data': {'barcode': barcode_to_print},
-            'context': self.env.context,
-        }
+        # Return print action using the report action
+        return self.env.ref('records_management.report_file_barcode').report_action(self)
 
     def action_generate_qr_code(self):
         """Generate QR code for this file
@@ -660,13 +651,8 @@ class RecordsFile(models.Model):
         if not self.temp_barcode:
             self.temp_barcode = self.env['ir.sequence'].next_by_code('records.file.temp.barcode') or f"FILE-{self.id}"
         
-        # Return QR code generation action
-        return {
-            'type': 'ir.actions.report',
-            'report_name': 'records_management.report_file_qrcode',
-            'report_type': 'qweb-pdf',
-            'context': self.env.context,
-        }
+        # Return QR code generation action using the report action
+        return self.env.ref('records_management.report_file_qrcode').report_action(self)
     
     # ============================================================================
     # LABEL PRINTING METHODS (ZPL + Labelary API)

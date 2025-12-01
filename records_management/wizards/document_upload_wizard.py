@@ -117,7 +117,7 @@ class DocumentUploadWizard(models.TransientModel):
                     'partner_id': self.file_id.partner_id.id if self.file_id.partner_id else False,
                     'received_date': self.received_date,
                     'description': self.description,
-                    'state': 'stored',
+                    'state': 'in_storage',
                 }
                 
                 document = self.env['records.document'].create(document_vals)
