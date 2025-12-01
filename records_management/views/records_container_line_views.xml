@@ -9,6 +9,9 @@
                     <field name="sequence" widget="handle" />
                     <field name="name" />
                     <field name="container_id" />
+                    <field name="container_barcode" string="Container Barcode" optional="show"/>
+                    <field name="container_temp_barcode" string="Container Temp Barcode" optional="hide"/>
+                    <field name="container_location_id" string="Location" optional="show"/>
                     <field name="document_type_id" />
                     <field name="quantity" />
                     <field name="unit_id" />

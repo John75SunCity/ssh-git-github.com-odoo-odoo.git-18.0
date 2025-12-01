@@ -10,6 +10,7 @@
         <field name="arch" type="xml">
         <kanban default_group_by="state" class="o_kanban_file_dashboard">
         <field name="name"/>
+        <field name="display_name"/>
         <field name="partner_id"/>
         <field name="stock_owner_id"/>
         <field name="container_id"/>

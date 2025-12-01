@@ -30,3 +30,9 @@ class RecordsContainerLine(models.Model):
     # Reference fields
     reference = fields.Char(string='Reference')
     barcode = fields.Char(string='Barcode')
+
+    # Related fields from container - exposed for list views without needing Odoo Studio
+    container_location_id = fields.Many2one(comodel_name='stock.location', string='Container Location',
+                                            related='container_id.location_id', store=True)
+    container_barcode = fields.Char(string='Container Barcode', related='container_id.barcode', store=True)
+    container_temp_barcode = fields.Char(string='Container Temp Barcode', related='container_id.temp_barcode', store=True)

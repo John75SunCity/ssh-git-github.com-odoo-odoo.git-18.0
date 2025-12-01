@@ -45,6 +45,7 @@ class ContainerContent(models.Model):
     company_id = fields.Many2one(related='container_id.company_id', string='Company', store=True, comodel_name='res.company')
     user_id = fields.Many2one(comodel_name='res.users', string='Responsible', default=lambda self: self.env.user)
     container_barcode = fields.Char(related='container_id.barcode', string='Container Barcode', store=True)
+    container_temp_barcode = fields.Char(related='container_id.temp_barcode', string='Container Temp Barcode', store=True)
 
     # ============================================================================
     # WORKFLOW & STATE

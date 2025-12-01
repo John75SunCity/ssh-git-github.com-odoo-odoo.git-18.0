@@ -8,6 +8,9 @@
                 <list string="Container Content">
                     <field name="name" />
                     <field name="container_id" />
+                    <field name="container_barcode" string="Physical Barcode" optional="show"/>
+                    <field name="container_temp_barcode" string="Temp Barcode" optional="hide"/>
+                    <field name="location_id" optional="show"/>
                     <field name="document_type_id" />
                     <field name="content_type" />
                     <field name="state" />

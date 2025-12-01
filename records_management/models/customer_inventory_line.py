@@ -32,6 +32,9 @@ class CustomerInventoryLine(models.Model):
                                         string='Container Type', store=True)
     department_id = fields.Many2one(comodel_name='records.department', related='container_id.department_id',
                                     string='Department', store=True)
+    # Barcode fields related from container - exposed for list views without needing Odoo Studio
+    barcode = fields.Char(string='Physical Barcode', related='container_id.barcode', store=True)
+    temp_barcode = fields.Char(string='Temp Barcode', related='container_id.temp_barcode', store=True)
 
     @api.depends('file_count', 'expected_file_count')
     def _compute_variance(self):
