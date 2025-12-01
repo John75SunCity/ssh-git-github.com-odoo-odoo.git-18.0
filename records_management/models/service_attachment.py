@@ -43,7 +43,6 @@ class ServiceAttachment(models.Model):
     # Source document info
     res_model = fields.Char(string="Source Model", readonly=True)
     res_id = fields.Integer(string="Source ID", readonly=True)
-    res_name = fields.Char(string="Source Document", readonly=True)
 
     # Customer/Partner relationship (computed from source document)
     partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", readonly=True)
@@ -58,11 +57,12 @@ class ServiceAttachment(models.Model):
     # Portal visibility
     is_portal_visible = fields.Boolean(string="Portal Visible", readonly=True)
 
-    # Original attachment reference - used for accessing binary data
+    # Original attachment reference - used for accessing binary data and res_name
     attachment_id = fields.Many2one(comodel_name='ir.attachment', string="Attachment", readonly=True)
 
-    # Related field to get binary data from the original attachment
+    # Related fields to get data from the original attachment
     datas = fields.Binary(string="File Content", related='attachment_id.datas', readonly=True)
+    res_name = fields.Char(string="Source Document", related='attachment_id.res_name', readonly=True)
 
     def init(self):
         """Create SQL view for service attachments"""
@@ -79,7 +79,6 @@ class ServiceAttachment(models.Model):
                     att.create_uid as create_uid,
                     att.res_model as res_model,
                     att.res_id as res_id,
-                    att.res_name as res_name,
                     CASE
                         WHEN att.mimetype LIKE 'image/%%' THEN 'image'
                         WHEN att.mimetype = 'application/pdf' THEN 'pdf'
