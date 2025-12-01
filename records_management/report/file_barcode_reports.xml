@@ -55,6 +55,7 @@
         <field name="report_file">records_management.report_file_barcode</field>
         <field name="print_report_name">'file_barcode_%s' % object.barcode or object.temp_barcode or object.id</field>
         <field name="paperformat_id" ref="paperformat_file_folder_label"/>
+        <field name="attachment_use" eval="False"/>
     </record>
 
     <!-- QR Code Report Template (Secure Portal URL) -->
@@ -93,6 +94,7 @@
         <field name="report_file">records_management.report_file_qrcode</field>
         <field name="print_report_name">'file_qrcode_%s' % object.barcode or object.temp_barcode or object.id</field>
         <field name="paperformat_id" ref="paperformat_qr_code_label"/>
+        <field name="attachment_use" eval="False"/>
     </record>
     </data>
 </odoo>

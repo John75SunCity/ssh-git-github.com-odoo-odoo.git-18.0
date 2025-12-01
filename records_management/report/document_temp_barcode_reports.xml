@@ -36,6 +36,7 @@
         <field name="binding_model_id" ref="model_records_document"/>
         <field name="binding_type">report</field>
         <field name="paperformat_id" ref="records_management.paperformat_container_barcode_label"/>
+        <field name="attachment_use" eval="False"/>
     </record>
     </data>
 </odoo>
