@@ -44,6 +44,7 @@
         "maintenance",  # ✅ REQUIRED - Used in maintenance_request_views.xml and maintenance_equipment_views.xml
         # "point_of_sale",
         "barcodes",  # ✅ ENABLED for barcode scanning
+        "barcodes_mobile",  # ✅ REQUIRED - Enables camera-based barcode scanning on mobile devices
         "industry_fsm",  # ✅ REQUIRED - Used extensively in FSM integration (see records_management_fsm module)
         "sign",  # ✅ REQUIRED - Used for e-signatures in portal requests and destruction certificates
         "survey",
