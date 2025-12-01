@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <data>
+    <!-- Container Barcode Label Paper Format - 4" x 1.33" (Avery compatible, 14 per sheet) -->
+    <record id="paperformat_container_barcode_label" model="report.paperformat">
+      <field name="name">Container Barcode Label (4x1.33 inch)</field>
+      <field name="default" eval="False"/>
+      <field name="format">custom</field>
+      <field name="page_width">101.6</field>  <!-- 4 inches = 101.6mm -->
+      <field name="page_height">33.78</field>  <!-- 1.33 inches = 33.78mm -->
+      <field name="orientation">Landscape</field>
+      <field name="margin_top">1</field>
+      <field name="margin_bottom">1</field>
+      <field name="margin_left">2</field>
+      <field name="margin_right">2</field>
+      <field name="header_line" eval="False"/>
+      <field name="header_spacing">0</field>
+      <field name="dpi">96</field>
+      <field name="disable_shrinking" eval="True"/>
+    </record>
+
     <!-- Container Barcode Report Action -->
     <record id="report_container_barcode" model="ir.actions.report">
       <field name="name">Container Barcode</field>
@@ -11,6 +29,7 @@
       <field name="print_report_name">"(Container Barcode) %s" % (object.display_name or 'Container')</field>
       <field name="binding_model_id" ref="records_management.model_records_container"/>
       <field name="binding_type">report</field>
+      <field name="paperformat_id" ref="paperformat_container_barcode_label"/>
       <!-- Attachment caching: only if a physical barcode exists (immutable physical state) -->
       <field name="attachment">(object.barcode and ('container_barcode_'+object.barcode)) or False</field>
       <field name="attachment_use">True</field>
@@ -19,32 +38,28 @@
     <template id="report_container_barcode_view">
       <t t-call="web.html_container">
         <t t-foreach="docs" t-as="doc">
-          <t t-call="web.external_layout">
-            <div class="page" style="text-align:center; padding-top:0.8cm;">
-              <h3 style="margin:4px 0;">Container Label</h3>
-              <div>
-                <strong t-esc="doc.display_name"/>
-              </div>
-              <div style="margin-top:10px;" t-if="doc.barcode">
-                <img t-att-src="'/report/barcode/Code128/%s?width=400&amp;height=120' % doc.barcode" alt="Barcode" style="margin:8px 0;"/>
-                <div style="font-size:14px; font-weight:600;" t-esc="doc.barcode"/>
-              </div>
-              <div style="margin-top:10px;" t-elif="doc.temp_barcode">
-                <img t-att-src="'/report/barcode/Code128/%s?width=400&amp;height=120' % doc.temp_barcode" alt="Temporary Barcode" style="margin:8px 0;"/>
-                <div style="font-size:14px; font-weight:600;" t-esc="doc.temp_barcode"/>
-                <div style="font-size:10px;">Temporary Barcode</div>
-              </div>
-              <div t-else="" style="margin-top:18px;">
-                <em style="font-size:12px;">No barcode assigned</em>
-              </div>
-              <div style="margin-top:6px; font-size:11px;">
-                <span t-if="doc.container_type_id" t-esc="doc.container_type_id.name"/>
-              </div>
-              <div style="margin-top:4px; font-size:9px; color:#666;">
-                <span>Generated</span>: <span t-esc="(datetime.datetime.utcnow()).strftime('%Y-%m-%d %H:%M UTC')"/>
+          <!-- No external layout for labels - compact content only -->
+          <div class="page" style="text-align:center; padding:1mm 2mm; font-family:Arial,sans-serif;">
+            <div style="font-weight:bold; font-size:9pt; margin-bottom:1mm; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+              <t t-esc="doc.display_name"/>
+            </div>
+            <div t-if="doc.barcode" style="margin:1mm 0;">
+              <img t-att-src="'/report/barcode/Code128/%s?width=260&amp;height=40' % doc.barcode" alt="Barcode"/>
+              <div style="font-size:9pt; font-weight:600; margin-top:0.5mm;" t-esc="doc.barcode"/>
+            </div>
+            <div t-elif="doc.temp_barcode" style="margin:1mm 0;">
+              <img t-att-src="'/report/barcode/Code128/%s?width=260&amp;height=40' % doc.temp_barcode" alt="Temporary Barcode"/>
+              <div style="font-size:9pt; font-weight:600; margin-top:0.5mm;">
+                <t t-esc="doc.temp_barcode"/> <span style="font-size:7pt; color:#666;">(TEMP)</span>
               </div>
             </div>
-          </t>
+            <div t-else="" style="font-size:8pt; color:#999;">
+              <em>No barcode</em>
+            </div>
+            <div t-if="doc.container_type_id" style="font-size:7pt; color:#333;">
+              <t t-esc="doc.container_type_id.name"/>
+            </div>
+          </div>
         </t>
       </t>
     </template>
