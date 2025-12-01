@@ -35,7 +35,6 @@ class ServiceAttachment(models.Model):
 
     # Core attachment fields (from ir.attachment)
     name = fields.Char(string="File Name", readonly=True)
-    datas = fields.Binary(string="File Content", readonly=True)
     mimetype = fields.Char(string="MIME Type", readonly=True)
     file_size = fields.Integer(string="File Size", readonly=True)
     create_date = fields.Datetime(string="Upload Date", readonly=True)
@@ -59,8 +58,11 @@ class ServiceAttachment(models.Model):
     # Portal visibility
     is_portal_visible = fields.Boolean(string="Portal Visible", readonly=True)
 
-    # Original attachment reference
+    # Original attachment reference - used for accessing binary data
     attachment_id = fields.Many2one(comodel_name='ir.attachment', string="Attachment", readonly=True)
+
+    # Related field to get binary data from the original attachment
+    datas = fields.Binary(string="File Content", related='attachment_id.datas', readonly=True)
 
     def init(self):
         """Create SQL view for service attachments"""
@@ -71,7 +73,6 @@ class ServiceAttachment(models.Model):
                     att.id as id,
                     att.id as attachment_id,
                     att.name as name,
-                    att.datas as datas,
                     att.mimetype as mimetype,
                     att.file_size as file_size,
                     att.create_date as create_date,
