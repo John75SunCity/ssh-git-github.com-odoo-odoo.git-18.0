@@ -303,7 +303,7 @@ class RecordsContainerBarcodeOperations(models.Model):
         # Audit log
         self.env['naid.audit.log'].sudo().create({
             'name': _('Destruction: %s') % self.name,
-            'action_type': 'container_destroyed',
+            'action_type': 'destruction',
             'container_id': self.id,
             'description': _('Container %s destroyed via barcode workflow. Customer: %s. Charges created.') % (self.barcode or self.name, self.partner_id.name),
             'user_id': self.env.user.id,

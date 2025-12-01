@@ -308,10 +308,9 @@ class ContainerDestructionWorkOrder(models.Model):
             
             # Create audit log entry (simulates barcode scan)
             self.env['naid.audit.log'].sudo().create({
-                'action_type': 'container_destroyed',
+                'action_type': 'destruction',
                 'container_id': container.id,
                 'user_id': self.env.user.id,
-                'work_order_id': self.id if hasattr(self.env['naid.audit.log'], 'work_order_id') else False,
                 'description': _('Container %s marked as destroyed via work order %s (simulated destruction location scan)') % (
                     container.name, self.name
                 ),
