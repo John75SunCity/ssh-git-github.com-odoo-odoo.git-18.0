@@ -137,6 +137,23 @@ class ContainerDestructionWorkOrder(models.Model):
     certificate_id = fields.Many2one(comodel_name='shredding.certificate', string='Certificate of Destruction', readonly=True)
 
     # ============================================================================
+    # FSM INTEGRATION - All services scheduled via FSM tasks
+    # ============================================================================
+    fsm_task_id = fields.Many2one(
+        comodel_name='project.task',
+        string="FSM Task",
+        domain="[('is_fsm', '=', True)]",
+        help="Linked Field Service task for scheduling and technician assignment",
+        tracking=True,
+        copy=False
+    )
+    fsm_task_state = fields.Char(
+        related='fsm_task_id.stage_id.name',
+        string="FSM Status",
+        readonly=True
+    )
+
+    # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
     @api.depends('name', 'partner_id.name', 'container_count')
@@ -426,6 +443,83 @@ class ContainerDestructionWorkOrder(models.Model):
     def action_cancel(self):
         self.write({'state': 'cancelled'})
         self.message_post(body=_("Work order cancelled."))
+
+    # ============================================================================
+    # FSM TASK INTEGRATION
+    # ============================================================================
+    def action_create_fsm_task(self):
+        """Create FSM task for container destruction work order."""
+        self.ensure_one()
+        if self.fsm_task_id:
+            raise UserError(_("An FSM task already exists for this work order."))
+
+        # Find or create FSM project
+        fsm_project = self.env['project.project'].search([
+            ('is_fsm', '=', True),
+            ('company_id', '=', self.env.company.id)
+        ], limit=1)
+
+        if not fsm_project:
+            fsm_project = self.env['project.project'].create({
+                'name': _('Field Service - Container Destruction'),
+                'is_fsm': True,
+                'company_id': self.env.company.id,
+            })
+
+        # Create FSM task
+        task_vals = {
+            'name': _('Container Destruction: %s') % self.name,
+            'project_id': fsm_project.id,
+            'partner_id': self.partner_id.id,
+            'is_fsm': True,
+            'planned_date_begin': self.scheduled_destruction_date or fields.Datetime.now(),
+            'user_ids': [(6, 0, [self.assigned_technician_id.id])] if self.assigned_technician_id else [],
+            'description': _(
+                '<p><strong>Container Destruction Work Order</strong></p>'
+                '<ul>'
+                '<li>Work Order: %s</li>'
+                '<li>Customer: %s</li>'
+                '<li>Containers: %d</li>'
+                '<li>Method: %s</li>'
+                '</ul>'
+            ) % (
+                self.name,
+                self.partner_id.name,
+                len(self.container_ids),
+                dict(self._fields['destruction_method'].selection).get(self.destruction_method, '')
+            ),
+        }
+
+        # Add destruction work order back-link if field exists
+        if 'destruction_work_order_id' in self.env['project.task']._fields:
+            task_vals['destruction_work_order_id'] = self.id
+
+        fsm_task = self.env['project.task'].create(task_vals)
+        self.fsm_task_id = fsm_task.id
+        self.message_post(body=_("FSM Task %s created for field service scheduling.") % fsm_task.name)
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('FSM Task'),
+            'res_model': 'project.task',
+            'res_id': fsm_task.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
+    def action_open_fsm_task(self):
+        """Open the linked FSM task."""
+        self.ensure_one()
+        if not self.fsm_task_id:
+            raise UserError(_("No FSM task linked to this work order."))
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('FSM Task'),
+            'res_model': 'project.task',
+            'res_id': self.fsm_task_id.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
 
     # ============================================================================
     # ORM OVERRIDES

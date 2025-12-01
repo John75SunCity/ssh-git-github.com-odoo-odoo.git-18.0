@@ -95,6 +95,14 @@ class ProjectTaskFSMExtension(models.Model):
         comodel_name='portal.request',
         string="Portal Request"
     )
+    access_work_order_id = fields.Many2one(
+        comodel_name='container.access.work.order',
+        string="Access Work Order"
+    )
+    retrieval_work_order_wo_id = fields.Many2one(
+        comodel_name='work.order.retrieval',
+        string="Retrieval Work Order (WO)"
+    )
 
     # ============================================================================
     # COMPUTE METHODS

@@ -125,6 +125,23 @@ class WorkOrderRetrieval(models.Model):
     )
 
     # ============================================================================
+    # FSM INTEGRATION - All services scheduled via FSM tasks
+    # ============================================================================
+    fsm_task_id = fields.Many2one(
+        comodel_name='project.task',
+        string="FSM Task",
+        domain="[('is_fsm', '=', True)]",
+        tracking=True,
+        help="Field Service task for scheduling this retrieval work order."
+    )
+    fsm_task_state = fields.Char(
+        related='fsm_task_id.stage_id.name',
+        string="FSM Task Status",
+        store=True,
+        readonly=True
+    )
+
+    # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
     @api.depends('name', 'partner_id', 'work_order_type')
@@ -311,6 +328,85 @@ class WorkOrderRetrieval(models.Model):
         self.completion_date = False
         self.actual_duration = 0.0
         self.message_post(body=_("Work order reset to draft."))
+
+    # ============================================================================
+    # FSM TASK INTEGRATION
+    # ============================================================================
+    def action_create_fsm_task(self):
+        """Create FSM task for retrieval work order."""
+        self.ensure_one()
+        if self.fsm_task_id:
+            raise UserError(_("An FSM task already exists for this work order."))
+
+        # Find or create FSM project
+        fsm_project = self.env['project.project'].search([
+            ('is_fsm', '=', True),
+            ('company_id', '=', self.env.company.id)
+        ], limit=1)
+
+        if not fsm_project:
+            fsm_project = self.env['project.project'].create({
+                'name': _('Field Service - Retrieval'),
+                'is_fsm': True,
+                'company_id': self.env.company.id,
+            })
+
+        # Create FSM task
+        task_vals = {
+            'name': _('Retrieval: %s') % self.name,
+            'project_id': fsm_project.id,
+            'partner_id': self.partner_id.id,
+            'is_fsm': True,
+            'planned_date_begin': self.scheduled_date or fields.Datetime.now(),
+            'user_ids': [(6, 0, [self.assigned_technician_id.id])] if self.assigned_technician_id else (
+                [(6, 0, [self.user_id.id])] if self.user_id else []
+            ),
+            'description': _(
+                '<p><strong>Retrieval Work Order</strong></p>'
+                '<ul>'
+                '<li>Work Order: %s</li>'
+                '<li>Customer: %s</li>'
+                '<li>Type: %s</li>'
+                '<li>Total Boxes: %d</li>'
+                '</ul>'
+            ) % (
+                self.name,
+                self.partner_id.name,
+                dict(self._fields['work_order_type'].selection).get(self.work_order_type, ''),
+                self.total_boxes or 0
+            ),
+        }
+
+        # Add retrieval work order back-link if field exists
+        if 'retrieval_work_order_wo_id' in self.env['project.task']._fields:
+            task_vals['retrieval_work_order_wo_id'] = self.id
+
+        fsm_task = self.env['project.task'].create(task_vals)
+        self.fsm_task_id = fsm_task.id
+        self.message_post(body=_("FSM Task %s created for field service scheduling.") % fsm_task.name)
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('FSM Task'),
+            'res_model': 'project.task',
+            'res_id': fsm_task.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
+    def action_open_fsm_task(self):
+        """Open the linked FSM task."""
+        self.ensure_one()
+        if not self.fsm_task_id:
+            raise UserError(_("No FSM task linked to this work order."))
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('FSM Task'),
+            'res_model': 'project.task',
+            'res_id': self.fsm_task_id.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
 
     def action_open_picklist_scanner(self):
         """Open the barcode scanning interface for this work order's pick list."""

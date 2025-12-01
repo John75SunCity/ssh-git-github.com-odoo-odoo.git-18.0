@@ -274,6 +274,23 @@ class ContainerAccessWorkOrder(models.Model):
     follow_up_notes = fields.Text(string='Follow-up Notes')
 
     # ============================================================================
+    # FSM INTEGRATION - All services scheduled via FSM tasks
+    # ============================================================================
+    fsm_task_id = fields.Many2one(
+        comodel_name='project.task',
+        string="FSM Task",
+        domain="[('is_fsm', '=', True)]",
+        tracking=True,
+        help="Field Service task for scheduling container access."
+    )
+    fsm_task_state = fields.Char(
+        related='fsm_task_id.stage_id.name',
+        string="FSM Task Status",
+        store=True,
+        readonly=True
+    )
+
+    # ============================================================================
     # ORM & COMPUTE METHODS
     # ============================================================================
     @api.model_create_multi
@@ -446,6 +463,85 @@ class ContainerAccessWorkOrder(models.Model):
             ),
             message_type='notification'
         )
+
+    # ============================================================================
+    # FSM TASK INTEGRATION
+    # ============================================================================
+    def action_create_fsm_task(self):
+        """Create FSM task for container access work order."""
+        self.ensure_one()
+        if self.fsm_task_id:
+            raise UserError(_("An FSM task already exists for this work order."))
+
+        # Find or create FSM project
+        fsm_project = self.env['project.project'].search([
+            ('is_fsm', '=', True),
+            ('company_id', '=', self.env.company.id)
+        ], limit=1)
+
+        if not fsm_project:
+            fsm_project = self.env['project.project'].create({
+                'name': _('Field Service - Container Access'),
+                'is_fsm': True,
+                'company_id': self.env.company.id,
+            })
+
+        # Create FSM task
+        task_vals = {
+            'name': _('Container Access: %s') % self.name,
+            'project_id': fsm_project.id,
+            'partner_id': self.partner_id.id,
+            'is_fsm': True,
+            'planned_date_begin': self.scheduled_access_date or fields.Datetime.now(),
+            'user_ids': [(6, 0, [self.user_id.id])] if self.user_id else [],
+            'description': _(
+                '<p><strong>Container Access Work Order</strong></p>'
+                '<ul>'
+                '<li>Work Order: %s</li>'
+                '<li>Customer: %s</li>'
+                '<li>Containers: %d</li>'
+                '<li>Access Type: %s</li>'
+                '<li>Purpose: %s</li>'
+                '</ul>'
+            ) % (
+                self.name,
+                self.partner_id.name,
+                len(self.container_ids),
+                dict(self._fields['access_type'].selection).get(self.access_type, ''),
+                self.access_purpose or ''
+            ),
+        }
+
+        # Add access work order back-link if field exists
+        if 'access_work_order_id' in self.env['project.task']._fields:
+            task_vals['access_work_order_id'] = self.id
+
+        fsm_task = self.env['project.task'].create(task_vals)
+        self.fsm_task_id = fsm_task.id
+        self.message_post(body=_("FSM Task %s created for field service scheduling.") % fsm_task.name)
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('FSM Task'),
+            'res_model': 'project.task',
+            'res_id': fsm_task.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
+    def action_open_fsm_task(self):
+        """Open the linked FSM task."""
+        self.ensure_one()
+        if not self.fsm_task_id:
+            raise UserError(_("No FSM task linked to this work order."))
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('FSM Task'),
+            'res_model': 'project.task',
+            'res_id': self.fsm_task_id.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
 
     # ============================================================================
     # BUSINESS & UTILITY METHODS
