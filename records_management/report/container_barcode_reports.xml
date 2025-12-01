@@ -49,9 +49,6 @@
       <field name="binding_model_id" ref="records_management.model_records_container"/>
       <field name="binding_type">report</field>
       <field name="paperformat_id" ref="paperformat_container_barcode_label"/>
-      <!-- Attachment caching: only if a physical barcode exists (immutable physical state) -->
-      <field name="attachment">(object.barcode and ('container_barcode_'+object.barcode)) or False</field>
-      <field name="attachment_use">True</field>
     </record>
 
     <template id="report_container_barcode_view">
