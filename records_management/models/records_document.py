@@ -1264,13 +1264,28 @@ class RecordsDocument(models.Model):
 
     def _create_audit_log(self, event_type, description):
         """Helper to create audit log entries (standardized field names)."""
+        # Map event_type to action_type for NAID audit log
+        action_type_map = {
+            'barcode_generated': 'other',
+            'created': 'create',
+            'updated': 'write',
+            'deleted': 'unlink',
+            'accessed': 'access',
+            'destruction_scheduled': 'destruction',
+            'destroyed': 'destruction',
+            'checked_out': 'access',
+            'returned': 'access',
+        }
+        action_type = action_type_map.get(event_type, 'other')
+        
         self.env["naid.audit.log"].create(
             {
                 "document_id": self.id,
+                "action_type": action_type,
                 "event_type": event_type,
                 "description": description,
                 "user_id": self.env.user.id,
-                "event_date": datetime.now(),
+                "event_date": fields.Datetime.now(),
             }
         )
 
