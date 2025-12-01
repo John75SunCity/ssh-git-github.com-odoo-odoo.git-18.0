@@ -1581,41 +1581,72 @@ class RecordsManagementController(http.Controller):
         return request.make_response(pdf, headers=pdfhttpheaders)
 
     # ============================================================================
-    # SERVICE PHOTOS PORTAL ROUTES
-    # Customer-visible photos from service jobs (NOT inventory documents)
+    # SERVICE ATTACHMENTS PORTAL ROUTES
+    # Customer-visible attachments from work orders, certificates, invoices
+    # Uses native ir.attachment system (Attach File button on work orders)
+    # NOT for customer inventory documents (handled by /my/inventory)
     # ============================================================================
 
-    @http.route(['/my/service-photos', '/my/service-photos/page/<int:page>'], type='http', auth="user", website=True)
-    def portal_service_photos(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, **kw):
-        """Display service job photos visible to customer in portal.
+    def _get_service_attachment_domain(self, partner):
+        """
+        Build domain to get service attachments visible to this customer.
+        Filters by attachments on work orders, pickups, certificates, invoices
+        that belong to this customer.
+        """
+        # Get IDs of service records belonging to this customer
+        work_order_ids = request.env['work.order.shredding'].sudo().search([
+            ('partner_id', 'child_of', partner.commercial_partner_id.id)
+        ]).ids
+
+        pickup_ids = request.env['pickup.request'].sudo().search([
+            ('partner_id', 'child_of', partner.commercial_partner_id.id)
+        ]).ids
+
+        certificate_ids = request.env['destruction.certificate'].sudo().search([
+            ('partner_id', 'child_of', partner.commercial_partner_id.id)
+        ]).ids
+
+        invoice_ids = request.env['account.move'].sudo().search([
+            ('partner_id', 'child_of', partner.commercial_partner_id.id),
+            ('move_type', 'in', ['out_invoice', 'out_refund'])
+        ]).ids
+
+        # Build domain for attachments from these records
+        domain = ['|', '|', '|',
+            '&', ('res_model', '=', 'work.order.shredding'), ('res_id', 'in', work_order_ids),
+            '&', ('res_model', '=', 'pickup.request'), ('res_id', 'in', pickup_ids),
+            '&', ('res_model', '=', 'destruction.certificate'), ('res_id', 'in', certificate_ids),
+            '&', ('res_model', '=', 'account.move'), ('res_id', 'in', invoice_ids),
+        ]
+
+        return domain
+
+    @http.route(['/my/service-attachments', '/my/service-attachments/page/<int:page>'], type='http', auth="user", website=True)
+    def portal_service_attachments(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, **kw):
+        """Display service attachments visible to customer in portal.
         
-        These are technician-uploaded photos from service jobs (before/after,
-        destruction proof, pickup documentation) - NOT customer inventory documents.
+        These are attachments (photos, PDFs) from work orders, pickups, 
+        certificates - NOT customer inventory documents.
         """
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
 
-        Photo = request.env['photo'].sudo()
+        Attachment = request.env['ir.attachment'].sudo()
 
-        # Only show customer-visible photos for this customer
-        domain = [
-            ('partner_id', 'child_of', partner.commercial_partner_id.id),
-            ('is_customer_visible', '=', True),
-            ('state', 'in', ['draft', 'validated']),  # Not archived
-        ]
+        # Get base domain for this customer's service attachments
+        domain = self._get_service_attachment_domain(partner)
 
         # Date filtering
         if date_begin and date_end:
-            domain += [('date', '>=', date_begin), ('date', '<=', date_end)]
+            domain += [('create_date', '>=', date_begin), ('create_date', '<=', date_end)]
 
-        # Filter by photo purpose
+        # Filter by attachment type
         searchbar_filters = {
-            'all': {'label': _('All Photos'), 'domain': []},
-            'before': {'label': _('Before Service'), 'domain': [('photo_purpose', '=', 'service_before')]},
-            'after': {'label': _('After Service'), 'domain': [('photo_purpose', '=', 'service_after')]},
-            'destruction': {'label': _('Destruction Proof'), 'domain': [('photo_purpose', '=', 'destruction_proof')]},
-            'pickup': {'label': _('Pickup Documentation'), 'domain': [('photo_purpose', '=', 'pickup_doc')]},
-            'compliance': {'label': _('Compliance'), 'domain': [('photo_purpose', '=', 'compliance')]},
+            'all': {'label': _('All Files'), 'domain': []},
+            'images': {'label': _('Photos'), 'domain': [('mimetype', 'ilike', 'image')]},
+            'pdfs': {'label': _('PDFs'), 'domain': [('mimetype', '=', 'application/pdf')]},
+            'work_orders': {'label': _('Work Orders'), 'domain': [('res_model', '=', 'work.order.shredding')]},
+            'certificates': {'label': _('Certificates'), 'domain': [('res_model', '=', 'destruction.certificate')]},
         }
 
         if not filterby:
@@ -1624,90 +1655,116 @@ class RecordsManagementController(http.Controller):
 
         # Sorting options
         searchbar_sortings = {
-            'date': {'label': _('Most Recent'), 'order': 'date desc'},
+            'date': {'label': _('Most Recent'), 'order': 'create_date desc'},
             'name': {'label': _('Name'), 'order': 'name'},
-            'purpose': {'label': _('Photo Type'), 'order': 'photo_purpose'},
         }
 
         if not sortby:
             sortby = 'date'
         order = searchbar_sortings[sortby]['order']
 
-        # Count total photos
-        photo_count = Photo.search_count(domain)
+        # Count total attachments
+        attachment_count = Attachment.search_count(domain)
 
         # Pager setup
         pager = request.website.pager(
-            url="/my/service-photos",
+            url="/my/service-attachments",
             url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby, 'filterby': filterby},
-            total=photo_count,
+            total=attachment_count,
             page=page,
             step=self._items_per_page,
         )
 
-        # Get photos for current page
-        photos = Photo.search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+        # Get attachments for current page
+        attachments = Attachment.search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
 
         values.update({
-            'photos': photos,
-            'page_name': 'service_photos',
+            'attachments': attachments,
+            'page_name': 'service_attachments',
             'pager': pager,
-            'default_url': '/my/service-photos',
+            'default_url': '/my/service-attachments',
             'searchbar_sortings': searchbar_sortings,
             'searchbar_filters': searchbar_filters,
             'sortby': sortby,
             'filterby': filterby,
         })
 
-        return request.render("records_management.portal_service_photos", values)
+        return request.render("records_management.portal_service_attachments", values)
 
-    @http.route(['/my/service-photo/<int:photo_id>'], type='http', auth="user", website=True)
-    def portal_service_photo_detail(self, photo_id=None, **kw):
-        """Display individual service photo details"""
-        photo = request.env['photo'].sudo().browse(photo_id)
-
-        # Security check - must be customer's photo and customer-visible
+    @http.route(['/my/service-attachment/<int:attachment_id>'], type='http', auth="user", website=True)
+    def portal_service_attachment_detail(self, attachment_id=None, **kw):
+        """Display individual service attachment details"""
+        attachment = request.env['ir.attachment'].sudo().browse(attachment_id)
         partner = request.env.user.partner_id
-        if not photo.exists() or \
-           photo.partner_id.commercial_partner_id != partner.commercial_partner_id or \
-           not photo.is_customer_visible:
-            return request.redirect('/my/service-photos')
+
+        # Security check - verify attachment belongs to customer's service record
+        if not attachment.exists():
+            return request.redirect('/my/service-attachments')
+
+        # Verify the source document belongs to this customer
+        allowed = False
+        if attachment.res_model == 'work.order.shredding':
+            wo = request.env['work.order.shredding'].sudo().browse(attachment.res_id)
+            allowed = wo.exists() and wo.partner_id.commercial_partner_id == partner.commercial_partner_id
+        elif attachment.res_model == 'pickup.request':
+            pr = request.env['pickup.request'].sudo().browse(attachment.res_id)
+            allowed = pr.exists() and pr.partner_id.commercial_partner_id == partner.commercial_partner_id
+        elif attachment.res_model == 'destruction.certificate':
+            dc = request.env['destruction.certificate'].sudo().browse(attachment.res_id)
+            allowed = dc.exists() and dc.partner_id.commercial_partner_id == partner.commercial_partner_id
+        elif attachment.res_model == 'account.move':
+            am = request.env['account.move'].sudo().browse(attachment.res_id)
+            allowed = am.exists() and am.partner_id.commercial_partner_id == partner.commercial_partner_id
+
+        if not allowed:
+            return request.redirect('/my/service-attachments')
+
+        # Get source document name
+        source_doc = None
+        if attachment.res_model and attachment.res_id:
+            source_doc = request.env[attachment.res_model].sudo().browse(attachment.res_id)
 
         values = self._prepare_portal_layout_values()
         values.update({
-            'photo': photo,
-            'page_name': 'service_photo_detail',
+            'attachment': attachment,
+            'source_doc': source_doc,
+            'page_name': 'service_attachment_detail',
         })
 
-        return request.render("records_management.portal_service_photo_detail", values)
+        return request.render("records_management.portal_service_attachment_detail", values)
 
-    @http.route(['/my/service-photo/<int:photo_id>/download'], type='http', auth="user")
-    def portal_service_photo_download(self, photo_id=None, **kw):
-        """Download service photo"""
-        photo = request.env['photo'].sudo().browse(photo_id)
-
-        # Security check
+    @http.route(['/my/service-attachment/<int:attachment_id>/download'], type='http', auth="user")
+    def portal_service_attachment_download(self, attachment_id=None, **kw):
+        """Download service attachment"""
+        attachment = request.env['ir.attachment'].sudo().browse(attachment_id)
         partner = request.env.user.partner_id
-        if not photo.exists() or \
-           photo.partner_id.commercial_partner_id != partner.commercial_partner_id or \
-           not photo.is_customer_visible:
-            return request.redirect('/my/service-photos')
 
-        if not photo.image:
-            return request.redirect('/my/service-photos')
+        if not attachment.exists():
+            return request.redirect('/my/service-attachments')
 
-        # Decode and return image
-        import base64
-        image_data = base64.b64decode(photo.image)
-        filename = photo.image_filename or f"photo-{photo.id}.jpg"
+        # Security check (same as detail view)
+        allowed = False
+        if attachment.res_model == 'work.order.shredding':
+            wo = request.env['work.order.shredding'].sudo().browse(attachment.res_id)
+            allowed = wo.exists() and wo.partner_id.commercial_partner_id == partner.commercial_partner_id
+        elif attachment.res_model in ['pickup.request', 'destruction.certificate', 'account.move']:
+            rec = request.env[attachment.res_model].sudo().browse(attachment.res_id)
+            allowed = rec.exists() and rec.partner_id.commercial_partner_id == partner.commercial_partner_id
 
-        headers = [
-            ('Content-Type', 'image/jpeg'),
-            ('Content-Length', len(image_data)),
-            ('Content-Disposition', f'attachment; filename="{filename}"'),
-        ]
+        if not allowed:
+            return request.redirect('/my/service-attachments')
 
-        return request.make_response(image_data, headers=headers)
+        # Return file download
+        return request.env['ir.http']._get_content_common(
+            xmlid=None, model='ir.attachment', res_id=attachment.id, field='datas',
+            filename=attachment.name, filename_field='name', download=True
+        )
+
+    # Legacy route redirect (for backwards compatibility)
+    @http.route(['/my/service-photos', '/my/service-photos/page/<int:page>'], type='http', auth="user", website=True)
+    def portal_service_photos_redirect(self, **kw):
+        """Redirect old service-photos URL to service-attachments"""
+        return request.redirect('/my/service-attachments')
 
     # ============================================================================
     # DOCUMENTS PORTAL ROUTES

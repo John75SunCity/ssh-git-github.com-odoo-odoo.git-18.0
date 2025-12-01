@@ -110,6 +110,12 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,validated,archived"/>
                     </header>
                     <sheet>
+                        <!-- WARNING FOR TECHNICIANS -->
+                        <div class="alert alert-warning" role="alert">
+                            <strong><i class="fa fa-exclamation-triangle"/> Customer Visibility Notice:</strong>
+                            Photos marked as "Visible to Customer" will be viewable by the customer in their portal.
+                            Please ensure all uploaded content is professional and appropriate for customer viewing.
+                        </div>
                         <div class="oe_button_box" name="button_box">
                             <button class="oe_stat_button" type="object" name="action_view_metadata"
                                     icon="fa-info-circle">

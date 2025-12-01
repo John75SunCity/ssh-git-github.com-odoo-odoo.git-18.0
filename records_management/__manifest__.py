@@ -543,6 +543,7 @@
         "views/portal_technician_certifications.xml",
         "views/pos_config_views.xml",
         "views/processing_log_views.xml",
+        "views/service_attachment_views.xml",
         "views/product_container_type_views.xml",
         "views/product_product_views.xml",
         "views/product_product_views_fixed.xml",

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ============================================================ -->
+        <!-- SERVICE ATTACHMENTS HUB                                      -->
+        <!-- Centralized view of all photos/docs from work orders,        -->
+        <!-- invoices, certificates - uses native ir.attachment system    -->
+        <!-- ============================================================ -->
+
+        <!-- KANBAN VIEW - Visual Gallery of Service Attachments -->
+        <record id="service_attachment_view_kanban" model="ir.ui.view">
+            <field name="name">service.attachment.view.kanban</field>
+            <field name="model">service.attachment</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="attachment_category" class="o_kanban_small_column">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="attachment_id"/>
+                    <field name="mimetype"/>
+                    <field name="file_size"/>
+                    <field name="create_date"/>
+                    <field name="create_uid"/>
+                    <field name="partner_id"/>
+                    <field name="res_model"/>
+                    <field name="res_name"/>
+                    <field name="attachment_category"/>
+                    <templates>
+                        <t t-name="card" class="o_kanban_card flex-row">
+                            <aside class="o_kanban_aside_full">
+                                <!-- Show image preview for images -->
+                                <t t-if="record.attachment_category.raw_value == 'image'">
+                                    <img t-attf-src="/web/image/#{record.attachment_id.raw_value}?width=120&amp;height=120" 
+                                         style="width: 120px; height: 120px; object-fit: cover;"/>
+                                </t>
+                                <!-- Show icon for PDFs -->
+                                <t t-elif="record.attachment_category.raw_value == 'pdf'">
+                                    <div class="d-flex align-items-center justify-content-center bg-danger text-white" style="width: 120px; height: 120px;">
+                                        <i class="fa fa-file-pdf-o fa-4x"></i>
+                                    </div>
+                                </t>
+                                <!-- Show icon for other documents -->
+                                <t t-else="">
+                                    <div class="d-flex align-items-center justify-content-center bg-secondary text-white" style="width: 120px; height: 120px;">
+                                        <i class="fa fa-file-o fa-4x"></i>
+                                    </div>
+                                </t>
+                            </aside>
+                            <main class="ms-2">
+                                <field name="name" class="fw-bold d-block text-truncate"/>
+                                <div class="text-muted small">
+                                    <field name="res_name"/>
+                                </div>
+                                <div class="text-muted small mt-1">
+                                    <i class="fa fa-user me-1"/><field name="partner_id"/>
+                                </div>
+                                <div class="d-flex justify-content-between mt-1">
+                                    <span class="text-muted small">
+                                        <i class="fa fa-calendar me-1"/><field name="create_date" widget="date"/>
+                                    </span>
+                                </div>
+                                <div class="mt-1 small">
+                                    <span t-if="record.attachment_category.raw_value == 'image'" class="badge bg-success">Photo</span>
+                                    <span t-elif="record.attachment_category.raw_value == 'pdf'" class="badge bg-danger">PDF</span>
+                                    <span t-else="" class="badge bg-secondary">Document</span>
+                                </div>
+                            </main>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- LIST VIEW -->
+        <record id="service_attachment_view_list" model="ir.ui.view">
+            <field name="name">service.attachment.view.list</field>
+            <field name="model">service.attachment</field>
+            <field name="arch" type="xml">
+                <list default_order="create_date desc">
+                    <field name="name"/>
+                    <field name="attachment_category" string="Type"/>
+                    <field name="res_model" string="Source Type" optional="hide"/>
+                    <field name="res_name" string="Source Document"/>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="create_uid" string="Uploaded By"/>
+                    <field name="create_date" string="Upload Date"/>
+                    <field name="file_size" optional="hide"/>
+                    <button name="action_open_source_document" type="object" string="View Source" icon="fa-external-link"/>
+                    <button name="action_download" type="object" string="Download" icon="fa-download"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- CALENDAR VIEW -->
+        <record id="service_attachment_view_calendar" model="ir.ui.view">
+            <field name="name">service.attachment.view.calendar</field>
+            <field name="model">service.attachment</field>
+            <field name="arch" type="xml">
+                <calendar date_start="create_date" color="attachment_category" mode="month" quick_create="0">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="res_name"/>
+                    <field name="create_uid"/>
+                </calendar>
+            </field>
+        </record>
+
+        <!-- SEARCH VIEW -->
+        <record id="service_attachment_view_search" model="ir.ui.view">
+            <field name="name">service.attachment.view.search</field>
+            <field name="model">service.attachment</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="File Name"/>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="res_name" string="Source Document"/>
+                    <field name="create_uid" string="Uploaded By"/>
+                    
+                    <!-- Category Filters -->
+                    <separator/>
+                    <filter name="filter_images" string="📷 Photos" domain="[('attachment_category', '=', 'image')]"/>
+                    <filter name="filter_pdfs" string="📄 PDFs" domain="[('attachment_category', '=', 'pdf')]"/>
+                    <filter name="filter_docs" string="📎 Documents" domain="[('attachment_category', '=', 'document')]"/>
+                    
+                    <!-- Source Model Filters -->
+                    <separator/>
+                    <filter name="filter_work_orders" string="🔧 Work Orders" domain="[('res_model', '=', 'work.order.shredding')]"/>
+                    <filter name="filter_pickups" string="🚚 Pickups" domain="[('res_model', '=', 'pickup.request')]"/>
+                    <filter name="filter_retrievals" string="📦 Retrievals" domain="[('res_model', '=', 'records.retrieval.order')]"/>
+                    <filter name="filter_certificates" string="📜 Certificates" domain="[('res_model', '=', 'destruction.certificate')]"/>
+                    <filter name="filter_invoices" string="💰 Invoices" domain="[('res_model', '=', 'account.move')]"/>
+                    <filter name="filter_tasks" string="✅ FSM Tasks" domain="[('res_model', '=', 'project.task')]"/>
+                    
+                    <!-- Date Filters -->
+                    <separator/>
+                    <filter name="filter_today" string="Today" domain="[('create_date', '>=', (context_today()).strftime('%%Y-%%m-%%d 00:00:00')), ('create_date', '&lt;=', (context_today()).strftime('%%Y-%%m-%%d 23:59:59'))]"/>
+                    <filter name="filter_this_week" string="This Week" domain="[('create_date', '>=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_this_month" string="This Month" domain="[('create_date', '>=', context_today().strftime('%%Y-%%m-01'))]"/>
+                    
+                    <!-- Group By -->
+                    <group expand="0" string="Group By">
+                        <filter name="group_category" string="File Type" context="{'group_by': 'attachment_category'}"/>
+                        <filter name="group_source_model" string="Source Type" context="{'group_by': 'res_model'}"/>
+                        <filter name="group_partner" string="Customer" context="{'group_by': 'partner_id'}"/>
+                        <filter name="group_uploader" string="Uploaded By" context="{'group_by': 'create_uid'}"/>
+                        <filter name="group_date" string="Upload Date" context="{'group_by': 'create_date:day'}"/>
+                        <filter name="group_date_week" string="Upload Week" context="{'group_by': 'create_date:week'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- MAIN ACTION -->
+        <record id="action_service_attachment" model="ir.actions.act_window">
+            <field name="name">Service Attachments Hub</field>
+            <field name="res_model">service.attachment</field>
+            <field name="view_mode">kanban,list,calendar</field>
+            <field name="search_view_id" ref="service_attachment_view_search"/>
+            <field name="context">{'search_default_group_category': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No service attachments found
+                </p>
+                <p>
+                    <strong>Service Attachments Hub</strong> - All photos and documents attached 
+                    to work orders, pickups, retrievals, certificates, and invoices.
+                </p>
+                <p>
+                    <strong>⚠️ Customer Visibility:</strong> Attachments here may be visible 
+                    to customers in their portal. Ensure all uploads are professional and appropriate.
+                </p>
+                <p>
+                    <strong>How to upload:</strong> Use the "Attach File" button (📎) on any 
+                    work order, pickup request, or certificate to add photos/documents.
+                </p>
+            </field>
+        </record>
+
+        <!-- ACTION - Today's Uploads -->
+        <record id="action_service_attachment_today" model="ir.actions.act_window">
+            <field name="name">Today's Uploads</field>
+            <field name="res_model">service.attachment</field>
+            <field name="view_mode">kanban,list,calendar</field>
+            <field name="search_view_id" ref="service_attachment_view_search"/>
+            <field name="context">{'search_default_filter_today': 1, 'search_default_group_category': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">No uploads today</p>
+                <p>Attachments uploaded today will appear here.</p>
+            </field>
+        </record>
+
+        <!-- ACTION - Photos Only -->
+        <record id="action_service_attachment_photos" model="ir.actions.act_window">
+            <field name="name">Service Photos</field>
+            <field name="res_model">service.attachment</field>
+            <field name="view_mode">kanban,list,calendar</field>
+            <field name="search_view_id" ref="service_attachment_view_search"/>
+            <field name="domain">[('attachment_category', '=', 'image')]</field>
+            <field name="context">{'search_default_group_date': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">No service photos found</p>
+                <p>Photos attached to work orders will appear here.</p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

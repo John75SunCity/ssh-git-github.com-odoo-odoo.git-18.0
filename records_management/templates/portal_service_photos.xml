@@ -2,29 +2,30 @@
 <odoo>
     <data>
         <!-- ============================================================ -->
-        <!-- SERVICE PHOTOS PORTAL - Customer view of job photos         -->
+        <!-- SERVICE ATTACHMENTS PORTAL - Customer view of job docs      -->
+        <!-- Uses ir.attachment system for work orders, certificates, etc -->
         <!-- NOT for inventory documents (handled by /my/inventory)       -->
         <!-- ============================================================ -->
 
-        <!-- Service Photos List Template -->
-        <template id="portal_service_photos" name="My Service Photos">
+        <!-- Service Attachments List Template (main template) -->
+        <template id="portal_service_attachments" name="My Service Attachments">
             <t t-call="portal.portal_layout">
                 <t t-set="breadcrumbs_searchbar" t-value="True"/>
-                <t t-set="title">Service Photos</t>
+                <t t-set="title">Service Documentation</t>
 
                 <div class="o_portal_my_service_photos">
                     <div class="card">
                         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                             <h3 class="mb-0">
-                                <i class="fa fa-camera me-2"></i>
-                                Service Job Photos
+                                <i class="fa fa-folder-open me-2"></i>
+                                Service Job Documentation
                             </h3>
                             <div class="btn-group" role="group">
                                 <!-- Filter dropdown -->
                                 <div class="dropdown">
                                     <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                         <i class="fa fa-filter me-1"></i>
-                                        <t t-esc="searchbar_filters[filterby]['label']"/>
+                                        <t t-esc="searchbar_filters.get(filterby, {}).get('label', 'All')"/>
                                     </button>
                                     <ul class="dropdown-menu">
                                         <t t-foreach="searchbar_filters" t-as="filter_key">
@@ -40,7 +41,7 @@
                                 <div class="dropdown ms-2">
                                     <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                         <i class="fa fa-sort me-1"></i>
-                                        <t t-esc="searchbar_sortings[sortby]['label']"/>
+                                        <t t-esc="searchbar_sortings.get(sortby, {}).get('label', 'Newest')"/>
                                     </button>
                                     <ul class="dropdown-menu">
                                         <t t-foreach="searchbar_sortings" t-as="sort_key">
@@ -58,78 +59,101 @@
                             <!-- Info Alert -->
                             <div class="alert alert-info mb-4">
                                 <i class="fa fa-info-circle me-2"></i>
-                                <strong>Service Documentation:</strong> 
-                                These are photos taken by technicians during your service jobs - 
-                                including before/after photos, destruction proof, and pickup documentation.
+                                <strong>Service Documentation:</strong>
+                                These are photos and documents uploaded by technicians during your service jobs -
+                                including before/after photos, destruction proof, pickup documentation, and certificates.
                                 <br/>
                                 <small class="text-muted">
-                                    For your own stored records and documents, visit 
+                                    For your own stored records and inventory documents, visit
                                     <a href="/my/inventory">My Inventory</a>.
                                 </small>
                             </div>
 
-                            <t t-if="not photos">
+                            <t t-if="not attachments">
                                 <div class="alert alert-secondary text-center py-5">
-                                    <i class="fa fa-camera fa-3x mb-3 text-muted"></i>
-                                    <h4>No Service Photos Yet</h4>
-                                    <p class="mb-0">Photos from your service jobs will appear here once technicians upload them.</p>
+                                    <i class="fa fa-folder-open fa-3x mb-3 text-muted"></i>
+                                    <h4>No Service Documentation Yet</h4>
+                                    <p class="mb-0">Photos and documents from your service jobs will appear here once technicians upload them.</p>
                                 </div>
                             </t>
 
-                            <t t-if="photos">
-                                <!-- Photo Grid (Kanban-like) -->
-                                <div class="row g-4">
-                                    <t t-foreach="photos" t-as="photo">
-                                        <div class="col-md-4 col-lg-3">
-                                            <div class="card h-100 shadow-sm">
-                                                <!-- Photo Thumbnail -->
-                                                <a t-attf-href="/my/service-photo/#{photo.id}" class="text-decoration-none">
-                                                    <t t-if="photo.image">
-                                                        <img t-att-src="'data:image/png;base64,' + photo.image.decode('utf-8')" 
-                                                             class="card-img-top" 
-                                                             style="height: 180px; object-fit: cover;"
-                                                             t-att-alt="photo.name"/>
-                                                    </t>
-                                                    <t t-else="">
-                                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
-                                                            <i class="fa fa-image fa-3x text-muted"></i>
+                            <t t-if="attachments">
+                                <!-- Grouped by Type -->
+                                <t t-foreach="grouped_attachments" t-as="group">
+                                    <h5 class="mb-3 border-bottom pb-2">
+                                        <t t-if="group == 'Photos'"><i class="fa fa-camera text-success me-2"></i></t>
+                                        <t t-elif="group == 'Documents'"><i class="fa fa-file-pdf-o text-danger me-2"></i></t>
+                                        <t t-elif="group == 'Certificates'"><i class="fa fa-certificate text-warning me-2"></i></t>
+                                        <t t-else=""><i class="fa fa-file text-muted me-2"></i></t>
+                                        <t t-esc="group"/>
+                                        <span class="badge bg-secondary ms-2"><t t-esc="len(grouped_attachments[group])"/></span>
+                                    </h5>
+                                    <div class="row g-4 mb-4">
+                                        <t t-foreach="grouped_attachments[group]" t-as="attachment">
+                                            <div class="col-md-4 col-lg-3">
+                                                <div class="card h-100 shadow-sm">
+                                                    <!-- Thumbnail -->
+                                                    <a t-attf-href="/my/service-attachment/#{attachment.id}" class="text-decoration-none">
+                                                        <t t-if="attachment.mimetype and attachment.mimetype.startswith('image/')">
+                                                            <img t-attf-src="/web/image/#{attachment.id}/datas"
+                                                                 class="card-img-top"
+                                                                 style="height: 180px; object-fit: cover;"
+                                                                 t-att-alt="attachment.name"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
+                                                                <t t-if="attachment.mimetype == 'application/pdf'">
+                                                                    <i class="fa fa-file-pdf-o fa-3x text-danger"></i>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <i class="fa fa-file fa-3x text-muted"></i>
+                                                                </t>
+                                                            </div>
+                                                        </t>
+                                                    </a>
+                                                    <div class="card-body">
+                                                        <h6 class="card-title text-truncate mb-1">
+                                                            <a t-attf-href="/my/service-attachment/#{attachment.id}" class="text-decoration-none text-dark">
+                                                                <t t-esc="attachment.name"/>
+                                                            </a>
+                                                        </h6>
+                                                        <!-- Source Badge -->
+                                                        <t t-if="attachment.res_model == 'work.order.shredding'">
+                                                            <span class="badge bg-danger">Shredding WO</span>
+                                                        </t>
+                                                        <t t-elif="attachment.res_model == 'destruction.certificate'">
+                                                            <span class="badge bg-warning text-dark">Certificate</span>
+                                                        </t>
+                                                        <t t-elif="attachment.res_model == 'project.task'">
+                                                            <span class="badge bg-info">Task</span>
+                                                        </t>
+                                                        <t t-elif="attachment.res_model == 'pickup.request'">
+                                                            <span class="badge bg-primary">Pickup</span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="badge bg-secondary">Service</span>
+                                                        </t>
+
+                                                        <p class="card-text small text-muted mt-2 mb-0">
+                                                            <i class="fa fa-calendar me-1"></i>
+                                                            <t t-esc="attachment.create_date" t-options="{'widget': 'date'}"/>
+                                                        </p>
+                                                    </div>
+                                                    <div class="card-footer bg-transparent border-top-0">
+                                                        <div class="btn-group w-100" role="group">
+                                                            <a t-attf-href="/my/service-attachment/#{attachment.id}" class="btn btn-sm btn-outline-primary">
+                                                                <i class="fa fa-eye me-1"></i> View
+                                                            </a>
+                                                            <a t-attf-href="/my/service-attachment/#{attachment.id}/download" class="btn btn-sm btn-outline-success">
+                                                                <i class="fa fa-download me-1"></i> Download
+                                                            </a>
                                                         </div>
-                                                    </t>
-                                                </a>
-                                                <div class="card-body">
-                                                    <h6 class="card-title text-truncate mb-1">
-                                                        <a t-attf-href="/my/service-photo/#{photo.id}" class="text-decoration-none text-dark">
-                                                            <t t-esc="photo.name"/>
-                                                        </a>
-                                                    </h6>
-                                                    <!-- Photo Purpose Badge -->
-                                                    <span t-if="photo.photo_purpose == 'service_before'" class="badge bg-info">Before Service</span>
-                                                    <span t-if="photo.photo_purpose == 'service_after'" class="badge bg-success">After Service</span>
-                                                    <span t-if="photo.photo_purpose == 'destruction_proof'" class="badge bg-danger">Destruction Proof</span>
-                                                    <span t-if="photo.photo_purpose == 'pickup_doc'" class="badge bg-warning text-dark">Pickup</span>
-                                                    <span t-if="photo.photo_purpose == 'compliance'" class="badge bg-primary">Compliance</span>
-                                                    <span t-if="photo.photo_purpose == 'equipment'" class="badge bg-secondary">Equipment</span>
-                                                    <span t-if="photo.photo_purpose == 'other'" class="badge bg-light text-dark">Other</span>
-                                                    
-                                                    <p class="card-text small text-muted mt-2 mb-0">
-                                                        <i class="fa fa-calendar me-1"></i>
-                                                        <t t-esc="photo.date" t-options="{'widget': 'date'}"/>
-                                                    </p>
-                                                </div>
-                                                <div class="card-footer bg-transparent border-top-0">
-                                                    <div class="btn-group w-100" role="group">
-                                                        <a t-attf-href="/my/service-photo/#{photo.id}" class="btn btn-sm btn-outline-primary">
-                                                            <i class="fa fa-eye me-1"></i> View
-                                                        </a>
-                                                        <a t-attf-href="/my/service-photo/#{photo.id}/download" class="btn btn-sm btn-outline-success">
-                                                            <i class="fa fa-download me-1"></i> Download
-                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </t>
-                                </div>
+                                        </t>
+                                    </div>
+                                </t>
 
                                 <!-- Pager -->
                                 <div class="mt-4">
@@ -142,94 +166,132 @@
             </t>
         </template>
 
-        <!-- Service Photo Detail Template -->
-        <template id="portal_service_photo_detail" name="Service Photo Detail">
+        <!-- Service Attachment Detail Template -->
+        <template id="portal_service_attachment_detail" name="Service Attachment Detail">
             <t t-call="portal.portal_layout">
-                <t t-set="title" t-value="photo.name"/>
+                <t t-set="title" t-value="attachment.name"/>
 
                 <div class="o_portal_service_photo_detail">
                     <!-- Breadcrumb -->
                     <nav aria-label="breadcrumb" class="mb-3">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="/my/home">Home</a></li>
-                            <li class="breadcrumb-item"><a href="/my/service-photos">Service Photos</a></li>
-                            <li class="breadcrumb-item active" t-esc="photo.name"/>
+                            <li class="breadcrumb-item"><a href="/my/service-attachments">Service Documentation</a></li>
+                            <li class="breadcrumb-item active" t-esc="attachment.name"/>
                         </ol>
                     </nav>
 
                     <div class="card">
                         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                             <h4 class="mb-0">
-                                <i class="fa fa-camera me-2"></i>
-                                <t t-esc="photo.name"/>
+                                <t t-if="attachment.mimetype and attachment.mimetype.startswith('image/')">
+                                    <i class="fa fa-camera me-2"></i>
+                                </t>
+                                <t t-elif="attachment.mimetype == 'application/pdf'">
+                                    <i class="fa fa-file-pdf-o me-2"></i>
+                                </t>
+                                <t t-else="">
+                                    <i class="fa fa-file me-2"></i>
+                                </t>
+                                <t t-esc="attachment.name"/>
                             </h4>
                             <div class="btn-group">
-                                <a t-attf-href="/my/service-photo/#{photo.id}/download" class="btn btn-light btn-sm">
+                                <a t-attf-href="/my/service-attachment/#{attachment.id}/download" class="btn btn-light btn-sm">
                                     <i class="fa fa-download me-1"></i> Download
                                 </a>
-                                <a href="/my/service-photos" class="btn btn-outline-light btn-sm ms-2">
-                                    <i class="fa fa-arrow-left me-1"></i> Back to Photos
+                                <a href="/my/service-attachments" class="btn btn-outline-light btn-sm ms-2">
+                                    <i class="fa fa-arrow-left me-1"></i> Back
                                 </a>
                             </div>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <!-- Photo Display -->
+                                <!-- File Display -->
                                 <div class="col-lg-8 mb-4">
-                                    <t t-if="photo.image">
-                                        <img t-att-src="'data:image/png;base64,' + photo.image.decode('utf-8')" 
-                                             class="img-fluid rounded shadow" 
+                                    <t t-if="attachment.mimetype and attachment.mimetype.startswith('image/')">
+                                        <img t-attf-src="/web/image/#{attachment.id}/datas"
+                                             class="img-fluid rounded shadow"
                                              style="max-height: 600px; width: 100%; object-fit: contain;"
-                                             t-att-alt="photo.name"/>
+                                             t-att-alt="attachment.name"/>
+                                    </t>
+                                    <t t-elif="attachment.mimetype == 'application/pdf'">
+                                        <div class="bg-light rounded p-5 text-center">
+                                            <i class="fa fa-file-pdf-o fa-5x text-danger mb-3"></i>
+                                            <h5 t-esc="attachment.name"/>
+                                            <p class="text-muted">PDF Document</p>
+                                            <a t-attf-href="/my/service-attachment/#{attachment.id}/download" class="btn btn-danger">
+                                                <i class="fa fa-download me-1"></i> Download PDF
+                                            </a>
+                                        </div>
                                     </t>
                                     <t t-else="">
                                         <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 400px;">
                                             <div class="text-center text-muted">
-                                                <i class="fa fa-image fa-5x mb-3"></i>
-                                                <p>Image not available</p>
+                                                <i class="fa fa-file fa-5x mb-3"></i>
+                                                <p>Preview not available</p>
+                                                <a t-attf-href="/my/service-attachment/#{attachment.id}/download" class="btn btn-primary">
+                                                    <i class="fa fa-download me-1"></i> Download File
+                                                </a>
                                             </div>
                                         </div>
                                     </t>
                                 </div>
-                                
-                                <!-- Photo Details -->
+
+                                <!-- File Details -->
                                 <div class="col-lg-4">
                                     <div class="card bg-light">
                                         <div class="card-header">
-                                            <h5 class="mb-0"><i class="fa fa-info-circle me-2"></i>Photo Details</h5>
+                                            <h5 class="mb-0"><i class="fa fa-info-circle me-2"></i>File Details</h5>
                                         </div>
                                         <div class="card-body">
                                             <dl class="row mb-0">
+                                                <dt class="col-5">File Name:</dt>
+                                                <dd class="col-7" t-esc="attachment.name"/>
+
                                                 <dt class="col-5">Type:</dt>
                                                 <dd class="col-7">
-                                                    <span t-if="photo.photo_purpose == 'service_before'" class="badge bg-info">Before Service</span>
-                                                    <span t-if="photo.photo_purpose == 'service_after'" class="badge bg-success">After Service</span>
-                                                    <span t-if="photo.photo_purpose == 'destruction_proof'" class="badge bg-danger">Destruction Proof</span>
-                                                    <span t-if="photo.photo_purpose == 'pickup_doc'" class="badge bg-warning text-dark">Pickup</span>
-                                                    <span t-if="photo.photo_purpose == 'compliance'" class="badge bg-primary">Compliance</span>
-                                                    <span t-if="photo.photo_purpose == 'equipment'" class="badge bg-secondary">Equipment</span>
-                                                    <span t-if="photo.photo_purpose == 'other'" class="badge bg-light text-dark">Other</span>
+                                                    <t t-if="attachment.mimetype and attachment.mimetype.startswith('image/')">
+                                                        <span class="badge bg-success">Image</span>
+                                                    </t>
+                                                    <t t-elif="attachment.mimetype == 'application/pdf'">
+                                                        <span class="badge bg-danger">PDF Document</span>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="badge bg-secondary" t-esc="attachment.mimetype or 'Unknown'"/>
+                                                    </t>
                                                 </dd>
-                                                
-                                                <dt class="col-5">Date:</dt>
+
+                                                <dt class="col-5">Uploaded:</dt>
                                                 <dd class="col-7">
-                                                    <t t-esc="photo.date" t-options="{'widget': 'datetime'}"/>
+                                                    <t t-esc="attachment.create_date" t-options="{'widget': 'datetime'}"/>
                                                 </dd>
-                                                
-                                                <t t-if="photo.location">
-                                                    <dt class="col-5">Location:</dt>
-                                                    <dd class="col-7" t-esc="photo.location"/>
-                                                </t>
-                                                
-                                                <t t-if="photo.description">
-                                                    <dt class="col-5">Notes:</dt>
-                                                    <dd class="col-7" t-esc="photo.description"/>
-                                                </t>
-                                                
-                                                <t t-if="photo.file_size">
+
+                                                <dt class="col-5">Source:</dt>
+                                                <dd class="col-7">
+                                                    <t t-if="attachment.res_model == 'work.order.shredding'">
+                                                        <span class="badge bg-danger">Shredding Work Order</span>
+                                                    </t>
+                                                    <t t-elif="attachment.res_model == 'destruction.certificate'">
+                                                        <span class="badge bg-warning text-dark">Destruction Certificate</span>
+                                                    </t>
+                                                    <t t-elif="attachment.res_model == 'project.task'">
+                                                        <span class="badge bg-info">Service Task</span>
+                                                    </t>
+                                                    <t t-elif="attachment.res_model == 'pickup.request'">
+                                                        <span class="badge bg-primary">Pickup Request</span>
+                                                    </t>
+                                                    <t t-elif="attachment.res_model == 'account.move'">
+                                                        <span class="badge bg-success">Invoice</span>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="badge bg-secondary">Service Job</span>
+                                                    </t>
+                                                </dd>
+
+                                                <t t-if="attachment.file_size">
                                                     <dt class="col-5">File Size:</dt>
                                                     <dd class="col-7">
-                                                        <t t-set="size_kb" t-value="photo.file_size / 1024"/>
+                                                        <t t-set="size_kb" t-value="attachment.file_size / 1024"/>
                                                         <t t-if="size_kb > 1024">
                                                             <t t-esc="'%.1f MB' % (size_kb / 1024)"/>
                                                         </t>
@@ -238,32 +300,28 @@
                                                         </t>
                                                     </dd>
                                                 </t>
-                                                
-                                                <t t-if="photo.resolution">
-                                                    <dt class="col-5">Resolution:</dt>
-                                                    <dd class="col-7" t-esc="photo.resolution"/>
-                                                </t>
                                             </dl>
                                         </div>
                                     </div>
 
-                                    <!-- Related Documents (if any) -->
-                                    <t t-if="photo.destruction_certificate_id or photo.shredding_work_order_id">
+                                    <!-- Related Record Info (if available) -->
+                                    <t t-if="related_record">
                                         <div class="card mt-3">
                                             <div class="card-header">
-                                                <h6 class="mb-0"><i class="fa fa-link me-2"></i>Related Documents</h6>
+                                                <h6 class="mb-0"><i class="fa fa-link me-2"></i>Related Service Job</h6>
                                             </div>
-                                            <ul class="list-group list-group-flush">
-                                                <t t-if="photo.destruction_certificate_id">
-                                                    <li class="list-group-item">
-                                                        <i class="fa fa-file-text text-danger me-2"></i>
-                                                        Destruction Certificate: 
-                                                        <a t-attf-href="/my/certificate/#{photo.destruction_certificate_id.id}">
-                                                            <t t-esc="photo.destruction_certificate_id.name"/>
-                                                        </a>
-                                                    </li>
+                                            <div class="card-body">
+                                                <p class="mb-0">
+                                                    <strong>Reference:</strong>
+                                                    <t t-esc="related_record.get('name', 'N/A')"/>
+                                                </p>
+                                                <t t-if="related_record.get('date')">
+                                                    <p class="mb-0 mt-1">
+                                                        <strong>Date:</strong>
+                                                        <t t-esc="related_record.get('date')"/>
+                                                    </p>
                                                 </t>
-                                            </ul>
+                                            </div>
                                         </div>
                                     </t>
                                 </div>

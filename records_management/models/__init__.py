@@ -143,6 +143,7 @@ from . import pickup_route_stop
 from . import pickup_schedule_wizard
 from . import portal_feedback
 from . import portal_feedback_action
+from . import service_attachment
 from . import portal_feedback_actions
 from . import portal_feedback_analytic
 from . import portal_feedback_escalation

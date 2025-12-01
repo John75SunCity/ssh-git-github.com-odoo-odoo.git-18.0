@@ -2,29 +2,30 @@
 <odoo>
     <data>
     <!-- ============================================================ -->
-    <!-- SERVICE JOB PHOTOS - Technician uploads, destruction proof  -->
+    <!-- SERVICE ATTACHMENTS - Photos &amp; docs from work orders       -->
+    <!-- Uses Odoo's native ir.attachment via "Attach File" button   -->
     <!-- NOT for customer inventory documents (handled elsewhere)     -->
     <!-- ============================================================ -->
     
-    <!-- Service Photos Root Menu (Under Operations) -->
+    <!-- Service Attachments Root Menu (Under Operations) -->
     <menuitem id="menu_photos_root"
-              name="Service Photos"
+              name="Service Attachments"
               parent="records_management.menu_records_operations"
               sequence="60"
               groups="records_management.group_records_user"/>
 
-    <!-- All Service Photos - Main Hub -->
+    <!-- All Service Attachments - Main Hub -->
     <menuitem id="photo_menu_all" 
-              name="📷 All Service Photos" 
+              name="📎 All Service Attachments" 
               parent="records_management.menu_photos_root" 
-              action="action_photo" 
+              action="action_service_attachment" 
               sequence="1"/>
 
     <!-- Today's Uploads - Quick access for supervisors -->
     <menuitem id="photo_menu_today" 
-              name="📅 Today's Job Photos" 
+              name="📅 Today's Uploads" 
               parent="records_management.menu_photos_root" 
-              action="action_photo_today" 
+              action="action_service_attachment_today" 
               sequence="5"/>
 
     <menuitem id="photo_menu_separator" 
@@ -32,24 +33,20 @@
               parent="records_management.menu_photos_root"
               sequence="9"/>
 
-    <!-- By Purpose Submenus -->
+    <!-- Photos Only (Images from work orders) -->
     <menuitem id="photo_menu_images" 
-              name="🖼️ Job Photos (Images)" 
+              name="📷 Service Photos" 
               parent="records_management.menu_photos_root" 
-              action="action_photo_images_only" 
+              action="action_service_attachment_photos" 
               sequence="10"/>
 
-    <menuitem id="photo_menu_documents" 
-              name="📄 Service Documents" 
+    <!-- Legacy photo model menu (hidden by default, kept for migration) -->
+    <menuitem id="photo_menu_legacy" 
+              name="📁 Legacy Photos (Deprecated)" 
               parent="records_management.menu_photos_root" 
-              action="action_photo_documents_only" 
-              sequence="20"/>
-
-    <menuitem id="photo_menu_certificates" 
-              name="📜 Destruction Certificates" 
-              parent="records_management.menu_photos_root" 
-              action="action_photo_certificates" 
-              sequence="30"/>
+              action="action_photo" 
+              sequence="99"
+              groups="base.group_no_one"/>
 
     
     </data>
