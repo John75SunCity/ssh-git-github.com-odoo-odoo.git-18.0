@@ -37,7 +37,10 @@
       <field name="dpi">96</field>
       <field name="disable_shrinking" eval="True"/>
     </record>
+  </data>
 
+  <!-- Force update of report actions to disable attachment caching -->
+  <data noupdate="0">
     <!-- Container Barcode Report Action -->
     <record id="report_container_barcode" model="ir.actions.report">
       <field name="name">Container Barcode</field>
@@ -50,9 +53,11 @@
       <field name="binding_type">report</field>
       <field name="paperformat_id" ref="paperformat_container_barcode_label"/>
       <field name="attachment_use" eval="False"/>
+      <field name="attachment" eval="False"/>
     </record>
+  </data>
 
-    <template id="report_container_barcode_view">
+  <data>
       <t t-call="web.html_container">
         <!-- CSS to force page breaks for label printing -->
         <style>
