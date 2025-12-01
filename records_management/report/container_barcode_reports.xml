@@ -19,6 +19,25 @@
       <field name="disable_shrinking" eval="True"/>
     </record>
 
+    <!-- QR Code Label Paper Format - 1" x 1.25" (49 per sheet) -->
+    <!-- Defined here (first loaded report file) so it's available for all reports -->
+    <record id="paperformat_qr_code_label" model="report.paperformat">
+      <field name="name">QR Code Label (1x1.25 inch)</field>
+      <field name="default" eval="False"/>
+      <field name="format">custom</field>
+      <field name="page_width">25</field>  <!-- 1 inch = 25.4mm, rounded -->
+      <field name="page_height">32</field>  <!-- 1.25 inches = 31.75mm, rounded -->
+      <field name="orientation">Portrait</field>
+      <field name="margin_top">1</field>
+      <field name="margin_bottom">1</field>
+      <field name="margin_left">1</field>
+      <field name="margin_right">1</field>
+      <field name="header_line" eval="False"/>
+      <field name="header_spacing">0</field>
+      <field name="dpi">96</field>
+      <field name="disable_shrinking" eval="True"/>
+    </record>
+
     <!-- Container Barcode Report Action -->
     <record id="report_container_barcode" model="ir.actions.report">
       <field name="name">Container Barcode</field>
