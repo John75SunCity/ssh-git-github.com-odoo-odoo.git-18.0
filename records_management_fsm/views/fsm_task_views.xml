@@ -61,7 +61,16 @@
         <field name="type">form</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="action_add_worksheet" type="object" string="Add Worksheet" class="btn-primary" icon="fa-clipboard"/>
+                </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_worksheets" type="object" class="oe_stat_button" icon="fa-list-alt">
+                            <field name="worksheet_complete" widget="boolean" invisible="1"/>
+                            <span class="o_stat_text">Worksheets</span>
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <h1>
                             <field name="name" placeholder="Task Name"/>
@@ -73,12 +82,55 @@
                             <field name="user_ids" widget="many2many_avatar_user"/>
                             <field name="priority"/>
                         </group>
-                        <!-- Scheduling fields removed to avoid referencing non-existent fields on project.task.
-                             Consider adding `date_deadline` or industry_fsm-specific fields in a follow-up if needed. -->
+                        <group string="Linked Work Orders">
+                            <field name="retrieval_work_order_id" readonly="1"/>
+                            <field name="destruction_work_order_id" readonly="1"/>
+                            <field name="shredding_work_order_id" readonly="1"/>
+                            <field name="pickup_request_id" readonly="1"/>
+                            <field name="access_work_order_id" readonly="1"/>
+                            <field name="retrieval_work_order_wo_id" readonly="1"/>
+                        </group>
                     </group>
                     <group>
                         <field name="stage_id"/>
                     </group>
+                    <notebook>
+                        <page string="Worksheets" name="worksheets">
+                            <field name="rm_worksheet_ids" mode="kanban">
+                                <kanban class="o_kanban_mobile">
+                                    <field name="name"/>
+                                    <field name="template_id"/>
+                                    <field name="completion_percentage"/>
+                                    <field name="is_complete"/>
+                                    <templates>
+                                        <t t-name="card">
+                                            <div class="oe_kanban_global_click">
+                                                <div class="o_kanban_record_top">
+                                                    <strong class="o_kanban_record_title"><field name="name"/></strong>
+                                                    <span t-att-class="record.is_complete.raw_value ? 'badge bg-success' : 'badge bg-warning'">
+                                                        <t t-if="record.is_complete.raw_value">✓ Complete</t>
+                                                        <t t-else=""><field name="completion_percentage"/>%</t>
+                                                    </span>
+                                                </div>
+                                                <div class="o_kanban_record_body">
+                                                    <field name="template_id"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page string="Containers" name="containers">
+                            <field name="container_ids"/>
+                        </page>
+                        <page string="Details" name="details">
+                            <field name="destruction_type"/>
+                            <field name="weight_processed"/>
+                            <field name="destruction_certificate_id"/>
+                            <field name="customer_rating"/>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

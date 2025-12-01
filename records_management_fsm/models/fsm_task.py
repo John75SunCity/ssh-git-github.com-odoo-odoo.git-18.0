@@ -131,6 +131,20 @@ class ProjectTaskFSMExtension(models.Model):
     # BUSINESS METHODS
     # ============================================================================
 
+    def action_add_worksheet(self):
+        """Open wizard to select and add a worksheet template"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Add Worksheet'),
+            'res_model': 'fsm.worksheet.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_task_id': self.id,
+            },
+        }
+
     def action_create_worksheet(self, template_id):
         """Create worksheet instance from template"""
         self.ensure_one()

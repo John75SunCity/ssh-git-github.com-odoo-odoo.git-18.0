@@ -1,6 +1,6 @@
 {
     "name": "Records Management FSM Integration",
-    "version": "18.0.1.0.4",
+    "version": "18.0.1.0.5",
     "category": "Records Management",
     "summary": "FSM integration for Records Management",
     "author": "John Cope",
@@ -22,6 +22,7 @@
         "views/fsm_task_service_line_views.xml",
         "views/fsm_task_views.xml",
         "views/fsm_worksheet_views.xml",
+        "views/fsm_worksheet_wizard_views.xml",
         "views/mobile_fsm_integration_views.xml",
         # Menus loaded last to ensure actions above are available
         "views/fleet_fsm_integration_menus.xml",

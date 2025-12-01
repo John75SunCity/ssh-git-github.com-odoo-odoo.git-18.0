@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- FSM Worksheet Wizard View -->
+        <record id="fsm_worksheet_wizard_view_form" model="ir.ui.view">
+            <field name="name">fsm.worksheet.wizard.view.form</field>
+            <field name="model">fsm.worksheet.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Add Worksheet">
+                    <group>
+                        <field name="task_id" readonly="1"/>
+                        <field name="template_id" options="{'no_create': True, 'no_edit': True}"/>
+                        <field name="service_type" readonly="1"/>
+                    </group>
+                    <footer>
+                        <button name="action_create_worksheet" type="object" string="Add Worksheet" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to open the wizard -->
+        <record id="action_fsm_worksheet_wizard" model="ir.actions.act_window">
+            <field name="name">Add Worksheet</field>
+            <field name="res_model">fsm.worksheet.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_task_id': active_id}</field>
+        </record>
+
+    </data>
+</odoo>
