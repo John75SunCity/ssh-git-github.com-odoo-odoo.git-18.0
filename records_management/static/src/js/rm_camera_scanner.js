@@ -100,7 +100,7 @@ class ScanbotLoader {
 
     static async load() {
         console.log('[Scanbot] Starting SDK load...');
-        
+
         if (this.sdkReady && window.ScanbotSDK) {
             console.log('[Scanbot] SDK already loaded');
             return true;
@@ -163,7 +163,7 @@ class ScanbotLoader {
  */
 async function launchScanbotScanner() {
     console.log('[Scanbot] launchScanbotScanner called');
-    
+
     try {
         // Ensure SDK is loaded
         await ScanbotLoader.load();
@@ -175,40 +175,40 @@ async function launchScanbotScanner() {
 
         console.log('[Scanbot] Initializing SDK with license and engine path...');
         console.log('[Scanbot] Engine path:', SCANBOT_ENGINE_PATH);
-        
+
         // Initialize SDK with engine path for CDN usage
         const sdk = await window.ScanbotSDK.initialize({
             licenseKey: SCANBOT_LICENSE_KEY,
             enginePath: SCANBOT_ENGINE_PATH,
         });
-        
+
         console.log('[Scanbot] SDK initialized successfully');
 
         // Create RTU UI configuration for single barcode scanning
         const config = new window.ScanbotSDK.UI.Config.BarcodeScannerScreenConfiguration();
-        
+
         // Appearance
         config.topBar.title.text = "Records Management Scanner";
         config.topBar.mode = "GRADIENT";
-        
+
         // Single barcode mode - returns after first scan
         config.useCase.singleScanningMode = true;
-        
+
         // AR overlay for visual feedback
         config.useCase.arOverlay.visible = true;
         config.useCase.arOverlay.automaticSelectionEnabled = true;
-        
+
         // Viewfinder styling
         config.viewFinder.visible = true;
         config.viewFinder.style.strokeColor = "#00FF88";
         config.viewFinder.style.strokeWidth = 3;
-        
+
         // Sound feedback
         config.sound.successBeepEnabled = true;
         config.vibration.enabled = true;
 
         console.log('[Scanbot] Launching scanner UI...');
-        
+
         // Launch scanner and wait for result
         const result = await window.ScanbotSDK.UI.createBarcodeScanner(config);
 
@@ -224,7 +224,7 @@ async function launchScanbotScanner() {
         }
 
         return { success: false, cancelled: true };
-        
+
     } catch (error) {
         console.error('[Scanbot] Error in launchScanbotScanner:', error);
         throw error;
@@ -233,7 +233,7 @@ async function launchScanbotScanner() {
 
 /**
  * Camera Scanner Client Action
- * 
+ *
  * This is a lightweight action that launches the Scanbot RTU scanner
  * and processes the result, then navigates back to where the user came from.
  */
@@ -271,7 +271,7 @@ export class RMCameraScannerAction extends Component {
 
             if (scanResult.success && scanResult.text) {
                 ScannerAudio.playSuccess();
-                
+
                 // Process the barcode
                 await this.processBarcode(scanResult.text);
             } else if (scanResult.cancelled) {
@@ -345,7 +345,7 @@ export class RMCameraScannerAction extends Component {
 
             ScannerAudio.playError();
             console.error("Process barcode error:", error);
-            
+
             this.notification.add(
                 _t("Error processing barcode: ") + (error.data?.message || error.message),
                 { type: "danger" }
