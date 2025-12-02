@@ -137,7 +137,7 @@ class WorkOrderRetrieval(models.Model):
     fsm_task_state = fields.Char(
         related='fsm_task_id.stage_id.name',
         string="FSM Task Status",
-        store=True,
+        store=False,
         readonly=True
     )
 

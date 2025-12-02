@@ -30,18 +30,19 @@
                                 <!-- Show image preview for images -->
                                 <t t-if="record.attachment_category.raw_value == 'image'">
                                     <img t-attf-src="/web/image/#{record.attachment_id.raw_value}?width=120&amp;height=120" 
-                                         style="width: 120px; height: 120px; object-fit: cover;"/>
+                                         style="width: 120px; height: 120px; object-fit: cover;"
+                                         alt="Attachment preview"/>
                                 </t>
                                 <!-- Show icon for PDFs -->
                                 <t t-elif="record.attachment_category.raw_value == 'pdf'">
-                                    <div class="d-flex align-items-center justify-content-center bg-danger text-white" style="width: 120px; height: 120px;">
-                                        <i class="fa fa-file-pdf-o fa-4x"></i>
+                                    <div class="d-flex align-items-center justify-content-center bg-danger text-white" style="width: 120px; height: 120px;" title="PDF Document">
+                                        <i class="fa fa-file-pdf-o fa-4x" role="img" aria-label="PDF Document"/>
                                     </div>
                                 </t>
                                 <!-- Show icon for other documents -->
                                 <t t-else="">
-                                    <div class="d-flex align-items-center justify-content-center bg-secondary text-white" style="width: 120px; height: 120px;">
-                                        <i class="fa fa-file-o fa-4x"></i>
+                                    <div class="d-flex align-items-center justify-content-center bg-secondary text-white" style="width: 120px; height: 120px;" title="Document">
+                                        <i class="fa fa-file-o fa-4x" role="img" aria-label="Document"/>
                                     </div>
                                 </t>
                             </aside>
@@ -50,12 +51,12 @@
                                 <div class="text-muted small">
                                     <field name="res_name"/>
                                 </div>
-                                <div class="text-muted small mt-1">
-                                    <i class="fa fa-user me-1"/><field name="partner_id"/>
+                                <div class="text-muted small mt-1" title="Customer">
+                                    <i class="fa fa-user me-1" role="img" aria-label="Customer"/><field name="partner_id"/>
                                 </div>
                                 <div class="d-flex justify-content-between mt-1">
-                                    <span class="text-muted small">
-                                        <i class="fa fa-calendar me-1"/><field name="create_date" widget="date"/>
+                                    <span class="text-muted small" title="Created Date">
+                                        <i class="fa fa-calendar me-1" role="img" aria-label="Created Date"/><field name="create_date" widget="date"/>
                                     </span>
                                 </div>
                                 <div class="mt-1 small">

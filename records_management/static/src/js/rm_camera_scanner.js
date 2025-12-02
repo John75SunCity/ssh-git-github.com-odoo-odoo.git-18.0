@@ -44,6 +44,7 @@ const SCANBOT_LICENSE_KEY =
 
 // Scanbot SDK 7.1 CDN URLs
 const SCANBOT_SDK_URL = "https://cdn.jsdelivr.net/npm/scanbot-web-sdk@7.1.1/bundle/ScanbotSDK.ui2.min.js";
+const SCANBOT_ENGINE_PATH = "https://cdn.jsdelivr.net/npm/scanbot-web-sdk@7.1.1/bundle/bin/complete/";
 
 /**
  * Audio feedback generator for barcode scanning events.
@@ -98,11 +99,15 @@ class ScanbotLoader {
     static loadPromise = null;
 
     static async load() {
+        console.log('[Scanbot] Starting SDK load...');
+        
         if (this.sdkReady && window.ScanbotSDK) {
+            console.log('[Scanbot] SDK already loaded');
             return true;
         }
 
         if (this.loading && this.loadPromise) {
+            console.log('[Scanbot] SDK loading in progress, waiting...');
             return this.loadPromise;
         }
 
@@ -114,26 +119,37 @@ class ScanbotLoader {
     static async _loadScript() {
         return new Promise((resolve, reject) => {
             if (window.ScanbotSDK) {
+                console.log('[Scanbot] SDK already available on window');
                 this.sdkReady = true;
                 this.loading = false;
                 resolve(true);
                 return;
             }
 
+            console.log('[Scanbot] Loading SDK from:', SCANBOT_SDK_URL);
             const script = document.createElement('script');
             script.src = SCANBOT_SDK_URL;
             script.async = true;
 
             script.onload = () => {
-                console.log('Scanbot SDK script loaded');
-                this.sdkReady = true;
-                this.loading = false;
-                resolve(true);
+                console.log('[Scanbot] SDK script loaded successfully');
+                // Give a brief moment for the SDK to initialize on window
+                setTimeout(() => {
+                    if (window.ScanbotSDK) {
+                        console.log('[Scanbot] ScanbotSDK available on window:', typeof window.ScanbotSDK);
+                        this.sdkReady = true;
+                    } else {
+                        console.warn('[Scanbot] Script loaded but ScanbotSDK not on window');
+                    }
+                    this.loading = false;
+                    resolve(true);
+                }, 100);
             };
 
-            script.onerror = () => {
+            script.onerror = (e) => {
+                console.error('[Scanbot] Failed to load SDK script:', e);
                 this.loading = false;
-                reject(new Error('Failed to load Scanbot SDK'));
+                reject(new Error('Failed to load Scanbot SDK from CDN'));
             };
 
             document.head.appendChild(script);
@@ -146,54 +162,73 @@ class ScanbotLoader {
  * This is a standalone function that can be called from anywhere
  */
 async function launchScanbotScanner() {
-    // Ensure SDK is loaded
-    await ScanbotLoader.load();
+    console.log('[Scanbot] launchScanbotScanner called');
+    
+    try {
+        // Ensure SDK is loaded
+        await ScanbotLoader.load();
 
-    if (!window.ScanbotSDK) {
-        throw new Error('Scanbot SDK not available');
+        if (!window.ScanbotSDK) {
+            console.error('[Scanbot] SDK not available after load');
+            throw new Error('Scanbot SDK not available - script may have failed to load');
+        }
+
+        console.log('[Scanbot] Initializing SDK with license and engine path...');
+        console.log('[Scanbot] Engine path:', SCANBOT_ENGINE_PATH);
+        
+        // Initialize SDK with engine path for CDN usage
+        const sdk = await window.ScanbotSDK.initialize({
+            licenseKey: SCANBOT_LICENSE_KEY,
+            enginePath: SCANBOT_ENGINE_PATH,
+        });
+        
+        console.log('[Scanbot] SDK initialized successfully');
+
+        // Create RTU UI configuration for single barcode scanning
+        const config = new window.ScanbotSDK.UI.Config.BarcodeScannerScreenConfiguration();
+        
+        // Appearance
+        config.topBar.title.text = "Records Management Scanner";
+        config.topBar.mode = "GRADIENT";
+        
+        // Single barcode mode - returns after first scan
+        config.useCase.singleScanningMode = true;
+        
+        // AR overlay for visual feedback
+        config.useCase.arOverlay.visible = true;
+        config.useCase.arOverlay.automaticSelectionEnabled = true;
+        
+        // Viewfinder styling
+        config.viewFinder.visible = true;
+        config.viewFinder.style.strokeColor = "#00FF88";
+        config.viewFinder.style.strokeWidth = 3;
+        
+        // Sound feedback
+        config.sound.successBeepEnabled = true;
+        config.vibration.enabled = true;
+
+        console.log('[Scanbot] Launching scanner UI...');
+        
+        // Launch scanner and wait for result
+        const result = await window.ScanbotSDK.UI.createBarcodeScanner(config);
+
+        console.log('[Scanbot] Scanner result:', result);
+
+        if (result && result.items && result.items.length > 0) {
+            const barcode = result.items[0];
+            return {
+                success: true,
+                text: barcode.barcode?.text || barcode.text,
+                format: barcode.barcode?.format || barcode.format,
+            };
+        }
+
+        return { success: false, cancelled: true };
+        
+    } catch (error) {
+        console.error('[Scanbot] Error in launchScanbotScanner:', error);
+        throw error;
     }
-
-    // Initialize SDK if needed
-    const sdk = await window.ScanbotSDK.initialize({
-        licenseKey: SCANBOT_LICENSE_KEY,
-    });
-
-    // Create RTU UI configuration for single barcode scanning
-    const config = new window.ScanbotSDK.UI.Config.BarcodeScannerScreenConfiguration();
-    
-    // Appearance
-    config.topBar.title.text = "Records Management Scanner";
-    config.topBar.mode = "GRADIENT";
-    
-    // Single barcode mode - returns after first scan
-    config.useCase.singleScanningMode = true;
-    
-    // AR overlay for visual feedback
-    config.useCase.arOverlay.visible = true;
-    config.useCase.arOverlay.automaticSelectionEnabled = true;
-    
-    // Viewfinder styling
-    config.viewFinder.visible = true;
-    config.viewFinder.style.strokeColor = "#00FF88";
-    config.viewFinder.style.strokeWidth = 3;
-    
-    // Sound feedback
-    config.sound.successBeepEnabled = true;
-    config.vibration.enabled = true;
-
-    // Launch scanner and wait for result
-    const result = await window.ScanbotSDK.UI.createBarcodeScanner(config);
-
-    if (result && result.items && result.items.length > 0) {
-        const barcode = result.items[0];
-        return {
-            success: true,
-            text: barcode.barcode?.text || barcode.text,
-            format: barcode.barcode?.format || barcode.format,
-        };
-    }
-
-    return { success: false, cancelled: true };
 }
 
 /**
