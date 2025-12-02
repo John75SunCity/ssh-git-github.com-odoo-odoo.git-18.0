@@ -86,7 +86,7 @@
                 <!-- SCRAP Command Button -->
                 <button name="action_barcode_scrap" 
                         type="object" 
-                        string="🗑️ Scrap Container"
+                        string="Scrap Container"
                         class="btn btn-warning"
                         invisible="state in ['destroyed', 'pending_destruction']"
                         icon="fa-trash"
@@ -96,7 +96,7 @@
                 <!-- RETURN Command Button -->
                 <button name="action_barcode_return" 
                         type="object" 
-                        string="↩️ Request Return"
+                        string="Request Return"
                         class="btn btn-info"
                         icon="fa-undo"
                         help="Barcode: O-CMD.RETURN - Create retrieval request (standard Odoo command)"

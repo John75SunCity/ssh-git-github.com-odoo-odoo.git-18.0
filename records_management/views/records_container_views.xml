@@ -230,6 +230,13 @@ Destroy Container</a>
         <field name="state" widget="statusbar" statusbar_visible="pending,in,out,perm_out,destroyed"/>
             </header>
             <sheet>
+                <!-- Color-coded state badge displayed prominently -->
+                <widget name="web_ribbon" title="Pending" bg_color="text-bg-info" invisible="state != 'pending'"/>
+                <widget name="web_ribbon" title="In Storage" bg_color="text-bg-success" invisible="state != 'in'"/>
+                <widget name="web_ribbon" title="Checked Out" bg_color="text-bg-warning" invisible="state != 'out'"/>
+                <widget name="web_ribbon" title="Permanent Out" bg_color="text-bg-secondary" invisible="state != 'perm_out'"/>
+                <widget name="web_ribbon" title="Destroyed" bg_color="text-bg-danger" invisible="state != 'destroyed'"/>
+                
                 <div class="oe_button_box" name="button_box">
 <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o" title="View Documents">
         <field name="document_count" string="Documents" widget="statinfo"/>
