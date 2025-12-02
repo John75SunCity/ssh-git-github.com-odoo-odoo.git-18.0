@@ -56,13 +56,14 @@
                         icon="fa-check-circle"
                         help="Mark destruction complete (Barcode: WH/SHRED/COMPLETE)"/>
                 
-                <!-- Add to Inventory -->
+                <!-- Add to Inventory - only for pending containers without quant -->
                 <button name="action_barcode_add_to_inventory" 
                         type="object" 
-                        string="Add Inventory"
-                        invisible="quant_id != False"
+                        string="Add to Inventory"
+                        class="btn-success"
+                        invisible="state != 'pending' or quant_id != False"
                         icon="fa-plus-square"
-                        help="Add container to inventory tracking (Barcode: INV/ADD/STOCK)"/>
+                        help="Add container to inventory tracking system"/>
                 
             </xpath>
             

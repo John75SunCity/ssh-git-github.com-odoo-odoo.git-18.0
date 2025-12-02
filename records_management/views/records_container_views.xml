@@ -215,7 +215,10 @@ Destroy Container</a>
                 <button name="action_store_container" type="object" string="Store Container" class="btn-primary" invisible="state not in ['pending', 'out']"/>
                 <button name="action_retrieve_container" type="object" string="Retrieve Container" class="btn-secondary" invisible="state != 'in'"/>
                 <button name="action_schedule_destruction" type="object" string="Schedule Destruction" class="btn-warning" invisible="not is_due_for_destruction"/>
-                <button name="action_destroy" type="object" string="Destroy Container" class="btn-danger" invisible="state == 'destroyed'"/>
+                <button name="action_destroy" type="object" string="Destroy Container" class="btn-danger" 
+                        invisible="state == 'destroyed'"
+                        groups="records_management.group_records_manager"
+                        help="Permanently destroy container - NAID certified destruction"/>
                 <button name="action_print_barcode_label" type="object" string="Print Barcode" class="btn-info"/>
                 <button name="action_generate_qr_code" type="object" string="Generate QR Code" class="btn-success"/>
                 <!-- File Management Buttons -->
