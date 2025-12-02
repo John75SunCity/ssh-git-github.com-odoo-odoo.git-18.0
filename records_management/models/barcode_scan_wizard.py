@@ -77,3 +77,17 @@ class BarcodeScanWizard(models.TransientModel):
                 'view_mode': 'form',
                 'target': 'new',
             }
+
+    def action_open_camera_scanner(self):
+        """Launch camera scanner client action."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'rm_camera_scanner',
+            'name': _('Camera Barcode Scanner'),
+            'context': {
+                'operation_mode': 'work_order',
+                'work_order_model': self.work_order_model,
+                'work_order_id': self.work_order_id,
+            },
+        }

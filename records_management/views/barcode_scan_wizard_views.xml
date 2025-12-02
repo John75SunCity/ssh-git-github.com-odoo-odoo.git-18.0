@@ -28,6 +28,7 @@
                     
                     <footer>
                         <button name="action_scan" string="Scan" type="object" class="btn-primary"/>
+                        <button name="action_open_camera_scanner" string="📷 Camera" type="object" class="btn-secondary" title="Open camera scanner for mobile devices"/>
                         <button string="Close" class="btn-secondary" special="cancel"/>
                     </footer>
                     

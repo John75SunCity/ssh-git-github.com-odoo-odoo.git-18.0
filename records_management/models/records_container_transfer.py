@@ -102,6 +102,67 @@ class RecordsContainerTransfer(models.Model):
         self.write({'state': 'draft'})
         self.message_post(body=_("Transfer has been reset to draft."))
 
+    def action_open_scanner(self):
+        """Open barcode scanner for scanning containers during transfer."""
+        self.ensure_one()
+        return {
+            'name': _('Scan Containers'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'barcode.scan.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_work_order_model': self._name,
+                'default_work_order_id': self.id,
+            }
+        }
+
+    def action_scan_barcode(self, barcode):
+        """Process scanned barcode - add container to transfer."""
+        self.ensure_one()
+        
+        # Find container by barcode
+        container = self.env['records.container'].search([
+            ('barcode', '=', barcode)
+        ], limit=1)
+        
+        if not container:
+            return {
+                'success': False,
+                'message': _('No container found with barcode: %s') % barcode
+            }
+        
+        # Check if container is in the source location
+        if container.location_id != self.from_location_id:
+            return {
+                'success': False,
+                'warning': True,
+                'message': _('Container %s is not in the source location (%s). Current location: %s') % (
+                    container.name, self.from_location_id.name, container.location_id.name
+                )
+            }
+        
+        # Check if already in transfer
+        existing_line = self.transfer_line_ids.filtered(lambda l: l.container_id == container)
+        if existing_line:
+            return {
+                'success': False,
+                'warning': True,
+                'message': _('Container %s is already in this transfer.') % container.name
+            }
+        
+        # Add container to transfer
+        self.env['records.container.transfer.line'].create({
+            'transfer_id': self.id,
+            'container_id': container.id,
+        })
+        
+        return {
+            'success': True,
+            'message': _('Container %s added to transfer.') % container.name,
+            'total_scanned': len(self.transfer_line_ids),
+        }
+
     # ============================================================================
     # CONSTRAINTS
     # ============================================================================

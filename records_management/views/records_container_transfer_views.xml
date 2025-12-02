@@ -15,6 +15,22 @@
             <field name="model">records.container.transfer</field>
             <field name="arch" type="xml">
                 <form string="Records Container Transfer">
+                    <header>
+                        <button name="action_confirm" string="Confirm" type="object" 
+                                class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_start_transfer" string="Start Transfer" type="object" 
+                                class="btn-primary" invisible="state != 'ready'"/>
+                        <button name="action_open_scanner" string="📷 Scan Containers" type="object" 
+                                class="btn-secondary" invisible="state not in ['draft', 'ready', 'in_progress']"
+                                icon="fa-barcode"/>
+                        <button name="action_complete_transfer" string="Complete" type="object" 
+                                class="btn-success" invisible="state != 'in_progress'"/>
+                        <button name="action_cancel" string="Cancel" type="object" 
+                                invisible="state in ['done', 'cancelled']"/>
+                        <button name="action_reset_to_draft" string="Reset to Draft" type="object" 
+                                invisible="state not in ['cancelled']"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,ready,in_progress,done"/>
+                    </header>
                     <sheet>
                         <div class="oe_title">
                             <label for="name" />
@@ -22,7 +38,34 @@
                                 <field name="name" placeholder="Name..." />
                             </h1>
                         </div>
+                        <group>
+                            <group string="Transfer Details">
+                                <field name="from_location_id"/>
+                                <field name="to_location_id"/>
+                                <field name="scheduled_date"/>
+                                <field name="actual_transfer_date" invisible="state != 'done'"/>
+                            </group>
+                            <group string="Assignment">
+                                <field name="user_id"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="container_count"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Containers" name="containers">
+                                <field name="transfer_line_ids">
+                                    <list editable="bottom">
+                                        <field name="container_id"/>
+                                        <field name="container_barcode" optional="show"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Notes" name="notes">
+                                <field name="notes" placeholder="Add transfer notes..."/>
+                            </page>
+                        </notebook>
                     </sheet>
+                    <chatter/>
                 </form>
             </field>
         </record>

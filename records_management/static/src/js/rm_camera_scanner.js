@@ -126,16 +126,16 @@ class ScanbotLoader {
             }
 
             console.log('[Scanbot] Importing SDK module from:', SCANBOT_SDK_URL);
-            
+
             // Use dynamic import for ES module
             await import(/* @vite-ignore */ SCANBOT_SDK_URL);
-            
+
             // The ui2 module sets ScanbotSDK on window
             console.log('[Scanbot] Module imported, checking window.ScanbotSDK...');
-            
+
             // Wait a moment for the module to fully initialize
             await new Promise(resolve => setTimeout(resolve, 200));
-            
+
             if (window.ScanbotSDK) {
                 console.log('[Scanbot] ScanbotSDK available on window:', typeof window.ScanbotSDK);
                 this.sdkReady = true;
@@ -246,6 +246,7 @@ export class RMCameraScannerAction extends Component {
         const context = this.props.action?.context || {};
         this.operationMode = context.operation_mode || "lookup";
         this.workOrderId = context.work_order_id || null;
+        this.workOrderModel = context.work_order_model || null;
 
         onMounted(() => {
             // Auto-launch scanner after a brief delay
@@ -295,23 +296,45 @@ export class RMCameraScannerAction extends Component {
         if (!barcode || this.isDestroyed) return;
 
         try {
-            // Call the backend - pass work_order_id as part of positional args
-            const result = await this.orm.call(
-                "barcode.operations.wizard",
-                "process_camera_scan",
-                [barcode, this.operationMode, this.workOrderId || false]
-            );
+            let result;
+            
+            // If we have a work order model and ID, call its action_scan_barcode method directly
+            if (this.operationMode === 'work_order' && this.workOrderModel && this.workOrderId) {
+                result = await this.orm.call(
+                    this.workOrderModel,
+                    "action_scan_barcode",
+                    [this.workOrderId, barcode]
+                );
+            } else {
+                // Fall back to barcode.operations.wizard for lookup mode
+                result = await this.orm.call(
+                    "barcode.operations.wizard",
+                    "process_camera_scan",
+                    [barcode, this.operationMode, this.workOrderId || false]
+                );
+            }
 
             if (this.isDestroyed) return;
 
             if (result.success) {
                 this.notification.add(
-                    result.message || _t("Container found!"),
+                    result.message || _t("Scanned successfully!"),
                     { type: "success" }
                 );
 
-                // Navigate to the container if found
-                if (result.container_id) {
+                // For work order mode, show success and allow more scanning
+                if (this.operationMode === 'work_order') {
+                    // Ask if user wants to scan more
+                    ScannerAudio.playSuccess();
+                    
+                    // Launch scanner again for continuous scanning
+                    setTimeout(() => {
+                        if (!this.isDestroyed) {
+                            this.launchScanner();
+                        }
+                    }, 1000);
+                } else if (result.container_id) {
+                    // Navigate to the container if found (lookup mode)
                     await this.action.doAction({
                         type: "ir.actions.act_window",
                         res_model: "records.container",
@@ -326,15 +349,25 @@ export class RMCameraScannerAction extends Component {
             } else {
                 ScannerAudio.playError();
                 this.notification.add(
-                    result.error || _t("Barcode not found"),
-                    { type: "warning" }
+                    result.message || result.error || _t("Barcode not found"),
+                    { type: result.warning ? "warning" : "danger" }
                 );
-                // Close after showing error
-                setTimeout(() => {
-                    if (!this.isDestroyed) {
-                        this.action.doAction({ type: 'ir.actions.act_window_close' });
-                    }
-                }, 2000);
+                
+                // For work order mode, allow retry
+                if (this.operationMode === 'work_order') {
+                    setTimeout(() => {
+                        if (!this.isDestroyed) {
+                            this.launchScanner();
+                        }
+                    }, 2000);
+                } else {
+                    // Close after showing error
+                    setTimeout(() => {
+                        if (!this.isDestroyed) {
+                            this.action.doAction({ type: 'ir.actions.act_window_close' });
+                        }
+                    }, 2000);
+                }
             }
         } catch (error) {
             if (this.isDestroyed) return;
@@ -346,6 +379,15 @@ export class RMCameraScannerAction extends Component {
                 _t("Error processing barcode: ") + (error.data?.message || error.message),
                 { type: "danger" }
             );
+            
+            // For work order mode, allow retry on error
+            if (this.operationMode === 'work_order') {
+                setTimeout(() => {
+                    if (!this.isDestroyed) {
+                        this.launchScanner();
+                    }
+                }, 2000);
+            }
         }
     }
 }
