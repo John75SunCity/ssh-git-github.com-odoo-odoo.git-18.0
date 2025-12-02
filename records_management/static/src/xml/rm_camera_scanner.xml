@@ -2,249 +2,27 @@
 <!--
     Records Management Camera Barcode Scanner Templates
     
-    OWL templates for the mobile camera barcode scanning interface.
-    Uses Scanbot SDK embedded scanner (not fullscreen).
+    OWL templates for the camera scanner client action.
+    The actual scanner UI is provided by Scanbot SDK RTU.
     
     @author Records Management System
-    @version 18.0.1.2.0
+    @version 18.0.1.3.0
     @license LGPL-3
 -->
 <templates xml:space="preserve">
 
-    <!-- Main Camera Scanner Dialog -->
-    <t t-name="records_management.CameraScannerDialog">
-        <Dialog title="'📷 Camera Barcode Scanner'" size="'xl'" contentClass="'rm-scanner-dialog'">
-            <div class="rm-camera-scanner">
-                
-                <!-- Header Controls -->
-                <div class="scanner-controls mb-3">
-                    <div class="row align-items-center">
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold">Operation Mode:</label>
-                            <select class="form-select" 
-                                    t-on-change="onModeChange" 
-                                    t-att-value="state.operationMode">
-                                <t t-foreach="operationModes" t-as="mode" t-key="mode.value">
-                                    <option t-att-value="mode.value" 
-                                            t-att-selected="state.operationMode === mode.value">
-                                        <t t-esc="mode.label"/>
-                                    </option>
-                                </t>
-                            </select>
-                        </div>
-                        <div class="col-md-4 text-center">
-                            <!-- Scan Mode Toggle -->
-                            <label class="form-label fw-bold d-block">Scan Mode:</label>
-                            <button class="btn btn-sm" 
-                                    t-att-class="state.scanMode === 'single' ? 'btn-outline-primary' : 'btn-primary'"
-                                    t-on-click="toggleScanMode">
-                                <i class="fa me-1" t-att-class="state.scanMode === 'single' ? 'fa-stop-circle' : 'fa-repeat'"/>
-                                <t t-if="state.scanMode === 'single'">Single Scan</t>
-                                <t t-else="">Continuous</t>
-                            </button>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <span class="badge bg-info me-2">
-                                <i class="fa fa-barcode me-1"/>
-                                Scans: <t t-esc="state.scanCount"/>
-                            </span>
-                            <span t-if="state.processing" class="badge bg-warning">
-                                <i class="fa fa-spinner fa-spin me-1"/>
-                                Processing...
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Camera Permission Error -->
-                <div t-if="state.permissionDenied" class="alert alert-warning">
-                    <i class="fa fa-exclamation-triangle me-2"/>
-                    <strong>Camera Access Required</strong>
-                    <p class="mb-2">Please allow camera access to scan barcodes.</p>
-                    <button class="btn btn-primary" t-on-click="startCamera">
-                        <i class="fa fa-refresh me-1"/> Try Again
-                    </button>
-                </div>
-
-                <!-- No Camera Available -->
-                <div t-if="!state.hasCamera" class="alert alert-info">
-                    <i class="fa fa-camera-retro me-2"/>
-                    <strong>Camera Not Available</strong>
-                    <p class="mb-0">Use the manual entry field below to enter barcodes.</p>
-                </div>
-
-                <!-- Error Message -->
-                <div t-if="state.errorMessage and !state.permissionDenied and state.hasCamera" 
-                     class="alert alert-danger">
-                    <i class="fa fa-exclamation-circle me-2"/>
-                    <t t-esc="state.errorMessage"/>
-                </div>
-
-                <!-- Camera Preview Area -->
-                <div t-if="state.hasCamera and !state.permissionDenied" class="camera-preview-container mb-3">
-                    <div class="camera-preview position-relative" 
-                         t-att-class="{'camera-active': state.cameraActive}">
-                        
-                        <!-- Scanbot Scanner Container - SDK renders video here -->
-                        <div t-ref="scannerContainer" 
-                             id="scanbot-scanner-container"
-                             class="scanner-container w-100"
-                             style="min-height: 300px; background: #1a1a1a; border-radius: 8px;">
-                            
-                            <!-- Scanning status overlay -->
-                            <div t-if="state.cameraActive and !state.scanning" 
-                                 class="scan-paused-overlay position-absolute w-100 h-100 d-flex align-items-center justify-content-center"
-                                 style="background: rgba(0,0,0,0.5); z-index: 10;">
-                                <div class="text-center text-white">
-                                    <i class="fa fa-pause-circle fa-3x mb-2"/>
-                                    <p class="mb-2">Scanning Paused</p>
-                                    <button class="btn btn-success" t-on-click="resumeScanning">
-                                        <i class="fa fa-play me-1"/> Resume Scanning
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Start Camera Prompt (shown when camera not active) -->
-                        <div t-if="!state.cameraActive" 
-                             class="camera-prompt text-center py-5 position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center"
-                             style="top: 0; left: 0;">
-                            <div t-if="state.sdkLoading" class="text-muted">
-                                <i class="fa fa-spinner fa-spin fa-3x mb-3"/>
-                                <p>Loading scanner engine...</p>
-                            </div>
-                            <div t-elif="state.sdkReady">
-                                <i class="fa fa-camera fa-4x text-muted mb-3 d-block"/>
-                                <button class="btn btn-lg btn-success" t-on-click="startCamera">
-                                    <i class="fa fa-video-camera me-2"/>
-                                    Start Camera
-                                </button>
-                                <p class="text-muted mt-2 small">
-                                    Point your camera at a barcode to scan
-                                </p>
-                            </div>
-                            <div t-else="" class="text-danger">
-                                <i class="fa fa-exclamation-triangle fa-3x mb-3"/>
-                                <p>Scanner unavailable. Use manual entry below.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Camera Control Buttons -->
-                    <div t-if="state.cameraActive" class="camera-buttons mt-2 text-center">
-                        <button class="btn btn-secondary me-2" t-on-click="toggleCamera">
-                            <i class="fa fa-refresh me-1"/>
-                            Switch Camera
-                        </button>
-                        <button class="btn btn-danger" t-on-click="stopCamera">
-                            <i class="fa fa-stop me-1"/>
-                            Stop Camera
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Manual Entry Section -->
-                <div class="manual-entry-section border rounded p-3 mb-3">
-                    <label class="form-label fw-bold">
-                        <i class="fa fa-keyboard-o me-1"/>
-                        Manual Barcode Entry:
-                    </label>
-                    <div class="input-group">
-                        <input type="text" 
-                               class="form-control form-control-lg" 
-                               placeholder="Type or paste barcode here..."
-                               t-att-value="state.manualBarcode"
-                               t-on-input="onManualInput"
-                               t-on-keydown="onManualKeydown"/>
-                        <button class="btn btn-primary btn-lg" 
-                                type="button" 
-                                t-on-click="onManualSubmit">
-                            <i class="fa fa-search me-1"/>
-                            Lookup
-                        </button>
-                    </div>
-                    <small class="text-muted">
-                        Press Enter to submit, or use a USB barcode scanner
-                    </small>
-                </div>
-
-                <!-- Last Scan Result -->
-                <div t-if="state.lastScannedResult" class="scan-result border rounded p-3">
-                    <h6 class="border-bottom pb-2 mb-3">
-                        <i class="fa fa-check-circle text-success me-1" t-if="state.lastScannedResult.success"/>
-                        <i class="fa fa-times-circle text-danger me-1" t-if="state.lastScannedResult.error"/>
-                        Last Scan Result
-                    </h6>
-                    
-                    <!-- Success Result -->
-                    <div t-if="state.lastScannedResult.success" class="result-success">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <p class="mb-1">
-                                    <strong>Barcode:</strong> 
-                                    <code t-esc="state.lastScannedBarcode"/>
-                                </p>
-                                <p class="mb-1" t-if="state.lastScannedResult.container_name">
-                                    <strong>Container:</strong> 
-                                    <t t-esc="state.lastScannedResult.container_name"/>
-                                </p>
-                                <p class="mb-1" t-if="state.lastScannedResult.customer">
-                                    <strong>Customer:</strong> 
-                                    <t t-esc="state.lastScannedResult.customer"/>
-                                </p>
-                                <p class="mb-1" t-if="state.lastScannedResult.location">
-                                    <strong>Location:</strong> 
-                                    <t t-esc="state.lastScannedResult.location"/>
-                                </p>
-                                <p class="mb-1" t-if="state.lastScannedResult.state">
-                                    <strong>Status:</strong> 
-                                    <span class="badge" t-att-class="{
-                                        'bg-success': state.lastScannedResult.state === 'in_storage',
-                                        'bg-warning': state.lastScannedResult.state === 'pending' || state.lastScannedResult.state === 'out',
-                                        'bg-danger': state.lastScannedResult.state === 'destroyed',
-                                        'bg-info': state.lastScannedResult.state !== 'in_storage' &amp;&amp; state.lastScannedResult.state !== 'pending' &amp;&amp; state.lastScannedResult.state !== 'out' &amp;&amp; state.lastScannedResult.state !== 'destroyed'
-                                    }">
-                                        <t t-esc="state.lastScannedResult.state"/>
-                                    </span>
-                                </p>
-                            </div>
-                            <div class="col-md-4 text-end" t-if="state.lastScannedResult.container_id">
-                                <button class="btn btn-info" t-on-click="viewContainer">
-                                    <i class="fa fa-external-link me-1"/>
-                                    View Container
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Error Result -->
-                    <div t-if="state.lastScannedResult.error" class="result-error">
-                        <p class="mb-1">
-                            <strong>Barcode:</strong> 
-                            <code t-esc="state.lastScannedBarcode"/>
-                        </p>
-                        <p class="text-danger mb-0">
-                            <i class="fa fa-exclamation-triangle me-1"/>
-                            <t t-esc="state.lastScannedResult.error"/>
-                        </p>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Dialog Footer -->
-            <t t-set-slot="footer">
-                <button class="btn btn-secondary" t-on-click="close">
-                    <i class="fa fa-times me-1"/>
-                    Close
-                </button>
-            </t>
-        </Dialog>
-    </t>
-
-    <!-- Client Action Wrapper (invisible - just launches dialog) -->
+    <!-- Client Action Template - Shows loading state while scanner launches -->
     <t t-name="records_management.CameraScannerAction">
-        <div class="rm-scanner-action"/>
+        <div class="rm-scanner-action d-flex align-items-center justify-content-center" 
+             style="min-height: 300px; background: #f8f9fa;">
+            <div class="text-center">
+                <i class="fa fa-camera fa-4x text-primary mb-3 d-block"/>
+                <p class="text-muted">
+                    <i class="fa fa-spinner fa-spin me-2"/>
+                    Launching camera scanner...
+                </p>
+            </div>
+        </div>
     </t>
 
 </templates>
