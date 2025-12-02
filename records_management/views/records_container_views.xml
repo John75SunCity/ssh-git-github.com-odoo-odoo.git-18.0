@@ -206,11 +206,6 @@ Destroy Container</a>
         <form>
             <header>
                 <!-- Container state values: pending, in, out, perm_out, destroyed -->
-                <button name="action_index_container" type="object" string="Container Indexing Service"
-                        class="btn-primary"
-                        invisible="state != 'pending'"
-                        help="Create complete manifest of ALL files in container with barcodes for premium tracking"/>
-
                 <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'pending'"/>
                 <button name="action_store_container" type="object" string="Store Container" class="btn-primary" invisible="state not in ['pending', 'out']"/>
                 <button name="action_retrieve_container" type="object" string="Retrieve Container" class="btn-secondary" invisible="state != 'in'"/>
@@ -221,10 +216,14 @@ Destroy Container</a>
                         help="Permanently destroy container - NAID certified destruction"/>
                 <button name="action_print_barcode_label" type="object" string="Print Barcode" class="btn-info"/>
                 <button name="action_generate_qr_code" type="object" string="Generate QR Code" class="btn-success"/>
-                <!-- File Management Buttons -->
-                <button name="action_add_files" type="object" string="Add Files" class="btn-success" 
+                <!-- File Management Buttons - grouped together -->
+                <button name="action_add_files" type="object" string="+ Add File" class="btn-success" 
                         invisible="state in ['destroyed', 'perm_out']"
-                        help="Add file folders to this container (for newly discovered files or retrieval returns)"/>
+                        help="Add a single file folder to this container"/>
+                <button name="action_index_container" type="object" string="Bulk File Add"
+                        class="btn-success"
+                        invisible="state in ['destroyed', 'perm_out']"
+                        help="Add multiple file folders at once - creates billable indexing charges per file"/>
                 <button name="action_remove_files" type="object" string="Check Out Files" class="btn-warning"
                         invisible="state in ['destroyed', 'perm_out'] or file_count == 0"
                         help="Create retrieval order to check out file folders for customer delivery"/>

@@ -22,7 +22,12 @@ class PortalInteractiveController(CustomerPortal):
     @http.route(['/my/document-retrieval/calculate-price'], type='json', auth="user", website=True)
     def calculate_retrieval_price(self, container_ids=None, **kw):
         """
-        Calculate price for document retrieval request
+        Calculate price for document retrieval request using customer rates.
+        
+        Rate lookup order:
+        1. Customer negotiated rate (if active)
+        2. Base rate (company default)
+        3. Fallback defaults
         
         :param container_ids: List of container IDs to retrieve
         :return: Dictionary with pricing breakdown
@@ -33,10 +38,14 @@ class PortalInteractiveController(CustomerPortal):
         try:
             Container = request.env['records.container']
             containers = Container.browse(container_ids)
+            partner = request.env.user.partner_id
             
-            # Pricing logic - customize based on your business rules
-            base_price = 25.00  # Base retrieval fee
-            per_container = 5.00  # Per container fee
+            # Get rates from customer negotiated rates or base rates
+            rates = self._get_customer_rates(partner)
+            
+            base_price = rates.get('document_retrieval_rate', 25.00)
+            per_container = rates.get('per_container_fee', 5.00)
+            delivery_rate = rates.get('delivery_rate', 50.00)
             
             # Calculate volume/weight based pricing if needed
             total_volume = sum(c.volume or 0 for c in containers)
@@ -46,7 +55,7 @@ class PortalInteractiveController(CustomerPortal):
             
             # Same-day delivery surcharge
             same_day = kw.get('same_day_delivery', False)
-            delivery_surcharge = 50.00 if same_day else 0.0
+            delivery_surcharge = delivery_rate if same_day else 0.0
             
             subtotal = base_price + (len(containers) * per_container) + volume_surcharge
             total = subtotal + delivery_surcharge
@@ -72,6 +81,63 @@ class PortalInteractiveController(CustomerPortal):
                 'error': str(e),
                 'total_price': 0.0
             }
+    
+    def _get_customer_rates(self, partner):
+        """
+        Get pricing rates for a customer.
+        
+        Lookup order:
+        1. Customer negotiated rate (active)
+        2. Base rate (company default)
+        3. Hardcoded fallbacks
+        """
+        rates = {}
+        
+        # Try customer negotiated rate first
+        negotiated = request.env['customer.negotiated.rate'].sudo().search([
+            ('partner_id', '=', partner.id),
+            ('state', '=', 'active'),
+        ], limit=1)
+        
+        if negotiated:
+            rates = {
+                'document_retrieval_rate': negotiated.per_service_rate or 0,
+                'delivery_rate': negotiated.per_service_rate or 0,  # Could add specific field
+                'indexing_rate': negotiated.per_document_rate or 0,
+                'per_container_fee': 5.00,  # Could add to negotiated rates model
+            }
+            # Return if we have a retrieval rate
+            if rates.get('document_retrieval_rate'):
+                return rates
+        
+        # Fall back to base rates
+        base_rate = request.env['base.rate'].sudo().search([
+            ('company_id', '=', request.env.company.id),
+            ('state', '=', 'active'),
+        ], limit=1)
+        
+        if base_rate:
+            rates = {
+                'document_retrieval_rate': base_rate.document_retrieval_rate or 25.00,
+                'delivery_rate': base_rate.delivery_rate or 50.00,
+                'indexing_rate': base_rate.indexing_rate or 1.50,
+                'per_container_fee': 5.00,  # Could add to base rates model
+                'pickup_rate': base_rate.pickup_rate or 0,
+                'destruction_rate': base_rate.destruction_rate or 0,
+                'scanning_rate': base_rate.scanning_rate or 0,
+            }
+            return rates
+        
+        # Ultimate fallback - hardcoded defaults
+        return {
+            'document_retrieval_rate': 25.00,
+            'delivery_rate': 50.00,
+            'indexing_rate': 1.50,
+            'per_container_fee': 5.00,
+            'pickup_rate': 125.00,
+            'destruction_rate': 12.50,
+            'scanning_rate': 0.65,
+        }
 
     @http.route(['/my/barcode/process/<string:scan_type>'], type='json', auth="user", website=True)
     def process_barcode(self, scan_type='container', barcode=None, **kw):

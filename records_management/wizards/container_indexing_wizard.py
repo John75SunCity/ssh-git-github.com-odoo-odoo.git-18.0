@@ -167,32 +167,28 @@ class ContainerIndexingWizard(models.TransientModel):
     
     def action_index_container(self):
         """
-        Execute the container indexing workflow:
-        1. Validate and assign barcode to container
+        Execute the bulk file add workflow:
+        1. Validate container can accept files
         2. Create files with details from grid
-        3. Index container (create stock tracking)
-        4. Set container status to active
+        3. Create billing charges for indexed files
+        4. Update container if needed
         """
         self.ensure_one()
         
         container = self.container_id
         
-        # Step 1: Validate container state
-        if container.state != 'draft':
+        # Step 1: Validate container state - can't add files to destroyed/perm_out containers
+        if container.state in ['destroyed', 'perm_out']:
             raise UserError(_(
-                "Container %s is already indexed (status: %s). "
-                "Only draft containers can be indexed."
+                "Container %s is %s and cannot accept new files."
             ) % (container.name, container.state))
         
-        # Step 2: Assign barcode if provided
+        # Step 2: Assign barcode if provided and container doesn't have one
         if self.barcode and self.barcode != container.barcode:
             container.barcode = self.barcode
         
-        if not container.barcode:
-            raise UserError(_(
-                "Physical barcode is required to index container. "
-                "Please scan or enter the barcode from your pre-printed sheet."
-            ))
+        # Barcode is optional for bulk file add (unlike original indexing)
+        # Files can still be added with temp barcodes
         
         # Step 3: Create files from wizard grid
         created_files = self._create_files_from_grid()
@@ -259,21 +255,122 @@ class ContainerIndexingWizard(models.TransientModel):
     
 
     def _complete_container_indexing(self, container, created_files):
-        """Complete the container indexing process"""
+        """Complete the container indexing process and create billing charges"""
         # Create stock quant if not exists
         if not container.quant_id:
             container._create_stock_quant()
 
-        # Update container state
-        container.write({
-            'state': 'active',
-        })
+        # Update container state to 'in' (In Storage) if pending
+        if container.state == 'pending':
+            container.write({
+                'state': 'in',
+            })
+
+        # Create billing charges for indexed files (per unique temp barcode)
+        if created_files:
+            self._create_indexing_billing_charges(container, created_files)
 
         # Post message
         files_msg = ""
         if created_files:
-            files_msg = _(" and %d files created") % len(created_files)
+            files_msg = _(" and %d files indexed (billable)") % len(created_files)
         
         container.message_post(
             body=_("Container indexed with barcode %s%s") % (container.barcode, files_msg)
         )
+
+    def _create_indexing_billing_charges(self, container, created_files):
+        """
+        Create billing charges for file indexing service.
+        
+        Creates one billing line per file with a temp barcode (unique indexed file).
+        This allows customers to be charged per file indexed during the billing period.
+        
+        Example invoice line: "Indexed File Folders  Qty: 156  Rate: $1.50  Total: $234.00"
+        """
+        if not created_files or not container.partner_id:
+            return
+        
+        # Get or create the current billing period for the customer
+        billing = self._get_or_create_billing_period(container.partner_id)
+        if not billing:
+            return
+        
+        # Get indexing rate from customer's negotiated rates or default
+        indexing_rate = self._get_indexing_rate(container.partner_id)
+        
+        # Create a single billing line for all indexed files in this batch
+        # The quantity is the number of files with unique temp barcodes
+        files_with_barcodes = [f for f in created_files if f.temp_barcode or f.barcode]
+        
+        if files_with_barcodes:
+            self.env['advanced.billing.line'].sudo().create({
+                'billing_id': billing.id,
+                'name': _('Indexed File Folders - Container %s') % container.name,
+                'type': 'service',
+                'quantity': len(files_with_barcodes),
+                'amount': len(files_with_barcodes) * indexing_rate,
+                'product_id': self._get_indexing_product().id if self._get_indexing_product() else False,
+                'notes': _('Files indexed on %s: %s') % (
+                    fields.Date.today(),
+                    ', '.join([f.name for f in files_with_barcodes[:10]]) + 
+                    ('...' if len(files_with_barcodes) > 10 else '')
+                ),
+            })
+
+    def _get_or_create_billing_period(self, partner):
+        """Get current open billing period or create one for the customer"""
+        today = fields.Date.today()
+        
+        # Find existing open billing for this customer in current month
+        billing = self.env['records.billing'].sudo().search([
+            ('partner_id', '=', partner.id),
+            ('state', 'in', ['draft']),
+            ('date', '>=', today.replace(day=1)),
+        ], limit=1)
+        
+        if not billing:
+            # Get default billing config
+            billing_config = self.env['records.billing.config'].sudo().search([
+                ('company_id', '=', self.env.company.id),
+            ], limit=1)
+            if billing_config:
+                billing = self.env['records.billing'].sudo().create({
+                    'partner_id': partner.id,
+                    'date': today,
+                    'billing_config_id': billing_config.id,
+                    'state': 'draft',
+                })
+        
+        return billing
+
+    def _get_indexing_rate(self, partner):
+        """Get the indexing rate for the customer (from negotiated rates or default)"""
+        # Try to get customer's negotiated rate
+        negotiated_rate = self.env['customer.negotiated.rate'].sudo().search([
+            ('partner_id', '=', partner.id),
+            ('state', '=', 'active'),
+        ], limit=1)
+        
+        if negotiated_rate and hasattr(negotiated_rate, 'indexing_rate') and negotiated_rate.indexing_rate:
+            return negotiated_rate.indexing_rate
+        
+        # Try base rate
+        base_rate = self.env['records.base.rate'].sudo().search([
+            ('company_id', '=', self.env.company.id),
+        ], limit=1)
+        
+        if base_rate and hasattr(base_rate, 'indexing_rate') and base_rate.indexing_rate:
+            return base_rate.indexing_rate
+        
+        # Default rate
+        return 1.50
+
+    def _get_indexing_product(self):
+        """Get the indexing service product for billing"""
+        product = self.env.ref('records_management.product_indexing_service', raise_if_not_found=False)
+        if not product:
+            product = self.env['product.product'].sudo().search([
+                ('default_code', '=', 'REC-INDEX'),
+            ], limit=1)
+        return product

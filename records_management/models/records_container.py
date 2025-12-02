@@ -1221,12 +1221,95 @@ class RecordsContainer(models.Model):
         }
 
     def action_retrieve_container(self):
-        """Retrieve container from storage"""
+        """Retrieve container from storage - creates work order and billing charge"""
         self.ensure_one()
         if self.state not in ["in"]:
             raise UserError(_("Only containers in storage can be retrieved"))
+        
+        # Create retrieval work order
+        work_order = self.env['records.retrieval.work.order'].create({
+            'name': _('New'),
+            'partner_id': self.partner_id.id,
+            'company_id': self.company_id.id or self.env.company.id,
+            'delivery_method': 'physical',
+            'scanned_barcode_ids': [(6, 0, [self.id])],
+        })
+        
+        # Create billing charge for retrieval service
+        retrieval_product = self.env.ref('records_management.product_retrieval_service', raise_if_not_found=False)
+        if retrieval_product and self.partner_id:
+            # Get retrieval rate - check customer negotiated rate first, then product price
+            retrieval_rate = self._get_retrieval_rate(retrieval_product)
+            
+            # Find or create billing record for this period
+            today = fields.Date.today()
+            billing = self.env['records.billing'].sudo().search([
+                ('partner_id', '=', self.partner_id.id),
+                ('state', '=', 'draft'),
+                ('date', '>=', today.replace(day=1)),
+            ], limit=1)
+            if not billing:
+                # Get default billing config
+                billing_config = self.env['records.billing.config'].sudo().search([
+                    ('company_id', '=', self.env.company.id),
+                ], limit=1)
+                if billing_config:
+                    billing = self.env['records.billing'].sudo().create({
+                        'partner_id': self.partner_id.id,
+                        'date': today,
+                        'billing_config_id': billing_config.id,
+                        'state': 'draft',
+                    })
+            if billing:
+                self.env['advanced.billing.line'].sudo().create({
+                    'billing_id': billing.id,
+                    'name': _('Container Retrieval - %s') % self.name,
+                    'product_id': retrieval_product.id,
+                    'quantity': 1,
+                    'amount': retrieval_rate,
+                    'type': 'service',
+                })
+        
+        # Update container state
         self.write({"state": "out", "last_access_date": fields.Date.today()})
-        self.message_post(body=_("Container retrieved from storage"))
+        self.message_post(body=_("Container retrieved from storage - Work Order: %s") % work_order.name)
+        
+        # Return action to view work order
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Retrieval Work Order'),
+            'res_model': 'records.retrieval.work.order',
+            'res_id': work_order.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
+    def _get_retrieval_rate(self, product):
+        """Get the retrieval rate for billing.
+        
+        Rate lookup order:
+        1. Customer's negotiated rate (if retrieval_rate field exists)
+        2. Base rate (if retrieval_rate field exists)
+        3. Product list price
+        """
+        if self.partner_id:
+            # Try customer's negotiated rate
+            negotiated_rate = self.env['customer.negotiated.rate'].sudo().search([
+                ('partner_id', '=', self.partner_id.id),
+                ('state', '=', 'active'),
+            ], limit=1)
+            if negotiated_rate and hasattr(negotiated_rate, 'retrieval_rate') and negotiated_rate.retrieval_rate:
+                return negotiated_rate.retrieval_rate
+        
+        # Try base rate
+        base_rate = self.env['records.base.rate'].sudo().search([
+            ('company_id', '=', self.env.company.id),
+        ], limit=1)
+        if base_rate and hasattr(base_rate, 'retrieval_rate') and base_rate.retrieval_rate:
+            return base_rate.retrieval_rate
+        
+        # Fall back to product price
+        return product.list_price if product else 35.00
 
     def action_bulk_convert_container_type(self):
         """Bulk convert container types"""
