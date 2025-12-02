@@ -131,6 +131,15 @@ class RecordsContainer(models.Model):
              "Auto-created when container is activated. "
              "Links container to native inventory tracking."
     )
+    package_id = fields.Many2one(
+        "stock.quant.package",
+        string="Stock Package",
+        readonly=True,
+        copy=False,
+        help="Linked stock package for barcode scanning in Stock Barcode app. "
+             "Auto-created when container is created. "
+             "Syncs barcode with container barcode or temp_barcode."
+    )
     stock_owner_id = fields.Many2one(
         "res.partner",
         string="Stock Owner",
@@ -507,6 +516,10 @@ class RecordsContainer(models.Model):
         # Create records
         records = super().create(vals_list)
 
+        # ✅ Create stock.quant.package for each container (enables Stock Barcode scanning)
+        for record in records:
+            record._create_or_update_stock_package()
+        
         # ✅ Create stock.quant when container is scanned IN (not pending)
         for record in records:
             if record.state == 'in' and not record.quant_id:
@@ -528,6 +541,11 @@ class RecordsContainer(models.Model):
             vals.pop("temp_barcode")
 
         result = super().write(vals)
+
+        # ✅ Sync stock.quant.package barcode when container barcode changes
+        if 'barcode' in vals or 'temp_barcode' in vals:
+            for record in self:
+                record._create_or_update_stock_package()
 
         # ✅ Create stock.quant when container is scanned IN (state changes to 'in')
         # ✅ Also update child file folder states to match container state
@@ -560,28 +578,6 @@ class RecordsContainer(models.Model):
             # Location counts are handled via native quant_ids relationship
             pass
         
-        return result
-
-        # ✅ PHASE 1 ENHANCEMENT: Real-time location synchronization
-        # When location_id changes, create movement record and sync with quant
-        if 'location_id' in vals:
-            for record in self:
-                # Only process if we have a quant and the location actually changed
-                if record.quant_id and record.location_id:
-                    old_location = record.quant_id.location_id
-                    new_location = record.location_id
-
-                    if old_location != new_location:
-                        # Update quant location to match container
-                        record.quant_id.sudo().write({'location_id': new_location.id})
-
-                        # Create movement record for audit trail
-                        record.create_movement(
-                            to_location=new_location,
-                            movement_type='location_change',
-                            reason='Location updated via container management interface'
-                        ).action_confirm()
-
         return result
 
     def unlink(self):
@@ -1307,6 +1303,51 @@ class RecordsContainer(models.Model):
     # ============================================================================
     # STOCK INTEGRATION METHODS
     # ============================================================================
+    def _create_or_update_stock_package(self):
+        """
+        Create or update stock.quant.package for this container.
+        
+        This enables container barcodes to be recognized by the Stock Barcode app:
+        - Creates a package with matching barcode (uses barcode or temp_barcode)
+        - Links container to package via package_id field
+        - Syncs barcode when container barcode changes
+        
+        Stock packages are just tracking containers - NO stock valuation impact.
+        Valuation is controlled by product categories, not packages.
+        """
+        self.ensure_one()
+        
+        # Determine which barcode to use (prefer physical barcode over temp)
+        package_barcode = self.barcode or self.temp_barcode
+        
+        if not package_barcode:
+            # No barcode yet - nothing to sync
+            return
+        
+        Package = self.env['stock.quant.package'].sudo()
+        
+        if self.package_id:
+            # Package exists - update barcode if changed
+            if self.package_id.name != package_barcode:
+                self.package_id.write({
+                    'name': package_barcode,
+                })
+        else:
+            # Check if package with this barcode already exists
+            existing_package = Package.search([('name', '=', package_barcode)], limit=1)
+            
+            if existing_package:
+                # Link to existing package
+                self.write({'package_id': existing_package.id})
+            else:
+                # Create new package
+                package = Package.create({
+                    'name': package_barcode,
+                    'company_id': self.company_id.id,
+                    'location_id': self.location_id.id if self.location_id else False,
+                })
+                self.write({'package_id': package.id})
+    
     def _create_stock_quant(self):
         """
         Create stock.quant for this container in Odoo's inventory system.
