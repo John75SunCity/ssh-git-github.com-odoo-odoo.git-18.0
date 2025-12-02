@@ -73,7 +73,7 @@ class ScannerAudio {
 
 /**
  * Camera Barcode Scanner Dialog Component
- * 
+ *
  * Provides a full-screen camera interface for barcode scanning with:
  * - Live video preview
  * - Automatic barcode detection
