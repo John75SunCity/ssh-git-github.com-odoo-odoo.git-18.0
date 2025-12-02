@@ -73,6 +73,14 @@ class RecordsFile(models.Model):
              "barcode scanning, and location management"
     )
     
+    package_id = fields.Many2one(
+        'stock.quant.package',
+        string="Stock Package",
+        readonly=True,
+        help="Auto-created package for Stock Barcode app compatibility. "
+             "Nested under container's package (parent_package_id)."
+    )
+    
     owner_id = fields.Many2one(
         related='quant_id.owner_id',
         string="Owner (Customer)",
@@ -288,6 +296,10 @@ class RecordsFile(models.Model):
             if not file.temp_barcode and not file.barcode:
                 file.temp_barcode = self.env['ir.sequence'].next_by_code('records.file.temp.barcode') or f"FILE-{file.id}"
             
+            # Auto-create stock.quant.package for barcode scanning
+            # File packages are nested under container's package
+            file._create_or_update_stock_package()
+            
             # Auto-create draft staging location if file is in draft and has no container
             if file.state == 'draft' and not file.container_id and file.partner_id:
                 draft_location = self._get_or_create_draft_staging_location(file.partner_id)
@@ -327,6 +339,11 @@ class RecordsFile(models.Model):
     def write(self, vals):
         """Override write to add NAID audit logging for file updates."""
         result = super().write(vals)
+        
+        # Sync stock package when barcode or container changes
+        if 'barcode' in vals or 'temp_barcode' in vals or 'container_id' in vals:
+            for file in self:
+                file._create_or_update_stock_package()
         
         for file in self:
             # Track important field changes
@@ -439,6 +456,60 @@ class RecordsFile(models.Model):
             'product_id': self._get_default_product().id,
             'company_id': self.env.company.id,
         })
+    
+    def _create_or_update_stock_package(self):
+        """
+        Create or update stock.quant.package for Stock Barcode compatibility.
+        
+        File packages are NESTED under their container's package via parent_package_id.
+        This enables Odoo's Stock Barcode to recognize file barcodes.
+        
+        Hierarchy:
+            Container Package (parent)
+              └── File Package (child, parent_package_id = container.package_id)
+        """
+        self.ensure_one()
+        
+        barcode = self.barcode or self.temp_barcode
+        if not barcode:
+            return
+        
+        # Get parent package from container
+        parent_package = self.container_id.package_id if self.container_id else False
+        
+        # If file already has a package, update it
+        if self.package_id:
+            update_vals = {}
+            if self.package_id.name != barcode:
+                update_vals['name'] = barcode
+            if parent_package and self.package_id.parent_package_id != parent_package:
+                update_vals['parent_package_id'] = parent_package.id
+            if update_vals:
+                self.package_id.write(update_vals)
+            return
+        
+        # Search for existing package with this barcode
+        existing_package = self.env['stock.quant.package'].search([
+            ('name', '=', barcode)
+        ], limit=1)
+        
+        if existing_package:
+            # Update parent if needed and link to file
+            if parent_package and existing_package.parent_package_id != parent_package:
+                existing_package.write({'parent_package_id': parent_package.id})
+            self.write({'package_id': existing_package.id})
+            return
+        
+        # Create new package as child of container's package
+        package_vals = {
+            'name': barcode,
+            'company_id': self.company_id.id if hasattr(self, 'company_id') and self.company_id else self.env.company.id,
+        }
+        if parent_package:
+            package_vals['parent_package_id'] = parent_package.id
+        
+        package = self.env['stock.quant.package'].create(package_vals)
+        self.write({'package_id': package.id})
     
     def action_assign_barcode_and_track(self):
         """

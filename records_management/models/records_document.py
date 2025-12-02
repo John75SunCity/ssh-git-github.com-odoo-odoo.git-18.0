@@ -147,6 +147,14 @@ class RecordsDocument(models.Model):
              "Most documents won't have quant_id - only when tracked independently."
     )
     
+    package_id = fields.Many2one(
+        comodel_name='stock.quant.package',
+        string="Stock Package",
+        readonly=True,
+        help="Auto-created package for Stock Barcode app compatibility. "
+             "Nested under file's or container's package."
+    )
+    
     owner_id = fields.Many2one(
         comodel_name='res.partner',
         related='quant_id.owner_id',
@@ -453,6 +461,9 @@ class RecordsDocument(models.Model):
                 doc.attachment_tracking_number = self.env['ir.sequence'].next_by_code('records.document.attachment') or (
                     'ATT-%s' % doc.id
                 )
+            # Auto-create stock.quant.package for barcode scanning
+            # Document packages are nested under file's or container's package
+            doc._create_or_update_stock_package()
         return docs
 
     def write(self, vals):
@@ -476,7 +487,76 @@ class RecordsDocument(models.Model):
                     body=_("Document state changed to: %s") % dict(self._fields['state'].selection).get(record.state),
                     subtype_id=self.env.ref('mail.mt_note').id
                 )
-        return super().write(vals)
+        result = super().write(vals)
+        
+        # Sync stock package when barcode, file, or container changes
+        if 'barcode' in vals or 'temp_barcode' in vals or 'file_id' in vals or 'container_id' in vals:
+            for doc in self:
+                doc._create_or_update_stock_package()
+        
+        return result
+
+    def _create_or_update_stock_package(self):
+        """
+        Create or update stock.quant.package for Stock Barcode compatibility.
+        
+        Document packages are NESTED under their file's or container's package.
+        This enables Odoo's Stock Barcode to recognize document barcodes.
+        
+        Hierarchy:
+            Container Package (grandparent)
+              └── File Package (parent)
+                    └── Document Package (child)
+        OR:
+            Container Package (parent)
+              └── Document Package (child, when no file)
+        """
+        self.ensure_one()
+        
+        barcode = self.barcode or self.temp_barcode
+        if not barcode:
+            return
+        
+        # Get parent package from file or container
+        parent_package = False
+        if self.file_id and self.file_id.package_id:
+            parent_package = self.file_id.package_id
+        elif self.container_id and self.container_id.package_id:
+            parent_package = self.container_id.package_id
+        
+        # If document already has a package, update it
+        if self.package_id:
+            update_vals = {}
+            if self.package_id.name != barcode:
+                update_vals['name'] = barcode
+            if parent_package and self.package_id.parent_package_id != parent_package:
+                update_vals['parent_package_id'] = parent_package.id
+            if update_vals:
+                self.package_id.write(update_vals)
+            return
+        
+        # Search for existing package with this barcode
+        existing_package = self.env['stock.quant.package'].search([
+            ('name', '=', barcode)
+        ], limit=1)
+        
+        if existing_package:
+            # Update parent if needed and link to document
+            if parent_package and existing_package.parent_package_id != parent_package:
+                existing_package.write({'parent_package_id': parent_package.id})
+            self.write({'package_id': existing_package.id})
+            return
+        
+        # Create new package as child of file's or container's package
+        package_vals = {
+            'name': barcode,
+            'company_id': self.company_id.id,
+        }
+        if parent_package:
+            package_vals['parent_package_id'] = parent_package.id
+        
+        package = self.env['stock.quant.package'].create(package_vals)
+        self.write({'package_id': package.id})
 
     def unlink(self):
         for doc in self:
