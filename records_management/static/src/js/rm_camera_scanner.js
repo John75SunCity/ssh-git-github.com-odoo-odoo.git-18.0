@@ -42,9 +42,9 @@ const SCANBOT_LICENSE_KEY =
     "Y29tCjE3NjUzMjQ3OTkKODM4ODYwNw" +
     "o4\n";
 
-// Scanbot SDK 7.1 CDN URLs
-const SCANBOT_SDK_URL = "https://cdn.jsdelivr.net/npm/scanbot-web-sdk@7.1.1/bundle/ScanbotSDK.ui2.min.js";
-const SCANBOT_ENGINE_PATH = "https://cdn.jsdelivr.net/npm/scanbot-web-sdk@7.1.1/bundle/bin/complete/";
+// Scanbot SDK 7.0 CDN URLs (7.0.0 is the latest stable on jsDelivr)
+const SCANBOT_SDK_URL = "https://cdn.jsdelivr.net/npm/scanbot-web-sdk@7.0.0/bundle/ScanbotSDK.ui2.min.js";
+const SCANBOT_ENGINE_PATH = "https://cdn.jsdelivr.net/npm/scanbot-web-sdk@7.0.0/bundle/bin/complete/";
 
 /**
  * Audio feedback generator for barcode scanning events.
@@ -91,7 +91,7 @@ class ScannerAudio {
 }
 
 /**
- * Scanbot SDK Loader - Dynamically loads the SDK script
+ * Scanbot SDK Loader - Dynamically imports the SDK module
  */
 class ScanbotLoader {
     static sdkReady = false;
@@ -112,48 +112,44 @@ class ScanbotLoader {
         }
 
         this.loading = true;
-        this.loadPromise = this._loadScript();
+        this.loadPromise = this._loadModule();
         return this.loadPromise;
     }
 
-    static async _loadScript() {
-        return new Promise((resolve, reject) => {
+    static async _loadModule() {
+        try {
             if (window.ScanbotSDK) {
                 console.log('[Scanbot] SDK already available on window');
                 this.sdkReady = true;
                 this.loading = false;
-                resolve(true);
-                return;
+                return true;
             }
 
-            console.log('[Scanbot] Loading SDK from:', SCANBOT_SDK_URL);
-            const script = document.createElement('script');
-            script.src = SCANBOT_SDK_URL;
-            script.async = true;
-
-            script.onload = () => {
-                console.log('[Scanbot] SDK script loaded successfully');
-                // Give a brief moment for the SDK to initialize on window
-                setTimeout(() => {
-                    if (window.ScanbotSDK) {
-                        console.log('[Scanbot] ScanbotSDK available on window:', typeof window.ScanbotSDK);
-                        this.sdkReady = true;
-                    } else {
-                        console.warn('[Scanbot] Script loaded but ScanbotSDK not on window');
-                    }
-                    this.loading = false;
-                    resolve(true);
-                }, 100);
-            };
-
-            script.onerror = (e) => {
-                console.error('[Scanbot] Failed to load SDK script:', e);
+            console.log('[Scanbot] Importing SDK module from:', SCANBOT_SDK_URL);
+            
+            // Use dynamic import for ES module
+            await import(/* @vite-ignore */ SCANBOT_SDK_URL);
+            
+            // The ui2 module sets ScanbotSDK on window
+            console.log('[Scanbot] Module imported, checking window.ScanbotSDK...');
+            
+            // Wait a moment for the module to fully initialize
+            await new Promise(resolve => setTimeout(resolve, 200));
+            
+            if (window.ScanbotSDK) {
+                console.log('[Scanbot] ScanbotSDK available on window:', typeof window.ScanbotSDK);
+                this.sdkReady = true;
                 this.loading = false;
-                reject(new Error('Failed to load Scanbot SDK from CDN'));
-            };
-
-            document.head.appendChild(script);
-        });
+                return true;
+            } else {
+                console.error('[Scanbot] Module loaded but ScanbotSDK not on window');
+                throw new Error('ScanbotSDK not available after module import');
+            }
+        } catch (e) {
+            console.error('[Scanbot] Failed to import SDK module:', e);
+            this.loading = false;
+            throw new Error('Failed to load Scanbot SDK from CDN: ' + e.message);
+        }
     }
 }
 
