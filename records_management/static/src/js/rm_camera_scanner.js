@@ -3,26 +3,51 @@
  * Records Management Camera Barcode Scanner
  *
  * OWL component providing mobile camera barcode scanning for Records Management.
- * Uses native BarcodeDetector API (Chrome 83+, Edge 83+) with manual fallback.
+ * Uses Scanbot SDK WASM-based barcode recognition engine for cross-browser support.
  *
  * Features:
- * - Live camera preview with automatic barcode detection
- * - Multiple format support: QR, EAN-13/8, Code-128/39, UPC-A/E
+ * - Live camera preview with professional barcode detection
+ * - WASM-based engine works on all modern browsers (Chrome, Firefox, Safari, Edge)
+ * - Multiple format support: QR, EAN, Code-128/39, UPC, DataMatrix, PDF417, Aztec
  * - Audio feedback on successful scans
  * - Manual barcode entry fallback
  * - Duplicate scan prevention (2-second debounce)
  * - Integration with Records Management operations
  *
  * @author Records Management System
- * @version 18.0.1.0.0
+ * @version 18.0.1.1.0
  * @license LGPL-3
  */
 
-import { Component, useState, useRef, onWillUnmount } from "@odoo/owl";
+import { Component, useState, useRef, onWillUnmount, onMounted } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { Dialog } from "@web/core/dialog/dialog";
 import { _t } from "@web/core/l10n/translation";
+
+// Scanbot SDK License Key (valid for localhost and Odoo.sh domain)
+const SCANBOT_LICENSE_KEY =
+    "E14q8BxTk+CB7vhOEh57o8N/OsEZlL" +
+    "urbsbppjJ5R4AkUbFYKvgj4hNrdf7L" +
+    "vpF8tKy/NZoB6wBu1QTRPw4t5Ul4uR" +
+    "rkTf8H5vd1DPmItpSNji60EGOmtAz+" +
+    "uoCnT2MmM0Q2CoJLi9WEZyoUkPsHmc" +
+    "hrHmWvar3K4ym1APhzkKOGLi8MJxBt" +
+    "+Po7gibE1R2+682lMPIBuFVsEKPfI0" +
+    "zSB0gHt8PlWC5zKZ7RBxsZWjxM9Xs+" +
+    "uns1kavXysKYbHl0KcFoZi707+qozZ" +
+    "+LLtAWMPIFZQklr2I4J4TXMo/te7pS" +
+    "6GF0Oh232Lz9gEN49QPsvKlCC+2uRd" +
+    "6L52vTMQ3mgA==\nU2NhbmJvdFNESw" +
+    "psb2NhbGhvc3R8am9objc1c3VuY2l0" +
+    "eS1zc2gtZ2l0LWdpdGh1Yi1jb20tb2" +
+    "Rvby1vZG9vLWdpdC0xOC0wLm9kb28u" +
+    "Y29tCjE3NjUzMjQ3OTkKODM4ODYwNw" +
+    "o4\n";
+
+// Scanbot SDK CDN URLs
+const SCANBOT_SDK_URL = "https://cdn.jsdelivr.net/npm/scanbot-web-sdk@7.0.0/bundle/ScanbotSDK.ui2.min.js";
+const SCANBOT_ENGINE_PATH = "https://cdn.jsdelivr.net/npm/scanbot-web-sdk@7.0.0/bundle/bin/barcode-scanner/";
 
 /**
  * Audio feedback generator for barcode scanning events.
@@ -72,11 +97,82 @@ class ScannerAudio {
 }
 
 /**
+ * Scanbot SDK Loader - Dynamically loads the SDK script
+ */
+class ScanbotLoader {
+    static sdk = null;
+    static loading = false;
+    static loadPromise = null;
+
+    static async load() {
+        // Return cached SDK if already loaded
+        if (this.sdk) {
+            return this.sdk;
+        }
+
+        // Return existing promise if currently loading
+        if (this.loading && this.loadPromise) {
+            return this.loadPromise;
+        }
+
+        this.loading = true;
+        this.loadPromise = this._loadScript();
+        return this.loadPromise;
+    }
+
+    static async _loadScript() {
+        return new Promise((resolve, reject) => {
+            // Check if already loaded globally
+            if (window.ScanbotSDK) {
+                this._initializeSDK().then(resolve).catch(reject);
+                return;
+            }
+
+            // Create script element
+            const script = document.createElement('script');
+            script.src = SCANBOT_SDK_URL;
+            script.async = true;
+
+            script.onload = async () => {
+                try {
+                    await this._initializeSDK();
+                    resolve(this.sdk);
+                } catch (error) {
+                    reject(error);
+                }
+            };
+
+            script.onerror = () => {
+                this.loading = false;
+                reject(new Error('Failed to load Scanbot SDK'));
+            };
+
+            document.head.appendChild(script);
+        });
+    }
+
+    static async _initializeSDK() {
+        if (!window.ScanbotSDK) {
+            throw new Error('ScanbotSDK not found after script load');
+        }
+
+        this.sdk = await window.ScanbotSDK.initialize({
+            licenseKey: SCANBOT_LICENSE_KEY,
+            enginePath: SCANBOT_ENGINE_PATH,
+        });
+
+        console.log('Scanbot SDK initialized successfully');
+        this.loading = false;
+        return this.sdk;
+    }
+}
+
+/**
  * Camera Barcode Scanner Dialog Component
  *
  * Provides a full-screen camera interface for barcode scanning with:
+ * - Scanbot SDK WASM-based barcode recognition
  * - Live video preview
- * - Automatic barcode detection
  * - Operation mode selection (lookup, retrieval, shredding, etc.)
  * - Result display and navigation
  */
@@ -107,20 +203,54 @@ export class RMCameraScannerDialog extends Component {
             selectedCamera: "environment", // 'environment' (back) or 'user' (front)
             errorMessage: null,
             operationMode: this.props.operationMode || "lookup",
+            sdkReady: false,
+            sdkLoading: true,
+            useScanbotRTU: true, // Use Scanbot Ready-To-Use UI
         });
 
         this.videoRef = useRef("videoElement");
         this.stream = null;
         this.scanInterval = null;
         this.lastScanTime = 0;
-        this.barcodeDetector = null;
+        this.scanbotSDK = null;
+        this.barcodeScanner = null;
 
-        // Check for camera support
+        // Check for camera support and load SDK
         this.checkCameraSupport();
+
+        onMounted(() => {
+            this.loadScanbotSDK();
+        });
 
         onWillUnmount(() => {
             this.stopCamera();
+            this.cleanupScanbotScanner();
         });
+    }
+
+    async loadScanbotSDK() {
+        try {
+            this.scanbotSDK = await ScanbotLoader.load();
+            this.state.sdkReady = true;
+            this.state.sdkLoading = false;
+            console.log('Scanbot SDK loaded and ready');
+        } catch (error) {
+            console.error('Failed to load Scanbot SDK:', error);
+            this.state.sdkLoading = false;
+            this.state.errorMessage = _t("Failed to load barcode scanner engine. Using fallback.");
+            // SDK failed - will fall back to native BarcodeDetector or manual
+        }
+    }
+
+    cleanupScanbotScanner() {
+        if (this.barcodeScanner) {
+            try {
+                this.barcodeScanner.dispose();
+            } catch (e) {
+                console.warn('Error disposing barcode scanner:', e);
+            }
+            this.barcodeScanner = null;
+        }
     }
 
     async checkCameraSupport() {
@@ -145,6 +275,13 @@ export class RMCameraScannerDialog extends Component {
         this.state.errorMessage = null;
         this.state.permissionDenied = false;
 
+        // If Scanbot SDK is ready, use the RTU UI
+        if (this.state.sdkReady && this.state.useScanbotRTU) {
+            await this.startScanbotScanner();
+            return;
+        }
+
+        // Fallback to native camera + detection
         try {
             // Request camera access
             this.stream = await navigator.mediaDevices.getUserMedia({
@@ -162,7 +299,7 @@ export class RMCameraScannerDialog extends Component {
                 this.state.cameraActive = true;
                 this.state.scanning = true;
 
-                // Initialize barcode detection
+                // Initialize barcode detection (Scanbot Classic UI or native fallback)
                 this.startBarcodeDetection();
             }
         } catch (error) {
@@ -179,6 +316,68 @@ export class RMCameraScannerDialog extends Component {
             }
 
             this.notification.add(this.state.errorMessage, { type: "warning" });
+        }
+    }
+
+    /**
+     * Start Scanbot SDK Ready-To-Use UI Scanner
+     * This opens a full-screen scanner overlay with professional UI
+     */
+    async startScanbotScanner() {
+        if (!window.ScanbotSDK || !this.state.sdkReady) {
+            this.notification.add(_t("Scanner not ready. Please wait..."), { type: "warning" });
+            return;
+        }
+
+        try {
+            // Configure the Scanbot RTU UI scanner
+            const config = new window.ScanbotSDK.UI.Config.BarcodeScannerScreenConfiguration();
+            
+            // Customize appearance
+            config.topBar.title.text = _t("Records Management Scanner");
+            config.topBar.mode = "GRADIENT";
+            
+            // Enable AR overlay for visual feedback
+            config.useCase.arOverlay.visible = true;
+            config.useCase.arOverlay.automaticSelectionEnabled = true;
+            
+            // Enable viewfinder
+            config.viewFinder.visible = true;
+            config.viewFinder.style.strokeColor = "#00FF88";
+            config.viewFinder.style.strokeWidth = 3;
+            
+            // Sound and vibration feedback
+            config.sound.successBeepEnabled = true;
+            config.sound.buttonClickEnabled = true;
+            config.vibration.enabled = true;
+
+            // Launch the scanner
+            const scanResult = await window.ScanbotSDK.UI.createBarcodeScanner(config);
+
+            if (scanResult?.items?.length > 0) {
+                const barcode = scanResult.items[0].barcode;
+                const barcodeText = barcode.text;
+                const barcodeFormat = barcode.format;
+
+                console.log(`Scanned: ${barcodeText} (${barcodeFormat})`);
+                
+                // Play success sound
+                ScannerAudio.playSuccess();
+                
+                // Process the barcode
+                this.state.lastScannedBarcode = barcodeText;
+                await this.processBarcode(barcodeText);
+            } else {
+                // User cancelled
+                this.notification.add(_t("Scanning cancelled"), { type: "info", sticky: false });
+            }
+        } catch (error) {
+            console.error("Scanbot scanner error:", error);
+            ScannerAudio.playError();
+            this.notification.add(
+                _t("Scanner error: ") + error.message,
+                { type: "danger", sticky: false }
+            );
         }
     }
 
