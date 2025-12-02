@@ -788,6 +788,10 @@
             "records_management/static/src/scss/records_management.scss",
             "records_management/static/src/scss/retention_policy.scss",
             "records_management/static/src/css/intelligent_search.css",
+            # Camera Barcode Scanner
+            "records_management/static/src/css/rm_camera_scanner.css",
+            "records_management/static/src/js/rm_camera_scanner.js",
+            "records_management/static/src/xml/rm_camera_scanner.xml",
             # "records_management/static/src/css/system_flowchart.css",  # Temporarily disabled - ::before pseudo-elements affecting PDF DOM structure
             # "records_management/static/src/css/customer_portal_diagram.css",  # Temporarily disabled - ::before pseudo-elements affecting PDF DOM structure
             "records_management/static/src/js/map_widget.js",

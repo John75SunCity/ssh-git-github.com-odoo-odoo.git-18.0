@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Records Management Camera Barcode Scanner Templates
+    
+    OWL templates for the mobile camera barcode scanning interface.
+    
+    @author Records Management System
+    @version 18.0.1.0.0
+    @license LGPL-3
+-->
+<templates xml:space="preserve">
+
+    <!-- Main Camera Scanner Dialog -->
+    <t t-name="records_management.CameraScannerDialog">
+        <Dialog title="'📷 Camera Barcode Scanner'" size="'xl'" contentClass="'rm-scanner-dialog'">
+            <div class="rm-camera-scanner">
+                
+                <!-- Header Controls -->
+                <div class="scanner-controls mb-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Operation Mode:</label>
+                            <select class="form-select" 
+                                    t-on-change="onModeChange" 
+                                    t-att-value="state.operationMode">
+                                <t t-foreach="operationModes" t-as="mode" t-key="mode.value">
+                                    <option t-att-value="mode.value" 
+                                            t-att-selected="state.operationMode === mode.value">
+                                        <t t-esc="mode.label"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <span class="badge bg-info me-2">
+                                <i class="fa fa-barcode me-1"/>
+                                Scans: <t t-esc="state.scanCount"/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Camera Permission Error -->
+                <div t-if="state.permissionDenied" class="alert alert-warning">
+                    <i class="fa fa-exclamation-triangle me-2"/>
+                    <strong>Camera Access Required</strong>
+                    <p class="mb-2">Please allow camera access to scan barcodes.</p>
+                    <button class="btn btn-primary" t-on-click="startCamera">
+                        <i class="fa fa-refresh me-1"/> Try Again
+                    </button>
+                </div>
+
+                <!-- No Camera Available -->
+                <div t-if="!state.hasCamera" class="alert alert-info">
+                    <i class="fa fa-camera-retro me-2"/>
+                    <strong>Camera Not Available</strong>
+                    <p class="mb-0">Use the manual entry field below to enter barcodes.</p>
+                </div>
+
+                <!-- Error Message -->
+                <div t-if="state.errorMessage and !state.permissionDenied and state.hasCamera" 
+                     class="alert alert-danger">
+                    <i class="fa fa-exclamation-circle me-2"/>
+                    <t t-esc="state.errorMessage"/>
+                </div>
+
+                <!-- Camera Preview Area -->
+                <div t-if="state.hasCamera and !state.permissionDenied" class="camera-preview-container mb-3">
+                    <div class="camera-preview position-relative" 
+                         t-att-class="{'camera-active': state.cameraActive}">
+                        
+                        <!-- Video Element -->
+                        <video t-ref="videoElement" 
+                               class="camera-video w-100" 
+                               autoplay="true" 
+                               playsinline="true"
+                               muted="true"/>
+                        
+                        <!-- Scanning Overlay -->
+                        <div t-if="state.cameraActive" class="scanning-overlay">
+                            <div class="scan-region">
+                                <div class="scan-line" t-att-class="{'scanning': state.scanning}"/>
+                            </div>
+                            <div t-if="state.scanning" class="scan-status text-center text-white mt-2">
+                                <i class="fa fa-spinner fa-spin me-1"/>
+                                Scanning...
+                            </div>
+                        </div>
+
+                        <!-- Start Camera Prompt -->
+                        <div t-if="!state.cameraActive" class="camera-prompt text-center py-5">
+                            <i class="fa fa-camera fa-4x text-muted mb-3 d-block"/>
+                            <button class="btn btn-lg btn-success" t-on-click="startCamera">
+                                <i class="fa fa-video-camera me-2"/>
+                                Start Camera
+                            </button>
+                            <p class="text-muted mt-2 small">
+                                Point your camera at a barcode to scan
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Camera Control Buttons -->
+                    <div t-if="state.cameraActive" class="camera-buttons mt-2 text-center">
+                        <button class="btn btn-secondary me-2" t-on-click="toggleCamera">
+                            <i class="fa fa-refresh me-1"/>
+                            Switch Camera
+                        </button>
+                        <button class="btn btn-danger" t-on-click="stopCamera">
+                            <i class="fa fa-stop me-1"/>
+                            Stop Camera
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Manual Entry Section -->
+                <div class="manual-entry-section border rounded p-3 mb-3">
+                    <label class="form-label fw-bold">
+                        <i class="fa fa-keyboard-o me-1"/>
+                        Manual Barcode Entry:
+                    </label>
+                    <div class="input-group">
+                        <input type="text" 
+                               class="form-control form-control-lg" 
+                               placeholder="Type or paste barcode here..."
+                               t-att-value="state.manualBarcode"
+                               t-on-input="onManualInput"
+                               t-on-keydown="onManualKeydown"/>
+                        <button class="btn btn-primary btn-lg" 
+                                type="button" 
+                                t-on-click="onManualSubmit">
+                            <i class="fa fa-search me-1"/>
+                            Lookup
+                        </button>
+                    </div>
+                    <small class="text-muted">
+                        Press Enter to submit, or use a USB barcode scanner
+                    </small>
+                </div>
+
+                <!-- Last Scan Result -->
+                <div t-if="state.lastScannedResult" class="scan-result border rounded p-3">
+                    <h6 class="border-bottom pb-2 mb-3">
+                        <i class="fa fa-check-circle text-success me-1" t-if="state.lastScannedResult.success"/>
+                        <i class="fa fa-times-circle text-danger me-1" t-if="state.lastScannedResult.error"/>
+                        Last Scan Result
+                    </h6>
+                    
+                    <!-- Success Result -->
+                    <div t-if="state.lastScannedResult.success" class="result-success">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-1">
+                                    <strong>Barcode:</strong> 
+                                    <code t-esc="state.lastScannedBarcode"/>
+                                </p>
+                                <p class="mb-1" t-if="state.lastScannedResult.container_name">
+                                    <strong>Container:</strong> 
+                                    <t t-esc="state.lastScannedResult.container_name"/>
+                                </p>
+                                <p class="mb-1" t-if="state.lastScannedResult.customer">
+                                    <strong>Customer:</strong> 
+                                    <t t-esc="state.lastScannedResult.customer"/>
+                                </p>
+                            </div>
+                            <div class="col-md-6" t-if="state.lastScannedResult.container_id">
+                                <button class="btn btn-info" t-on-click="viewContainer">
+                                    <i class="fa fa-external-link me-1"/>
+                                    View Container
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error Result -->
+                    <div t-if="state.lastScannedResult.error" class="result-error">
+                        <p class="mb-1">
+                            <strong>Barcode:</strong> 
+                            <code t-esc="state.lastScannedBarcode"/>
+                        </p>
+                        <p class="text-danger mb-0">
+                            <i class="fa fa-exclamation-triangle me-1"/>
+                            <t t-esc="state.lastScannedResult.error"/>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Dialog Footer -->
+            <t t-set-slot="footer">
+                <button class="btn btn-secondary" t-on-click="close">
+                    <i class="fa fa-times me-1"/>
+                    Close
+                </button>
+            </t>
+        </Dialog>
+    </t>
+
+    <!-- Client Action Wrapper (invisible - just launches dialog) -->
+    <t t-name="records_management.CameraScannerAction">
+        <div class="rm-scanner-action"/>
+    </t>
+
+</templates>

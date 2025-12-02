@@ -115,20 +115,148 @@ class BarcodeOperationsWizard(models.TransientModel):
 
     def action_open_stock_barcode(self):
         """
-        Open Odoo Stock Barcode scanning interface.
+        Open the Records Management Camera Barcode Scanner.
         
-        Since the main menu requires specific context, we show a notification
-        directing users to the proper app location.
+        This opens a custom OWL dialog with:
+        - Live camera preview with barcode detection
+        - Support for QR, EAN-13/8, Code-128/39, UPC codes
+        - Manual entry fallback
+        - Direct integration with Records Management operations
         """
         return {
             'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _('Camera Scanning'),
-                'message': _('For camera scanning on mobile, go to: Inventory → Barcode Scanning'),
-                'type': 'info',
-                'sticky': False,
+            'tag': 'rm_camera_scanner',
+            'name': _('Camera Barcode Scanner'),
+            'context': {
+                'operation_mode': self.operation_mode or 'lookup',
+                'work_order_id': self.work_order_id.id if self.work_order_id else False,
+            },
+        }
+
+    @api.model
+    def process_camera_scan(self, barcode, operation_mode='lookup', work_order_id=False):
+        """
+        Process a barcode scanned via the camera scanner dialog.
+        
+        This is called from the JavaScript camera scanner component.
+        Returns a dict with success status and result details.
+        
+        Args:
+            barcode: The scanned barcode string
+            operation_mode: Type of operation (lookup, retrieval, shredding, etc.)
+            work_order_id: Optional work order ID for context
+            
+        Returns:
+            dict: {
+                'success': bool,
+                'message': str,
+                'container_id': int or False,
+                'container_name': str,
+                'customer': str,
+                'location': str,
+                'state': str,
+                'error': str (if failed)
             }
+        """
+        if not barcode or not barcode.strip():
+            return {'success': False, 'error': _('No barcode provided')}
+        
+        barcode = barcode.strip()
+        Container = self.env['records.container']
+        
+        # Search by physical barcode first
+        container = Container.search([
+            ('barcode', '=', barcode),
+            '|', ('company_id', '=', False),
+            ('company_id', '=', self.env.company.id)
+        ], limit=1)
+        
+        # Fallback to temp barcode
+        if not container:
+            container = Container.search([
+                ('temp_barcode', '=', barcode),
+                '|', ('company_id', '=', False),
+                ('company_id', '=', self.env.company.id)
+            ], limit=1)
+        
+        # Try name search as last resort
+        if not container:
+            container = Container.search([
+                ('name', '=ilike', barcode),
+                '|', ('company_id', '=', False),
+                ('company_id', '=', self.env.company.id)
+            ], limit=1)
+        
+        if not container:
+            # Check for bin, document, or location barcodes
+            return self._process_alternative_barcode(barcode, operation_mode)
+        
+        # Found container - post audit log
+        container.message_post(
+            body=_('Container scanned via Camera Scanner'),
+            message_type='notification'
+        )
+        
+        # Handle operation-specific actions
+        if operation_mode == 'shredding':
+            if container.state == 'destroyed':
+                return {
+                    'success': False,
+                    'error': _('Container %s is already destroyed') % container.name
+                }
+            container.write({'queued_for_destruction': True})
+        
+        return {
+            'success': True,
+            'message': _('Container found: %s') % container.name,
+            'container_id': container.id,
+            'container_name': container.name,
+            'customer': container.partner_id.name if container.partner_id else '',
+            'location': container.location_id.name if container.location_id else '',
+            'state': container.state or '',
+        }
+
+    @api.model
+    def _process_alternative_barcode(self, barcode, operation_mode):
+        """Check for non-container barcodes (bins, documents, locations)."""
+        # Check for bin
+        Bin = self.env.get('shredding.service.bin')
+        if Bin:
+            bin_record = Bin.search([('barcode', '=', barcode)], limit=1)
+            if bin_record:
+                return {
+                    'success': True,
+                    'message': _('Bin found: %s') % bin_record.name,
+                    'bin_id': bin_record.id,
+                    'bin_name': bin_record.name,
+                }
+        
+        # Check for document
+        Document = self.env.get('records.document')
+        if Document:
+            document = Document.search([('barcode', '=', barcode)], limit=1)
+            if document:
+                return {
+                    'success': True,
+                    'message': _('Document found: %s') % document.name,
+                    'document_id': document.id,
+                    'document_name': document.name,
+                }
+        
+        # Check for location
+        Location = self.env['stock.location']
+        location = Location.search([('barcode', '=', barcode)], limit=1)
+        if location:
+            return {
+                'success': True,
+                'message': _('Location found: %s') % location.complete_name,
+                'location_id': location.id,
+                'location_name': location.complete_name,
+            }
+        
+        return {
+            'success': False,
+            'error': _('No record found for barcode: %s') % barcode
         }
 
     def _stay_open(self):

@@ -1,0 +1,294 @@
+/**
+ * Records Management Camera Barcode Scanner Styles
+ *
+ * Modern, mobile-optimized styling for the camera scanning interface.
+ *
+ * @author Records Management System
+ * @version 18.0.1.0.0
+ * @license LGPL-3
+ */
+
+/* ============================================================================
+   DIALOG CONTAINER
+   ============================================================================ */
+
+.rm-scanner-dialog {
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.rm-camera-scanner {
+    padding: 0.5rem;
+}
+
+/* ============================================================================
+   CAMERA PREVIEW
+   ============================================================================ */
+
+.camera-preview-container {
+    max-width: 100%;
+}
+
+.camera-preview {
+    position: relative;
+    background: #1a1a2e;
+    border-radius: 12px;
+    overflow: hidden;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.camera-preview.camera-active {
+    min-height: 350px;
+}
+
+.camera-video {
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.camera-prompt {
+    color: #6c757d;
+}
+
+.camera-prompt .fa-camera {
+    opacity: 0.5;
+}
+
+/* ============================================================================
+   SCANNING OVERLAY & ANIMATION
+   ============================================================================ */
+
+.scanning-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.scan-region {
+    width: 70%;
+    max-width: 300px;
+    height: 200px;
+    border: 3px solid rgba(0, 255, 136, 0.8);
+    border-radius: 16px;
+    position: relative;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.4);
+}
+
+.scan-region::before,
+.scan-region::after {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 4px solid #00ff88;
+}
+
+.scan-region::before {
+    top: -3px;
+    left: -3px;
+    border-right: none;
+    border-bottom: none;
+    border-top-left-radius: 16px;
+}
+
+.scan-region::after {
+    bottom: -3px;
+    right: -3px;
+    border-left: none;
+    border-top: none;
+    border-bottom-right-radius: 16px;
+}
+
+/* Scanning line animation */
+.scan-line {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #00ff88 20%, #00ff88 80%, transparent);
+    border-radius: 2px;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
+    top: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.scan-line.scanning {
+    opacity: 1;
+    animation: scan-sweep 2s ease-in-out infinite;
+}
+
+@keyframes scan-sweep {
+    0%, 100% {
+        top: 10%;
+    }
+    50% {
+        top: 90%;
+    }
+}
+
+.scan-status {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+/* ============================================================================
+   CONTROLS & BUTTONS
+   ============================================================================ */
+
+.scanner-controls .form-select {
+    max-width: 250px;
+}
+
+.camera-buttons .btn {
+    min-width: 140px;
+}
+
+/* ============================================================================
+   MANUAL ENTRY
+   ============================================================================ */
+
+.manual-entry-section {
+    background: #f8f9fa;
+}
+
+.manual-entry-section .form-control {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+}
+
+/* ============================================================================
+   SCAN RESULT
+   ============================================================================ */
+
+.scan-result {
+    background: #fff;
+}
+
+.scan-result code {
+    font-size: 1.1em;
+    background: #e9ecef;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.result-success {
+    border-left: 4px solid #28a745;
+    padding-left: 12px;
+}
+
+.result-error {
+    border-left: 4px solid #dc3545;
+    padding-left: 12px;
+}
+
+/* ============================================================================
+   MOBILE OPTIMIZATIONS
+   ============================================================================ */
+
+@media (max-width: 576px) {
+    .rm-scanner-dialog {
+        max-height: 95vh;
+    }
+
+    .camera-preview {
+        min-height: 250px;
+        border-radius: 8px;
+    }
+
+    .camera-preview.camera-active {
+        min-height: 300px;
+    }
+
+    .camera-video {
+        max-height: 350px;
+    }
+
+    .scan-region {
+        width: 80%;
+        height: 150px;
+    }
+
+    .scanner-controls .form-select {
+        max-width: 100%;
+    }
+
+    .camera-buttons .btn {
+        min-width: 100px;
+        padding: 0.5rem 1rem;
+    }
+
+    .manual-entry-section .input-group {
+        flex-direction: column;
+    }
+
+    .manual-entry-section .input-group .form-control {
+        border-radius: 0.375rem !important;
+        margin-bottom: 0.5rem;
+    }
+
+    .manual-entry-section .input-group .btn {
+        border-radius: 0.375rem !important;
+        width: 100%;
+    }
+}
+
+/* ============================================================================
+   DARK MODE SUPPORT
+   ============================================================================ */
+
+.o_dark_mode .rm-camera-scanner .manual-entry-section {
+    background: #2d2d2d;
+}
+
+.o_dark_mode .rm-camera-scanner .scan-result {
+    background: #1e1e1e;
+}
+
+.o_dark_mode .rm-camera-scanner .scan-result code {
+    background: #3d3d3d;
+    color: #e0e0e0;
+}
+
+/* ============================================================================
+   SUCCESS/ERROR VISUAL FEEDBACK
+   ============================================================================ */
+
+.camera-preview.scan-success {
+    animation: flash-success 0.5s ease;
+}
+
+.camera-preview.scan-error {
+    animation: flash-error 0.5s ease;
+}
+
+@keyframes flash-success {
+    0%, 100% {
+        box-shadow: none;
+    }
+    50% {
+        box-shadow: inset 0 0 50px rgba(40, 167, 69, 0.5);
+    }
+}
+
+@keyframes flash-error {
+    0%, 100% {
+        box-shadow: none;
+    }
+    50% {
+        box-shadow: inset 0 0 50px rgba(220, 53, 69, 0.5);
+    }
+}
