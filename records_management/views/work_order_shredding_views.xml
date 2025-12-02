@@ -26,7 +26,7 @@
                     <header>
                         <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'" />
                         <button name="action_start_work" string="Start Shredding" type="object" class="btn-warning" invisible="state != 'confirmed'" />
-                        <button name="action_open_scanner" string="📷 Scan Barcodes" type="object" class="btn-primary" invisible="state not in ['confirmed','assigned','in_progress']" icon="fa-barcode"/>
+                        <button name="action_open_scanner" string="Scan Barcodes" type="object" class="btn-primary" invisible="state not in ['confirmed','assigned','in_progress']" icon="fa-barcode"/>
                         <button name="action_complete_work" string="Complete" type="object" class="btn-success" invisible="state != 'in_progress'" />
                         <button name="action_create_invoice" type="object" string="Create Invoice" 
                                 class="btn-primary" invisible="state not in ('completed', 'verified') or invoice_id"
@@ -82,7 +82,7 @@
                             </group>
                         </group>
                         <notebook>
-                            <page name="barcode_scanning" string="📷 Barcode Scanning" invisible="state not in ['confirmed','assigned','in_progress']">
+                            <page name="barcode_scanning" string="Barcode Scanning" invisible="state not in ['confirmed','assigned','in_progress']">
                                 <group>
                                     <group name="scan_status" string="Scanning Status">
                                         <field name="scanned_count" readonly="1"/>

@@ -430,7 +430,7 @@ class RecordsFile(models.Model):
             product_vals = {
                 'name': 'Records File Folder',
                 'default_code': 'RM-FILE-FOLDER',
-                'detailed_type': 'storable',  # Odoo 18+ uses 'storable' for serial tracking
+                'type': 'consu',  # Odoo 18+ uses 'consu' (consumable)
                 'tracking': 'serial',
                 'categ_id': self.env.ref('stock.product_category_all').id,
             }

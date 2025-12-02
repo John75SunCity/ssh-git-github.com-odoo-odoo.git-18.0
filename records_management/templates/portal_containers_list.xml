@@ -31,7 +31,7 @@
                                 data-action="portal-camera-scan"
                                 data-scan-type="container"
                                 title="Scan container barcode with camera">
-                            <i class="fa fa-camera"></i> Scan Barcode
+                            <i class="fa fa-barcode"></i> Scan Barcode
                         </button>
                         <!-- Add Container button -->
                         <t t-if="permissions.get('containers', {}).get('can_create')">

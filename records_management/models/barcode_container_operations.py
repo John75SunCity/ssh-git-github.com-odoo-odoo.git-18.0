@@ -176,9 +176,71 @@ class RecordsContainerBarcodeOperations(models.Model):
         """
         Add container to inventory via barcode operation.
         
-        This is the key method that replaces direct stock.quant creation.
-        Instead of manually creating product records with problematic fields,
-        we let Odoo's Barcode app handle it through internal transfers.
+        This acts like a barcode command:
+        1. Changes container state from 'pending' to 'in' (stored)
+        2. Sets a default storage location (WH/STOCK/IN)
+        3. Logs the barcode operation
+        
+        For internal use - this is a billable service (per container added to storage).
+        Portal customers can add files to containers without charge since they do the work.
+        """
+        self.ensure_one()
+        
+        if self.state not in ('pending', 'temp'):
+            raise UserError(_('Container must be in Pending or Temp Inventory state to add to storage.'))
+        
+        # Get or create default storage location (WH/STOCK/IN pattern)
+        stock_location = self._get_or_create_default_intake_location()
+        
+        # Update container state and location
+        self.write({
+            'state': 'in',
+            'location_id': stock_location.id if hasattr(self, 'location_id') else False,
+            'last_barcode_operation': 'Added to Storage',
+            'last_barcode_operation_date': fields.Datetime.now(),
+        })
+        
+        # Log the barcode operation
+        self._log_barcode_operation('barcode_add_to_storage', 'WH/STOCK/IN', None)
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Container Added to Storage'),
+                'message': _('Container %s has been moved from Pending to In Storage at %s') % (
+                    self.barcode or self.name,
+                    stock_location.name if stock_location else 'Default Location'
+                ),
+                'type': 'success',
+                'sticky': False,
+            }
+        }
+
+    def _get_or_create_default_intake_location(self):
+        """Get or create default intake location for new containers (WH/STOCK/IN)"""
+        # First try to find location with 'IN' or 'Intake' in name
+        location = self.env['records.location'].search([
+            '|',
+            ('name', 'ilike', 'IN'),
+            ('name', 'ilike', 'Intake'),
+        ], limit=1)
+        
+        if not location:
+            # Get any active storage location
+            location = self.env['records.location'].search([
+                ('active', '=', True),
+            ], limit=1)
+        
+        return location
+
+    def action_barcode_add_to_inventory_legacy(self):
+        """
+        Legacy: Add container to stock.quant inventory via barcode operation.
+        
+        This method uses stock transfers for inventory tracking.
+        Kept for backwards compatibility but action_barcode_add_to_inventory
+        is the recommended method.
         """
         self.ensure_one()
         
@@ -477,10 +539,9 @@ class RecordsContainerBarcodeOperations(models.Model):
             product = self.env['product.product'].create({
                 'name': 'Records Container (Generic)',
                 'default_code': 'CONTAINER-GENERIC',
-                'type': 'storable',  # Odoo 18: 'storable' for inventory tracking
+                'type': 'consu',  # Odoo 18: 'consu' (consumable) for basic inventory
                 'tracking': 'none',
                 'company_id': self.company_id.id,
-                # Intentionally NOT setting detailed_type - let Odoo defaults handle it
             })
         
         return product

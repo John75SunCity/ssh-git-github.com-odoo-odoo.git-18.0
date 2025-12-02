@@ -35,7 +35,7 @@
 
     <!-- Photos Only (Images from work orders) -->
     <menuitem id="photo_menu_images" 
-              name="📷 Service Photos" 
+              name="Service Photos" 
               parent="records_management.menu_photos_root" 
               action="action_service_attachment_photos" 
               sequence="10"/>

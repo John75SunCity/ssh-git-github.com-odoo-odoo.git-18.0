@@ -62,7 +62,7 @@
                                                             data-scan-type="container"
                                                             data-continuous="true"
                                                             title="Scan container barcodes with camera">
-                                                        <i class="fa fa-camera"></i> Scan Barcode
+                                                        <i class="fa fa-barcode"></i> Scan Barcode
                                                     </button>
                                                 </div>
                                                 <input type="text"
@@ -107,7 +107,7 @@
                                                             data-scan-type="file"
                                                             data-continuous="true"
                                                             title="Scan file barcodes with camera">
-                                                        <i class="fa fa-camera"></i> Scan Barcode
+                                                        <i class="fa fa-barcode"></i> Scan Barcode
                                                     </button>
                                                 </div>
                                                 <input type="text" 

@@ -64,7 +64,7 @@
                         </group>
 
                         <!-- Last Scan Info - Prominent Display -->
-                        <group string="📷 Last Scan" invisible="not last_barcode">
+                        <group string="Last Scan" invisible="not last_barcode">
                             <div class="text-center" style="font-size: 1.3em; padding: 10px;">
                                 <strong>Barcode:</strong> 
                                 <code><field name="last_barcode" readonly="1" class="d-inline"/></code>

@@ -1438,13 +1438,13 @@ class RecordsContainer(models.Model):
         ], limit=1)
 
         if not product:
-            # Create generic container product - STORABLE for inventory tracking
-            # Odoo 18: Use 'type' = 'storable' (was 'product' in Odoo 17)
+            # Create generic container product - consumable for inventory tracking
+            # Odoo 18: Use 'type' = 'consu' (consumable)
 
             product_vals = {
                 'name': 'Records Container (Generic)',
                 'default_code': 'RECORDS-CONTAINER',
-                'type': 'storable',  # Odoo 18: 'storable' type for stock.quant tracking
+                'type': 'consu',  # Odoo 18: 'consu' type for consumable products
                 'categ_id': self.env.ref('product.product_category_all').id,
                 'list_price': 0.0,
                 'standard_price': 0.0,

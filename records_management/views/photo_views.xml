@@ -226,7 +226,7 @@
                     
                     <!-- File Type Filters -->
                     <separator/>
-                    <filter name="filter_photos" string="📷 Photos Only" domain="[('file_category', '=', 'photo')]"/>
+                    <filter name="filter_photos" string="Photos Only" domain="[('file_category', '=', 'photo')]"/>
                     <filter name="filter_documents" string="📄 Documents (PDF)" domain="[('file_category', '=', 'document')]"/>
                     <filter name="filter_certificates" string="📜 Certificates" domain="[('file_category', '=', 'certificate')]"/>
                     <filter name="filter_other" string="📎 Other" domain="[('file_category', '=', 'other')]"/>

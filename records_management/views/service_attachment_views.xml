@@ -118,7 +118,7 @@
                     
                     <!-- Category Filters -->
                     <separator/>
-                    <filter name="filter_images" string="📷 Photos" domain="[('attachment_category', '=', 'image')]"/>
+                    <filter name="filter_images" string="Photos" domain="[('attachment_category', '=', 'image')]"/>
                     <filter name="filter_pdfs" string="📄 PDFs" domain="[('attachment_category', '=', 'pdf')]"/>
                     <filter name="filter_docs" string="📎 Documents" domain="[('attachment_category', '=', 'document')]"/>
                     

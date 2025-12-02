@@ -91,34 +91,39 @@
                         <group>
                             <button name="action_barcode_convert_to_storage" 
                                     type="object" 
-                                    string="🏢 Store Container"
+                                    string="Store Container"
                                     class="btn btn-primary"
+                                    icon="fa-building"
                                     invisible="state != 'temp'"/>
                             
                             <button name="action_barcode_mark_for_pickup" 
                                     type="object" 
-                                    string="🚚 Ready for Pickup"
+                                    string="Ready for Pickup"
                                     class="btn btn-info"
+                                    icon="fa-truck"
                                     invisible="state not in ['active', 'temp']"/>
                             
                             <button name="action_barcode_add_to_inventory" 
                                     type="object" 
-                                    string="📦 Add to Inventory"
+                                    string="Add to Inventory"
                                     class="btn btn-success"
+                                    icon="fa-plus-square"
                                     invisible="quant_id != False"/>
                         </group>
                         
                         <group>
                             <button name="action_barcode_queue_for_shredding" 
                                     type="object" 
-                                    string="🔥 Queue Destruction"
+                                    string="Queue Destruction"
                                     class="btn btn-warning"
+                                    icon="fa-fire"
                                     invisible="state not in ['active', 'retention_expired']"/>
                             
                             <button name="action_barcode_complete_shredding" 
                                     type="object" 
-                                    string="✅ Complete Destruction"
+                                    string="Complete Destruction"
                                     class="btn btn-danger"
+                                    icon="fa-check-circle"
                                     invisible="state != 'pending_destruction'"/>
                         </group>
                     </group>

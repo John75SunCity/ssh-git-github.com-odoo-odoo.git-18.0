@@ -80,7 +80,7 @@
                                                     data-scan-type="container"
                                                     data-target-checkboxes="container_ids"
                                                     title="Scan container barcodes with camera">
-                                                <i class="fa fa-camera"></i> Scan
+                                                <i class="fa fa-barcode"></i> Scan
                                             </button>
                                         </label>
                                         

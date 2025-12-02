@@ -30,7 +30,7 @@
                         </group>
 
                         <!-- Scan Input - Large touch-friendly input -->
-                        <group string="📷 Scan Container Barcode">
+                        <group string="Scan Container Barcode">
                             <field name="barcode_input" 
                                    placeholder="Tap here and scan barcode..."
                                    class="o_input_lg"
@@ -70,7 +70,7 @@
                         </div>
                     </sheet>
                     <footer>
-                        <button name="action_process_scan" string="📷 Scan" type="object" class="btn-primary btn-lg"/>
+                        <button name="action_process_scan" string="Scan" type="object" class="btn-primary btn-lg" icon="fa-barcode"/>
                         <button name="action_complete_picking" string="✓ Complete Picking" type="object" 
                                 class="btn-success btn-lg" invisible="remaining_items != 0"/>
                         <button name="action_mark_all_scanned" string="Override: Mark All" type="object" 
