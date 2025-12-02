@@ -1195,9 +1195,9 @@ class RecordsContainer(models.Model):
 
         pickup_task = self.env['project.task'].create(task_vals)
 
-        # Change container state to pending pickup
+        # Change container state to in storage
         vals = {
-            'state': 'pending_pickup',
+            'state': 'in',
         }
         if not self.storage_start_date:
             vals['storage_start_date'] = fields.Date.today()
@@ -1223,9 +1223,9 @@ class RecordsContainer(models.Model):
     def action_retrieve_container(self):
         """Retrieve container from storage"""
         self.ensure_one()
-        if self.state not in ["in_storage", "active"]:
-            raise UserError(_("Only stored or active containers can be retrieved"))
-        self.write({"state": "in_transit", "last_access_date": fields.Date.today()})
+        if self.state not in ["in"]:
+            raise UserError(_("Only containers in storage can be retrieved"))
+        self.write({"state": "out", "last_access_date": fields.Date.today()})
         self.message_post(body=_("Container retrieved from storage"))
 
     def action_bulk_convert_container_type(self):
@@ -1492,8 +1492,8 @@ class RecordsContainer(models.Model):
         """
         self.ensure_one()
 
-        if self.state != 'draft':
-            raise UserError(_("Only draft containers can be indexed"))
+        if self.state != 'pending':
+            raise UserError(_("Only pending containers can be indexed"))
 
         # Assign barcode
         if barcode and barcode != self.barcode:
@@ -1527,9 +1527,9 @@ class RecordsContainer(models.Model):
                 file_record = self.env['records.file'].create(file_vals)
                 created_files.append(file_record)
 
-        # Update container state
+        # Update container state to in storage
         self.write({
-            'state': 'active',
+            'state': 'in',
         })
 
         # Post message

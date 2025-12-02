@@ -186,8 +186,8 @@ class RecordsContainerBarcodeOperations(models.Model):
         """
         self.ensure_one()
         
-        if self.state not in ('pending', 'temp'):
-            raise UserError(_('Container must be in Pending or Temp Inventory state to add to storage.'))
+        if self.state != 'pending':
+            raise UserError(_('Container must be in Pending state to add to storage.'))
         
         # Get or create default storage location (WH/STOCK/IN pattern)
         stock_location = self._get_or_create_default_intake_location()
