@@ -35,6 +35,7 @@ class BarcodeOperationsWizard(models.TransientModel):
     operation_mode = fields.Selection([
         ('lookup', 'Container Lookup'),
         ('retrieval', 'Retrieval Scan'),
+        ('delivery_verify', 'Delivery Verification'),
         ('shredding', 'Shredding/Destruction'),
         ('bin', 'Bin Service'),
         ('file', 'File/Document'),
@@ -51,6 +52,28 @@ class BarcodeOperationsWizard(models.TransientModel):
         comodel_name='work.order.shredding',
         string='Shredding Work Order',
         help='Active shredding work order for bin scanning'
+    )
+    
+    # Delivery verification fields
+    expected_customer_id = fields.Many2one(
+        comodel_name='res.partner',
+        string='Expected Customer',
+        help='Customer expected to receive delivery - used for verification'
+    )
+    expected_department_id = fields.Many2one(
+        comodel_name='records.department',
+        string='Expected Department',
+        help='Department expected to receive delivery (optional)'
+    )
+    delivery_verified = fields.Boolean(
+        string='Delivery Verified',
+        readonly=True,
+        default=False,
+        help='True if scanned item matches expected customer'
+    )
+    verification_message = fields.Text(
+        string='Verification Result',
+        readonly=True
     )
     
     # Results
@@ -290,6 +313,7 @@ class BarcodeOperationsWizard(models.TransientModel):
         handlers = {
             'lookup': self._handle_container_lookup,
             'retrieval': self._handle_retrieval_scan,
+            'delivery_verify': self._handle_delivery_verification,
             'shredding': self._handle_shredding_scan,
             'bin': self._handle_bin_scan,
             'file': self._handle_file_scan,
@@ -327,6 +351,7 @@ class BarcodeOperationsWizard(models.TransientModel):
         handlers = {
             'lookup': self._handle_container_lookup,
             'retrieval': self._handle_retrieval_scan,
+            'delivery_verify': self._handle_delivery_verification,
             'shredding': self._handle_shredding_scan,
             'bin': self._handle_bin_scan,
             'file': self._handle_file_scan,
@@ -436,6 +461,124 @@ class BarcodeOperationsWizard(models.TransientModel):
         self.scan_success = result.get('success', False)
         self.scan_result = result.get('message', '')
         
+        return None
+
+    def _handle_delivery_verification(self, barcode):
+        """
+        Handle delivery verification scanning.
+        
+        Verifies that a scanned container/file belongs to the expected customer
+        to prevent wrong deliveries. Shows prominent error if mismatched.
+        """
+        Container = self.env['records.container']
+        File = self.env.get('records.file')
+        
+        # Reset verification state
+        self.delivery_verified = False
+        self.verification_message = ''
+        
+        if not self.expected_customer_id:
+            self.scan_success = False
+            self.scan_result = _('⚠️ No expected customer set. Please set the customer before scanning.')
+            return None
+        
+        # Search for container by barcode
+        container = Container.search([
+            '|', ('barcode', '=', barcode),
+            ('temp_barcode', '=', barcode)
+        ], limit=1)
+        
+        if container:
+            actual_customer = container.partner_id
+            expected_customer = self.expected_customer_id
+            
+            # Get commercial partners for parent/child matching
+            actual_commercial = actual_customer.commercial_partner_id or actual_customer
+            expected_commercial = expected_customer.commercial_partner_id or expected_customer
+            
+            # Check customer match
+            customer_match = (
+                actual_customer.id == expected_customer.id or
+                actual_commercial.id == expected_commercial.id
+            )
+            
+            if not customer_match:
+                self.scan_success = False
+                self.delivery_verified = False
+                self.scan_result = _('⚠️ WRONG CUSTOMER!\n\nThis container belongs to: %s\nExpected customer: %s\n\n❌ DO NOT DELIVER!') % (
+                    actual_customer.name, expected_customer.name
+                )
+                self.verification_message = _('Container %s belongs to %s, NOT %s') % (
+                    container.name, actual_customer.name, expected_customer.name
+                )
+                return None
+            
+            # Check department match if specified
+            if self.expected_department_id and hasattr(container, 'department_id') and container.department_id:
+                if container.department_id.id != self.expected_department_id.id:
+                    self.scan_success = False
+                    self.delivery_verified = False
+                    self.scan_result = _('⚠️ WRONG DEPARTMENT!\n\nThis container belongs to department: %s\nExpected department: %s\n\n❌ Verify before delivery!') % (
+                        container.department_id.name, self.expected_department_id.name
+                    )
+                    self.verification_message = _('Container %s is for department %s, not %s') % (
+                        container.name, container.department_id.name, self.expected_department_id.name
+                    )
+                    return None
+            
+            # Success - customer verified
+            self.scan_success = True
+            self.delivery_verified = True
+            self.container_id = container.id
+            dept_info = ''
+            if hasattr(container, 'department_id') and container.department_id:
+                dept_info = '\nDepartment: %s' % container.department_id.name
+            self.scan_result = _('✅ VERIFIED\n\nContainer: %s\nCustomer: %s%s\n\n✓ OK to deliver!') % (
+                container.name, actual_customer.name, dept_info
+            )
+            self.verification_message = _('Verified: Container %s for %s') % (container.name, actual_customer.name)
+            return None
+        
+        # Check for file/document
+        if File:
+            file_rec = File.search([('barcode', '=', barcode)], limit=1)
+            if file_rec:
+                actual_customer = file_rec.partner_id
+                expected_customer = self.expected_customer_id
+                
+                actual_commercial = actual_customer.commercial_partner_id or actual_customer
+                expected_commercial = expected_customer.commercial_partner_id or expected_customer
+                
+                customer_match = (
+                    actual_customer.id == expected_customer.id or
+                    actual_commercial.id == expected_commercial.id
+                )
+                
+                if not customer_match:
+                    self.scan_success = False
+                    self.delivery_verified = False
+                    self.scan_result = _('⚠️ WRONG CUSTOMER!\n\nThis file belongs to: %s\nExpected customer: %s\n\n❌ DO NOT DELIVER!') % (
+                        actual_customer.name, expected_customer.name
+                    )
+                    self.verification_message = _('File %s belongs to %s, NOT %s') % (
+                        file_rec.name, actual_customer.name, expected_customer.name
+                    )
+                    return None
+                
+                # Success - file verified
+                self.scan_success = True
+                self.delivery_verified = True
+                self.scan_result = _('✅ VERIFIED\n\nFile: %s\nCustomer: %s\nContainer: %s\n\n✓ OK to deliver!') % (
+                    file_rec.name, actual_customer.name,
+                    file_rec.container_id.name if file_rec.container_id else 'N/A'
+                )
+                self.verification_message = _('Verified: File %s for %s') % (file_rec.name, actual_customer.name)
+                return None
+        
+        # Not found
+        self.scan_success = False
+        self.delivery_verified = False
+        self.scan_result = _('❓ Item not found\n\nNo container or file found with barcode: %s') % barcode
         return None
 
     def _handle_shredding_scan(self, barcode):

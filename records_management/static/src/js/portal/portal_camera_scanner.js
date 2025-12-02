@@ -265,29 +265,84 @@
                 
                 const data = await response.json();
                 
-                if (data.success) {
-                    this._showNotification(data.message || 'Item found: ' + barcode, 'success');
+                // Handle the result from the JSON-RPC response
+                const result = data.result || data;
+                
+                if (result.success) {
+                    ScannerAudio.playSuccess();
+                    this._showNotification(result.message || 'Item found: ' + barcode, 'success');
                     
                     // Add to target select if specified
-                    if (this.targetSelectId && data.item_id) {
-                        this._addToSelect(data.item_id, data.item_name || barcode);
+                    if (this.targetSelectId && result.item_id) {
+                        this._addToSelect(result.item_id, result.item_name || barcode);
                     }
                     
                     // Check target checkbox if specified
-                    if (this.targetCheckboxName && data.item_id) {
-                        this._checkCheckbox(data.item_id);
+                    if (this.targetCheckboxName && result.item_id) {
+                        this._checkCheckbox(result.item_id);
                     }
                     
                     // Update scanned items display
-                    this._updateScannedItemsDisplay(data);
+                    this._updateScannedItemsDisplay(result);
                 } else {
                     ScannerAudio.playError();
-                    this._showNotification(data.message || 'Barcode not found: ' + barcode, 'warning');
+                    
+                    // Remove from scanned list since it failed
+                    const idx = this.scannedBarcodes.indexOf(barcode);
+                    if (idx > -1) this.scannedBarcodes.splice(idx, 1);
+                    
+                    // Show appropriate error message based on error type
+                    if (result.access_denied || result.belongs_to_other) {
+                        // Item belongs to another customer - show prominent warning
+                        this._showOwnershipError(result.message, barcode);
+                    } else {
+                        // Item not found or other error
+                        this._showNotification(result.message || 'Barcode not found: ' + barcode, 'warning');
+                    }
                 }
             } catch (error) {
                 console.error('[Portal Scanner] API error:', error);
+                ScannerAudio.playError();
                 this._showNotification('Error validating barcode', 'danger');
             }
+        },
+
+        /**
+         * Show prominent ownership error when item belongs to another customer
+         */
+        _showOwnershipError(message, barcode) {
+            // Create a modal-like alert for prominent display
+            const alertHtml = `
+                <div class="alert alert-danger alert-dismissible fade show position-fixed" 
+                     style="top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                            z-index: 10000; min-width: 300px; max-width: 90%; 
+                            box-shadow: 0 4px 20px rgba(0,0,0,0.3);"
+                     role="alert" id="ownership-error-alert">
+                    <h4 class="alert-heading">
+                        <i class="fa fa-exclamation-triangle"></i> Access Denied
+                    </h4>
+                    <p class="mb-2">${message}</p>
+                    <hr>
+                    <p class="mb-0 small">
+                        <strong>Barcode:</strong> ${barcode}<br>
+                        <em>This item cannot be added to your request.</em>
+                    </p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            
+            // Remove any existing ownership error alert
+            const existing = document.getElementById('ownership-error-alert');
+            if (existing) existing.remove();
+            
+            // Add to body
+            document.body.insertAdjacentHTML('beforeend', alertHtml);
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                const alert = document.getElementById('ownership-error-alert');
+                if (alert) alert.remove();
+            }, 5000);
         },
 
         /**
