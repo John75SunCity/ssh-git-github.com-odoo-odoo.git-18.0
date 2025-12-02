@@ -15,6 +15,13 @@ class CustomerStagingLocation(models.Model):
     Example: "City of EP/Records Department/Basement/Room B-006"
     
     Technicians use these locations to know exactly where to find containers during pickup.
+    
+    STOCK INTEGRATION:
+    Each customer staging location auto-creates a corresponding stock.location
+    with usage='customer'. This enables:
+    - Proper stock moves to/from customer locations
+    - Stock Barcode app compatibility
+    - Inventory tracking at customer sites
     """
     _name = 'customer.staging.location'
     _description = 'Customer Staging Location (Virtual)'
@@ -100,6 +107,18 @@ class CustomerStagingLocation(models.Model):
         inverse_name='customer_staging_location_id',
         string='Containers at This Location',
         help="Containers currently assigned to this staging location"
+    )
+
+    # ============================================================================
+    # STOCK INTEGRATION
+    # ============================================================================
+    stock_location_id = fields.Many2one(
+        comodel_name='stock.location',
+        string='Stock Location',
+        readonly=True,
+        ondelete='restrict',
+        help="Auto-created stock.location for inventory tracking. "
+             "Usage type is 'customer' for proper stock moves."
     )
 
     # ============================================================================
@@ -199,6 +218,60 @@ class CustomerStagingLocation(models.Model):
                     'Parent location must belong to the same customer.\n'
                     'Parent: %s\nThis location: %s'
                 ) % (location.parent_id.partner_id.name, location.partner_id.name))
+
+    # ============================================================================
+    # CRUD METHODS - STOCK INTEGRATION
+    # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Create customer staging locations with corresponding stock.location."""
+        locations = super().create(vals_list)
+        for location in locations:
+            location._create_or_update_stock_location()
+        return locations
+
+    def write(self, vals):
+        """Update stock.location when name or parent changes."""
+        result = super().write(vals)
+        if 'name' in vals or 'parent_id' in vals or 'partner_id' in vals:
+            for location in self:
+                location._create_or_update_stock_location()
+        return result
+
+    def _create_or_update_stock_location(self):
+        """
+        Create or update the corresponding stock.location.
+        
+        Stock location hierarchy mirrors customer staging location hierarchy.
+        All customer locations use usage='customer' for proper stock handling.
+        """
+        self.ensure_one()
+        
+        # Get parent stock location
+        parent_stock_location = False
+        if self.parent_id and self.parent_id.stock_location_id:
+            parent_stock_location = self.parent_id.stock_location_id
+        else:
+            # Top level - use partner's property_stock_customer if set, otherwise Partner Locations
+            parent_stock_location = self.env.ref('stock.stock_location_customers', raise_if_not_found=False)
+        
+        if not parent_stock_location:
+            return  # Stock module may not be fully installed
+        
+        location_vals = {
+            'name': self.complete_name or self.name,
+            'usage': 'customer',
+            'location_id': parent_stock_location.id,
+            'company_id': self.env.company.id,
+        }
+        
+        if self.stock_location_id:
+            # Update existing
+            self.stock_location_id.write(location_vals)
+        else:
+            # Create new
+            stock_location = self.env['stock.location'].create(location_vals)
+            self.stock_location_id = stock_location.id
 
     # ============================================================================
     # ACTIONS

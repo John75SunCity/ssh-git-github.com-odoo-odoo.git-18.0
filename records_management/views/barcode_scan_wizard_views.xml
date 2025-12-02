@@ -11,13 +11,17 @@
                         <p><i class="fa fa-barcode" title="Barcode"/> <strong>Quick Barcode Scanner</strong></p>
                         <ul>
                             <li><strong>USB Scanner:</strong> Focus field and scan</li>
-                            <li><strong>Mobile:</strong> Tap camera icon</li>
+                            <li><strong>Mobile Camera:</strong> Tap the camera icon in the barcode field</li>
                             <li><strong>Manual:</strong> Type and click Scan</li>
                         </ul>
                     </div>
                     
                     <group>
-                        <field name="barcode_input" placeholder="Scan or type barcode here..." autofocus="1"/>
+                        <!-- widget="barcode_scanner" enables mobile camera scanning in Odoo 18 -->
+                        <field name="barcode_input" 
+                               placeholder="Scan or type barcode here..." 
+                               widget="barcode_scanner"
+                               options="{'autofocus': true}"/>
                     </group>
                     
                     <field name="scan_result" nolabel="1"/>
