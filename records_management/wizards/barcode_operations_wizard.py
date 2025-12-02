@@ -115,15 +115,20 @@ class BarcodeOperationsWizard(models.TransientModel):
 
     def action_open_stock_barcode(self):
         """
-        Open Odoo Stock Barcode app for camera scanning.
+        Open Odoo Stock Barcode scanning interface.
         
-        The Stock Barcode app has native camera support that works on
-        mobile devices. This closes the wizard and opens the barcode app.
+        Since the main menu requires specific context, we show a notification
+        directing users to the proper app location.
         """
         return {
             'type': 'ir.actions.client',
-            'tag': 'stock_barcode_main_menu',
-            'target': 'fullscreen',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Camera Scanning'),
+                'message': _('For camera scanning on mobile, go to: Inventory → Barcode Scanning'),
+                'type': 'info',
+                'sticky': False,
+            }
         }
 
     def _stay_open(self):
