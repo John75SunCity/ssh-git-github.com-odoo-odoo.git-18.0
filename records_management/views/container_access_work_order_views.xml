@@ -28,9 +28,9 @@
                                 invisible="state not in ['scheduled','in_progress']" 
                                 icon="fa-barcode"
                                 help="Open barcode scanner to verify containers and files"/>
-                        <button name="action_start" string="Start Access" type="object" 
+                        <button name="action_start_access" string="Start Access" type="object" 
                                 invisible="state != 'scheduled'" class="oe_highlight"/>
-                        <button name="action_complete" string="Complete" type="object" 
+                        <button name="action_complete_access" string="Complete" type="object" 
                                 invisible="state != 'in_progress'" class="btn-success"/>
                         <button name="action_cancel" string="Cancel" type="object" 
                                 invisible="state in ['completed', 'documented', 'closed', 'cancelled']"/>

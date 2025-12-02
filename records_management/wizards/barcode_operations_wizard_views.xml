@@ -47,21 +47,22 @@
                                    invisible="pending_operation == 'none'"/>
                         </group>
 
-                        <!-- Manual Barcode Entry -->
+                        <!-- Manual Barcode Entry with Native Camera Support -->
                         <group string="Enter Barcode Manually">
-                            <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center" style="gap: 8px;">
+                                <!-- widget="barcode_scanner" provides native camera icon on mobile -->
                                 <field name="manual_barcode" 
-                                       placeholder="Type barcode and press Enter..."
+                                       placeholder="Type or scan barcode..."
+                                       widget="barcode_scanner"
                                        class="o_input flex-grow-1"
-                                       style="font-size: 1.2em;"/>
+                                       style="font-size: 1.2em; min-width: 300px;"/>
                                 <button name="action_manual_scan" 
                                         string="Submit" 
                                         type="object" 
-                                        class="btn-primary ms-2 oe_highlight"
-                                        icon="fa-arrow-right"
-                                        default_focus="1"/>
+                                        class="btn-primary oe_highlight"
+                                        icon="fa-arrow-right"/>
                             </div>
-                            <p class="text-muted small mt-1">Type barcode and click Submit (or use hardware scanner)</p>
+                            <p class="text-muted small mt-1">Type barcode or tap 📷 camera icon on mobile</p>
                         </group>
 
                         <!-- Last Scan Info - Prominent Display -->
@@ -90,14 +91,17 @@
                             </pre>
                         </div>
 
-                        <!-- Placeholder when no scan yet -->
+                        <!-- Ready to Scan - Compact Display -->
                         <div class="alert alert-info text-center" role="status" 
-                             style="font-size: 1.2em; padding: 30px; margin: 20px 0;"
+                             style="padding: 15px; margin: 10px 0;"
                              invisible="scan_result">
-                            <i class="fa fa-barcode fa-3x" title="Ready to scan" style="display: block; margin-bottom: 15px;"/>
-                            <h3>Ready to Scan</h3>
-                            <p>Use your barcode scanner or enter barcode manually</p>
-                            <p><small>Supports container, bin, document, and location barcodes</small></p>
+                            <div class="d-flex align-items-center justify-content-center" style="gap: 15px;">
+                                <i class="fa fa-barcode fa-2x" title="Ready to scan"/>
+                                <div>
+                                    <strong style="font-size: 1.1em;">Ready to Scan</strong>
+                                    <p class="mb-0 small">Use hardware scanner or tap 📷 in barcode field for camera</p>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Found Records Display -->
