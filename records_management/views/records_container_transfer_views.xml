@@ -20,7 +20,7 @@
                                 class="btn-primary" invisible="state != 'draft'"/>
                         <button name="action_start_transfer" string="Start Transfer" type="object" 
                                 class="btn-primary" invisible="state != 'ready'"/>
-                        <button name="action_open_scanner" string="Scan Containers" type="object" icon="fa-barcode" 
+                        <button name="action_open_scanner" string="Scan Containers" type="object" 
                                 class="btn-secondary" invisible="state not in ['draft', 'ready', 'in_progress']"
                                 icon="fa-barcode"/>
                         <button name="action_complete_transfer" string="Complete" type="object" 
