@@ -47,13 +47,11 @@
                                    invisible="pending_operation == 'none'"/>
                         </group>
 
-                        <!-- Manual Barcode Entry with Native Camera Support -->
+                        <!-- Manual Barcode Entry -->
                         <group string="Enter Barcode Manually">
                             <div class="d-flex align-items-center" style="gap: 8px;">
-                                <!-- widget="barcode_scanner" provides native camera icon on mobile -->
                                 <field name="manual_barcode" 
                                        placeholder="Type or scan barcode..."
-                                       widget="barcode_scanner"
                                        class="o_input flex-grow-1"
                                        style="font-size: 1.2em; min-width: 300px;"/>
                                 <button name="action_manual_scan" 
@@ -62,7 +60,7 @@
                                         class="btn-primary oe_highlight"
                                         icon="fa-arrow-right"/>
                             </div>
-                            <p class="text-muted small mt-1">Type barcode or tap 📷 camera icon on mobile</p>
+                            <p class="text-muted small mt-1">Type barcode and press Submit, or use hardware scanner</p>
                         </group>
 
                         <!-- Last Scan Info - Prominent Display -->
@@ -91,16 +89,20 @@
                             </pre>
                         </div>
 
-                        <!-- Ready to Scan - Compact Display -->
+                        <!-- Ready to Scan - With Camera Button -->
                         <div class="alert alert-info text-center" role="status" 
-                             style="padding: 15px; margin: 10px 0;"
+                             style="padding: 20px; margin: 10px 0;"
                              invisible="scan_result">
-                            <div class="d-flex align-items-center justify-content-center" style="gap: 15px;">
+                            <div class="d-flex flex-column align-items-center" style="gap: 10px;">
                                 <i class="fa fa-barcode fa-2x" title="Ready to scan"/>
-                                <div>
-                                    <strong style="font-size: 1.1em;">Ready to Scan</strong>
-                                    <p class="mb-0 small">Use hardware scanner or tap 📷 in barcode field for camera</p>
-                                </div>
+                                <strong style="font-size: 1.1em;">Ready to Scan</strong>
+                                <p class="mb-0 small">Use hardware scanner, type barcode above, or:</p>
+                                <button name="action_open_stock_barcode" 
+                                        type="object" 
+                                        class="btn btn-primary btn-lg"
+                                        style="padding: 12px 30px;">
+                                    <i class="fa fa-camera"/> Open Camera Scanner
+                                </button>
                             </div>
                         </div>
 
@@ -130,23 +132,29 @@
                         </notebook>
 
                         <!-- Standard Commands Reference -->
-                        <group string="🎯 Quick Commands" name="commands_help">
-                            <div class="table-responsive">
-                                <table class="table table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Command</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td><code>O-BTN.scrap</code></td><td>Queue for destruction</td></tr>
-                                        <tr><td><code>O-CMD.RETURN</code></td><td>Create retrieval request</td></tr>
-                                        <tr><td><code>O-CMD.PRINT</code></td><td>Print container label</td></tr>
-                                        <tr><td><code>O-BTN.validate</code></td><td>Confirm operation</td></tr>
-                                        <tr><td><code>O-BTN.cancel</code></td><td>Cancel pending</td></tr>
-                                    </tbody>
-                                </table>
+                        <group string="🎯 Quick Actions" name="quick_actions" invisible="not container_id">
+                            <div class="d-flex flex-wrap gap-2" style="padding: 10px;">
+                                <button name="action_cmd_print" type="object" 
+                                        class="btn btn-info" icon="fa-print">
+                                    Print Label
+                                </button>
+                                <button name="action_cmd_return" type="object" 
+                                        class="btn btn-primary" icon="fa-truck">
+                                    Request Return
+                                </button>
+                                <button name="action_cmd_scrap" type="object" 
+                                        class="btn btn-warning" icon="fa-trash"
+                                        groups="records_management.group_records_manager">
+                                    Queue Destruction
+                                </button>
+                                <button name="action_cmd_validate" type="object" 
+                                        class="btn btn-success" icon="fa-check">
+                                    Confirm
+                                </button>
+                                <button name="action_cmd_cancel" type="object" 
+                                        class="btn btn-secondary" icon="fa-times">
+                                    Cancel
+                                </button>
                             </div>
                         </group>
                     </sheet>

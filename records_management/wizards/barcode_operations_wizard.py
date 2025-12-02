@@ -113,6 +113,19 @@ class BarcodeOperationsWizard(models.TransientModel):
         self._process_barcode(barcode)
         return self._stay_open()
 
+    def action_open_stock_barcode(self):
+        """
+        Open Odoo Stock Barcode app for camera scanning.
+        
+        The Stock Barcode app has native camera support that works on
+        mobile devices. This closes the wizard and opens the barcode app.
+        """
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'stock_barcode_main_menu',
+            'target': 'fullscreen',
+        }
+
     def _stay_open(self):
         """Return action to keep wizard open."""
         return {
@@ -482,6 +495,49 @@ class BarcodeOperationsWizard(models.TransientModel):
             'view_mode': 'form',
             'target': 'current',
         }
+
+    def action_cmd_scrap(self):
+        """Button: Queue container for destruction (emulates O-BTN.scrap)."""
+        self.ensure_one()
+        if not self.container_id:
+            self.scan_success = False
+            self.scan_result = _('Scan a container first before queuing for destruction.')
+            return self._stay_open()
+        # Call container's destroy action
+        self.container_id.action_destroy()
+        self.scan_success = True
+        self.scan_result = _('✅ Container %s queued for destruction') % self.container_id.name
+        return self._stay_open()
+
+    def action_cmd_return(self):
+        """Button: Create retrieval request (emulates O-CMD.RETURN)."""
+        self.ensure_one()
+        if not self.container_id:
+            self.scan_success = False
+            self.scan_result = _('Scan a container first before creating retrieval request.')
+            return self._stay_open()
+        self._create_retrieval_request()
+        return self._stay_open()
+
+    def action_cmd_print(self):
+        """Button: Print container label (emulates O-CMD.PRINT)."""
+        self.ensure_one()
+        result = self._execute_print()
+        if result:
+            return result
+        return self._stay_open()
+
+    def action_cmd_validate(self):
+        """Button: Validate/confirm operation (emulates O-BTN.validate)."""
+        self.ensure_one()
+        self._execute_validate()
+        return self._stay_open()
+
+    def action_cmd_cancel(self):
+        """Button: Cancel pending operation (emulates O-BTN.cancel)."""
+        self.ensure_one()
+        self._execute_cancel()
+        return self._stay_open()
 
     def action_reset(self):
         """Reset the scanner for a new session."""
