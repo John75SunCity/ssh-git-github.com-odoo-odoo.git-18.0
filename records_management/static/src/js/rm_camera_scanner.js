@@ -6,8 +6,9 @@
  * Uses Scanbot SDK WASM-based barcode recognition engine for cross-browser support.
  *
  * Features:
- * - Live camera preview with professional barcode detection
+ * - Live camera preview with embedded barcode detection (not fullscreen)
  * - WASM-based engine works on all modern browsers (Chrome, Firefox, Safari, Edge)
+ * - Single scan mode (stops after each scan) or Continuous mode
  * - Multiple format support: QR, EAN, Code-128/39, UPC, DataMatrix, PDF417, Aztec
  * - Audio feedback on successful scans
  * - Manual barcode entry fallback
@@ -15,7 +16,7 @@
  * - Integration with Records Management operations
  *
  * @author Records Management System
- * @version 18.0.1.1.0
+ * @version 18.0.1.2.0
  * @license LGPL-3
  */
 
@@ -45,8 +46,8 @@ const SCANBOT_LICENSE_KEY =
     "Y29tCjE3NjUzMjQ3OTkKODM4ODYwNw" +
     "o4\n";
 
-// Scanbot SDK CDN URLs
-const SCANBOT_SDK_URL = "https://cdn.jsdelivr.net/npm/scanbot-web-sdk@7.0.0/bundle/ScanbotSDK.ui2.min.js";
+// Scanbot SDK CDN URLs - Use the base SDK (not RTU UI) for embedded scanning
+const SCANBOT_SDK_URL = "https://cdn.jsdelivr.net/npm/scanbot-web-sdk@7.0.0/bundle/ScanbotSDK.min.js";
 const SCANBOT_ENGINE_PATH = "https://cdn.jsdelivr.net/npm/scanbot-web-sdk@7.0.0/bundle/bin/barcode-scanner/";
 
 /**
@@ -170,9 +171,10 @@ class ScanbotLoader {
 /**
  * Camera Barcode Scanner Dialog Component
  *
- * Provides a full-screen camera interface for barcode scanning with:
- * - Scanbot SDK WASM-based barcode recognition
- * - Live video preview
+ * Provides an embedded camera interface for barcode scanning with:
+ * - Scanbot SDK WASM-based barcode recognition (embedded, not fullscreen)
+ * - Live video preview inside the dialog
+ * - Single scan or continuous scan mode toggle
  * - Operation mode selection (lookup, retrieval, shredding, etc.)
  * - Result display and navigation
  */
@@ -191,6 +193,9 @@ export class RMCameraScannerDialog extends Component {
         this.notification = useService("notification");
         this.action = useService("action");
 
+        // Component lifecycle flag to prevent calls after unmount
+        this.isDestroyed = false;
+
         this.state = useState({
             cameraActive: false,
             scanning: false,
@@ -205,17 +210,19 @@ export class RMCameraScannerDialog extends Component {
             operationMode: this.props.operationMode || "lookup",
             sdkReady: false,
             sdkLoading: true,
-            useScanbotRTU: true, // Use Scanbot Ready-To-Use UI
+            // Scan mode: 'single' stops after each scan, 'continuous' keeps scanning
+            scanMode: "single",
+            processing: false, // Flag to show processing state
         });
 
         this.videoRef = useRef("videoElement");
+        this.scannerContainerRef = useRef("scannerContainer");
         this.stream = null;
-        this.scanInterval = null;
-        this.lastScanTime = 0;
         this.scanbotSDK = null;
         this.barcodeScanner = null;
+        this.lastScanTime = 0;
 
-        // Check for camera support and load SDK
+        // Check for camera support
         this.checkCameraSupport();
 
         onMounted(() => {
@@ -223,6 +230,7 @@ export class RMCameraScannerDialog extends Component {
         });
 
         onWillUnmount(() => {
+            this.isDestroyed = true;
             this.stopCamera();
             this.cleanupScanbotScanner();
         });
@@ -231,14 +239,17 @@ export class RMCameraScannerDialog extends Component {
     async loadScanbotSDK() {
         try {
             this.scanbotSDK = await ScanbotLoader.load();
-            this.state.sdkReady = true;
-            this.state.sdkLoading = false;
-            console.log('Scanbot SDK loaded and ready');
+            if (!this.isDestroyed) {
+                this.state.sdkReady = true;
+                this.state.sdkLoading = false;
+                console.log('Scanbot SDK loaded and ready');
+            }
         } catch (error) {
             console.error('Failed to load Scanbot SDK:', error);
-            this.state.sdkLoading = false;
-            this.state.errorMessage = _t("Failed to load barcode scanner engine. Using fallback.");
-            // SDK failed - will fall back to native BarcodeDetector or manual
+            if (!this.isDestroyed) {
+                this.state.sdkLoading = false;
+                this.state.errorMessage = _t("Failed to load barcode scanner engine. Using manual entry.");
+            }
         }
     }
 
@@ -256,7 +267,7 @@ export class RMCameraScannerDialog extends Component {
     async checkCameraSupport() {
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             this.state.hasCamera = false;
-            this.state.errorMessage = _t("Camera not supported in this browser. Please use Chrome or Edge.");
+            this.state.errorMessage = _t("Camera not supported in this browser.");
         }
     }
 
@@ -271,48 +282,71 @@ export class RMCameraScannerDialog extends Component {
         ];
     }
 
+    /**
+     * Start camera with Scanbot embedded barcode scanner
+     * The scanner renders inside the video element container, not fullscreen
+     */
     async startCamera() {
+        if (this.isDestroyed) return;
+        
         this.state.errorMessage = null;
         this.state.permissionDenied = false;
 
-        // If Scanbot SDK is ready, use the RTU UI
-        if (this.state.sdkReady && this.state.useScanbotRTU) {
-            await this.startScanbotScanner();
+        // Check if SDK is ready
+        if (!this.state.sdkReady || !this.scanbotSDK) {
+            this.notification.add(_t("Scanner loading... Please wait."), { type: "info" });
             return;
         }
 
-        // Fallback to native camera + detection
         try {
-            // Request camera access
-            this.stream = await navigator.mediaDevices.getUserMedia({
-                video: {
+            // Create the Scanbot barcode scanner attached to our container
+            const containerElement = this.scannerContainerRef.el;
+            if (!containerElement) {
+                throw new Error("Scanner container not found");
+            }
+
+            // Configure the embedded barcode scanner
+            const config = {
+                containerId: containerElement.id || 'scanbot-scanner-container',
+                videoConstraints: {
                     facingMode: this.state.selectedCamera,
                     width: { ideal: 1280 },
                     height: { ideal: 720 },
                 },
-            });
+                overlay: {
+                    visible: true,
+                    textFormat: "TextAndFormat",
+                    polygonFillColor: "rgba(0, 255, 136, 0.2)",
+                    polygonStrokeColor: "#00FF88",
+                    polygonStrokeWidth: 3,
+                },
+                returnBarcodeImage: false,
+                onBarcodesDetected: (result) => this.onBarcodesDetected(result),
+                onError: (error) => this.onScanError(error),
+            };
 
-            // Attach stream to video element
-            if (this.videoRef.el) {
-                this.videoRef.el.srcObject = this.stream;
-                await this.videoRef.el.play();
+            // Create the scanner - it will render inside the container
+            this.barcodeScanner = await this.scanbotSDK.createBarcodeScanner(config);
+            
+            if (!this.isDestroyed) {
                 this.state.cameraActive = true;
                 this.state.scanning = true;
-
-                // Initialize barcode detection (Scanbot Classic UI or native fallback)
-                this.startBarcodeDetection();
+                this.notification.add(_t("Camera ready - point at barcode"), { type: "info", sticky: false });
             }
-        } catch (error) {
-            console.error("Camera error:", error);
 
-            if (error.name === "NotAllowedError") {
+        } catch (error) {
+            console.error("Camera/Scanner error:", error);
+
+            if (this.isDestroyed) return;
+
+            if (error.name === "NotAllowedError" || error.message?.includes("Permission")) {
                 this.state.permissionDenied = true;
                 this.state.errorMessage = _t("Camera access denied. Please allow camera access and try again.");
             } else if (error.name === "NotFoundError") {
                 this.state.hasCamera = false;
-                this.state.errorMessage = _t("No camera found. Please connect a camera or use manual entry.");
+                this.state.errorMessage = _t("No camera found. Please use manual entry.");
             } else {
-                this.state.errorMessage = _t("Camera error: ") + error.message;
+                this.state.errorMessage = _t("Camera error: ") + (error.message || "Unknown error");
             }
 
             this.notification.add(this.state.errorMessage, { type: "warning" });
@@ -320,159 +354,129 @@ export class RMCameraScannerDialog extends Component {
     }
 
     /**
-     * Start Scanbot SDK Ready-To-Use UI Scanner
-     * This opens a full-screen scanner overlay with professional UI
+     * Handle barcodes detected by Scanbot SDK
      */
-    async startScanbotScanner() {
-        if (!window.ScanbotSDK || !this.state.sdkReady) {
-            this.notification.add(_t("Scanner not ready. Please wait..."), { type: "warning" });
+    onBarcodesDetected(result) {
+        if (this.isDestroyed || !result.barcodes || result.barcodes.length === 0) {
             return;
         }
 
-        try {
-            // Configure the Scanbot RTU UI scanner
-            const config = new window.ScanbotSDK.UI.Config.BarcodeScannerScreenConfiguration();
-            
-            // Customize appearance
-            config.topBar.title.text = _t("Records Management Scanner");
-            config.topBar.mode = "GRADIENT";
-            
-            // Enable AR overlay for visual feedback
-            config.useCase.arOverlay.visible = true;
-            config.useCase.arOverlay.automaticSelectionEnabled = true;
-            
-            // Enable viewfinder
-            config.viewFinder.visible = true;
-            config.viewFinder.style.strokeColor = "#00FF88";
-            config.viewFinder.style.strokeWidth = 3;
-            
-            // Sound and vibration feedback
-            config.sound.successBeepEnabled = true;
-            config.sound.buttonClickEnabled = true;
-            config.vibration.enabled = true;
+        // Get the first detected barcode
+        const barcode = result.barcodes[0];
+        const barcodeText = barcode.text;
+        const barcodeFormat = barcode.format;
 
-            // Launch the scanner
-            const scanResult = await window.ScanbotSDK.UI.createBarcodeScanner(config);
+        // Debounce duplicate scans (2 second window)
+        const currentTime = Date.now();
+        if (barcodeText === this.state.lastScannedBarcode && currentTime - this.lastScanTime < 2000) {
+            return;
+        }
 
-            if (scanResult?.items?.length > 0) {
-                const barcode = scanResult.items[0].barcode;
-                const barcodeText = barcode.text;
-                const barcodeFormat = barcode.format;
+        console.log("Scanned: " + barcodeText + " (" + barcodeFormat + ")");
+        this.lastScanTime = currentTime;
+        this.state.lastScannedBarcode = barcodeText;
 
-                console.log(`Scanned: ${barcodeText} (${barcodeFormat})`);
-                
-                // Play success sound
-                ScannerAudio.playSuccess();
-                
-                // Process the barcode
-                this.state.lastScannedBarcode = barcodeText;
-                await this.processBarcode(barcodeText);
-            } else {
-                // User cancelled
-                this.notification.add(_t("Scanning cancelled"), { type: "info", sticky: false });
+        // In single scan mode, pause scanning while processing
+        if (this.state.scanMode === "single") {
+            this.pauseScanning();
+        }
+
+        // Play success sound
+        ScannerAudio.playSuccess();
+
+        // Process the barcode
+        this.processBarcode(barcodeText);
+    }
+
+    /**
+     * Handle scanner errors
+     */
+    onScanError(error) {
+        console.error("Scanbot scanner error:", error);
+        if (!this.isDestroyed) {
+            this.notification.add(_t("Scanner error: ") + error.message, { type: "warning" });
+        }
+    }
+
+    /**
+     * Pause scanning (for single scan mode)
+     */
+    pauseScanning() {
+        if (this.barcodeScanner && !this.isDestroyed) {
+            this.state.scanning = false;
+            // Scanbot SDK pause method
+            try {
+                this.barcodeScanner.pauseDetection();
+            } catch (e) {
+                console.warn("Could not pause detection:", e);
             }
-        } catch (error) {
-            console.error("Scanbot scanner error:", error);
-            ScannerAudio.playError();
-            this.notification.add(
-                _t("Scanner error: ") + error.message,
-                { type: "danger", sticky: false }
-            );
+        }
+    }
+
+    /**
+     * Resume scanning
+     */
+    resumeScanning() {
+        if (this.barcodeScanner && this.state.cameraActive && !this.isDestroyed) {
+            this.state.scanning = true;
+            try {
+                this.barcodeScanner.resumeDetection();
+            } catch (e) {
+                console.warn("Could not resume detection:", e);
+            }
         }
     }
 
     stopCamera() {
+        if (this.barcodeScanner) {
+            try {
+                this.barcodeScanner.dispose();
+            } catch (e) {
+                console.warn("Error stopping scanner:", e);
+            }
+            this.barcodeScanner = null;
+        }
+        
+        // Also stop any direct stream if exists
         if (this.stream) {
             this.stream.getTracks().forEach((track) => track.stop());
             this.stream = null;
         }
-        if (this.scanInterval) {
-            clearInterval(this.scanInterval);
-            this.scanInterval = null;
+        
+        if (!this.isDestroyed) {
+            this.state.cameraActive = false;
+            this.state.scanning = false;
         }
-        this.state.cameraActive = false;
-        this.state.scanning = false;
     }
 
     toggleCamera() {
         this.state.selectedCamera = this.state.selectedCamera === "environment" ? "user" : "environment";
         if (this.state.cameraActive) {
             this.stopCamera();
-            this.startCamera();
+            // Small delay to allow cleanup
+            setTimeout(() => {
+                if (!this.isDestroyed) {
+                    this.startCamera();
+                }
+            }, 300);
         }
     }
 
-    startBarcodeDetection() {
-        // Check for native BarcodeDetector support
-        if ("BarcodeDetector" in window) {
-            try {
-                this.barcodeDetector = new BarcodeDetector({
-                    formats: ["qr_code", "ean_13", "ean_8", "code_128", "code_39", "upc_a", "upc_e", "codabar"],
-                });
-
-                // Continuous scanning at 4 FPS
-                this.scanInterval = setInterval(async () => {
-                    if (this.state.scanning && this.videoRef.el && this.videoRef.el.readyState >= 2) {
-                        await this.detectBarcode();
-                    }
-                }, 250);
-
-                this.notification.add(_t("Camera ready - point at barcode"), { type: "info", sticky: false });
-
-            } catch (error) {
-                console.error("BarcodeDetector setup error:", error);
-                this.showManualFallback();
-            }
-        } else {
-            this.showManualFallback();
-        }
-    }
-
-    showManualFallback() {
+    toggleScanMode() {
+        this.state.scanMode = this.state.scanMode === "single" ? "continuous" : "single";
         this.notification.add(
-            _t("Automatic barcode detection not available. Please use manual entry."),
-            { type: "info" }
+            this.state.scanMode === "single" 
+                ? _t("Single scan mode: Camera pauses after each scan")
+                : _t("Continuous scan mode: Keeps scanning after each scan"),
+            { type: "info", sticky: false }
         );
     }
 
-    async detectBarcode() {
-        if (!this.barcodeDetector || !this.videoRef.el) return;
-
-        try {
-            const barcodes = await this.barcodeDetector.detect(this.videoRef.el);
-
-            if (barcodes.length > 0) {
-                const barcode = barcodes[0].rawValue;
-
-                // Debounce duplicate scans (2 second window)
-                const currentTime = Date.now();
-                if (barcode === this.state.lastScannedBarcode && currentTime - this.lastScanTime < 2000) {
-                    return;
-                }
-
-                // Process this barcode
-                this.lastScanTime = currentTime;
-                this.state.lastScannedBarcode = barcode;
-                this.state.scanning = false; // Pause scanning during processing
-
-                await this.processBarcode(barcode);
-
-                // Resume scanning after delay
-                setTimeout(() => {
-                    if (this.state.cameraActive) {
-                        this.state.scanning = true;
-                    }
-                }, 1500);
-            }
-        } catch (error) {
-            console.error("Barcode detection error:", error);
-        }
-    }
-
     async processBarcode(barcode) {
-        if (!barcode) return;
+        if (!barcode || this.isDestroyed) return;
 
         this.state.scanCount++;
+        this.state.processing = true;
 
         try {
             // Call the backend to process the barcode
@@ -483,8 +487,12 @@ export class RMCameraScannerDialog extends Component {
                 { work_order_id: this.props.workOrderId || false }
             );
 
+            // Check if component is still mounted
+            if (this.isDestroyed) return;
+
+            this.state.processing = false;
+
             if (result.success) {
-                ScannerAudio.playSuccess();
                 this.state.lastScannedResult = result;
 
                 this.notification.add(
@@ -493,7 +501,7 @@ export class RMCameraScannerDialog extends Component {
                 );
 
                 // Callback if provided
-                if (this.props.onScanComplete) {
+                if (this.props.onScanComplete && !this.isDestroyed) {
                     this.props.onScanComplete(result);
                 }
             } else {
@@ -505,11 +513,22 @@ export class RMCameraScannerDialog extends Component {
                     { type: "warning", sticky: false }
                 );
             }
+
+            // In continuous mode, keep scanning; in single mode, stay paused
+            if (this.state.scanMode === "continuous" && !this.isDestroyed) {
+                // Small delay before resuming in continuous mode
+                setTimeout(() => this.resumeScanning(), 500);
+            }
+
         } catch (error) {
+            if (this.isDestroyed) return;
+
             ScannerAudio.playError();
             console.error("Process barcode error:", error);
 
+            this.state.processing = false;
             this.state.lastScannedResult = { error: error.message };
+            
             this.notification.add(
                 _t("Error processing barcode: ") + (error.data?.message || error.message),
                 { type: "danger", sticky: false }
@@ -541,15 +560,17 @@ export class RMCameraScannerDialog extends Component {
     }
 
     async viewContainer() {
-        if (!this.state.lastScannedResult?.container_id) return;
+        if (!this.state.lastScannedResult?.container_id || this.isDestroyed) return;
 
+        const containerId = this.state.lastScannedResult.container_id;
+        
         this.stopCamera();
         this.props.close();
 
         await this.action.doAction({
             type: "ir.actions.act_window",
             res_model: "records.container",
-            res_id: this.state.lastScannedResult.container_id,
+            res_id: containerId,
             views: [[false, "form"]],
             target: "current",
         });
@@ -578,7 +599,9 @@ export class RMCameraScannerAction extends Component {
         this.workOrderId = context.work_order_id || null;
 
         // Auto-open dialog
-        this.openScanner();
+        onMounted(() => {
+            this.openScanner();
+        });
     }
 
     openScanner() {
@@ -590,16 +613,8 @@ export class RMCameraScannerAction extends Component {
     }
 
     onScanComplete(result) {
-        // Handle scan completion - navigate to record if found
-        if (result.container_id) {
-            this.action.doAction({
-                type: "ir.actions.act_window",
-                res_model: "records.container",
-                res_id: result.container_id,
-                views: [[false, "form"]],
-                target: "current",
-            });
-        }
+        // Handle scan completion - could navigate if needed
+        console.log("Scan complete:", result);
     }
 }
 

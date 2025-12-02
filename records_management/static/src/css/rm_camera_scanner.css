@@ -2,9 +2,10 @@
  * Records Management Camera Barcode Scanner Styles
  *
  * Modern, mobile-optimized styling for the camera scanning interface.
+ * Updated for Scanbot SDK embedded scanner.
  *
  * @author Records Management System
- * @version 18.0.1.0.0
+ * @version 18.0.1.2.0
  * @license LGPL-3
  */
 
@@ -42,6 +43,27 @@
 
 .camera-preview.camera-active {
     min-height: 350px;
+}
+
+/* Scanbot SDK scanner container */
+.scanner-container {
+    position: relative;
+    width: 100%;
+    min-height: 300px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.scanner-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Pause overlay when scanning is paused */
+.scan-paused-overlay {
+    border-radius: 8px;
 }
 
 .camera-video {

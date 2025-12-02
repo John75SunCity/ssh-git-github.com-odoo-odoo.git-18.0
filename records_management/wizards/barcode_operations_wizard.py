@@ -197,23 +197,31 @@ class BarcodeOperationsWizard(models.TransientModel):
             message_type='notification'
         )
         
-        # Handle operation-specific actions
+        # Get human-readable state label
+        state_label = dict(container._fields['state'].selection).get(container.state, container.state) if container.state else ''
+        
+        # Handle operation-specific actions and messages
         if operation_mode == 'shredding':
             if container.state == 'destroyed':
                 return {
                     'success': False,
-                    'error': _('Container %s is already destroyed') % container.name
+                    'error': _('Container %s has already been destroyed') % container.name
                 }
             container.write({'queued_for_destruction': True})
+            message = _('Container %s queued for destruction') % container.name
+        else:
+            # Default lookup message with state info
+            message = _('Container found: %s (Status: %s)') % (container.name, state_label)
         
         return {
             'success': True,
-            'message': _('Container found: %s') % container.name,
+            'message': message,
             'container_id': container.id,
             'container_name': container.name,
             'customer': container.partner_id.name if container.partner_id else '',
             'location': container.location_id.name if container.location_id else '',
-            'state': container.state or '',
+            'state': state_label,
+            'state_key': container.state or '',
         }
 
     @api.model
