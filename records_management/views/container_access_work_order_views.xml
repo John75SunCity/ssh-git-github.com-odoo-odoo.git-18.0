@@ -16,6 +16,27 @@
             <field name="model">container.access.work.order</field>
             <field name="arch" type="xml">
                 <form string="Container Access Work Order">
+                    <header>
+                        <button name="action_submit" string="Submit" type="object" 
+                                invisible="state != 'draft'" class="oe_highlight"/>
+                        <button name="action_approve" string="Approve" type="object" 
+                                invisible="state != 'submitted'" class="oe_highlight"/>
+                        <button name="action_schedule" string="Schedule" type="object" 
+                                invisible="state != 'approved'" class="oe_highlight"/>
+                        <button name="action_open_scanner" string="📷 Scan Barcodes" type="object" 
+                                class="btn-primary" 
+                                invisible="state not in ['scheduled','in_progress']" 
+                                icon="fa-barcode"
+                                help="Open barcode scanner to verify containers and files"/>
+                        <button name="action_start" string="Start Access" type="object" 
+                                invisible="state != 'scheduled'" class="oe_highlight"/>
+                        <button name="action_complete" string="Complete" type="object" 
+                                invisible="state != 'in_progress'" class="btn-success"/>
+                        <button name="action_cancel" string="Cancel" type="object" 
+                                invisible="state in ['completed', 'documented', 'closed', 'cancelled']"/>
+                        <field name="state" widget="statusbar" 
+                               statusbar_visible="draft,submitted,approved,scheduled,in_progress,completed"/>
+                    </header>
                     <sheet>
                         <div class="oe_title">
                             <label for="name" />
@@ -23,10 +44,54 @@
                                 <field name="name" placeholder="Name..." />
                             </h1>
                         </div>
-                        <group string="Portal">
-                            <field name="portal_visible"/>
+                        <group>
+                            <group string="Customer Information">
+                                <field name="partner_id"/>
+                                <field name="access_type"/>
+                                <field name="access_purpose"/>
+                            </group>
+                            <group string="Portal &amp; Scheduling">
+                                <field name="portal_visible"/>
+                                <field name="scheduled_access_date"/>
+                                <field name="scheduled_duration_hours"/>
+                            </group>
                         </group>
+                        <notebook>
+                            <page name="containers" string="Containers">
+                                <field name="container_ids">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="barcode"/>
+                                        <field name="partner_id"/>
+                                        <field name="state"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page name="barcode_scanning" string="📷 Barcode Scanning" invisible="state not in ['scheduled','in_progress']">
+                                <group>
+                                    <group string="Scanning Status">
+                                        <field name="scanned_count" readonly="1"/>
+                                        <field name="last_scan_time" readonly="1"/>
+                                    </group>
+                                </group>
+                                <separator string="Scanned Containers"/>
+                                <field name="scanned_barcode_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create': True}"/>
+                                <div class="alert alert-info" role="status">
+                                    <p><i class="fa fa-info-circle"/> <strong>How to Scan:</strong></p>
+                                    <ul>
+                                        <li><strong>USB Scanner:</strong> Focus on barcode field and scan</li>
+                                        <li><strong>Mobile:</strong> Tap camera icon to scan with phone camera</li>
+                                        <li><strong>Manual:</strong> Type barcode and press Enter</li>
+                                    </ul>
+                                </div>
+                            </page>
+                        </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
         </record>

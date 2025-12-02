@@ -102,6 +102,11 @@
                                 invisible="state != 'confirmed'" class="oe_highlight"/>
                         <button name="action_schedule" string="Schedule" type="object" 
                                 invisible="state != 'authorized'" class="oe_highlight"/>
+                        <button name="action_open_scanner" string="📷 Scan Barcodes" type="object" 
+                                class="btn-primary" 
+                                invisible="state not in ['scheduled','in_progress']" 
+                                icon="fa-barcode"
+                                help="Open barcode scanner to verify containers, files, and shred bins"/>
                         <button name="action_start_destruction" string="Start Destruction" type="object" 
                                 invisible="state not in ['scheduled']" class="oe_highlight"/>
                         <button name="action_verify_and_destroy" string="✅ Verified and Destroyed" type="object" 

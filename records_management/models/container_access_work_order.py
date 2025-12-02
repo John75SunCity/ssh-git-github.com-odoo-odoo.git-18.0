@@ -274,6 +274,27 @@ class ContainerAccessWorkOrder(models.Model):
     follow_up_notes = fields.Text(string='Follow-up Notes')
 
     # ============================================================================
+    # BARCODE SCANNING FIELDS
+    # ============================================================================
+    scanned_barcode_ids = fields.Many2many(
+        comodel_name='records.container',
+        relation='access_work_order_scanned_container_rel',
+        column1='work_order_id',
+        column2='container_id',
+        string='Scanned Containers',
+        help="Containers verified via barcode scanning"
+    )
+    scanned_count = fields.Integer(
+        string='Scanned Count',
+        compute='_compute_scanned_count',
+        store=True
+    )
+    last_scan_time = fields.Datetime(
+        string='Last Scan Time',
+        readonly=True
+    )
+
+    # ============================================================================
     # FSM INTEGRATION - All services scheduled via FSM tasks
     # ============================================================================
     fsm_task_id = fields.Many2one(
@@ -347,9 +368,29 @@ class ContainerAccessWorkOrder(models.Model):
             has_visitors = bool(record.visitor_ids)
             record.audit_trail_complete = all([has_activities, has_visitors, record.chain_of_custody_maintained])
 
+    @api.depends('scanned_barcode_ids')
+    def _compute_scanned_count(self):
+        for record in self:
+            record.scanned_count = len(record.scanned_barcode_ids)
+
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
+    def action_open_scanner(self):
+        """Open barcode scanner wizard for scanning containers and files."""
+        self.ensure_one()
+        return {
+            'name': _('Scan Barcodes'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'barcode.scan.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_work_order_model': self._name,
+                'default_work_order_id': self.id,
+            }
+        }
+
     def action_submit(self):
         self.ensure_one()
         if self.state != 'draft':

@@ -137,6 +137,27 @@ class ContainerDestructionWorkOrder(models.Model):
     certificate_id = fields.Many2one(comodel_name='shredding.certificate', string='Certificate of Destruction', readonly=True)
 
     # ============================================================================
+    # ============================================================================
+    # BARCODE SCANNING FIELDS
+    # ============================================================================
+    scanned_barcode_ids = fields.Many2many(
+        comodel_name='records.container',
+        relation='destruction_work_order_scanned_container_rel',
+        column1='work_order_id',
+        column2='container_id',
+        string='Scanned Containers',
+        help="Containers verified via barcode scanning"
+    )
+    scanned_count = fields.Integer(
+        string='Scanned Count',
+        compute='_compute_scanned_count',
+        store=True
+    )
+    last_scan_time = fields.Datetime(
+        string='Last Scan Time',
+        readonly=True
+    )
+
     # FSM INTEGRATION - All services scheduled via FSM tasks
     # ============================================================================
     fsm_task_id = fields.Many2one(
@@ -217,7 +238,10 @@ class ContainerDestructionWorkOrder(models.Model):
             else:
                 record.destruction_duration_minutes = 0
 
-    # ============================================================================
+    @api.depends('scanned_barcode_ids')
+    def _compute_scanned_count(self):
+        for record in self:
+            record.scanned_count = len(record.scanned_barcode_ids)    # ============================================================================
     # ACTION METHODS
     # ============================================================================
     def action_confirm(self):
@@ -258,6 +282,21 @@ class ContainerDestructionWorkOrder(models.Model):
             'destruction_start_time': fields.Datetime.now()
         })
         self.message_post(body=_("Destruction process started."))
+
+    def action_open_scanner(self):
+        """Open barcode scanner wizard for scanning containers, bins, and files."""
+        self.ensure_one()
+        return {
+            'name': _('Scan Barcodes'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'barcode.scan.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_work_order_model': self._name,
+                'default_work_order_id': self.id,
+            }
+        }
 
     def action_complete_destruction(self):
         self.ensure_one()
