@@ -53,14 +53,28 @@
                                         <!-- Container/File Selection -->
                                         <t t-if="request_type == 'retrieval'">
                                             <div class="form-group mb-3">
-                                                <label for="container_search" class="form-label">Search Containers</label>
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <label for="container_search" class="form-label mb-0">Search Containers</label>
+                                                    <button type="button" 
+                                                            class="btn btn-outline-primary btn-sm"
+                                                            data-action="portal-camera-scan"
+                                                            data-target-select="container_ids"
+                                                            data-scan-type="container"
+                                                            data-continuous="true"
+                                                            title="Scan container barcodes with camera">
+                                                        <i class="fa fa-camera"></i> Scan Barcode
+                                                    </button>
+                                                </div>
                                                 <input type="text"
                                                        class="form-control mb-2"
                                                        id="container_search"
                                                        placeholder="Type to search containers instantly..."/>
                                                 <small class="text-muted mb-2 d-block" id="container_search_info">
-                                                    Start typing to see instant results
+                                                    Start typing to see instant results, or use camera to scan barcodes
                                                 </small>
+                                                
+                                                <!-- Scanned items display -->
+                                                <div id="scanned-items-display" class="mb-2"></div>
 
                                                 <label for="container_ids" class="form-label">Select Containers *</label>
                                                 <select class="form-control"
@@ -77,14 +91,25 @@
                                                     </t>
                                                 </select>
                                                 <small class="form-text text-muted">
-                                                    Hold Ctrl (Cmd on Mac) to select multiple. Showing first 50 - use search to find more.
+                                                    Hold Ctrl (Cmd on Mac) to select multiple. Showing first 50 - use search or camera scan to find more.
                                                 </small>
                                             </div>
                                         </t>
                                         
                                         <t t-if="request_type == 'scanning'">
                                             <div class="form-group mb-3">
-                                                <label for="file_search" class="form-label">Search Files</label>
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <label for="file_search" class="form-label mb-0">Search Files</label>
+                                                    <button type="button" 
+                                                            class="btn btn-outline-primary btn-sm"
+                                                            data-action="portal-camera-scan"
+                                                            data-target-select="file_ids"
+                                                            data-scan-type="file"
+                                                            data-continuous="true"
+                                                            title="Scan file barcodes with camera">
+                                                        <i class="fa fa-camera"></i> Scan Barcode
+                                                    </button>
+                                                </div>
                                                 <input type="text" 
                                                        class="form-control mb-2" 
                                                        id="file_search" 

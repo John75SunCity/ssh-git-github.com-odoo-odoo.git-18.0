@@ -73,7 +73,24 @@
                                     <div class="form-group">
                                         <label class="font-weight-bold">
                                             <i class="fa fa-box"></i> Select Containers for Destruction
+                                            <!-- Camera Scan button -->
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-outline-info ms-2"
+                                                    data-action="portal-camera-scan"
+                                                    data-scan-type="container"
+                                                    data-target-checkboxes="container_ids"
+                                                    title="Scan container barcodes with camera">
+                                                <i class="fa fa-camera"></i> Scan
+                                            </button>
                                         </label>
+                                        
+                                        <!-- Scanned items display -->
+                                        <div id="scanned-items-display" class="mb-2" style="display: none;">
+                                            <small class="text-success">
+                                                <i class="fa fa-check-circle"></i> 
+                                                <span id="scanned-count">0</span> container(s) scanned
+                                            </small>
+                                        </div>
                                         
                                         <t t-if="not containers">
                                             <div class="alert alert-info">

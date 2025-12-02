@@ -25,6 +25,14 @@
                         </t>
                     </h1>
                     <div class="actions">
+                        <!-- Camera Scan button for quick container lookup -->
+                        <button type="button" 
+                                class="btn btn-outline-info"
+                                data-action="portal-camera-scan"
+                                data-scan-type="container"
+                                title="Scan container barcode with camera">
+                            <i class="fa fa-camera"></i> Scan Barcode
+                        </button>
                         <!-- Add Container button -->
                         <t t-if="permissions.get('containers', {}).get('can_create')">
                             <a href="/my/inventory/containers/create" class="btn btn-success">

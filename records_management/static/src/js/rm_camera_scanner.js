@@ -297,7 +297,7 @@ export class RMCameraScannerAction extends Component {
 
         try {
             let result;
-            
+
             // If we have a work order model and ID, call its action_scan_barcode method directly
             if (this.operationMode === 'work_order' && this.workOrderModel && this.workOrderId) {
                 result = await this.orm.call(
@@ -326,7 +326,7 @@ export class RMCameraScannerAction extends Component {
                 if (this.operationMode === 'work_order') {
                     // Ask if user wants to scan more
                     ScannerAudio.playSuccess();
-                    
+
                     // Launch scanner again for continuous scanning
                     setTimeout(() => {
                         if (!this.isDestroyed) {
@@ -352,7 +352,7 @@ export class RMCameraScannerAction extends Component {
                     result.message || result.error || _t("Barcode not found"),
                     { type: result.warning ? "warning" : "danger" }
                 );
-                
+
                 // For work order mode, allow retry
                 if (this.operationMode === 'work_order') {
                     setTimeout(() => {
@@ -379,7 +379,7 @@ export class RMCameraScannerAction extends Component {
                 _t("Error processing barcode: ") + (error.data?.message || error.message),
                 { type: "danger" }
             );
-            
+
             // For work order mode, allow retry on error
             if (this.operationMode === 'work_order') {
                 setTimeout(() => {

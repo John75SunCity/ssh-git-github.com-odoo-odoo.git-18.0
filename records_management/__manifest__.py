@@ -848,6 +848,8 @@
             "records_management/static/src/js/field_label_customizer.js",
             # ✅ RE-ENABLED - Converted to vanilla JavaScript (customer barcode printing - ESSENTIAL)
             "records_management/static/src/js/portal/portal_barcode_management.js",
+            # ✅ NEW - Portal camera barcode scanner (Scanbot SDK)
+            "records_management/static/src/js/portal/portal_camera_scanner.js",
             # TEMPORARILY DISABLED - Needs vanilla JS conversion (uses @web/core/network/rpc_service)
             # "records_management/static/src/js/barcode_command_handler.js",
             # TEMPORARILY DISABLED - Needs vanilla JS conversion (uses web.public.widget)
