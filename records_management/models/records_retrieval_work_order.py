@@ -162,14 +162,93 @@ class RecordsRetrievalWorkOrder(models.Model):
         }
 
     def action_complete(self):
-        """Complete the retrieval work order"""
+        """
+        Complete the retrieval work order.
+        
+        Updates all scanned containers from 'in' to 'out' state,
+        indicating they have been retrieved from storage and are now with the customer.
+        Also creates billing charges for retrieval services.
+        """
         self.ensure_one()
         if self.state != 'in_progress':
             raise UserError(_("Only work orders in progress can be completed."))
+        
+        retrieved_count = 0
+        already_out = 0
+        
+        # Update all scanned containers to 'out' state
+        for container in self.scanned_barcode_ids:
+            if container.state == 'in':
+                # Create billing charge for retrieval service
+                retrieval_product = self.env.ref(
+                    'records_management.product_retrieval_service',
+                    raise_if_not_found=False
+                )
+                if retrieval_product and container.partner_id:
+                    # Get retrieval rate
+                    retrieval_rate = container._get_retrieval_rate(retrieval_product)
+                    
+                    # Find or create billing record for this period
+                    today = fields.Date.today()
+                    billing = self.env['records.billing'].sudo().search([
+                        ('partner_id', '=', container.partner_id.id),
+                        ('state', '=', 'draft'),
+                        ('date', '>=', today.replace(day=1)),
+                    ], limit=1)
+                    if not billing:
+                        billing_config = self.env['records.billing.config'].sudo().search([
+                            ('company_id', '=', self.env.company.id),
+                        ], limit=1)
+                        if billing_config:
+                            billing = self.env['records.billing'].sudo().create({
+                                'partner_id': container.partner_id.id,
+                                'date': today,
+                                'billing_config_id': billing_config.id,
+                                'state': 'draft',
+                            })
+                    if billing:
+                        self.env['advanced.billing.line'].sudo().create({
+                            'billing_id': billing.id,
+                            'name': _('Container Retrieval - %s') % container.name,
+                            'product_id': retrieval_product.id,
+                            'quantity': 1,
+                            'amount': retrieval_rate,
+                            'type': 'service',
+                        })
+                
+                # Update container state to 'out'
+                container.write({
+                    'state': 'out',
+                    'last_access_date': fields.Date.today()
+                })
+                container.message_post(
+                    body=_("Container retrieved - Work Order: %s") % self.name
+                )
+                retrieved_count += 1
+            elif container.state == 'out':
+                already_out += 1
+        
+        # Complete the work order
         self.write({
             'state': 'completed',
             'completion_date': fields.Datetime.now()
         })
+        
+        # Return notification with results
+        if retrieved_count > 0:
+            message = _("%d container(s) marked as 'Out' (retrieved)") % retrieved_count
+            if already_out > 0:
+                message += _(" (%d already out)") % already_out
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Retrieval Complete'),
+                    'message': message,
+                    'type': 'success',
+                    'sticky': False,
+                }
+            }
         return True
 
     def action_cancel(self):
@@ -252,6 +331,31 @@ class RecordsRetrievalWorkOrder(models.Model):
                 'default_work_order_model': self._name,
                 'default_work_order_id': self.id,
             }
+        }
+
+    def action_open_camera_scanner(self):
+        """
+        Directly open the camera barcode scanner (bypasses wizard popup).
+        
+        This launches the Scanbot SDK camera scanner as a client action.
+        Scanned barcodes are automatically sent to action_scan_barcode().
+        Perfect for mobile scanning workflows on work orders.
+        
+        Returns:
+            dict: Client action to launch rm_camera_scanner
+        """
+        self.ensure_one()
+        if self.state not in ['draft', 'in_progress']:
+            raise UserError(_("Can only scan barcodes for draft or in-progress work orders."))
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'rm_camera_scanner',
+            'name': _('Camera Scanner - %s') % self.name,
+            'context': {
+                'operation_mode': 'work_order',
+                'work_order_model': self._name,
+                'work_order_id': self.id,
+            },
         }
 
     def action_reset_to_draft(self):

@@ -20,9 +20,12 @@
                                 class="btn-primary" invisible="state != 'draft'"/>
                         <button name="action_start_transfer" string="Start Transfer" type="object" 
                                 class="btn-primary" invisible="state != 'ready'"/>
-                        <button name="action_open_scanner" string="Scan Containers" type="object" 
+                        <button name="action_open_camera_scanner" string="📷 Camera Scan" type="object" 
+                                class="btn-info" invisible="state not in ['draft', 'ready', 'in_progress']"
+                                title="Scan containers using phone camera"/>
+                        <button name="action_open_scanner" string="⌨️ Keyboard Scan" type="object" 
                                 class="btn-secondary" invisible="state not in ['draft', 'ready', 'in_progress']"
-                                icon="fa-barcode"/>
+                                icon="fa-barcode" title="Type barcodes manually or use USB scanner"/>
                         <button name="action_complete_transfer" string="Complete" type="object" 
                                 class="btn-success" invisible="state != 'in_progress'"/>
                         <button name="action_cancel" string="Cancel" type="object" 

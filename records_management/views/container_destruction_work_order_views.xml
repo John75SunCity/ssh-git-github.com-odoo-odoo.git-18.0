@@ -102,8 +102,12 @@
                                 invisible="state != 'confirmed'" class="oe_highlight"/>
                         <button name="action_schedule" string="Schedule" type="object" 
                                 invisible="state != 'authorized'" class="oe_highlight"/>
-                        <button name="action_open_scanner" string="Scan Barcodes" type="object" 
-                                class="btn-primary" 
+                        <button name="action_open_camera_scanner" string="📷 Camera Scan" type="object" 
+                                class="btn-info" 
+                                invisible="state not in ['scheduled','in_progress']" 
+                                title="Scan containers using phone camera"/>
+                        <button name="action_open_scanner" string="⌨️ Keyboard Scan" type="object" 
+                                class="btn-secondary" 
                                 invisible="state not in ['scheduled','in_progress']" 
                                 icon="fa-barcode"
                                 help="Open barcode scanner to verify containers, files, and shred bins"/>

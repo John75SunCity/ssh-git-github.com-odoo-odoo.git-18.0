@@ -534,6 +534,31 @@ class WorkOrderShredding(models.Model):
             }
         }
 
+    def action_open_camera_scanner(self):
+        """
+        Directly open the camera barcode scanner (bypasses wizard popup).
+        
+        This launches the Scanbot SDK camera scanner as a client action.
+        Scanned barcodes are automatically sent to action_scan_barcode().
+        Perfect for mobile scanning workflows on work orders.
+        
+        Returns:
+            dict: Client action to launch rm_camera_scanner
+        """
+        self.ensure_one()
+        if self.state not in ['draft', 'confirmed', 'assigned', 'in_progress']:
+            raise UserError(_("Can only scan barcodes for active work orders."))
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'rm_camera_scanner',
+            'name': _('Camera Scanner - %s') % self.name,
+            'context': {
+                'operation_mode': 'work_order',
+                'work_order_model': self._name,
+                'work_order_id': self.id,
+            },
+        }
+
     # ============================================================================
     # CONSTRAINTS
     # ============================================================================
