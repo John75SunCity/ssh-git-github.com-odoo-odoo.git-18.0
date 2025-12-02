@@ -107,6 +107,44 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
     )
 
     # ============================================================================
+    # CUSTOMER BALANCE FIELDS (For Technician Payment Collection)
+    # ============================================================================
+    customer_total_balance = fields.Monetary(
+        string='Customer Total Balance',
+        compute='_compute_customer_balances',
+        currency_field='currency_id',
+        help='Total outstanding balance for this customer across all invoices'
+    )
+    
+    customer_past_due_balance = fields.Monetary(
+        string='Past Due Balance',
+        compute='_compute_customer_balances',
+        currency_field='currency_id',
+        help='Past due balance (invoices past their due date)'
+    )
+    
+    customer_balance_status = fields.Selection([
+        ('current', 'Current'),
+        ('attention', 'Needs Attention'),
+        ('overdue', 'Overdue'),
+        ('critical', 'Critical - Collect Payment'),
+    ], string='Balance Status', compute='_compute_customer_balances',
+       help='Payment status indicator for technicians')
+    
+    department_total_balance = fields.Monetary(
+        string='Department Balance',
+        compute='_compute_department_balance',
+        currency_field='currency_id',
+        help='Outstanding balance for this department (if applicable)'
+    )
+    
+    show_payment_alert = fields.Boolean(
+        string='Show Payment Alert',
+        compute='_compute_customer_balances',
+        help='Flag to highlight customers needing payment collection'
+    )
+
+    # ============================================================================
     # COMPUTED METHODS
     # ============================================================================
     @api.depends('invoice_id', 'invoice_id.state', 'invoice_id.payment_state')
@@ -128,6 +166,307 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
         """Compute subtotal from price and quantity"""
         for record in self:
             record.subtotal = record.unit_price * record.quantity
+
+    def _compute_customer_balances(self):
+        """
+        Compute customer balance information for technician payment collection.
+        
+        Shows total outstanding balance and past due amounts so technicians
+        know when to discuss payment with customers during service calls.
+        """
+        today = fields.Date.today()
+        
+        for record in self:
+            total_balance = 0.0
+            past_due_balance = 0.0
+            status = 'current'
+            show_alert = False
+            
+            if hasattr(record, 'partner_id') and record.partner_id:
+                partner = record.partner_id
+                
+                # Get all unpaid invoices for this customer
+                unpaid_invoices = self.env['account.move'].sudo().search([
+                    ('partner_id', '=', partner.id),
+                    ('move_type', '=', 'out_invoice'),
+                    ('state', '=', 'posted'),
+                    ('payment_state', 'in', ['not_paid', 'partial']),
+                ])
+                
+                for invoice in unpaid_invoices:
+                    total_balance += invoice.amount_residual
+                    
+                    # Check if past due
+                    if invoice.invoice_date_due and invoice.invoice_date_due < today:
+                        past_due_balance += invoice.amount_residual
+                
+                # Determine status based on amounts
+                if past_due_balance > 0:
+                    days_oldest_due = 0
+                    for invoice in unpaid_invoices:
+                        if invoice.invoice_date_due and invoice.invoice_date_due < today:
+                            days_past = (today - invoice.invoice_date_due).days
+                            days_oldest_due = max(days_oldest_due, days_past)
+                    
+                    if days_oldest_due >= 90 or past_due_balance >= 1000:
+                        status = 'critical'
+                        show_alert = True
+                    elif days_oldest_due >= 60 or past_due_balance >= 500:
+                        status = 'overdue'
+                        show_alert = True
+                    elif days_oldest_due >= 30:
+                        status = 'attention'
+                        show_alert = True
+                elif total_balance > 0:
+                    status = 'current'
+            
+            record.customer_total_balance = total_balance
+            record.customer_past_due_balance = past_due_balance
+            record.customer_balance_status = status
+            record.show_payment_alert = show_alert
+
+    def _compute_department_balance(self):
+        """
+        Compute department-specific balance if work order has a department.
+        
+        Useful for organizations with departmental billing where each
+        department has its own budget/payment responsibility.
+        """
+        today = fields.Date.today()
+        
+        for record in self:
+            dept_balance = 0.0
+            
+            # Check if record has department_id field
+            if hasattr(record, 'department_id') and record.department_id:
+                department = record.department_id
+                
+                # Get unpaid invoices tagged to this department
+                # This requires invoices to have department tracking
+                unpaid_invoices = self.env['account.move'].sudo().search([
+                    ('partner_id', '=', record.partner_id.id if hasattr(record, 'partner_id') and record.partner_id else False),
+                    ('move_type', '=', 'out_invoice'),
+                    ('state', '=', 'posted'),
+                    ('payment_state', 'in', ['not_paid', 'partial']),
+                ])
+                
+                # Filter by department if the invoice has department reference
+                for invoice in unpaid_invoices:
+                    # Check invoice lines for department reference
+                    if hasattr(invoice, 'department_id') and invoice.department_id == department:
+                        dept_balance += invoice.amount_residual
+                    elif hasattr(invoice, 'invoice_origin') and invoice.invoice_origin:
+                        # Try to match via work order origin
+                        pass  # Could add logic to trace back to department
+            
+            record.department_total_balance = dept_balance
+
+    # ============================================================================
+    # PAYMENT COLLECTION ACTIONS (For Technicians)
+    # ============================================================================
+    def action_register_payment(self):
+        """
+        Open payment registration wizard for the customer's unpaid invoices.
+        
+        This allows technicians to process payments (credit card, check, cash)
+        directly from the work order, updating the customer's balance immediately.
+        """
+        self.ensure_one()
+        
+        if not hasattr(self, 'partner_id') or not self.partner_id:
+            raise UserError(_("No customer set on this work order."))
+        
+        # Get all unpaid invoices for this customer
+        unpaid_invoices = self.env['account.move'].sudo().search([
+            ('partner_id', '=', self.partner_id.id),
+            ('move_type', '=', 'out_invoice'),
+            ('state', '=', 'posted'),
+            ('payment_state', 'in', ['not_paid', 'partial']),
+        ])
+        
+        if not unpaid_invoices:
+            raise UserError(_("No unpaid invoices found for this customer."))
+        
+        # Open the payment wizard for all unpaid invoices
+        return {
+            'name': _('Register Payment'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.payment.register',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'active_model': 'account.move',
+                'active_ids': unpaid_invoices.ids,
+                'default_partner_id': self.partner_id.id,
+                # Pass work order info for field collection tracking
+                'default_is_field_collection': True,
+                'default_work_order_reference': self.name if hasattr(self, 'name') else '',
+                'default_collected_by_id': self.env.user.id,
+            },
+        }
+
+    def action_register_payment_with_proof(self):
+        """
+        Open payment wizard pre-configured for field collection with payment proof.
+        
+        This opens a wizard that allows the technician to:
+        1. Select payment method (cash, check, credit card)
+        2. Take a photo of check/cash as proof
+        3. Enter check number if applicable
+        4. Add collection notes
+        """
+        self.ensure_one()
+        
+        if not hasattr(self, 'partner_id') or not self.partner_id:
+            raise UserError(_("No customer set on this work order."))
+        
+        # Open the field payment wizard
+        return {
+            'name': _('Collect Payment with Proof'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'work.order.field.payment.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_partner_id': self.partner_id.id,
+                'default_amount': self.customer_total_balance,
+                'default_work_order_reference': self.name if hasattr(self, 'name') else '',
+                'default_work_order_model': self._name,
+                'default_work_order_id': self.id,
+            },
+        }
+
+    def action_view_unpaid_invoices(self):
+        """
+        Open list of unpaid invoices for this customer.
+        
+        Allows technicians to see invoice details, select specific
+        invoices for payment, or view payment history.
+        """
+        self.ensure_one()
+        
+        if not hasattr(self, 'partner_id') or not self.partner_id:
+            raise UserError(_("No customer set on this work order."))
+        
+        # Get all unpaid invoices for this customer
+        unpaid_invoices = self.env['account.move'].sudo().search([
+            ('partner_id', '=', self.partner_id.id),
+            ('move_type', '=', 'out_invoice'),
+            ('state', '=', 'posted'),
+            ('payment_state', 'in', ['not_paid', 'partial']),
+        ])
+        
+        return {
+            'name': _('Unpaid Invoices - %s') % self.partner_id.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.move',
+            'view_mode': 'list,form',
+            'domain': [('id', 'in', unpaid_invoices.ids)],
+            'context': {
+                'default_partner_id': self.partner_id.id,
+                'default_move_type': 'out_invoice',
+            },
+        }
+
+    def action_quick_payment(self):
+        """
+        Open a simplified payment form for quick field collection.
+        
+        Pre-populates with customer's total balance for convenience.
+        Technician just needs to select payment method and confirm.
+        """
+        self.ensure_one()
+        
+        if not hasattr(self, 'partner_id') or not self.partner_id:
+            raise UserError(_("No customer set on this work order."))
+        
+        if self.customer_total_balance <= 0:
+            raise UserError(_("No outstanding balance for this customer."))
+        
+        # Get unpaid invoices
+        unpaid_invoices = self.env['account.move'].sudo().search([
+            ('partner_id', '=', self.partner_id.id),
+            ('move_type', '=', 'out_invoice'),
+            ('state', '=', 'posted'),
+            ('payment_state', 'in', ['not_paid', 'partial']),
+        ])
+        
+        # Open payment wizard with amount pre-filled
+        return {
+            'name': _('Quick Payment - %s') % self.partner_id.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.payment.register',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'active_model': 'account.move',
+                'active_ids': unpaid_invoices.ids,
+                'default_partner_id': self.partner_id.id,
+                'default_amount': self.customer_total_balance,
+                'default_payment_type': 'inbound',
+                'default_partner_type': 'customer',
+            },
+        }
+
+    def action_view_payment_history(self):
+        """
+        View all payments received from this customer.
+        
+        Shows payment history for reference during customer conversations.
+        """
+        self.ensure_one()
+        
+        if not hasattr(self, 'partner_id') or not self.partner_id:
+            raise UserError(_("No customer set on this work order."))
+        
+        return {
+            'name': _('Payment History - %s') % self.partner_id.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.payment',
+            'view_mode': 'list,form',
+            'domain': [
+                ('partner_id', '=', self.partner_id.id),
+                ('payment_type', '=', 'inbound'),
+            ],
+            'context': {
+                'default_partner_id': self.partner_id.id,
+                'default_payment_type': 'inbound',
+                'default_partner_type': 'customer',
+            },
+        }
+
+    def action_field_payment(self):
+        """
+        Open the field payment wizard for technicians to collect payments.
+        
+        This wizard allows technicians to:
+        - Select payment method (cash, check, credit card)
+        - Take a photo of check/cash as proof
+        - Enter check number if applicable
+        - Add collection notes
+        
+        Returns the wizard action to open in a popup dialog.
+        """
+        self.ensure_one()
+        
+        if not hasattr(self, 'partner_id') or not self.partner_id:
+            raise UserError(_("No customer set on this work order."))
+        
+        # Open the field payment wizard
+        return {
+            'name': _('Collect Payment'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'work.order.field.payment.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_partner_id': self.partner_id.id,
+                'default_amount': self.customer_total_balance,
+                'default_work_order_reference': self.name if hasattr(self, 'name') else '',
+                'default_work_order_model': self._name,
+                'default_work_order_id': self.id,
+            },
+        }
 
     # ============================================================================
     # INVOICE GENERATION

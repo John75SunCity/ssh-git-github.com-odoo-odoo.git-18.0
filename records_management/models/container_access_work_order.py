@@ -26,7 +26,7 @@ class ContainerAccessWorkOrder(models.Model):
     """
     _name = 'container.access.work.order'
     _description = 'Container Access Work Order'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'work.order.invoice.mixin']
     _order = 'priority desc, scheduled_access_date asc, name'
     _rec_name = 'display_name'
 

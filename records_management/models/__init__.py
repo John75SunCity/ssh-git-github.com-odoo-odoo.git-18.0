@@ -12,6 +12,7 @@ from . import work_order_invoice_mixin
 # Account integration
 from . import account_move
 from . import account_move_line
+from . import account_payment_extend
 from . import advanced_billing_contact
 from . import advanced_billing_line
 from . import advanced_billing_profile

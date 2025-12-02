@@ -5,7 +5,7 @@ from odoo.exceptions import UserError
 class RecordsRetrievalWorkOrder(models.Model):
     _name = 'records.retrieval.work.order'
     _description = 'Records Retrieval Work Order'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'work.order.invoice.mixin']
 
     # ============================================================================
     # FIELDS

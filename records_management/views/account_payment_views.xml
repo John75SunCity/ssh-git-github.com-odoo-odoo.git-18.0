@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Extend account.payment form to add payment proof fields -->
+        <record id="account_payment_view_form_extend" model="ir.ui.view">
+            <field name="name">account.payment.form.extend.rm</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="inside">
+                    <group string="Field Collection Details" name="field_collection" invisible="not is_field_collection">
+                        <group>
+                            <field name="is_field_collection" invisible="1"/>
+                            <field name="collected_by_id" readonly="1"/>
+                            <field name="work_order_reference" readonly="1"/>
+                            <field name="collection_location"/>
+                        </group>
+                        <group>
+                            <field name="payment_proof_type"/>
+                            <field name="check_number" invisible="payment_proof_type != 'check'"/>
+                        </group>
+                    </group>
+                    <group string="Payment Proof" name="payment_proof_group" invisible="not is_field_collection">
+                        <field name="payment_proof" widget="image" class="oe_avatar"/>
+                        <field name="payment_proof_filename" invisible="1"/>
+                        <field name="collection_notes" placeholder="Any notes about the payment collection..."/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Tree view extension to show field collection indicator -->
+        <record id="account_payment_view_tree_extend" model="ir.ui.view">
+            <field name="name">account.payment.tree.extend.rm</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//list" position="inside">
+                    <field name="is_field_collection" widget="boolean_toggle" optional="hide"/>
+                    <field name="collected_by_id" optional="hide"/>
+                    <field name="work_order_reference" optional="hide"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Search filter for field collections -->
+        <record id="account_payment_view_search_extend" model="ir.ui.view">
+            <field name="name">account.payment.search.extend.rm</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <separator/>
+                    <filter string="Field Collections" name="field_collections" domain="[('is_field_collection', '=', True)]"/>
+                    <filter string="With Payment Proof" name="with_proof" domain="[('payment_proof', '!=', False)]"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
