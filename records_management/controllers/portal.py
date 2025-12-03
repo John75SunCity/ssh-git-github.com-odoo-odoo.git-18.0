@@ -5380,7 +5380,8 @@ class RecordsManagementController(http.Controller):
         ])
 
         values = {
-            'file_folder': file_folder,
+            'file': file_folder,  # Template expects 'file'
+            'file_folder': file_folder,  # Keep for backwards compatibility
             'documents_in_file': documents_in_file,
             'page_name': 'file_detail',
         }
