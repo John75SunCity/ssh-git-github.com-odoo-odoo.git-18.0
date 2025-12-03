@@ -112,12 +112,10 @@ class DocumentUploadWizard(models.TransientModel):
                 document_vals = {
                     'name': doc_name,
                     'file_id': self.file_id.id,
-                    'container_id': self.file_id.container_id.id if self.file_id.container_id else False,
                     'document_type_id': self.document_type_id.id,
                     'partner_id': self.file_id.partner_id.id if self.file_id.partner_id else False,
                     'received_date': self.received_date,
                     'description': self.description,
-                    'state': 'in_storage',
                 }
                 
                 document = self.env['records.document'].create(document_vals)

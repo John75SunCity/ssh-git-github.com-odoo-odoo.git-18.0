@@ -325,6 +325,24 @@ class RecordsFile(models.Model):
                 file.stock_owner_id = file.partner_id.id
             else:
                 file.stock_owner_id = False
+
+    def _generate_temp_barcode(self):
+        """
+        Generate temporary barcode with container prefix.
+        
+        Format: {CONTAINER_NUMBER}-FILE-{SEQUENCE}
+        Example: REC-0302-FILE-1, HR-1001-A-FILE-2
+        
+        If no container, uses just FILE-{SEQUENCE}
+        """
+        self.ensure_one()
+        sequence = self.env['ir.sequence'].next_by_code('records.file.temp.barcode')
+        if not sequence:
+            sequence = str(self.id)
+        
+        if self.container_id and self.container_id.name:
+            return f"{self.container_id.name}-FILE-{sequence}"
+        return f"FILE-{sequence}"
     
     # ============================================================================
     # LIFECYCLE METHODS
@@ -347,7 +365,7 @@ class RecordsFile(models.Model):
         for file in files:
             # Auto-generate temp_barcode if not provided
             if not file.temp_barcode and not file.barcode:
-                file.temp_barcode = self.env['ir.sequence'].next_by_code('records.file.temp.barcode') or f"FILE-{file.id}"
+                file.temp_barcode = file._generate_temp_barcode()
             
             # Auto-create stock.quant.package for barcode scanning
             # File packages are nested under container's package
@@ -742,7 +760,7 @@ class RecordsFile(models.Model):
         self.ensure_one()
         if not self.barcode and not self.temp_barcode:
             # Generate temp barcode if none exists
-            self.temp_barcode = self.env['ir.sequence'].next_by_code('records.file.temp.barcode') or f"FILE-{self.id}"
+            self.temp_barcode = self._generate_temp_barcode()
         
         # Return print action using the report action
         return self.env.ref('records_management.report_file_barcode').report_action(self)
@@ -755,7 +773,7 @@ class RecordsFile(models.Model):
         """
         self.ensure_one()
         if not self.temp_barcode:
-            self.temp_barcode = self.env['ir.sequence'].next_by_code('records.file.temp.barcode') or f"FILE-{self.id}"
+            self.temp_barcode = self._generate_temp_barcode()
         
         # Return QR code generation action using the report action
         return self.env.ref('records_management.report_file_qrcode').report_action(self)
