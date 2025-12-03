@@ -5375,7 +5375,7 @@ class RecordsManagementController(http.Controller):
 
         # Get documents in this file folder
         documents_in_file = request.env['records.document'].sudo().search([
-            ('file_folder_id', '=', file_id),
+            ('file_id', '=', file_id),
             ('partner_id', '=', file_folder.partner_id.id)
         ])
 
