@@ -6,6 +6,10 @@ A unified wizard that allows staff to create any type of work order
 from a single interface. Guides the user through type selection and
 then creates the appropriate work order record.
 
+NOTE: For retrieval work orders, we use the `records.retrieval.work.order` model
+(sequence prefix RRWO) which is the preferred/active retrieval model.
+The `work.order.retrieval` model (WO prefix) is deprecated and should not be used.
+
 Author: Records Management System
 Version: 18.0.1.0.0
 License: LGPL-3
@@ -49,11 +53,14 @@ class WorkOrderCreationWizard(models.TransientModel):
     ], string="Service Category", required=True, default='storage')
     
     work_order_type = fields.Selection([
-        # Storage Services
-        ('retrieval', 'Retrieval - Pull containers from storage'),
-        ('delivery', 'Delivery - Return containers to customer'),
-        ('pickup', 'Pickup - Collect containers from customer'),
+        # Storage Services - Container Operations
+        ('retrieval', 'Container Retrieval - Pull containers from storage'),
+        ('delivery', 'Container Delivery - Return containers to customer'),
+        ('pickup', 'Container Pickup - Collect containers from customer'),
         ('container_access', 'Container Access - On-site file access'),
+        # Storage Services - File Operations
+        ('file_retrieval', 'File Retrieval - Pull individual files from containers'),
+        ('file_refiling', 'File Re-filing - Return files to their original containers'),
         # Destruction Services  
         ('container_destruction', 'Container Destruction - Destroy stored containers'),
         ('shredding', 'Shredding Service - On-site/mobile shredding'),
@@ -286,57 +293,84 @@ class WorkOrderCreationWizard(models.TransientModel):
     # WORK ORDER CREATION METHODS
     # ============================================================================
     def _create_retrieval_order(self):
-        """Create a retrieval work order."""
+        """Create a retrieval work order using records.retrieval.work.order model.
+        
+        NOTE: We use records.retrieval.work.order (RRWO sequence) as the preferred
+        retrieval model. The work.order.retrieval model is deprecated.
+        """
         if not self.retrieval_container_ids:
             raise ValidationError(_("Please select at least one container to retrieve."))
         
-        # Build retrieval item lines for each container
-        retrieval_item_vals = [
-            (0, 0, {
-                'box_id': container.id,
-                'item_description': container.name,
-            })
-            for container in self.retrieval_container_ids
-        ]
-        
+        # Use records.retrieval.work.order model (preferred)
         vals = {
             'partner_id': self.partner_id.id,
-            'scheduled_date': self.scheduled_date,
-            'priority': self.priority,
-            'special_instructions': self.notes,
-            'work_order_type': 'box_retrieval' if len(self.retrieval_container_ids) > 1 else 'document_retrieval',
-            'retrieval_item_ids': retrieval_item_vals,
-            'total_boxes': len(self.retrieval_container_ids),
+            'user_id': self.env.user.id,
+            'scanned_barcode_ids': [(6, 0, self.retrieval_container_ids.ids)],
         }
-        return self.env['work.order.retrieval'].create(vals)
+        work_order = self.env['records.retrieval.work.order'].create(vals)
+        # Post notes to chatter if provided
+        if self.notes:
+            work_order.message_post(body=self.notes)
+        return work_order
 
     def _create_delivery_order(self):
-        """Create a delivery work order (uses retrieval model)."""
+        """Create a delivery work order (return containers to customer).
+        
+        Uses records.retrieval.work.order model.
+        """
         vals = {
             'partner_id': self.partner_id.id,
-            'scheduled_date': self.scheduled_date,
-            'priority': self.priority,
-            'special_instructions': self.notes,
-            'work_order_type': 'box_retrieval',  # Delivery is essentially a retrieval/return
+            'user_id': self.env.user.id,
+            'scanned_barcode_ids': [(6, 0, self.retrieval_container_ids.ids)] if self.retrieval_container_ids else [],
         }
-        return self.env['work.order.retrieval'].create(vals)
+        work_order = self.env['records.retrieval.work.order'].create(vals)
+        work_order.message_post(body=self.notes or _("Delivery - Return containers to customer"))
+        return work_order
+
+    def _create_file_retrieval_order(self):
+        """Create a file retrieval work order (pull individual files from containers).
+        
+        This changes file status from 'in' to 'out'.
+        Uses records.retrieval.work.order model.
+        """
+        vals = {
+            'partner_id': self.partner_id.id,
+            'user_id': self.env.user.id,
+            'scanned_barcode_ids': [(6, 0, self.retrieval_container_ids.ids)] if self.retrieval_container_ids else [],
+        }
+        work_order = self.env['records.retrieval.work.order'].create(vals)
+        work_order.message_post(body=self.notes or _("File Retrieval - Pull individual files from containers"))
+        return work_order
+
+    def _create_file_refiling_order(self):
+        """Create a file re-filing work order (return files to original containers).
+        
+        This changes file status from 'out' to 'in' and directs technicians
+        to return the files to the containers from which they originated.
+        Uses records.retrieval.work.order model.
+        """
+        vals = {
+            'partner_id': self.partner_id.id,
+            'user_id': self.env.user.id,
+            'scanned_barcode_ids': [(6, 0, self.retrieval_container_ids.ids)] if self.retrieval_container_ids else [],
+        }
+        work_order = self.env['records.retrieval.work.order'].create(vals)
+        work_order.message_post(body=self.notes or _("File Re-filing - Return files to their original containers"))
+        return work_order
 
     def _create_pickup_order(self):
-        """Create a pickup work order."""
+        """Create a pickup work order.
+        
+        Uses records.retrieval.work.order model (preferred).
+        """
         vals = {
             'partner_id': self.partner_id.id,
-            'scheduled_date': self.scheduled_date,
-            'priority': self.priority,
-            'special_instructions': self.notes,
-            'pickup_address': self.pickup_location,
-            'total_boxes': self.estimated_container_count,
+            'user_id': self.env.user.id,
         }
-        # Check if there's a dedicated pickup model, otherwise use retrieval
-        if 'work.order.pickup' in self.env:
-            return self.env['work.order.pickup'].create(vals)
-        else:
-            vals['work_order_type'] = 'bulk_retrieval'
-            return self.env['work.order.retrieval'].create(vals)
+        work_order = self.env['records.retrieval.work.order'].create(vals)
+        pickup_note = self.notes or _("Pickup - Collect containers from customer location: %s") % (self.pickup_location or 'TBD')
+        work_order.message_post(body=pickup_note)
+        return work_order
 
     def _create_container_access_order(self):
         """Create a container access work order."""

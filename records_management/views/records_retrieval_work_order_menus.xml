@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Retrieval Work Order Menu -->
-    <menuitem id="menu_records_retrieval_work_order"
+        <!-- 
+        HIDDEN: Individual Retrieval Work Order Menu
+        Use the unified "New Work Order" wizard instead (menu_new_work_order_operations).
+        This model (records.retrieval.work.order) is the preferred retrieval model.
+        The action is still available for direct access if needed.
+        -->
+        <!-- <menuitem id="menu_records_retrieval_work_order"
               name="Retrieval Work Orders"
               parent="records_management.menu_records_operations"
               action="action_records_retrieval_work_order"
-              sequence="85"/>
+              sequence="85"/> -->
     
     
     </data>
