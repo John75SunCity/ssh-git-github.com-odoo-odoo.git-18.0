@@ -343,6 +343,18 @@ class RecordsDocument(models.Model):
     event_date = fields.Date(string="Event Date", help="Date of the last significant event (e.g., access, move, audit).")
     compliance_verified = fields.Boolean(string="Compliance Verified", help="Indicates if the document's handling meets compliance standards.")
     scan_date = fields.Datetime(string="Last Scan Date", help="Timestamp of the last barcode scan.")
+    
+    # Scanning request tracking (for portal scanning workflow)
+    scan_request_id = fields.Many2one(
+        comodel_name='portal.request',
+        string='Scan Request',
+        help='Portal request that initiated document scanning'
+    )
+    scan_requested_date = fields.Datetime(
+        string='Scan Requested Date',
+        help='Date/time when scanning was requested via portal'
+    )
+    
     last_verified_by_id = fields.Many2one(
         comodel_name="res.users",
         string="Last Verified By",

@@ -18,6 +18,36 @@ class PortalRequest(models.Model):
     user_id = fields.Many2one(comodel_name='res.users', string='Assigned To', tracking=True)
     # Contextual label disambiguation (Batch 2)
     description = fields.Html(string='Request Details', required=True)
+    
+    # Portal-specific fields (added for controller compatibility)
+    department_id = fields.Many2one(
+        comodel_name='records.department', 
+        string='Department',
+        help='Department associated with this request'
+    )
+    requester_id = fields.Many2one(
+        comodel_name='res.partner',
+        string='Requester Contact',
+        help='The specific contact who submitted the request'
+    )
+    target_location_id = fields.Many2one(
+        comodel_name='stock.location',
+        string='Target Location',
+        help='Target location for move/retrieval requests'
+    )
+    pickup_date = fields.Date(
+        string='Preferred Pickup Date',
+        help='Customer preferred date for pickup'
+    )
+    notes = fields.Text(
+        string='Additional Notes',
+        help='Additional notes or instructions from portal user'
+    )
+    created_via_portal = fields.Boolean(
+        string='Created via Portal',
+        default=False,
+        help='Indicates this request was submitted through customer portal'
+    )
 
     state = fields.Selection([
         ('draft', 'Draft'),

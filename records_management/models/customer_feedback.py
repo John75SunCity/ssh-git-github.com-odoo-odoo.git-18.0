@@ -42,6 +42,15 @@ class CustomerFeedback(models.Model):
         ('urgent', 'Urgent')
     ], string='Priority', default='normal', tracking=True)
     description = fields.Text(string='Description', help="Detailed description used in extended views and reports")
+    
+    # Submission source tracking
+    submitted_via = fields.Selection([
+        ('portal', 'Customer Portal'),
+        ('email', 'Email'),
+        ('phone', 'Phone'),
+        ('in_person', 'In Person'),
+        ('other', 'Other'),
+    ], string='Submitted Via', default='portal', help='Channel through which feedback was received')
 
     # Escalation & Ownership (added to match view usage)
     escalation_level = fields.Selection([

@@ -54,6 +54,13 @@ class PortalFeedback(models.Model):
         ('2', 'High'),
         ('3', 'Urgent'),
     ], string='Priority', default='1', tracking=True)
+    
+    # Contact preferences
+    contact_back = fields.Boolean(
+        string='Request Contact Back',
+        default=False,
+        help='Customer requests to be contacted regarding this feedback'
+    )
 
     # ============================================================================
     # AI & SENTIMENT ANALYSIS

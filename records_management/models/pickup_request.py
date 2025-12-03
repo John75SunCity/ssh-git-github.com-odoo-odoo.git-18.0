@@ -14,6 +14,11 @@ class PickupRequest(models.Model):
     name = fields.Char(string='Reference', required=True, copy=False, readonly=True, default=lambda self: "New")
     partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
+    department_id = fields.Many2one(
+        comodel_name='records.department',
+        string='Department',
+        help='Department associated with this pickup request'
+    )
     active = fields.Boolean(string='Active', default=True)
 
     request_date = fields.Datetime(string='Request Date', default=fields.Datetime.now, readonly=True)
