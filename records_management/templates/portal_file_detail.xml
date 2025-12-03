@@ -163,15 +163,6 @@
                                                     <th>Last Updated:</th>
                                                     <td><t t-esc="file.write_date.strftime('%Y-%m-%d %H:%M') if file.write_date else 'Unknown'"/></td>
                                                 </tr>
-                                                <tr>
-                                                    <th>Active Status:</th>
-                                                    <td>
-                                                        <span t-att-class="'badge badge-' + ('success' if file.active else 'secondary')">
-                                                            <t t-if="file.active">Active</t>
-                                                            <t t-else="">Archived</t>
-                                                        </span>
-                                                    </td>
-                                                </tr>
                                                 <tr t-if="file.owner_id">
                                                     <th>Owner:</th>
                                                     <td><t t-esc="file.owner_id.name"/></td>

@@ -171,11 +171,16 @@
                             <div class="card shadow-sm mb-4">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0"><i class="fa fa-folder"></i> Files in Container (<t t-esc="len(files or [])"/>)</h5>
-                                    <!-- Add File button - check permission for file creation -->
-                                    <t t-if="permissions.get('files', {}).get('can_create')">
+                                    <!-- Add File button - only show for pending containers (customer physically has the box) -->
+                                    <t t-if="permissions.get('files', {}).get('can_create') and container.state == 'pending'">
                                         <a t-attf-href="/my/inventory/files/create?container_id=#{container.id}" class="btn btn-success btn-sm">
-                                            <i class="fa fa-plus"></i> Add File
+                                            <i class="fa fa-plus"></i> Add File to Box
                                         </a>
+                                    </t>
+                                    <t t-elif="container.state != 'pending' and permissions.get('files', {}).get('can_create')">
+                                        <span class="text-muted small" title="Files can only be added when the container is in Pending status (before it's picked up)">
+                                            <i class="fa fa-info-circle"></i> Container already in storage
+                                        </span>
                                     </t>
                                 </div>
                                 <div class="card-body">

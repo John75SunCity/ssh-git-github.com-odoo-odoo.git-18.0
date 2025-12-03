@@ -151,6 +151,13 @@ class RecordsFile(models.Model):
         help='Uncheck to archive this file. Archived files are hidden from default views.'
     )
     
+    # Portal tracking
+    created_via_portal = fields.Boolean(
+        string='Created via Portal',
+        default=False,
+        help='Indicates this file folder was created through the customer portal'
+    )
+
     # ============================================================================
     # DOCUMENT RELATIONSHIPS
     # ============================================================================
