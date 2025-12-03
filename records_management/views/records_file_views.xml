@@ -130,17 +130,10 @@
         <field name="arch" type="xml">
         <form>
             <header>
-                <!-- Document Management Buttons -->
+                <!-- Single Document Upload Button - Opens wizard for uploading PDFs -->
                 <button name="action_upload_document" type="object" string="Upload Document"
                         class="btn-primary"
-                        help="Upload a new PDF document to this file folder"/>
-                <button name="action_add_documents" type="object" string="Add Documents"
-                        class="btn-success"
-                        help="Add existing documents to this file folder"/>
-                <button name="action_remove_documents" type="object" string="Remove Documents"
-                        class="btn-warning"
-                        invisible="document_count == 0"
-                        help="Remove documents from this file folder"/>
+                        help="Upload PDF documents to this file folder"/>
                 <!-- Barcode Actions -->
                 <button name="action_assign_barcode_and_track" type="object" string="Assign Barcode"
                         class="btn-primary" invisible="barcode"
@@ -201,7 +194,7 @@
                                options="{'no_create': True}"
                                help="Organizational unit that owns this inventory (Company → Department → Child Department). Auto-filled when you select customer or container."/>
                         <field name="container_id" string="Container" options="{'no_create': True}"/>
-                        <field name="location_id" string="Current Location" readonly="1"/>
+                        <field name="current_location_id" string="Current Location" readonly="1"/>
                         <field name="owner_id" string="Stock Inventory Owner" readonly="1"/>
                     </group>
                 </group>
@@ -229,8 +222,11 @@
 
                 <notebook>
                     <page string="Documents" name="documents">
-                        <field name="document_ids" mode="list,form" context="{'default_file_id': id}">
-                            <list string="Documents">
+                        <div class="alert alert-info mb-2" role="alert">
+                            <i class="fa fa-info-circle"/> To add documents, use the <b>Upload Document</b> button above.
+                        </div>
+                        <field name="document_ids" mode="list" readonly="1" context="{'default_file_id': id, 'default_container_id': container_id}">
+                            <list string="Documents" create="0" delete="0">
                                 <field name="name"/>
                                 <field name="reference"/>
                                 <field name="barcode" optional="show"/>
@@ -238,16 +234,6 @@
                                 <field name="state"/>
                                 <field name="create_date"/>
                             </list>
-                            <form string="Document">
-                                <group>
-                                    <field name="name"/>
-                                    <field name="reference"/>
-                                    <field name="barcode"/>
-                                    <field name="document_type_id"/>
-                                    <field name="state"/>
-                                    <field name="description"/>
-                                </group>
-                            </form>
                         </field>
                     </page>
                     <page string="Stock &amp; Tracking" name="stock" invisible="not quant_id">

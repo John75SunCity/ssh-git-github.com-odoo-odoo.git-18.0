@@ -112,8 +112,19 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <th>Location:</th>
-                                                    <td><t t-esc="file.location_id.name if file.location_id else 'Not assigned'"/></td>
+                                                    <th>Current Location:</th>
+                                                    <td>
+                                                        <t t-if="file.current_location_id">
+                                                            <t t-esc="file.current_location_id.name"/>
+                                                        </t>
+                                                        <t t-elif="file.container_id and file.container_id.current_location_id">
+                                                            <t t-esc="file.container_id.current_location_id.name"/>
+                                                            <small class="text-muted"> (from container)</small>
+                                                        </t>
+                                                        <t t-else="">
+                                                            Not assigned
+                                                        </t>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <th>Description:</th>

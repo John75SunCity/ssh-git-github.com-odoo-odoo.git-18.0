@@ -90,9 +90,18 @@ class RecordsFile(models.Model):
     
     location_id = fields.Many2one(
         related='quant_id.location_id',
-        string="Current Location",
+        string="Stock Location",
         store=True,
-        help="Physical location of this file (warehouse, customer site, transit, etc.)"
+        help="Physical location from stock quant (if tracked independently)"
+    )
+    
+    current_location_id = fields.Many2one(
+        comodel_name='stock.location',
+        string="Current Location",
+        compute='_compute_current_location_id',
+        store=True,
+        help="Effective current location: from stock quant if tracked independently, "
+             "otherwise inherited from parent container"
     )
     
     parent_quant_id = fields.Many2one(
@@ -253,6 +262,26 @@ class RecordsFile(models.Model):
         """Count documents in this file"""
         for file in self:
             file.document_count = len(file.document_ids)
+
+    @api.depends('location_id', 'container_id.current_location_id')
+    def _compute_current_location_id(self):
+        """
+        Compute effective current location for display.
+        
+        Priority:
+        1. File's own location_id (if tracked independently via quant)
+        2. Container's current_location_id (if file is inside a container)
+        3. Empty (if neither applies)
+        """
+        for file in self:
+            if file.location_id:
+                # File has its own stock quant location
+                file.current_location_id = file.location_id.id
+            elif file.container_id and file.container_id.current_location_id:
+                # Inherit location from parent container
+                file.current_location_id = file.container_id.current_location_id.id
+            else:
+                file.current_location_id = False
     
     @api.depends('owner_id', 'container_id.partner_id')
     def _compute_partner_id(self):
