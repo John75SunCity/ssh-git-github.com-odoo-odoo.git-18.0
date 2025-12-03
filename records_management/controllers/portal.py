@@ -2156,7 +2156,7 @@ class RecordsManagementController(http.Controller):
                 ])
 
                 attachment_info = f" - {len(attachments)} PDF scan(s)" if attachments else ""
-                
+
                 # Get file state for document availability
                 file_state = document.file_id.state if document.file_id else 'in'
 
