@@ -5,12 +5,12 @@
             <field name="name">records.document.view.kanban</field>
             <field name="model">records.document</field>
             <field name="arch" type="xml">
-                <kanban default_group_by="state" class="o_kanban_document_dashboard">
+                <kanban default_group_by="document_type_id" class="o_kanban_document_dashboard">
                     <field name="name" />
                     <field name="document_type_id" />
                     <field name="partner_id" />
                     <field name="container_id" />
-                    <field name="state" />
+                    <field name="file_id" />
                     <field name="retention_policy_id" />
                     <field name="destruction_eligible_date" />
                     <field name="total_attachment_size_kb" />
@@ -56,8 +56,8 @@
                                         </div>
                                         </div>
                                         <div class="col-4">
-                                            <span class="badge" t-att-class="record.state.raw_value === 'active' ? 'badge-success' : record.state.raw_value === 'pending_destruction' ? 'badge-warning' : record.state.raw_value === 'destroyed' ? 'badge-danger' : 'badge-secondary'">
-                                                <field name="state" />
+                                            <span class="badge badge-info">
+                                                <field name="file_id" />
                                             </span>
                                         </div>
                                     </div>
@@ -130,7 +130,7 @@
                     <field name="is_permanent" string="Permanent" widget="boolean" />
                     <field name="retention_policy_id" string="Retention Policy" />
                     <field name="destruction_eligible_date" string="Destruction Date" />
-                    <field name="state" string="Status" widget="badge" />
+                    <field name="file_id" string="File Folder" />
                     <button name="action_view_chain_of_custody" type="object" string="Chain" icon="fas fa-link" class="btn-link" />
                     <button name="action_generate_document_barcode" type="object" string="Barcode" icon="fas fa-barcode" class="btn-link" />
                     <button name="action_generate_document_qr" type="object" string="QR" icon="fas fa-qrcode" class="btn-link" />
@@ -153,7 +153,6 @@
                         <button name="action_mark_permanent" type="object" string="Mark as Permanent" class="btn-success" invisible="is_permanent" groups="records_management.group_records_user" />
                         <button name="action_unmark_permanent" type="object" string="Remove Permanent Flag" class="btn-warning" invisible="not is_permanent" groups="base.group_system" />
                         <button name="action_schedule_destruction" type="object" string="Schedule Destruction" class="btn-danger" invisible="not destruction_eligible_date or is_permanent" />
-                        <field name="state" widget="statusbar" statusbar_visible="active,pending_destruction,destroyed" />
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -212,7 +211,7 @@
                                 <field name="permanent_date" readonly="1" invisible="not is_permanent" />
                                 <field name="retention_policy_id" />
                                 <field name="destruction_eligible_date" />
-                                <field name="state" />
+                                <field name="file_id" string="File Folder" />
                                 <div colspan="2" style="font-weight: bold; color: #28a745; padding: 5px;">
                                     <i class="fas fa-certificate" title="NAID AAA Certified" /> NAID AAA Certified Facility</div>
                             </group>
@@ -328,10 +327,10 @@
             <field name="name">records.document.view.calendar</field>
             <field name="model">records.document</field>
             <field name="arch" type="xml">
-                <calendar string="Document Destruction Schedule" date_start="destruction_eligible_date" color="state">
+                <calendar string="Document Destruction Schedule" date_start="destruction_eligible_date" color="document_type_id">
                     <field name="name" />
                     <field name="partner_id" />
-                    <field name="state" />
+                    <field name="file_id" />
                 </calendar>
             </field>
         </record>
@@ -344,9 +343,7 @@
                     <field name="partner_id" />
                     <field name="document_type_id" />
                     <field name="container_id" />
-                    <filter string="Active Documents" name="active" domain="[('state', '=', 'active')]" />
-                    <filter string="Pending Destruction" name="pending_destruction" domain="[('state', '=', 'pending_destruction')]" />
-                    <filter string="Destroyed" name="destroyed" domain="[('state', '=', 'destroyed')]" />
+                    <field name="file_id" />
                     <separator />
                     <filter string="Permanent Records" name="permanent" domain="[('is_permanent', '=', True)]" />
                     <filter string="Non-Permanent Records" name="non_permanent" domain="[('is_permanent', '=', False)]" />

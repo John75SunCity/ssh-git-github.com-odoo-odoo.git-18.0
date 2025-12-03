@@ -19,7 +19,6 @@
 
                         <field name="document_name" readonly="1"/>
                         <field name="document_reference" readonly="1"/>
-                        <field name="current_state" readonly="1"/>
                     </group>
                 </group>
 

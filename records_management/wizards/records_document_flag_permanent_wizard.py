@@ -25,11 +25,6 @@ class RecordsDocumentFlagPermanentWizard(models.TransientModel):
         string='Document Reference',
         readonly=True
     )
-    current_state = fields.Selection(
-        related='document_id.state',
-        string='Current State',
-        readonly=True
-    )
     permanent_reason = fields.Text(
         string='Reason for Permanent Flag',
         required=True,
@@ -71,9 +66,10 @@ class RecordsDocumentFlagPermanentWizard(models.TransientModel):
         if self.document_id.is_permanent:
             raise ValidationError(_("Document '%s' is already flagged as permanent.") % self.document_id.name)
 
-        # Check if document is in a state that allows permanent flagging
-        if self.document_id.state in ('destroyed',):
-            raise ValidationError(_("Cannot flag a destroyed document as permanent."))
+        # Check if document's container is destroyed
+        container_state = self.document_id.file_id.container_id.state if self.document_id.file_id and self.document_id.file_id.container_id else False
+        if container_state == 'destroyed':
+            raise ValidationError(_("Cannot flag a document from a destroyed container as permanent."))
 
         # Update the document
         self.document_id.write({

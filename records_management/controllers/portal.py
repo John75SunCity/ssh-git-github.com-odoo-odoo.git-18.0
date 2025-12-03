@@ -2156,6 +2156,9 @@ class RecordsManagementController(http.Controller):
                 ])
 
                 attachment_info = f" - {len(attachments)} PDF scan(s)" if attachments else ""
+                
+                # Get file state for document availability
+                file_state = document.file_id.state if document.file_id else 'in'
 
                 all_inventory_items.append({
                     'type': 'document',
@@ -2165,7 +2168,7 @@ class RecordsManagementController(http.Controller):
                     'description': f"Document - {document.description or 'No description'}{attachment_info}",
                     'location': document.container_id.current_location_id.name if document.container_id and document.container_id.current_location_id else 'Unknown',
                     'date': document.create_date,
-                    'state': document.state or 'active',
+                    'state': file_state,
                     'model': 'records.document',
                     'icon': 'fa-file-text',
                     'color': 'success',
