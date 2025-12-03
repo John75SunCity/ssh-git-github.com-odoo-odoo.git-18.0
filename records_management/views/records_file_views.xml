@@ -70,13 +70,13 @@
                             <div class="row mt-2">
                                 <div class="col-6">
                                     <button class="btn btn-primary btn-sm" type="object" name="action_view_documents">
-                                        <i class="fas fa-file-pdf-o" title="View Documents" aria-hidden="true"/>
+                                        <i class="fa fa-file-pdf-o" title="View Documents" aria-hidden="true"/>
                                         Documents
                                     </button>
                                 </div>
                                 <div class="col-6">
                                     <button class="btn btn-info btn-sm" type="object" name="action_generate_barcode">
-                                        <i class="fas fa-barcode" title="Generate Barcode" aria-hidden="true"/>
+                                        <i class="fa fa-barcode" title="Generate Barcode" aria-hidden="true"/>
                                         Barcode
                                     </button>
                                 </div>
@@ -84,16 +84,24 @@
                             <div class="row mt-1">
                                 <div class="col-12">
                                     <button class="btn btn-success btn-sm" type="object" name="action_upload_document">
-                                        <i class="fas fa-upload" title="Upload Document" aria-hidden="true"/>
+                                        <i class="fa fa-upload" title="Upload Document" aria-hidden="true"/>
                                         Upload PDF
                                     </button>
                                 </div>
                             </div>
                         </div>
                         <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                            <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">View Documents</a>
-                            <a role="menuitem" type="object" name="action_upload_document" class="dropdown-item">Upload Document</a>
-                            <a role="menuitem" type="object" name="action_add_documents" class="dropdown-item">Add Existing Documents</a>
+                            <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">
+                                <i class="fa fa-file-pdf-o"/> View Documents</a>
+                            <a role="menuitem" type="object" name="action_upload_document" class="dropdown-item">
+                                <i class="fa fa-upload"/> Upload Document</a>
+                            <a role="menuitem" type="object" name="action_add_documents" class="dropdown-item">
+                                <i class="fa fa-plus-circle"/> Add Existing Documents</a>
+                            <div class="dropdown-divider"/>
+                            <a role="menuitem" type="object" name="action_generate_barcode" class="dropdown-item">
+                                <i class="fa fa-barcode"/> Generate Barcode</a>
+                            <a role="menuitem" type="object" name="action_generate_qr_code" class="dropdown-item">
+                                <i class="fa fa-qrcode"/> Generate QR Code</a>
                         </div>
                     </div>
                 </t>
@@ -102,58 +110,83 @@
     </field>
     </record>
 
-<!-- Tree view for File Folders -->
+<!-- Tree/List view for File Folders - Styled like records.document -->
     <record id="records_file_view_list" model="ir.ui.view">
         <field name="name">records.file.view.list</field>
         <field name="model">records.file</field>
         <field name="arch" type="xml">
-        <list string="File Folders" multi_edit="1" sample="1">
+        <list string="File Folders" multi_edit="1" sample="1"
+              decoration-success="state == 'in'"
+              decoration-warning="state == 'out'">
             <field name="name" string="File Name"/>
-            <field name="barcode" optional="show"/>
-            <field name="temp_barcode" optional="hide"/>
+            <field name="file_category" string="Category" optional="show"/>
             <field name="partner_id" string="Customer"/>
-            <field name="stock_owner_id" string="Inventory Owner" optional="show"/>
+            <field name="stock_owner_id" string="Stock Owner" optional="show"/>
             <field name="container_id" string="Container"/>
-            <field name="file_category" optional="show"/>
-            <field name="location_id" optional="show"/>
-            <field name="document_count" string="Documents"/>
-            <field name="state" decoration-success="state == 'in'" decoration-warning="state == 'out'"/>
-            <field name="date_created" optional="show"/>
+            <field name="document_count" string="Docs"/>
+            <field name="state" widget="badge" decoration-success="state == 'in'" decoration-warning="state == 'out'"/>
+            <field name="barcode" optional="hide"/>
+            <field name="temp_barcode" optional="hide"/>
+            <field name="location_id" string="Location" optional="hide"/>
+            <field name="date_created" optional="hide"/>
+            <!-- Action buttons with Font Awesome 4 icons (fa fa-*) -->
+            <button name="action_view_documents" type="object" string="Docs" icon="fa-file-pdf-o" class="btn-link" title="View Documents"/>
+            <button name="action_generate_barcode" type="object" string="Barcode" icon="fa-barcode" class="btn-link" title="Generate Barcode"/>
+            <button name="action_generate_qr_code" type="object" string="QR" icon="fa-qrcode" class="btn-link" title="Generate QR Code"/>
+            <button name="action_upload_document" type="object" string="Upload" icon="fa-upload" class="btn-link" title="Upload Document"/>
         </list>
     </field>
     </record>
 
-<!-- Form view for File Folders -->
+<!-- Form view for File Folders - Styled like records.document -->
     <record id="records_file_view_form" model="ir.ui.view">
         <field name="name">records.file.view.form</field>
         <field name="model">records.file</field>
         <field name="arch" type="xml">
         <form>
             <header>
-                <!-- Single Document Upload Button - Opens wizard for uploading PDFs -->
-                <button name="action_upload_document" type="object" string="Upload Document"
-                        class="btn-primary"
-                        help="Upload PDF documents to this file folder"/>
-                <!-- Barcode Actions -->
-                <button name="action_assign_barcode_and_track" type="object" string="Assign Barcode"
-                        class="btn-primary" invisible="barcode"
-                        help="Assign pre-printed barcode from sheet and enable inventory tracking"/>
-                <button name="action_print_barcode_label" type="object" string="Print Label" class="btn-info"/>
-                <button name="action_print_qr_label" type="object" string="Print QR Label" class="btn-success"/>
+                <!-- Action buttons styled like records.document -->
+                <button name="action_view_documents" type="object" string="View Documents" class="btn-primary"/>
+                <button name="action_upload_document" type="object" string="Upload Document" class="btn-info"/>
+                <button name="action_print_barcode_label" type="object" string="Print Barcode" class="btn-warning"/>
+                <button name="action_print_qr_label" type="object" string="Print QR Code" class="btn-success"/>
+                <button name="action_retrieve_from_container" type="object" string="Retrieve from Container"
+                        class="btn-secondary" invisible="state != 'in' or not container_id"/>
+                <button name="action_return_to_container" type="object" string="Return to Container"
+                        class="btn-secondary" invisible="state != 'out' or not container_id"/>
                 <field name="state" widget="statusbar" statusbar_visible="in,out"/>
             </header>
             <sheet>
                 <div class="oe_button_box" name="button_box">
-                    <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-pdf-o" title="View Documents">
+                    <!-- Document count stat button -->
+                    <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-pdf-o">
                         <field name="document_count" string="Documents" widget="statinfo"/>
                     </button>
-                    <!-- Container Link -->
+                    <!-- Container stat button -->
                     <button class="oe_stat_button" type="object" name="action_view_container"
-                            icon="fa-cube"
-                            title="View Container"
-                            invisible="not container_id">
+                            icon="fa-cube" invisible="not container_id">
                         <div class="o_field_widget o_stat_info">
                             <span class="o_stat_text">Container</span>
+                            <span class="o_stat_value" style="font-size: 11px;">
+                                <field name="container_id" widget="selection"/>
+                            </span>
+                        </div>
+                    </button>
+                    <!-- Movement history stat button -->
+                    <button class="oe_stat_button" type="object" name="action_view_movement_history"
+                            icon="fa-history">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Movement History</span>
+                        </div>
+                    </button>
+                    <!-- Barcode stat button -->
+                    <button class="oe_stat_button" icon="fa-barcode" invisible="not temp_barcode and not barcode">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">File Barcode</span>
+                            <span class="o_stat_value" style="font-size: 12px;">
+                                <field name="barcode" invisible="not barcode"/>
+                                <field name="temp_barcode" invisible="barcode"/>
+                            </span>
                         </div>
                     </button>
                 </div>
@@ -163,39 +196,31 @@
                         <field name="name"
                                string="File Name"
                                placeholder="e.g., HR-Personnel-Records, Finance-Q4-Invoices"
-                               help="Unique name for this file folder"
-                               required="1"/>
-                        <field name="description"
-                               string="Description"
-                               placeholder="Brief description of file contents"
-                               help="Optional description to help identify this file folder"/>
+                               help="Unique name for this file folder"/>
                         <field name="file_category" string="Category"/>
+                        <field name="partner_id" string="Customer"/>
+                        <field name="department_id" string="Department"/>
+                        <field name="container_id" string="Container"/>
                     </group>
-                    <group string="Barcode Tracking">
+                    <group string="Barcode">
                         <field name="temp_barcode"
                                string="Temporary Barcode"
-                               help="System-generated temporary barcode (auto-assigned on creation)"
-                               placeholder="Auto-generated when saved"
-                               invisible="barcode"/>
+                               readonly="1"
+                               help="System-generated temporary barcode (auto-assigned)"/>
                         <field name="barcode"
                                string="Physical Barcode"
                                placeholder="Scan or type barcode from pre-printed sheet"
                                help="Physical barcode - scan with camera or laser scanner"
                                widget="barcode"/>
-                        <div colspan="2" class="text-muted small" invisible="not barcode or not temp_barcode">
-                            <i class="fa fa-info-circle"/> Both temporary and physical barcodes are active
-                        </div>
                     </group>
                     <group string="Location &amp; Ownership">
-                        <field name="partner_id" string="Customer" options="{'no_create': True, 'no_create_edit': True}"/>
-                        <field name="stock_owner_id"
-                               string="Inventory Owner"
-                               readonly="1"
-                               options="{'no_create': True}"
-                               help="Organizational unit that owns this inventory (Company → Department → Child Department). Auto-filled when you select customer or container."/>
-                        <field name="container_id" string="Container" options="{'no_create': True}"/>
+                        <field name="stock_owner_id" string="Stock Owner" readonly="1"/>
                         <field name="current_location_id" string="Current Location" readonly="1"/>
-                        <field name="owner_id" string="Stock Inventory Owner" readonly="1"/>
+                        <field name="state" string="Status"/>
+                    </group>
+                    <group string="Dates">
+                        <field name="date_created" string="Date Created"/>
+                        <field name="received_date" string="Received Date"/>
                     </group>
                 </group>
 
@@ -223,28 +248,32 @@
                 <notebook>
                     <page string="Documents" name="documents">
                         <div class="alert alert-info mb-2" role="alert">
-                            <i class="fa fa-info-circle"/> To add documents, use the <b>Upload Document</b> button above.
+                            <i class="fa fa-info-circle"/> Documents in this file folder. Use <b>Upload Document</b> to add new files.
                         </div>
-                        <field name="document_ids" mode="list" readonly="1" context="{'default_file_id': id, 'default_container_id': container_id}">
-                            <list string="Documents" create="0" delete="0">
+                        <field name="document_ids" mode="list" context="{'default_file_id': id, 'default_container_id': container_id}">
+                            <list string="Documents" create="1" delete="0">
                                 <field name="name"/>
-                                <field name="reference"/>
-                                <field name="barcode" optional="show"/>
                                 <field name="document_type_id" optional="show"/>
-                                <field name="received_date"/>
+                                <field name="barcode" optional="show"/>
+                                <field name="is_permanent" widget="boolean"/>
+                                <field name="destruction_eligible_date" optional="show"/>
                                 <field name="create_date"/>
                             </list>
                         </field>
                     </page>
-                    <page string="Stock &amp; Tracking" name="stock" invisible="not quant_id">
+                    <page string="Description" name="description">
+                        <field name="description" placeholder="Detailed description of file contents..."/>
+                    </page>
+                    <page string="Stock &amp; Tracking" name="stock" groups="records_management.group_records_manager">
                         <group>
                             <group string="Stock Information">
                                 <field name="quant_id" readonly="1"/>
-                                <field name="owner_id" readonly="1"/>
-                                <field name="location_id" readonly="1"/>
+                                <field name="owner_id" string="Quant Owner" readonly="1"/>
+                                <field name="location_id" string="Stock Location" readonly="1"/>
                             </group>
-                            <group string="Dates">
-                                <field name="date_created"/>
+                            <group string="Portal Info">
+                                <field name="created_via_portal" readonly="1"/>
+                                <field name="active"/>
                             </group>
                         </group>
                     </page>
@@ -273,11 +302,8 @@
             <field name="location_id"/>
             <field name="state"/>
 
-            <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-            <filter string="Stored" name="stored" domain="[('state', '=', 'stored')]"/>
-            <filter string="Retrieved" name="retrieved" domain="[('state', '=', 'retrieved')]"/>
-            <filter string="At Customer" name="at_customer" domain="[('state', '=', 'at_customer')]"/>
-            <filter string="In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]"/>
+            <filter string="In Storage" name="in_storage" domain="[('state', '=', 'in')]"/>
+            <filter string="Out" name="out" domain="[('state', '=', 'out')]"/>
 
             <separator/>
             <filter string="Has Documents" name="has_documents" domain="[('document_count', '>', 0)]"/>
@@ -289,7 +315,7 @@
 
             <group expand="0" string="Group By">
                 <filter string="Customer" name="customer" context="{'group_by': 'partner_id'}"/>
-                <filter string="Inventory Owner" name="stock_owner" context="{'group_by': 'stock_owner_id'}"/>
+                <filter string="Stock Owner" name="stock_owner" context="{'group_by': 'stock_owner_id'}"/>
                 <filter string="Container" name="container" context="{'group_by': 'container_id'}"/>
                 <filter string="Category" name="category" context="{'group_by': 'file_category'}"/>
                 <filter string="Status" name="status" context="{'group_by': 'state'}"/>
@@ -303,7 +329,8 @@
     <record id="action_records_file" model="ir.actions.act_window">
         <field name="name">File Folders</field>
         <field name="res_model">records.file</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="context">{'search_default_in_storage': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first file folder!
