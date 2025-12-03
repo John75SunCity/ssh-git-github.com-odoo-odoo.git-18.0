@@ -73,6 +73,8 @@
                                         <!-- Removed always-invisible 'currency_id' (monetary fields already include currency via company) -->
                                     </group>
                                 </group>
+                                <separator string="Notes"/>
+                                <field name="notes" placeholder="Internal notes about this retrieval request..."/>
                             </page>
                             <page name="tracking" string="Tracking &amp; History">
                                 <group>

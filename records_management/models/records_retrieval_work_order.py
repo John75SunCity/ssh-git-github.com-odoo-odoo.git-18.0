@@ -23,6 +23,7 @@ class RecordsRetrievalWorkOrder(models.Model):
     user_id = fields.Many2one(comodel_name='res.users', string='Assigned To')
     completion_date = fields.Datetime(string='Completion Date', help="Date and time when the retrieval was completed")
     delivery_method = fields.Selection([('scan', 'Scan & Email'), ('physical', 'Physical Delivery')], string='Delivery Method')
+    notes = fields.Text(string='Notes', help="Internal notes about this retrieval request")
 
     # Link to retrieval team (for One2many in maintenance.team)
     retrieval_team_id = fields.Many2one(comodel_name='maintenance.team', string='Retrieval Team')
