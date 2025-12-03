@@ -62,7 +62,7 @@
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <span class="badge" t-att-class="record.state.raw_value === 'stored' ? 'badge-success' : record.state.raw_value === 'draft' ? 'badge-info' : record.state.raw_value === 'retrieved' ? 'badge-warning' : record.state.raw_value === 'at_customer' ? 'badge-danger' : 'badge-secondary'">
+                                    <span class="badge" t-att-class="record.state.raw_value === 'in' ? 'badge-success' : record.state.raw_value === 'out' ? 'badge-warning' : 'badge-secondary'">
                                         <field name="state"/>
                                     </span>
                                 </div>
@@ -117,7 +117,7 @@
             <field name="file_category" optional="show"/>
             <field name="location_id" optional="show"/>
             <field name="document_count" string="Documents"/>
-            <field name="state" decoration-success="state == 'stored'" decoration-info="state == 'draft'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'at_customer'"/>
+            <field name="state" decoration-success="state == 'in'" decoration-warning="state == 'out'"/>
             <field name="date_created" optional="show"/>
         </list>
     </field>
@@ -140,7 +140,7 @@
                         help="Assign pre-printed barcode from sheet and enable inventory tracking"/>
                 <button name="action_print_barcode_label" type="object" string="Print Label" class="btn-info"/>
                 <button name="action_print_qr_label" type="object" string="Print QR Label" class="btn-success"/>
-                <field name="state" widget="statusbar" statusbar_visible="draft,stored,retrieved,at_customer,in_transit,returned"/>
+                <field name="state" widget="statusbar" statusbar_visible="in,out"/>
             </header>
             <sheet>
                 <div class="oe_button_box" name="button_box">
@@ -231,7 +231,7 @@
                                 <field name="reference"/>
                                 <field name="barcode" optional="show"/>
                                 <field name="document_type_id" optional="show"/>
-                                <field name="state"/>
+                                <field name="received_date"/>
                                 <field name="create_date"/>
                             </list>
                         </field>
