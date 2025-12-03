@@ -507,16 +507,7 @@ class RecordsDocument(models.Model):
         """
         Create or update stock.quant.package for Stock Barcode compatibility.
         
-        Document packages are NESTED under their file's or container's package.
         This enables Odoo's Stock Barcode to recognize document barcodes.
-        
-        Hierarchy:
-            Container Package (grandparent)
-              └── File Package (parent)
-                    └── Document Package (child)
-        OR:
-            Container Package (parent)
-              └── Document Package (child, when no file)
         """
         self.ensure_one()
         
@@ -524,22 +515,10 @@ class RecordsDocument(models.Model):
         if not barcode:
             return
         
-        # Get parent package from file or container
-        parent_package = False
-        if self.file_id and self.file_id.package_id:
-            parent_package = self.file_id.package_id
-        elif self.container_id and self.container_id.package_id:
-            parent_package = self.container_id.package_id
-        
         # If document already has a package, update it
         if self.package_id:
-            update_vals = {}
             if self.package_id.name != barcode:
-                update_vals['name'] = barcode
-            if parent_package and self.package_id.parent_package_id != parent_package:
-                update_vals['parent_package_id'] = parent_package.id
-            if update_vals:
-                self.package_id.write(update_vals)
+                self.package_id.write({'name': barcode})
             return
         
         # Search for existing package with this barcode
@@ -548,19 +527,14 @@ class RecordsDocument(models.Model):
         ], limit=1)
         
         if existing_package:
-            # Update parent if needed and link to document
-            if parent_package and existing_package.parent_package_id != parent_package:
-                existing_package.write({'parent_package_id': parent_package.id})
             self.write({'package_id': existing_package.id})
             return
         
-        # Create new package as child of file's or container's package
+        # Create new package
         package_vals = {
             'name': barcode,
             'company_id': self.company_id.id,
         }
-        if parent_package:
-            package_vals['parent_package_id'] = parent_package.id
         
         package = self.env['stock.quant.package'].create(package_vals)
         self.write({'package_id': package.id})

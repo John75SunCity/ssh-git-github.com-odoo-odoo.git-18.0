@@ -17,28 +17,28 @@
             <field name="arch" type="xml">
                 <form string="Container Access Work Order">
                     <header>
-                        <button name="action_submit" string="Submit" type="object" 
+                        <button name="action_submit" string="Submit" type="object"
                                 invisible="state != 'draft'" class="oe_highlight"/>
-                        <button name="action_approve" string="Approve" type="object" 
+                        <button name="action_approve" string="Approve" type="object"
                                 invisible="state != 'submitted'" class="oe_highlight"/>
-                        <button name="action_schedule" string="Schedule" type="object" 
+                        <button name="action_schedule" string="Schedule" type="object"
                                 invisible="state != 'approved'" class="oe_highlight"/>
-                        <button name="action_open_camera_scanner" string="📷 Camera Scan" type="object" 
-                                class="btn-info" 
-                                invisible="state not in ['scheduled','in_progress']" 
+                        <button name="action_open_camera_scanner" string="📷 Camera Scan" type="object"
+                                class="btn-info"
+                                invisible="state not in ['scheduled','in_progress']"
                                 title="Scan containers using phone camera"/>
-                        <button name="action_open_scanner" string="⌨️ Keyboard Scan" type="object" 
-                                class="btn-secondary" 
-                                invisible="state not in ['scheduled','in_progress']" 
+                        <button name="action_open_scanner" string="⌨️ Keyboard Scan" type="object"
+                                class="btn-secondary"
+                                invisible="state not in ['scheduled','in_progress']"
                                 icon="fa-barcode"
                                 help="Open barcode scanner to verify containers and files"/>
-                        <button name="action_start_access" string="Start Access" type="object" 
+                        <button name="action_start_access" string="Start Access" type="object"
                                 invisible="state != 'scheduled'" class="oe_highlight"/>
-                        <button name="action_complete_access" string="Complete" type="object" 
+                        <button name="action_complete_access" string="Complete" type="object"
                                 invisible="state != 'in_progress'" class="btn-success"/>
-                        <button name="action_cancel" string="Cancel" type="object" 
+                        <button name="action_cancel" string="Cancel" type="object"
                                 invisible="state in ['completed', 'documented', 'closed', 'cancelled']"/>
-                        <field name="state" widget="statusbar" 
+                        <field name="state" widget="statusbar"
                                statusbar_visible="draft,submitted,approved,scheduled,in_progress,completed"/>
                     </header>
                     <sheet>
@@ -81,7 +81,7 @@
                                 <separator string="Scanned Containers"/>
                                 <field name="scanned_barcode_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create': True}"/>
                                 <div class="alert alert-info" role="status">
-                                    <p><i class="fa fa-info-circle"/> <strong>How to Scan:</strong></p>
+                                    <p><i class="fa fa-info-circle" title="Information"/> <strong>How to Scan:</strong></p>
                                     <ul>
                                         <li><strong>USB Scanner:</strong> Focus on barcode field and scan</li>
                                         <li><strong>Mobile:</strong> Tap camera icon to scan with phone camera</li>
@@ -98,7 +98,7 @@
                                     <group string="Company Balance">
                                         <field name="customer_total_balance" widget="monetary"/>
                                         <field name="customer_past_due_balance" widget="monetary"/>
-                                        <field name="customer_balance_status" widget="badge" 
+                                        <field name="customer_balance_status" widget="badge"
                                                decoration-success="customer_balance_status == 'current'"
                                                decoration-warning="customer_balance_status == 'attention'"
                                                decoration-danger="customer_balance_status in ('overdue', 'critical')"/>
@@ -109,13 +109,13 @@
                                 </group>
                                 <group string="Payment Actions">
                                     <div class="d-flex gap-2 flex-wrap">
-                                        <button name="action_field_payment" type="object" 
+                                        <button name="action_field_payment" type="object"
                                                 string="💳 Collect Payment" class="btn-primary"
                                                 help="Collect payment from customer on-site"/>
-                                        <button name="action_view_unpaid_invoices" type="object" 
+                                        <button name="action_view_unpaid_invoices" type="object"
                                                 string="📋 View Unpaid Invoices" class="btn-secondary"
                                                 help="View all unpaid invoices for this customer"/>
-                                        <button name="action_view_payment_history" type="object" 
+                                        <button name="action_view_payment_history" type="object"
                                                 string="📊 Payment History" class="btn-secondary"
                                                 help="View payment history for this customer"/>
                                     </div>
