@@ -165,6 +165,14 @@ class RecordsFile(models.Model):
         default=False,
         help='Indicates this file folder was created through the customer portal'
     )
+    
+    # Responsible Person - defaults to customer's portal user
+    responsible_person_id = fields.Many2one(
+        comodel_name='res.users',
+        string='Responsible',
+        tracking=True,
+        help='Person responsible for this file. Defaults to customer\'s portal user or department contact.'
+    )
 
     # ============================================================================
     # DOCUMENT RELATIONSHIPS
@@ -326,6 +334,103 @@ class RecordsFile(models.Model):
             else:
                 file.stock_owner_id = False
 
+    # ============================================================================
+    # CUSTOMER/DEPARTMENT USER HELPERS
+    # ============================================================================
+    @api.model
+    def _get_customer_responsible_user(self, vals):
+        """
+        Get the appropriate responsible user for a file based on customer/department.
+        
+        Priority:
+        1. Department's responsible user (user_id)
+        2. First portal user of the department (user_ids)
+        3. Customer's (partner) first portal user
+        4. None (will remain empty)
+        
+        This ensures files are assigned to the customer's team, not internal staff.
+        """
+        # Try to get department first
+        department_id = vals.get('department_id')
+        if not department_id and vals.get('container_id'):
+            container = self.env['records.container'].browse(vals['container_id'])
+            department_id = container.department_id.id if container.department_id else None
+        
+        if department_id:
+            department = self.env['records.department'].browse(department_id)
+            # Priority 1: Department's responsible user
+            if department.user_id and department.user_id.active:
+                return department.user_id.id
+            # Priority 2: First active portal user in department
+            portal_group = self.env.ref('base.group_portal', raise_if_not_found=False)
+            if portal_group and department.user_ids:
+                portal_users = department.user_ids.filtered(
+                    lambda u: u.active and portal_group in u.groups_id
+                )
+                if portal_users:
+                    return portal_users[0].id
+        
+        # Try to get partner
+        partner_id = vals.get('partner_id')
+        if not partner_id:
+            if vals.get('container_id'):
+                container = self.env['records.container'].browse(vals['container_id'])
+                partner_id = container.partner_id.id if container.partner_id else None
+            elif vals.get('owner_id'):
+                partner_id = vals['owner_id']
+        
+        if partner_id:
+            partner = self.env['res.partner'].browse(partner_id)
+            commercial_partner = partner.commercial_partner_id
+            # Find portal users linked to this customer
+            portal_group = self.env.ref('base.group_portal', raise_if_not_found=False)
+            if portal_group:
+                portal_users = self.env['res.users'].search([
+                    ('partner_id', 'child_of', commercial_partner.id),
+                    ('groups_id', 'in', [portal_group.id]),
+                    ('active', '=', True),
+                ], limit=1)
+                if portal_users:
+                    return portal_users[0].id
+        
+        return False
+
+    def _add_customer_followers(self):
+        """
+        Auto-add customer's portal users as followers on this file.
+        
+        This ensures customers receive notifications about their files.
+        Only adds users who are:
+        - Active
+        - Portal users (group_portal)
+        - Related to the customer (partner)
+        """
+        self.ensure_one()
+        
+        partner = self.partner_id or (self.container_id.partner_id if self.container_id else False)
+        if not partner:
+            return
+        
+        commercial_partner = partner.commercial_partner_id
+        
+        # Find all portal users for this customer
+        portal_group = self.env.ref('base.group_portal', raise_if_not_found=False)
+        if not portal_group:
+            return
+        
+        # Get portal users related to this customer
+        portal_users = self.env['res.users'].search([
+            ('partner_id', 'child_of', commercial_partner.id),
+            ('groups_id', 'in', [portal_group.id]),
+            ('active', '=', True),
+        ])
+        
+        if portal_users:
+            # Get partner IDs of portal users to add as followers
+            partner_ids = portal_users.mapped('partner_id').ids
+            # Subscribe them as followers (avoid duplicates automatically)
+            self.message_subscribe(partner_ids=partner_ids)
+
     def _generate_temp_barcode(self):
         """
         Generate temporary barcode with container prefix.
@@ -358,14 +463,26 @@ class RecordsFile(models.Model):
         3. Assigns pre-printed barcode from sheet
         4. System creates stock.quant link (if tracking needed)
         
+        AUTO-DEFAULTS:
+        - responsible_person_id: Customer's portal user or department user
+        - Followers: Customer's portal users are auto-subscribed
+        
         NOTE: Barcode is MANUALLY assigned, not auto-generated
         """
+        # Pre-process vals to set responsible_person_id to customer/department user
+        for vals in vals_list:
+            if not vals.get('responsible_person_id'):
+                vals['responsible_person_id'] = self._get_customer_responsible_user(vals)
+        
         files = super().create(vals_list)
         
         for file in files:
             # Auto-generate temp_barcode if not provided
             if not file.temp_barcode and not file.barcode:
                 file.temp_barcode = file._generate_temp_barcode()
+            
+            # Auto-add customer's portal users as followers
+            file._add_customer_followers()
             
             # Auto-create stock.quant.package for barcode scanning
             # File packages are nested under container's package
