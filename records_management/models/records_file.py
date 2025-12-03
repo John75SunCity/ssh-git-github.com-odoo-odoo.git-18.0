@@ -437,18 +437,30 @@ class RecordsFile(models.Model):
         Generate temporary barcode with container prefix.
         
         Format: {CONTAINER_NUMBER}-FILE-{SEQUENCE}
-        Example: REC-0302-FILE-1, HR-1001-A-FILE-2
+        Example: BOX-001-FILE-01, HR-1001-A-FILE-02
         
-        If no container, uses just FILE-{SEQUENCE}
+        The sequence number restarts at 1 for each container, based on
+        how many files already exist in that container.
+        
+        If no container, uses a global sequence: FILE-{GLOBAL_SEQUENCE}
         """
         self.ensure_one()
-        sequence = self.env['ir.sequence'].next_by_code('records.file.temp.barcode')
-        if not sequence:
-            sequence = str(self.id)
         
         if self.container_id and self.container_id.name:
-            return f"{self.container_id.name}-FILE-{sequence}"
-        return f"FILE-{sequence}"
+            # Count existing files in this container (excluding current record if it exists)
+            domain = [('container_id', '=', self.container_id.id)]
+            if self.id:
+                domain.append(('id', '!=', self.id))
+            existing_count = self.search_count(domain)
+            # Next file number is count + 1
+            file_number = existing_count + 1
+            return f"{self.container_id.name}-FILE-{file_number:02d}"
+        else:
+            # No container - use global sequence
+            sequence = self.env['ir.sequence'].next_by_code('records.file.temp.barcode')
+            if not sequence:
+                sequence = str(self.id or 1)
+            return f"FILE-{sequence}"
     
     # ============================================================================
     # LIFECYCLE METHODS
