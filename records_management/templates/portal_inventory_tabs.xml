@@ -615,7 +615,7 @@
                                                 <span class="badge badge-secondary" t-esc="document.temp_barcode or 'No barcode'"/>
                                             </td>
                                             <td>
-                                                <span t-esc="document.file_folder_id.name if document.file_folder_id else 'Not in file'"/>
+                                                <span t-esc="document.file_id.name if document.file_id else 'Not in file'"/>
                                             </td>
                                             <td>
                                                 <span t-esc="document.container_id.name if document.container_id else 'Not in container'"/>

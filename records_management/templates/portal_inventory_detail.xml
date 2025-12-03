@@ -511,9 +511,9 @@
                                     <tr>
                                         <th>File Folder:</th>
                                         <td>
-                                            <t t-if="document.file_folder_id">
-                                                <a t-att-href="'/my/inventory/file/%s' % document.file_folder_id.id"
-                                                   t-esc="document.file_folder_id.name"/>
+                                            <t t-if="document.file_id">
+                                                <a t-att-href="'/my/inventory/file/%s' % document.file_id.id"
+                                                   t-esc="document.file_id.name"/>
                                             </t>
                                             <t t-else="">Not in file folder</t>
                                         </td>

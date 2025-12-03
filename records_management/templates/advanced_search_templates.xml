@@ -351,7 +351,7 @@
                                                                     <tr>
                                                                         <td><strong t-esc="doc.document_id or doc.name"/></td>
                                                                         <td><span t-esc="doc.document_type_id.name if doc.document_type_id else 'N/A'"/></td>
-                                                                        <td><span t-esc="doc.file_folder_id.folder_id if doc.file_folder_id else 'N/A'"/></td>
+                                                                        <td><span t-esc="doc.file_id.name if doc.file_id else 'N/A'"/></td>
                                                                         <td><span t-esc="doc.container_id.barcode if doc.container_id else 'N/A'"/></td>
                                                                         <td><span t-esc="doc.document_date.strftime('%m/%d/%Y') if doc.document_date else 'N/A'"/></td>
                                                                         <td>
