@@ -148,7 +148,7 @@
                                     <list>
                                         <field name="name" />
                                         <field name="reference" />
-                                        <field name="state" />
+                                        <field name="file_id" />
                                         <field name="received_date" />
                                     </list>
                                 </field>
