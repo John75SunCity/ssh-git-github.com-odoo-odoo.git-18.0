@@ -34,7 +34,7 @@
                                 <field name="partner_id" class="text-muted d-block"/>
                                 <div class="d-flex justify-content-between mt-1">
                                     <span class="text-muted small">
-                                        <i class="fa fa-calendar me-1"/><field name="date" widget="date"/>
+                                        <i class="fa fa-calendar me-1" title="Date"/><field name="date" widget="date"/>
                                     </span>
                                 </div>
                                 <div class="mt-1">
@@ -44,7 +44,7 @@
                                            decoration-muted="state == 'archived'"/>
                                 </div>
                                 <div class="mt-1 small text-muted" t-if="record.source_document.value">
-                                    <i class="fa fa-link me-1"/>
+                                    <i class="fa fa-link me-1" title="Source Document"/>
                                     <field name="source_document"/>
                                 </div>
                             </main>
