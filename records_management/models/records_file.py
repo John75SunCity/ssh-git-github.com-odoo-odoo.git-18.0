@@ -216,15 +216,26 @@ class RecordsFile(models.Model):
     
     # ============================================================================
     # STATUS TRACKING
+    # Files are either IN their container or OUT (delivered to customer).
+    # When a file is added to a container, it's automatically "in".
+    # When delivered via a request order, it becomes "out".
+    # When technician scans container then file barcode, it returns to "in".
     # ============================================================================
     state = fields.Selection([
-        ('pending', 'Pending'),      # Created but never scanned into internal location
-        ('in', 'In Storage'),        # At internal location (in container)
-        ('out', 'Out'),              # With customer (retrieved from container)
-        ('perm_out', 'Perm-Out'),    # Permanent removal - returned to customer (active=False, removal fee only)
-        ('destroyed', 'Destroyed'),   # Physically destroyed/shredded (active=False, removal + shredding fees)
-    ], string='Status', default='pending', tracking=True,
-    help="File status: PENDING = Created but not scanned in | IN = At internal location | OUT = With customer | PERM-OUT = Permanent removal (returned to customer, removal fee) | DESTROYED = Physically shredded (removal + shredding fees).")
+        ('in', 'In Storage'),        # File is in its container at warehouse
+        ('out', 'Out'),              # File was removed and delivered to customer
+    ], string='Status', default='in', required=True, tracking=True,
+    help="File status: IN = Inside container at warehouse | OUT = Removed and delivered to customer. "
+         "Returns to IN when technician scans container barcode then file barcode.")
+    
+    # Container's state (for reference/filtering)
+    container_state = fields.Selection(
+        related='container_id.state',
+        string='Container Status',
+        store=True,
+        readonly=True,
+        help="Status of the container this file belongs to."
+    )
     
     # ============================================================================
     # LEGAL CITATIONS & RECORD SERIES (Optional Compliance Features)

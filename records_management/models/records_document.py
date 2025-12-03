@@ -27,22 +27,24 @@ _logger = logging.getLogger(__name__)
 
 class RecordsDocument(models.Model):
     """
-    Represents a document in the Records Management system.
+    Represents a document (attachment) within a File Folder.
 
-    This model is used to manage the lifecycle of physical and digital documents,
-    including their storage, access, retention, and destruction. It integrates
-    with various other models such as containers, departments, and audit logs
-    to provide a comprehensive document management solution.
+    Documents are digital attachments with metadata that belong to File Folders.
+    They do NOT have their own state - availability is determined by the parent
+    file folder's state (which inherits from the container).
+
+    Hierarchy:
+        Container (BOX-12345) → state: pending/in/out/perm_out/destroyed
+          └─ File Folder (FILE-HR-2024-001) → state: in/out (inherits location from container)
+              └─ Document (DOC-CONTRACT-JD-001) ← This model (attachment with metadata)
 
     Key Features:
-    - Tracks document metadata, including name, reference, and description.
-    - Manages relationships with customers, departments, and containers.
-    - Supports state transitions such as draft, in storage, checked out, and destroyed.
-    - Implements retention policies and destruction eligibility calculations.
-    - Provides audit logging and chain of custody tracking for compliance.
-    - Supports digitization and attachment of digital scans.
-    - Enforces business rules through constraints and state validations.
-    - Offers actions for document operations like checkout, return, and destruction.
+    - Tracks document metadata: name, description, document type, dates
+    - Belongs to a File Folder (file_id) - REQUIRED relationship
+    - Container and location are inherited from the file's container
+    - Supports digitization and attachment of digital scans
+    - Provides audit logging and chain of custody tracking for compliance
+    - Retention policies apply at file/container level
 
     This model is NAID AAA compliant and adheres to ISO 15489 standards for
     document lifecycle management.
@@ -113,17 +115,27 @@ class RecordsDocument(models.Model):
         domain="[('partner_id', '=', partner_id)]",
         tracking=True,
     )
-    container_id = fields.Many2one(comodel_name="records.container", string="Container", tracking=True)
     
     # ============================================================================
     # HIERARCHICAL FILE FOLDER RELATIONSHIP
+    # Documents belong to File Folders, which belong to Containers.
+    # Container and location are inherited from the file's container.
     # ============================================================================
     file_id = fields.Many2one(
         comodel_name="records.file",
         string="File Folder",
         tracking=True,
-        help="File folder this document belongs to. Files can contain multiple documents "
-             "and can be removed from containers for delivery/retrieval."
+        required=True,
+        help="File folder this document belongs to. Documents are always inside a file folder."
+    )
+    
+    container_id = fields.Many2one(
+        comodel_name="records.container",
+        string="Container",
+        related='file_id.container_id',
+        store=True,
+        readonly=True,
+        help="Container inherited from the file folder. Documents cannot exist outside a file folder."
     )
     
     # ============================================================================
@@ -222,20 +234,9 @@ class RecordsDocument(models.Model):
     )
 
     # ============================================================================
-    # STATE & LIFECYCLE
-    # ============================================================================
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('in_storage', 'In Storage'),
-        ('in_transit', 'In Transit'),
-        ('checked_out', 'Checked Out'),
-        ('archived', 'Archived'),
-        ('awaiting_destruction', 'Awaiting Destruction'),
-        ('destroyed', 'Destroyed'),
-    ], string="Status", default='draft', required=True, tracking=True)
-
-    # ============================================================================
-    # DATES & RETENTION
+    # DATES & METADATA
+    # Documents are attachments to files - they don't have their own state.
+    # The file's state determines availability.
     # ============================================================================
     create_date = fields.Datetime(string="Creation Date", readonly=True)
     received_date = fields.Date(string="Received Date", default=fields.Date.context_today, tracking=True)
@@ -493,12 +494,6 @@ class RecordsDocument(models.Model):
                     )
                     vals['attachment_date'] = fields.Datetime.now()
                     break  # Only generate one for all records in batch
-        if 'state' in vals:
-            for record in self:
-                record.message_post(
-                    body=_("Document state changed to: %s") % dict(self._fields['state'].selection).get(record.state),
-                    subtype_id=self.env.ref('mail.mt_note').id
-                )
         result = super().write(vals)
         
         # Sync stock package when barcode, file, or container changes
@@ -571,9 +566,11 @@ class RecordsDocument(models.Model):
         self.write({'package_id': package.id})
 
     def unlink(self):
+        """Delete documents - only allowed if container is not destroyed."""
         for doc in self:
-            if doc.state not in ('draft', 'archived'):
-                raise UserError(_("Cannot delete a document that is not in draft or archived state. Please archive it first."))
+            container_state = doc.file_id.container_id.state if doc.file_id and doc.file_id.container_id else False
+            if container_state == 'destroyed':
+                raise UserError(_("Cannot delete a document from a destroyed container."))
         return super().unlink()
 
     # ============================================================================
@@ -798,16 +795,18 @@ class RecordsDocument(models.Model):
             except Exception:
                 record.related_records_count = 0
 
-    @api.depends('destruction_eligible_date', 'is_permanent', 'state')
+    @api.depends('destruction_eligible_date', 'is_permanent', 'file_id.state', 'file_id.container_id.state')
     def _compute_destruction_eligible(self):
+        """Document is eligible for destruction based on dates and file/container state."""
         today = fields.Date.today()
         for record in self:
             try:
+                container_state = record.file_id.container_id.state if record.file_id and record.file_id.container_id else False
                 record.destruction_eligible = (
                     not record.is_permanent and
                     record.destruction_eligible_date and
                     record.destruction_eligible_date <= today and
-                    record.state not in ['destroyed', 'checked_out']
+                    container_state not in ['destroyed', 'perm_out']
                 )
             except Exception:
                 record.destruction_eligible = False
@@ -821,16 +820,19 @@ class RecordsDocument(models.Model):
             except Exception:
                 record.destruction_profit = 0
 
-    @api.depends('destruction_eligible_date', 'state', 'is_permanent')
+    @api.depends('destruction_eligible_date', 'is_permanent', 'file_id.container_id.state')
     def _compute_pending_destruction(self):
+        """Document pending destruction when its container is scheduled for destruction."""
         today = fields.Date.today()
         for record in self:
             try:
+                # Documents are pending destruction when their container is ready
+                container_state = record.file_id.container_id.state if record.file_id and record.file_id.container_id else False
                 record.pending_destruction = (
                     not record.is_permanent and
                     record.destruction_eligible_date and
                     record.destruction_eligible_date <= today and
-                    record.state == 'awaiting_destruction'
+                    container_state == 'in'  # In storage and eligible
                 )
             except Exception:
                 record.pending_destruction = False
@@ -843,12 +845,12 @@ class RecordsDocument(models.Model):
                     ('is_permanent', '=', False),
                     ('destruction_eligible_date', '!=', False),
                     ('destruction_eligible_date', '<=', today),
-                    ('state', '=', 'awaiting_destruction')
+                    ('file_id.container_id.state', '=', 'in')
                 ]
             else:
                 return [
                     '|',
-                    ('state', '!=', 'awaiting_destruction'),
+                    ('file_id.container_id.state', '!=', 'in'),
                     ('is_permanent', '=', True),
                 ]
         except Exception:
@@ -880,25 +882,31 @@ class RecordsDocument(models.Model):
         except Exception:
             return [('id', '=', False)]
 
-    @api.depends('state')
+    @api.depends('file_id.container_id.state')
     def _compute_destroyed(self):
+        """Document is destroyed when its container is destroyed."""
         for record in self:
             try:
-                record.destroyed = (record.state == 'destroyed')
+                container_state = record.file_id.container_id.state if record.file_id and record.file_id.container_id else False
+                record.destroyed = (container_state == 'destroyed')
             except Exception:
                 record.destroyed = False
 
-    @api.depends('container_id', 'state', 'is_missing')
+    @api.depends('file_id', 'file_id.state', 'file_id.container_id.state', 'is_missing')
     def _compute_location_status(self):
+        """Compute location status based on file and container state."""
         for record in self:
             try:
-                if record.state == 'destroyed':
+                file_state = record.file_id.state if record.file_id else False
+                container_state = record.file_id.container_id.state if record.file_id and record.file_id.container_id else False
+                
+                if container_state == 'destroyed':
                     record.location_status = 'destroyed'
                 elif record.is_missing:
                     record.location_status = 'missing'
-                elif record.state == 'checked_out':
-                    record.location_status = 'checked_out'
-                elif record.container_id:
+                elif file_state == 'out':
+                    record.location_status = 'checked_out'  # File is out with customer
+                elif file_state == 'in' and container_state == 'in':
                     record.location_status = 'in_storage'
                 else:
                     record.location_status = 'unknown'
@@ -927,10 +935,11 @@ class RecordsDocument(models.Model):
             if record.is_permanent and not record.permanent_reason:
                 raise ValidationError(_("A reason is required when flagging a document as permanent."))
 
-    @api.constrains('state', 'is_permanent')
+    @api.constrains('is_permanent', 'actual_destruction_date')
     def _check_destruction_of_permanent(self):
+        """Permanent documents cannot have a destruction date."""
         for record in self:
-            if record.is_permanent and record.state in ('awaiting_destruction', 'destroyed'):
+            if record.is_permanent and record.actual_destruction_date:
                 raise ValidationError(_("A document flagged as permanent cannot be destroyed."))
 
     @api.constrains('checked_out_date', 'expected_return_date')
@@ -958,17 +967,17 @@ class RecordsDocument(models.Model):
                 if record.actual_destruction_date < record.destruction_eligible_date and not record.is_permanent:
                     raise ValidationError(_("Document cannot be destroyed before its eligible destruction date unless permanently flagged."))
 
-            if record.actual_destruction_date and record.state != 'destroyed':
-                raise ValidationError(_("Document must be in 'destroyed' state if actual destruction date is set."))
+            if record.actual_destruction_date:
+                container_state = record.file_id.container_id.state if record.file_id and record.file_id.container_id else False
+                if container_state != 'destroyed':
+                    raise ValidationError(_("Document's container must be in 'destroyed' state if actual destruction date is set."))
 
-    @api.constrains('state', 'container_id')
-    def _check_state_container_consistency(self):
+    @api.constrains('file_id')
+    def _check_file_required(self):
+        """Documents must belong to a file folder."""
         for record in self:
-            if record.state == 'in_storage' and not record.container_id:
-                raise ValidationError(_("Document in storage must be assigned to a container."))
-
-            if record.state == 'destroyed' and record.container_id:
-                raise ValidationError(_("Destroyed documents cannot be assigned to containers."))
+            if not record.file_id:
+                raise ValidationError(_("Document must belong to a file folder."))
 
     @api.constrains('missing_since_date', 'found_date', 'is_missing')
     def _check_missing_document_dates(self):
@@ -1000,23 +1009,6 @@ class RecordsDocument(models.Model):
         for record in self:
             if record.department_id and record.department_id.partner_id != record.partner_id:
                 raise ValidationError(_("Selected department must belong to the document's customer."))
-
-    @api.constrains('state')
-    def _check_state_transitions(self):
-        for record in self:
-            if record.state == 'destroyed':
-                if not record.destruction_method:
-                    raise ValidationError(_("Destruction method is required when document is destroyed."))
-
-                if record.is_permanent:
-                    raise ValidationError(_("Permanent documents cannot be destroyed."))
-
-            if record.state == 'awaiting_destruction':
-                if not record.destruction_eligible_date and not record.is_permanent:
-                    raise ValidationError(_("Document must have destruction eligible date before awaiting destruction."))
-
-                if record.checked_out_date and not record.found_date:
-                    raise ValidationError(_("Document cannot await destruction while checked out."))
 
     @api.constrains('digitized', 'original_format')
     def _check_digitization_requirements(self):
@@ -1064,75 +1056,9 @@ class RecordsDocument(models.Model):
             'context': {'default_document_id': self.id},
         }
 
-    def action_checkout_document(self):
-        self.ensure_one()
-        if self.state not in ['in_storage']:
-            raise UserError(_("Document must be in storage to be checked out."))
-
-        if self.is_missing:
-            raise UserError(_("Cannot checkout a missing document."))
-
-        checkout_date = datetime.now()
-        expected_return = date.today() + timedelta(days=7)
-
-        self.write({
-            'state': 'checked_out',
-            'checked_out_date': checkout_date,
-            'expected_return_date': expected_return,
-            'last_access_date': date.today(),
-            'event_date': date.today()
-        })
-
-        self.env['naid.audit.log'].create({
-            'document_id': self.id,
-            'event_type': 'checkout',
-            'description': _('Document checked out by %s') % self.env.user.name,
-            'user_id': self.env.user.id,
-            'event_date': checkout_date,
-        })
-        self.message_post(body=_('Document checked out by %s') % self.env.user.name)
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _("Document Checked Out"),
-                'message': _('Document %s has been checked out successfully') % self.display_name,
-                'sticky': False,
-            }
-        }
-
-    def action_return_document(self):
-        self.ensure_one()
-        if self.state != 'checked_out':
-            raise UserError(_("Document must be checked out to be returned."))
-
-        return_date = datetime.now()
-
-        self.write({
-            'state': 'in_storage',
-            'checked_out_date': False,
-            'expected_return_date': False,
-            'last_access_date': date.today(),
-            'event_date': date.today()
-        })
-
-        self.env['naid.audit.log'].create({
-            'document_id': self.id,
-            'event_type': 'return',
-            'description': _('Document returned by %s') % self.env.user.name,
-            'user_id': self.env.user.id,
-            'event_date': return_date,
-        })
-        self.message_post(body=_('Document returned by %s') % self.env.user.name)
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _("Document Returned"),
-                'message': _('Document %s has been returned to storage') % self.display_name,
-                'sticky': False,
-            }
-        }
+    # NOTE: Documents don't have checkout/return actions.
+    # File folders are checked out via retrieval requests, which changes the file's state.
+    # Documents inherit their availability from their parent file.
 
     def action_generate_document_barcode(self):
         """Generate barcode for the document using Odoo's native barcode support"""
@@ -1384,31 +1310,40 @@ class RecordsDocument(models.Model):
     # ============================================================================
     # BUSINESS LOGIC HELPER METHODS
     # ============================================================================
-    def is_document_overdue(self):  # Renamed from is_overdue to avoid conflict with field
+    def is_document_overdue(self):
+        """Check if file is out and overdue for return."""
         self.ensure_one()
+        file_state = self.file_id.state if self.file_id else False
         return (
-            self.state == 'checked_out' and
+            file_state == 'out' and
             self.expected_return_date and
             self.expected_return_date < date.today()
         )
 
     def is_eligible_for_destruction(self):
+        """Check if document can be destroyed based on file/container state."""
         self.ensure_one()
+        file_state = self.file_id.state if self.file_id else False
+        container_state = self.file_id.container_id.state if self.file_id and self.file_id.container_id else False
         return (
             not self.is_permanent and
             self.destruction_eligible_date and
             self.destruction_eligible_date <= date.today() and
-            self.state not in ['checked_out', 'destroyed']
+            file_state == 'in' and
+            container_state not in ['destroyed', 'perm_out', 'out']
         )
 
     def get_retention_status(self):
+        """Get retention/destruction status for this document."""
         self.ensure_one()
+        file_state = self.file_id.state if self.file_id else False
+        container_state = self.file_id.container_id.state if self.file_id and self.file_id.container_id else False
         status = {
             'is_permanent': self.is_permanent,
             'destruction_eligible_date': self.destruction_eligible_date,
             'days_until_destruction': self.days_until_destruction,
             'is_eligible': self.is_eligible_for_destruction(),
-            'can_be_destroyed': self.state in ['in_storage', 'archived', 'awaiting_destruction']
+            'can_be_destroyed': file_state == 'in' and container_state == 'in'
         }
         return status
 
@@ -1429,7 +1364,8 @@ class RecordsDocument(models.Model):
 
     @api.model
     def get_destruction_report_data(self, date_from=None, date_to=None):
-        domain = [('state', '=', 'destroyed')]
+        """Get destruction report data - documents whose container was destroyed."""
+        domain = [('file_id.container_id.state', '=', 'destroyed')]
 
         if date_from:
             domain.append(('actual_destruction_date', '>=', date_from))
@@ -1641,8 +1577,9 @@ class RecordsDocument(models.Model):
         except Exception as e:
             raise ValidationError(_('Error sending notification: %s') % str(e))
 
-    @api.constrains("state", "is_missing")
-    def _check_checkout_conditions(self):
+    @api.constrains("is_missing")
+    def _check_missing_document(self):
+        """Validate missing document state."""
         for record in self:
-            if record.state == "checked_out" and record.is_missing:
-                raise ValidationError(_("Cannot check out a missing document."))
+            if record.is_missing and record.file_id and record.file_id.state == 'out':
+                raise ValidationError(_("Document's file is currently out - cannot mark as missing."))
