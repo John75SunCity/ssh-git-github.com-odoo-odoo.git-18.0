@@ -108,7 +108,7 @@ class WorkOrderFieldPaymentWizard(models.TransientModel):
     # ============================================================================
     collection_notes = fields.Text(
         string='Collection Notes',
-        placeholder='Any notes about the payment collection...',
+        help='Any notes about the payment collection',
     )
     
     memo = fields.Char(
