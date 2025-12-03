@@ -223,8 +223,8 @@ class AdvancedInventorySearch(CustomerPortal):
         """
         user = request.env.user
 
-        # Create saved search record
-        SavedSearch = request.env['records.saved.search']
+        # Create saved search record using sudo() for portal user access
+        SavedSearch = request.env['records.saved.search'].sudo()
         saved_search = SavedSearch.create({
             'user_id': user.id,
             'name': name,

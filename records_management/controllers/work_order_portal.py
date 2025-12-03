@@ -359,7 +359,7 @@ class WorkOrderPortal(CustomerPortal):
             "note": _("Customer portal activity for work order follow-up"),
         }
 
-        return request.env['mail.activity'].create(values)
+        return request.env['mail.activity'].sudo().create(values)
 
     # ============================================================================
     # UTILITY METHODS

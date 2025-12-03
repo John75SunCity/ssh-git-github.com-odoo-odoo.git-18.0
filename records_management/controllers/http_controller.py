@@ -209,11 +209,12 @@ class RecordsManagementController(http.Controller):
                 "pickup_date": post.get("preferred_date"),
             }
 
-            pickup_request = request.env['portal.request'].create(pickup_vals)
+            # Use sudo() to allow portal users to create pickup requests
+            pickup_request = request.env['portal.request'].sudo().create(pickup_vals)
 
             # Create pickup request items
             for quant in quants:
-                request.env['pickup.request.item'].create({
+                request.env['pickup.request.item'].sudo().create({
                     'pickup_request_id': pickup_request.id,
                     'quant_id': quant.id,
                     'product_id': quant.product_id.id,
@@ -509,8 +510,8 @@ class RecordsManagementController(http.Controller):
             return request.redirect('/my/requests/%d?error=cannot_cancel' % request_id)
 
         try:
-            # Cancel the request
-            customer_request.write({
+            # Cancel the request using sudo() for portal user access
+            customer_request.sudo().write({
                 'state': 'cancelled',
                 'cancellation_reason': post.get('reason', ''),
             })
@@ -544,7 +545,7 @@ class RecordsManagementController(http.Controller):
                     "submitted_via": "portal",
                 }
 
-                feedback = request.env['customer.feedback'].create(feedback_vals)
+                feedback = request.env['customer.feedback'].sudo().create(feedback_vals)
 
                 # Create audit log
                 self._create_naid_audit_log(

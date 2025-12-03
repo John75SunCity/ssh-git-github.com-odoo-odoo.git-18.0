@@ -67,7 +67,7 @@ class RecordsManagementController(http.Controller):
         and billed. Records are archived (not deleted) in the system.
         """
         user = request.env.user
-        
+
         # Determine user's role level
         is_system_admin = user.has_group('base.group_system')
         is_records_manager = user.has_group('records_management.group_records_manager')
@@ -76,7 +76,7 @@ class RecordsManagementController(http.Controller):
         is_portal_dept_admin = user.has_group('records_management.group_portal_department_admin')
         is_portal_dept_user = user.has_group('records_management.group_portal_department_user')
         is_portal_readonly = user.has_group('records_management.group_portal_readonly_employee')
-        
+
         def make_perm(can_create, can_read, can_update, can_request_destruction):
             """Helper to build permission dict from action flags.
             
@@ -106,7 +106,7 @@ class RecordsManagementController(http.Controller):
                 level = 'none'
                 color = 'red'
                 message = 'No access: You do not have permission for this feature'
-            
+
             return {
                 'level': level,
                 'color': color,
@@ -118,9 +118,9 @@ class RecordsManagementController(http.Controller):
                 'can_delete': can_request_destruction,
                 'message': message,
             }
-        
+
         permissions = {}
-        
+
         # Containers
         if is_system_admin or is_records_manager or is_portal_company_admin:
             permissions['containers'] = make_perm(True, True, True, True)
@@ -130,7 +130,7 @@ class RecordsManagementController(http.Controller):
             permissions['containers'] = make_perm(False, True, False, False)
         else:
             permissions['containers'] = make_perm(False, False, False, False)
-        
+
         # Files/Folders within containers
         if is_system_admin or is_records_manager or is_portal_company_admin:
             permissions['files'] = make_perm(True, True, True, True)
@@ -140,7 +140,7 @@ class RecordsManagementController(http.Controller):
             permissions['files'] = make_perm(False, True, False, False)
         else:
             permissions['files'] = make_perm(False, False, False, False)
-        
+
         # Inventory items
         if is_system_admin or is_records_manager or is_portal_company_admin:
             permissions['inventory'] = make_perm(True, True, True, True)
@@ -150,7 +150,7 @@ class RecordsManagementController(http.Controller):
             permissions['inventory'] = make_perm(False, True, False, False)
         else:
             permissions['inventory'] = make_perm(False, False, False, False)
-        
+
         # Requests (retrieval, destruction, etc.)
         if is_system_admin or is_records_manager or is_portal_company_admin:
             permissions['requests'] = make_perm(True, True, True, True)
@@ -160,7 +160,7 @@ class RecordsManagementController(http.Controller):
             permissions['requests'] = make_perm(False, True, False, False)
         else:
             permissions['requests'] = make_perm(False, False, False, False)
-        
+
         # User management
         if is_system_admin or is_records_manager or is_portal_company_admin:
             permissions['users'] = make_perm(True, True, True, True)
@@ -169,7 +169,7 @@ class RecordsManagementController(http.Controller):
             permissions['users']['message'] = 'Partial access: You can manage users in your department only'
         else:
             permissions['users'] = make_perm(False, False, False, False)
-        
+
         # Departments
         if is_system_admin or is_records_manager or is_portal_company_admin:
             permissions['departments'] = make_perm(True, True, True, True)
@@ -178,7 +178,7 @@ class RecordsManagementController(http.Controller):
             permissions['departments']['message'] = 'Partial access: You can view and edit your department only'
         else:
             permissions['departments'] = make_perm(False, True, False, False)
-        
+
         # Billing/Invoices (view only for most portal users)
         if is_system_admin or is_records_manager:
             permissions['billing'] = make_perm(True, True, True, True)
@@ -186,7 +186,7 @@ class RecordsManagementController(http.Controller):
             permissions['billing'] = make_perm(False, True, False, False)
         else:
             permissions['billing'] = make_perm(False, True, False, False)
-        
+
         # Reports/Analytics
         if is_system_admin or is_records_manager or is_portal_company_admin:
             permissions['reports'] = make_perm(True, True, True, True)
@@ -195,7 +195,7 @@ class RecordsManagementController(http.Controller):
             permissions['reports']['message'] = 'Read only: You can view reports for your department'
         else:
             permissions['reports'] = make_perm(False, False, False, False)
-        
+
         # Destruction certificates
         if is_system_admin or is_records_manager or is_portal_company_admin:
             permissions['certificates'] = make_perm(False, True, False, False)
@@ -204,7 +204,7 @@ class RecordsManagementController(http.Controller):
             permissions['certificates'] = make_perm(False, True, False, False)
         else:
             permissions['certificates'] = make_perm(False, True, False, False)
-        
+
         # Settings/Configuration
         if is_system_admin or is_records_manager:
             permissions['settings'] = make_perm(True, True, True, True)
@@ -213,7 +213,7 @@ class RecordsManagementController(http.Controller):
             permissions['settings']['message'] = 'Partial access: You can view and edit company settings'
         else:
             permissions['settings'] = make_perm(False, False, False, False)
-        
+
         # Add user role info for display
         if is_system_admin:
             permissions['user_role'] = 'System Administrator'
@@ -231,7 +231,7 @@ class RecordsManagementController(http.Controller):
             permissions['user_role'] = 'Read-Only User'
         else:
             permissions['user_role'] = 'Portal User'
-        
+
         return permissions
 
     def _get_smart_department_context(self, user=None, partner=None):
@@ -252,7 +252,7 @@ class RecordsManagementController(http.Controller):
             user = request.env.user
         if partner is None:
             partner = user.partner_id
-            
+
         # Get user's assigned departments via records.storage.department.user
         user_dept_assignments = request.env['records.storage.department.user'].sudo().search([
             ('user_id', '=', user.id),
@@ -260,15 +260,15 @@ class RecordsManagementController(http.Controller):
             ('active', '=', True),
         ])
         user_departments = user_dept_assignments.mapped('department_id')
-        
+
         # Get all departments for the company (for company admins / to check if company uses depts)
         company_departments = request.env['records.department'].sudo().search([
             ('partner_id', '=', partner.commercial_partner_id.id),
         ])
-        
+
         # Determine which departments to show based on user role
         is_company_admin = user.has_group('records_management.group_portal_company_admin')
-        
+
         if user_departments:
             # User has specific department assignments - include child departments too
             all_user_depts = user_departments
@@ -282,10 +282,10 @@ class RecordsManagementController(http.Controller):
         else:
             # Regular user with no department assignment - show none (company-level only)
             departments = request.env['records.department'].sudo().browse()
-        
+
         # Determine default department (first one if user has exactly one)
         default_department = departments[0] if len(departments) == 1 else False
-        
+
         return {
             'departments': departments,
             'default_department': default_department,
@@ -300,15 +300,15 @@ class RecordsManagementController(http.Controller):
         """
         partner = request.env.user.partner_id
         commercial_partner = partner.commercial_partner_id if partner else partner
-        
+
         # Get custom field labels for this customer
         field_labels = request.env['field.label.customization'].sudo().get_labels_dict(
             commercial_partner.id if commercial_partner else None
         )
-        
+
         # Get user permissions for all portal features
         permissions = self._get_user_permissions()
-        
+
         return {
             'page_name': 'records_management',
             'user': request.env.user,
@@ -610,7 +610,7 @@ class RecordsManagementController(http.Controller):
                         new_location_id_int = int(new_location_id)
                     except (TypeError, ValueError):
                         return {'success': False, 'error': 'Invalid location_id provided'}
-                    containers.write({"location_id": new_location_id_int})
+                    containers.sudo().write({"location_id": new_location_id_int})
                     updated_count = len(containers)
 
                     # Create movement records for audit trail
@@ -625,7 +625,7 @@ class RecordsManagementController(http.Controller):
                         tag_ids = [tag_ids]
                     tag_ids = [int(t) for t in tag_ids if str(t).isdigit()]
                     if tag_ids:
-                        containers.write({"tag_ids": [(6, 0, tag_ids)]})
+                        containers.sudo().write({"tag_ids": [(6, 0, tag_ids)]})
                         updated_count = len(containers)
 
             # Create NAID audit log
@@ -1339,7 +1339,7 @@ class RecordsManagementController(http.Controller):
         NOTE: NAID Operator Certifications are for employees only, not shown here.
         """
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Get destruction certificates for this customer (from completed jobs)
         destruction_certificates = request.env['naid.certificate'].sudo().search([
             ('partner_id', '=', partner.id),
@@ -1367,7 +1367,7 @@ class RecordsManagementController(http.Controller):
         Shows certificate details, items destroyed, dates, signatures, etc.
         """
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Get destruction certificate with security check
         certificate = request.env['naid.certificate'].sudo().search([
             ('id', '=', certification_id),
@@ -1419,7 +1419,7 @@ class RecordsManagementController(http.Controller):
             if post.get('contact_back'):
                 feedback_vals['contact_back'] = True
 
-            feedback = request.env['portal.feedback'].create(feedback_vals)
+            feedback = request.env['portal.feedback'].sudo().create(feedback_vals)
 
             # Create audit log for NAID compliance
             self._create_audit_log(
@@ -1445,35 +1445,35 @@ class RecordsManagementController(http.Controller):
         Provides quick access to all portal features and recent activity.
         """
         partner = request.env.user.partner_id
-        
+
         # Get summary counts for dashboard cards - Hierarchical Inventory
         container_count = request.env['records.container'].sudo().search_count([
             ('partner_id', 'child_of', partner.commercial_partner_id.id)
         ])
-        
+
         file_folder_count = request.env['records.file'].sudo().search_count([
             ('partner_id', 'child_of', partner.commercial_partner_id.id)
         ])
-        
+
         document_count = request.env['records.document'].sudo().search_count([
             ('partner_id', 'child_of', partner.commercial_partner_id.id)
         ])
-        
+
         # Get active service request count
         request_count = request.env['portal.request'].sudo().search_count([
             ('partner_id', 'child_of', partner.commercial_partner_id.id),
             ('state', 'not in', ['cancelled', 'done'])
         ])
-        
+
         certificate_count = request.env['destruction.certificate'].sudo().search_count([
             ('partner_id', 'child_of', partner.commercial_partner_id.id)
         ])
-        
+
         # Get recent activities
         recent_requests = request.env['portal.request'].sudo().search([
             ('partner_id', 'child_of', partner.commercial_partner_id.id)
         ], order='create_date desc', limit=5)
-        
+
         values = {
             'page_name': 'portal_hub',
             'container_count': container_count,
@@ -1484,7 +1484,7 @@ class RecordsManagementController(http.Controller):
             'recent_requests': recent_requests,
             'partner': partner,
         }
-        
+
         return request.render('records_management.portal_hub_page', values)
 
     # ============================================================================
@@ -2468,7 +2468,7 @@ class RecordsManagementController(http.Controller):
                 container_vals['description'] = post.get('description')
             if post.get('location_id'):
                 container_vals['current_location_id'] = int(post.get('location_id'))
-            
+
             # Barcode handling - generate or use custom
             if post.get('generate_barcode'):
                 # Auto-generate barcode using sequence
@@ -2631,8 +2631,8 @@ class RecordsManagementController(http.Controller):
             new_location_id = int(post.get('new_location_id'))
             new_location = request.env['stock.location'].browse(new_location_id)
 
-            # Create move request
-            move_request = request.env['portal.request'].create({
+            # Create move request using sudo() for portal user access
+            move_request = request.env['portal.request'].sudo().create({
                 'request_type': 'move',
                 'partner_id': partner.id,
                 'requester_id': request.env.user.partner_id.id,
@@ -2643,7 +2643,7 @@ class RecordsManagementController(http.Controller):
             })
 
             # Auto-submit if internal staff will handle
-            move_request.action_submit()
+            move_request.sudo().action_submit()
 
             # Audit log
             request.env['naid.audit.log'].sudo().create({
@@ -2817,7 +2817,7 @@ class RecordsManagementController(http.Controller):
                         'error_message': _('The selected department is invalid.'),
                     })
                 final_department_id = int(department_id)
-                
+
                 # Department access check for non-company-admins
                 if not request.env.user.has_group('records_management.group_portal_company_admin'):
                     accessible_depts = request.env.user.accessible_department_ids.ids
@@ -2836,7 +2836,7 @@ class RecordsManagementController(http.Controller):
                 'container_id': int(container_id),
                 'created_via_portal': True,
             }
-            
+
             # Only set department if we have one
             if final_department_id:
                 file_vals['department_id'] = final_department_id
@@ -3480,7 +3480,7 @@ class RecordsManagementController(http.Controller):
             if post.get('notes'):
                 request_vals['notes'] = post.get('notes')
 
-            scan_request = request.env['portal.request'].create(request_vals)
+            scan_request = request.env['portal.request'].sudo().create(request_vals)
 
             # Link document to request
             doc_record.sudo().write({
@@ -3612,7 +3612,7 @@ class RecordsManagementController(http.Controller):
             # Keep sudo() context for containers to avoid barcode nomenclature access issues in template
             containers_sudo = request.env['records.container'].sudo().search([('partner_id', '=', partner.id)])
             files = request.env['records.file'].sudo().search([('partner_id', '=', partner.id)])
-            
+
             # Pre-fetch location names to avoid barcode nomenclature access in template
             container_data = []
             for container in containers_sudo:
@@ -3678,16 +3678,16 @@ class RecordsManagementController(http.Controller):
                 request_vals['scheduled_date'] = post.get('scheduled_date')
             if post.get('notes'):
                 request_vals['description'] = post.get('notes')
-                
+
             # Handle container and file selections
             container_ids = request.httprequest.form.getlist('container_ids')
             if container_ids:
                 request_vals['container_ids'] = [(6, 0, [int(c) for c in container_ids if c])]
-                
+
             file_ids = request.httprequest.form.getlist('file_ids')
             if file_ids:
                 request_vals['file_ids'] = [(6, 0, [int(f) for f in file_ids if f])]
-            
+
             # Handle notification preferences
             if post.get('notification_method'):
                 request_vals['notification_method'] = post.get('notification_method')
@@ -3695,7 +3695,7 @@ class RecordsManagementController(http.Controller):
                 request_vals['notify_on_file_located'] = True
             if post.get('notify_on_ready_for_delivery'):
                 request_vals['notify_on_ready_for_delivery'] = True
-            
+
             # Handle file search fields
             if request_type == 'file_search':
                 if post.get('search_file_name'):
@@ -3706,13 +3706,13 @@ class RecordsManagementController(http.Controller):
                     request_vals['search_date_to'] = post.get('search_date_to')
                 if post.get('search_alpha_range'):
                     request_vals['search_alpha_range'] = post.get('search_alpha_range')
-                
+
                 # Get selected search containers
                 selected_containers = request.httprequest.form.getlist('selected_search_container_ids')
                 if selected_containers:
                     request_vals['selected_search_container_ids'] = [(6, 0, [int(c) for c in selected_containers if c])]
 
-            req_record = request.env['portal.request'].create(request_vals)
+            req_record = request.env['portal.request'].sudo().create(request_vals)
 
             request.env['naid.audit.log'].sudo().create({
                 'action_type': f'{request_type}_request_created',
@@ -3747,13 +3747,13 @@ class RecordsManagementController(http.Controller):
                 'error_title': _('Request Creation Failed'),
                 'error_message': str(e),
             })
-    
+
     @http.route(['/my/request/search_containers'], type='json', auth='user', methods=['POST'])
     def search_matching_containers(self, file_name='', date_from=None, date_to=None, alpha_range='', **kw):
         """AJAX endpoint to search for matching containers based on file search criteria."""
         try:
             partner = request.env.user.partner_id.commercial_partner_id
-            
+
             # Convert date strings to date objects
             date_from_obj = None
             date_to_obj = None
@@ -3769,7 +3769,7 @@ class RecordsManagementController(http.Controller):
                     date_to_obj = datetime.strptime(date_to, '%Y-%m-%d').date()
                 except:
                     pass
-            
+
             # Call intelligent search method
             matching_containers = request.env['portal.request'].search_matching_containers(
                 file_name=file_name,
@@ -3778,7 +3778,7 @@ class RecordsManagementController(http.Controller):
                 alpha_range=alpha_range,
                 partner_id=partner.id
             )
-            
+
             # Build results
             results = []
             for container in matching_containers:
@@ -3797,13 +3797,13 @@ class RecordsManagementController(http.Controller):
                     'score': getattr(container, 'matching_score', 0),
                     'reasons': getattr(container, 'matching_reasons', ''),
                 })
-            
+
             return {
                 'success': True,
                 'containers': results,
                 'count': len(results)
             }
-            
+
         except Exception as e:
             _logger.error(f"Container search failed: {str(e)}")
             return {
@@ -3812,7 +3812,7 @@ class RecordsManagementController(http.Controller):
                 'containers': [],
                 'count': 0
             }
-    
+
     @http.route(['/my/containers/search'], type='json', auth='user', methods=['POST'])
     def instant_container_search(self, query='', offset=0, limit=50, **kw):
         """
@@ -3826,10 +3826,10 @@ class RecordsManagementController(http.Controller):
         """
         try:
             partner = request.env.user.partner_id.commercial_partner_id
-            
+
             # Build search domain with indexed fields
             domain = [('partner_id', '=', partner.id)]
-            
+
             if query:
                 query = query.strip()
                 # Search across indexed fields: name (Box Number), barcode, temp_barcode,
@@ -3843,12 +3843,12 @@ class RecordsManagementController(http.Controller):
                 domain.append(('temp_barcode', 'ilike', query))
                 domain.append(('alpha_range', 'ilike', query))
                 domain.append(('content_description', 'ilike', query))
-            
+
             Container = request.env['records.container'].sudo()
-            
+
             # Get total count
             total_count = Container.search_count(domain)
-            
+
             # Get paginated results
             containers = Container.search(
                 domain,
@@ -3856,7 +3856,7 @@ class RecordsManagementController(http.Controller):
                 limit=limit,
                 order='name asc'
             )
-            
+
             results = []
             for container in containers:
                 results.append({
@@ -3872,7 +3872,7 @@ class RecordsManagementController(http.Controller):
                     ),
                     'contents': (container.content_description or '')[:100],  # Truncate for performance
                 })
-            
+
             return {
                 'success': True,
                 'containers': results,
@@ -3881,7 +3881,7 @@ class RecordsManagementController(http.Controller):
                 'has_more': (offset + limit) < total_count,
                 'next_offset': offset + limit if (offset + limit) < total_count else None
             }
-            
+
         except Exception as e:
             _logger.error(f"Instant container search failed: {str(e)}")
             return {
@@ -3891,7 +3891,7 @@ class RecordsManagementController(http.Controller):
                 'count': 0,
                 'total': 0
             }
-    
+
     def _create_fsm_task_for_work_order(self, work_order, service_type, partner, containers):
         """
         Helper method to create FSM task and calendar event for work orders.
@@ -3914,7 +3914,7 @@ class RecordsManagementController(http.Controller):
                 'is_fsm': True,
                 'allow_timesheets': True,
             })
-        
+
         # Map service types to worksheet templates
         template_map = {
             'retrieval': 'records_management_fsm.worksheet_template_retrieval',
@@ -3924,7 +3924,7 @@ class RecordsManagementController(http.Controller):
             'access': 'records_management_fsm.worksheet_template_access',
             'pickup': 'records_management_fsm.worksheet_template_pickup',
         }
-        
+
         # Service type display names
         service_names = {
             'retrieval': 'Container Retrieval',
@@ -3934,7 +3934,7 @@ class RecordsManagementController(http.Controller):
             'access': 'Container Access',
             'pickup': 'Container Pickup',
         }
-        
+
         # Calculate scheduled date (next business day)
         from datetime import datetime, timedelta
         scheduled_date = datetime.now()
@@ -3942,7 +3942,7 @@ class RecordsManagementController(http.Controller):
         while scheduled_date.weekday() >= 5:  # 5=Saturday, 6=Sunday
             scheduled_date += timedelta(days=1)
         scheduled_date += timedelta(days=1)  # Next business day
-        
+
         # Create FSM task
         task_vals = {
             'name': f"{service_names.get(service_type, 'Service')}: {partner.name}",
@@ -3951,12 +3951,12 @@ class RecordsManagementController(http.Controller):
             'date_deadline': scheduled_date.date(),
             'planned_date_begin': scheduled_date,
             'planned_date_end': scheduled_date + timedelta(hours=2),
-            'description': f"Portal request for {len(containers)} container(s)\n\nContainers:\n" + 
+            'description': f"Portal request for {len(containers)} container(s)\n\nContainers:\n" +
                           '\n'.join(f"• {c.name}" for c in containers[:10]) +
                           (f"\n... and {len(containers) - 10} more" if len(containers) > 10 else ""),
             'container_ids': [(6, 0, containers.ids)],
         }
-        
+
         # Link to appropriate work order
         if hasattr(work_order, '_name'):
             if work_order._name == 'records.retrieval.work.order':
@@ -3968,14 +3968,14 @@ class RecordsManagementController(http.Controller):
                 task_vals['shredding_work_order_id'] = work_order.id
             elif work_order._name == 'pickup.request':
                 task_vals['pickup_request_id'] = work_order.id
-        
+
         # Create the task
         fsm_task = request.env['project.task'].sudo().create(task_vals)
-        
+
         # Link FSM task back to work order
         if hasattr(work_order, 'fsm_task_id'):
             work_order.sudo().write({'fsm_task_id': fsm_task.id})
-        
+
         # Create worksheet from template
         template_xml_id = template_map.get(service_type)
         if template_xml_id:
@@ -3985,7 +3985,7 @@ class RecordsManagementController(http.Controller):
                     'task_id': fsm_task.id,
                     'template_id': template.id,
                 })
-        
+
         # Create calendar event for internal team
         calendar_vals = {
             'name': f"{service_names.get(service_type, 'Service')} - {partner.name}",
@@ -4001,18 +4001,18 @@ class RecordsManagementController(http.Controller):
                 'duration': 1,
             })],
         }
-        
+
         # Add assigned user if available
         if hasattr(work_order, 'user_id') and work_order.user_id:
             calendar_vals['user_id'] = work_order.user_id.id
             calendar_vals['partner_ids'].append((4, work_order.user_id.partner_id.id))
-        
+
         calendar_event = request.env['calendar.event'].sudo().create(calendar_vals)
-        
+
         # Link calendar event to FSM task (if FSM supports it)
         if hasattr(fsm_task, 'calendar_event_id'):
             fsm_task.sudo().write({'calendar_event_id': calendar_event.id})
-        
+
         # Post message to work order about FSM task creation
         if hasattr(work_order, 'message_post'):
             work_order.sudo().message_post(
@@ -4021,9 +4021,9 @@ class RecordsManagementController(http.Controller):
                      f'📋 Calendar event created for team',
                 subject='FSM Task & Calendar Event Created'
             )
-        
+
         return fsm_task
-    
+
     @http.route(['/my/containers/bulk_request'], type='json', auth='user', methods=['POST'])
     def create_bulk_container_request(self, request_type='', container_ids=None, **kw):
         """
@@ -4042,20 +4042,20 @@ class RecordsManagementController(http.Controller):
                     'success': False,
                     'error': 'No containers selected. Please select at least one container.'
                 }
-            
+
             if not request_type:
                 return {
                     'success': False,
                     'error': 'Request type is required.'
                 }
-            
+
             # Get current user's partner
             partner = request.env.user.partner_id.commercial_partner_id
-            
+
             # Validate containers belong to this customer
             Container = request.env['records.container'].sudo()
             containers = Container.browse(container_ids)
-            
+
             # Security check
             invalid_containers = containers.filtered(lambda c: c.partner_id.commercial_partner_id != partner)
             if invalid_containers:
@@ -4063,7 +4063,7 @@ class RecordsManagementController(http.Controller):
                     'success': False,
                     'error': 'You do not have permission to request actions on some selected containers.'
                 }
-            
+
             # Map request types to portal.request types and descriptions
             request_type_map = {
                 'retrieval': {
@@ -4097,18 +4097,18 @@ class RecordsManagementController(http.Controller):
                     'description': 'Customer requested access to containers for viewing/inspection.'
                 }
             }
-            
+
             if request_type not in request_type_map:
                 return {
                     'success': False,
                     'error': f'Invalid request type: {request_type}'
                 }
-            
+
             req_config = request_type_map[request_type]
-            
+
             # Build container list for description
             container_list = '\\n'.join('• ' + c.name for c in containers)
-            
+
             # Create portal request
             PortalRequest = request.env['portal.request'].sudo()
             portal_request = PortalRequest.create({
@@ -4120,11 +4120,11 @@ class RecordsManagementController(http.Controller):
                 'priority': '2',  # Medium priority
                 'container_ids': [(6, 0, container_ids)],
             })
-            
+
             # Create work order based on request type
             work_order = None
             fsm_task = None
-            
+
             if request_type == 'retrieval':
                 # Create retrieval work order
                 work_order = request.env['records.retrieval.work.order'].sudo().create({
@@ -4135,21 +4135,21 @@ class RecordsManagementController(http.Controller):
                     'delivery_method': 'scan',
                     'scanned_barcode_ids': [(6, 0, container_ids)],
                 })
-                
+
                 # Auto-create FSM task
                 fsm_task = self._create_fsm_task_for_work_order(
-                    work_order, 
-                    'retrieval', 
-                    partner, 
+                    work_order,
+                    'retrieval',
+                    partner,
                     containers
                 )
-                
+
                 # Link work order to portal request
                 portal_request.message_post(
                     body=f'Retrieval work order created: <a href="/web#id={work_order.id}&model=records.retrieval.work.order">{work_order.name}</a>',
                     subject='Work Order Created'
                 )
-                
+
             elif request_type == 'destruction':
                 # Create destruction work order
                 work_order = request.env['container.destruction.work.order'].sudo().create({
@@ -4160,7 +4160,7 @@ class RecordsManagementController(http.Controller):
                     'destruction_method': 'shredding',
                     'container_ids': [(6, 0, container_ids)],
                 })
-                
+
                 # Auto-create FSM task
                 fsm_task = self._create_fsm_task_for_work_order(
                     work_order,
@@ -4168,13 +4168,13 @@ class RecordsManagementController(http.Controller):
                     partner,
                     containers
                 )
-                
+
                 # Link work order to portal request
                 portal_request.message_post(
                     body=f'Destruction work order created: <a href="/web#id={work_order.id}&model=container.destruction.work.order">{work_order.name}</a>',
                     subject='Work Order Created'
                 )
-            
+
             elif request_type == 'return_to_warehouse':
                 # Create pickup request for return to warehouse
                 work_order = request.env['pickup.request'].sudo().create({
@@ -4185,7 +4185,7 @@ class RecordsManagementController(http.Controller):
                     'container_ids': [(6, 0, container_ids)],
                     'internal_notes': f'Customer requested pickup to return {len(containers)} container(s) to warehouse storage.',
                 })
-                
+
                 # Auto-create FSM task for pickup
                 fsm_task = self._create_fsm_task_for_work_order(
                     work_order,
@@ -4193,13 +4193,13 @@ class RecordsManagementController(http.Controller):
                     partner,
                     containers
                 )
-                
+
                 # Link work order to portal request
                 portal_request.message_post(
                     body=f'Pickup request created for return to warehouse: <a href="/web#id={work_order.id}&model=pickup.request">{work_order.name}</a>',
                     subject='Pickup Request Created'
                 )
-            
+
             elif request_type == 'send_to_storage':
                 # Create pickup request for initial storage (pending containers)
                 work_order = request.env['pickup.request'].sudo().create({
@@ -4210,7 +4210,7 @@ class RecordsManagementController(http.Controller):
                     'container_ids': [(6, 0, container_ids)],
                     'internal_notes': f'Customer requested initial pickup of {len(containers)} pending container(s) to begin storage service.',
                 })
-                
+
                 # Auto-create FSM task for pickup
                 fsm_task = self._create_fsm_task_for_work_order(
                     work_order,
@@ -4218,19 +4218,19 @@ class RecordsManagementController(http.Controller):
                     partner,
                     containers
                 )
-                
+
                 # Link work order to portal request
                 portal_request.message_post(
                     body=f'Pickup request created for initial storage: <a href="/web#id={work_order.id}&model=pickup.request">{work_order.name}</a>',
                     subject='Pickup Request Created'
                 )
-            
+
             # Send notification to backend team
             # Get records management group users
             rm_group = request.env.ref('records_management.group_records_manager', raise_if_not_found=False)
             if rm_group:
                 portal_request.message_subscribe(partner_ids=rm_group.users.mapped('partner_id').ids)
-            
+
             # Post notification message
             portal_request.message_post(
                 body=f'🔔 New portal request submitted by {partner.name}\\n\\n{len(containers)} container(s) selected',
@@ -4238,14 +4238,14 @@ class RecordsManagementController(http.Controller):
                 subtype_xmlid='mail.mt_comment',
                 message_type='notification'
             )
-            
+
             return {
                 'success': True,
                 'message': f'Request submitted successfully! Our team has been notified and will process your request for {len(containers)} container(s).',
                 'request_id': portal_request.id,
                 'container_count': len(containers)
             }
-            
+
         except Exception as e:
             _logger.error(f"Bulk container request failed: {str(e)}", exc_info=True)
             return {
@@ -4269,20 +4269,20 @@ class RecordsManagementController(http.Controller):
                     'success': False,
                     'error': 'No files selected. Please select at least one file.'
                 }
-            
+
             if not request_type:
                 return {
                     'success': False,
                     'error': 'Request type is required.'
                 }
-            
+
             # Get current user's partner
             partner = request.env.user.partner_id.commercial_partner_id
-            
+
             # Validate files belong to this customer
             RecordsFile = request.env['records.file'].sudo()
             files = RecordsFile.browse(file_ids)
-            
+
             # Security check
             invalid_files = files.filtered(lambda f: f.partner_id.commercial_partner_id != partner)
             if invalid_files:
@@ -4290,7 +4290,7 @@ class RecordsManagementController(http.Controller):
                     'success': False,
                     'error': 'You do not have permission to request actions on some selected files.'
                 }
-            
+
             # Department access check for non-company-admins
             if not request.env.user.has_group('records_management.group_portal_company_admin'):
                 accessible_depts = request.env.user.accessible_department_ids.ids
@@ -4300,7 +4300,7 @@ class RecordsManagementController(http.Controller):
                         'success': False,
                         'error': 'You do not have department access to some selected files.'
                     }
-            
+
             # Map request types
             request_type_map = {
                 'retrieval': {
@@ -4314,21 +4314,21 @@ class RecordsManagementController(http.Controller):
                     'description': 'Customer requested pickup of file folders to return to warehouse storage.'
                 },
             }
-            
+
             if request_type not in request_type_map:
                 return {
                     'success': False,
                     'error': f'Invalid request type: {request_type}'
                 }
-            
+
             req_config = request_type_map[request_type]
-            
+
             # Build file list for description
             file_list = '\\n'.join('• ' + f.name + (' (in ' + f.container_id.name + ')' if f.container_id else '') for f in files)
-            
+
             # Get unique containers that contain these files
             container_ids = list(set(f.container_id.id for f in files if f.container_id))
-            
+
             # Create portal request
             PortalRequest = request.env['portal.request'].sudo()
             portal_request = PortalRequest.create({
@@ -4340,10 +4340,10 @@ class RecordsManagementController(http.Controller):
                 'priority': '2',
                 'container_ids': [(6, 0, container_ids)] if container_ids else False,
             })
-            
+
             # Create work order
             work_order = None
-            
+
             if request_type == 'retrieval':
                 work_order = request.env['records.retrieval.work.order'].sudo().create({
                     'name': f"Portal File Retrieval - {partner.name} ({len(files)} files)",
@@ -4353,15 +4353,15 @@ class RecordsManagementController(http.Controller):
                     'delivery_method': 'scan',
                     'notes': f'File retrieval request for {len(files)} file folder(s).\\n\\n{file_list}',
                 })
-                
+
                 containers = request.env['records.container'].sudo().browse(container_ids)
                 fsm_task = self._create_fsm_task_for_work_order(work_order, 'retrieval', partner, containers)
-                
+
                 portal_request.message_post(
                     body=f'Retrieval work order created: <a href="/web#id={work_order.id}&model=records.retrieval.work.order">{work_order.name}</a>',
                     subject='Work Order Created'
                 )
-                
+
             elif request_type == 'return_to_warehouse':
                 work_order = request.env['pickup.request'].sudo().create({
                     'name': f"Portal File Return - {partner.name} ({len(files)} files)",
@@ -4371,41 +4371,41 @@ class RecordsManagementController(http.Controller):
                     'container_ids': [(6, 0, container_ids)] if container_ids else False,
                     'internal_notes': f'Customer requested return of {len(files)} file folder(s) to warehouse.\\n\\n{file_list}',
                 })
-                
+
                 containers = request.env['records.container'].sudo().browse(container_ids)
                 fsm_task = self._create_fsm_task_for_work_order(work_order, 'pickup', partner, containers)
-                
+
                 portal_request.message_post(
                     body=f'Pickup request created for file return: <a href="/web#id={work_order.id}&model=pickup.request">{work_order.name}</a>',
                     subject='Pickup Request Created'
                 )
-            
+
             # Send notification
             rm_group = request.env.ref('records_management.group_records_manager', raise_if_not_found=False)
             if rm_group:
                 portal_request.message_subscribe(partner_ids=rm_group.users.mapped('partner_id').ids)
-            
+
             portal_request.message_post(
                 body=f'🔔 New portal request submitted by {partner.name}\\n\\n{len(files)} file(s) selected',
                 subject=f'New {req_config["title"]}',
                 subtype_xmlid='mail.mt_comment',
                 message_type='notification'
             )
-            
+
             return {
                 'success': True,
                 'message': f'Request submitted successfully! Our team has been notified and will process your request for {len(files)} file(s).',
                 'request_id': portal_request.id,
                 'file_count': len(files)
             }
-            
+
         except Exception as e:
             _logger.error(f"Bulk file request failed: {str(e)}", exc_info=True)
             return {
                 'success': False,
                 'error': f'An error occurred: {str(e)}'
             }
-    
+
     @http.route(['/my/files/search'], type='json', auth='user', methods=['POST'])
     def instant_file_search(self, query='', offset=0, limit=50, **kw):
         """
@@ -4414,9 +4414,9 @@ class RecordsManagementController(http.Controller):
         """
         try:
             partner = request.env.user.partner_id.commercial_partner_id
-            
+
             domain = [('partner_id', '=', partner.id)]
-            
+
             if query:
                 query = query.strip()
                 domain.append('|')
@@ -4424,18 +4424,18 @@ class RecordsManagementController(http.Controller):
                 domain.append(('name', 'ilike', query))
                 domain.append(('file_number', 'ilike', query))
                 domain.append(('description', 'ilike', query))
-            
+
             File = request.env['records.file'].sudo()
-            
+
             total_count = File.search_count(domain)
-            
+
             files = File.search(
                 domain,
                 offset=offset,
                 limit=limit,
                 order='name asc'
             )
-            
+
             results = []
             for file_rec in files:
                 results.append({
@@ -4446,7 +4446,7 @@ class RecordsManagementController(http.Controller):
                     'container_id': file_rec.container_id.id if file_rec.container_id else None,
                     'description': (file_rec.description or '')[:100],
                 })
-            
+
             return {
                 'success': True,
                 'files': results,
@@ -4455,7 +4455,7 @@ class RecordsManagementController(http.Controller):
                 'has_more': (offset + limit) < total_count,
                 'next_offset': offset + limit if (offset + limit) < total_count else None
             }
-            
+
         except Exception as e:
             _logger.error(f"Instant file search failed: {str(e)}")
             return {
@@ -5245,7 +5245,7 @@ class RecordsManagementController(http.Controller):
         values = self._prepare_portal_layout_values()
 
         if request.httprequest.method == 'POST':
-            feedback = request.env['customer.feedback'].create({
+            feedback = request.env['customer.feedback'].sudo().create({
                 'partner_id': request.env.user.partner_id.id,
                 'name': post.get('subject', 'Portal Feedback'),
                 'comments': post.get('feedback'),
@@ -5442,8 +5442,8 @@ class RecordsManagementController(http.Controller):
             item_ids = post.get('item_ids', [])
             item_type = post.get('item_type')  # 'container', 'file', 'document'
 
-            # Create retrieval request
-            portal_request = request.env['portal.request'].create({
+            # Create retrieval request using sudo() for portal user access
+            portal_request = request.env['portal.request'].sudo().create({
                 'partner_id': request.env.user.partner_id.commercial_partner_id.id,
                 'request_type': 'retrieval',
                 'retrieval_items': json.dumps({
@@ -5474,8 +5474,8 @@ class RecordsManagementController(http.Controller):
             item_ids = post.get('item_ids', [])
             item_type = post.get('item_type')
 
-            # Create destruction request
-            portal_request = request.env['portal.request'].create({
+            # Create destruction request using sudo() for portal user access
+            portal_request = request.env['portal.request'].sudo().create({
                 'partner_id': request.env.user.partner_id.commercial_partner_id.id,
                 'request_type': 'destruction',
                 'retrieval_items': json.dumps({
@@ -5507,8 +5507,8 @@ class RecordsManagementController(http.Controller):
             item_ids = post.get('item_ids', [])
             item_type = post.get('item_type')
 
-            # Create pickup request
-            portal_request = request.env['portal.request'].create({
+            # Create pickup request using sudo() for portal user access
+            portal_request = request.env['portal.request'].sudo().create({
                 'partner_id': request.env.user.partner_id.commercial_partner_id.id,
                 'request_type': 'pickup',
                 'retrieval_items': json.dumps({
@@ -5551,7 +5551,7 @@ class RecordsManagementController(http.Controller):
             if 'notes' in post:
                 update_vals['notes'] = post['notes']
 
-            container.write(update_vals)
+            container.sudo().write(update_vals)
 
             return {'success': True, 'message': 'Container updated successfully'}
 
@@ -5597,8 +5597,8 @@ class RecordsManagementController(http.Controller):
                 if hasattr(file_rec, 'partner_id') and file_rec.partner_id and file_rec.partner_id != partner:
                     return {'success': False, 'error': f'File {file_rec.name} access denied'}
 
-            # Update file locations
-            files.write({'container_id': container_id})
+            # Update file locations using sudo() for portal user access
+            files.sudo().write({'container_id': container_id})
 
             return {
                 'success': True,
@@ -5805,8 +5805,8 @@ class RecordsManagementController(http.Controller):
                     'error': 'Type and description are required.'
                 }
 
-            # Create temp inventory record
-            temp_inventory = request.env['temp.inventory'].create({
+            # Create temp inventory record using sudo() for portal user access
+            temp_inventory = request.env['temp.inventory'].sudo().create({
                 'name': description,
                 'description': description,
                 'partner_id': request.env.user.partner_id.id,
@@ -5814,11 +5814,11 @@ class RecordsManagementController(http.Controller):
             })
 
             # Generate barcode using sequence
-            barcode = request.env['ir.sequence'].next_by_code('temp.inventory') or f"TEMP-{temp_inventory.id}"
+            barcode = request.env['ir.sequence'].sudo().next_by_code('temp.inventory') or f"TEMP-{temp_inventory.id}"
 
             # Update the temp inventory with the barcode in the name if needed
             if temp_inventory.name == description:
-                temp_inventory.write({'name': f"{description} ({barcode})"})
+                temp_inventory.sudo().write({'name': f"{description} ({barcode})"})
 
             # Create audit log
             self._create_audit_log(
@@ -5862,22 +5862,22 @@ class RecordsManagementController(http.Controller):
                 }
 
             # Get the temp inventory item
-            temp_item = request.env['temp.inventory'].browse(int(item_id))
+            temp_item = request.env['temp.inventory'].sudo().browse(int(item_id))
             if not temp_item.exists() or temp_item.partner_id.id != request.env.user.partner_id.id:
                 return {
                     'success': False,
                     'error': 'Item not found or access denied.'
                 }
 
-            # Create or find existing pickup request
-            pickup_request = request.env['portal.request'].search([
+            # Create or find existing pickup request using sudo()
+            pickup_request = request.env['portal.request'].sudo().search([
                 ('partner_id', '=', request.env.user.partner_id.id),
                 ('request_type', '=', 'pickup'),
                 ('state', 'in', ['draft', 'submitted'])
             ], limit=1)
 
             if not pickup_request:
-                pickup_request = request.env['portal.request'].create({
+                pickup_request = request.env['portal.request'].sudo().create({
                     'partner_id': request.env.user.partner_id.id,
                     'request_type': 'pickup',
                     'state': 'draft',
@@ -5893,7 +5893,7 @@ class RecordsManagementController(http.Controller):
                 'name': temp_item.name,
                 'description': temp_item.description or '',
             })
-            pickup_request.write({
+            pickup_request.sudo().write({
                 'retrieval_items': json.dumps(existing_items)
             })
 
@@ -5957,7 +5957,7 @@ class RecordsManagementController(http.Controller):
                     'description': item.description or '',
                 })
 
-            destruction_request = request.env['portal.request'].create({
+            destruction_request = request.env['portal.request'].sudo().create({
                 'partner_id': request.env.user.partner_id.id,
                 'request_type': 'destruction',
                 'state': 'draft',
@@ -6200,11 +6200,11 @@ class RecordsManagementController(http.Controller):
         # Get customer's staging locations (including archived if requested)
         StagingLocation = request.env['customer.staging.location']
         domain = [('partner_id', '=', partner.id)]
-        
+
         # Show archived locations if requested
         if not kw.get('show_archived'):
             domain.append(('active', '=', True))
-        
+
         staging_locations = StagingLocation.search(domain, order='complete_name asc')
 
         # Get root-level locations (no parent)
@@ -6225,16 +6225,16 @@ class RecordsManagementController(http.Controller):
         })
 
         return request.render("records_management.portal_staging_locations", values)
-    
+
     @http.route(['/my/inventory/location/create'], type='http', auth='user', website=True, methods=['GET', 'POST'])
     def portal_staging_location_create(self, **post):
         """Create new customer staging location"""
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         if request.httprequest.method == 'POST':
             # Create location
             StagingLocation = request.env['customer.staging.location']
-            
+
             vals = {
                 'name': post.get('name'),
                 'partner_id': partner.id,
@@ -6243,42 +6243,42 @@ class RecordsManagementController(http.Controller):
                 'location_type': post.get('location_type', 'other'),
                 'notes': post.get('notes', ''),
             }
-            
+
             location = StagingLocation.create(vals)
-            
+
             return request.redirect('/my/inventory/locations?created=%s' % location.id)
-        
+
         # GET - show form
         values = self._prepare_portal_layout_values()
-        
+
         # Get available parent locations
         StagingLocation = request.env['customer.staging.location']
         parent_locations = StagingLocation.search([
             ('partner_id', '=', partner.id)
         ], order='complete_name asc')
-        
+
         # Get smart department context
         user = request.env.user
         dept_context = self._get_smart_department_context(user, user.partner_id)
-        
+
         values.update({
             'parent_locations': parent_locations,
             'page_name': 'create_staging_location',
             **dept_context,  # departments, default_department, has_departments, show_department_selector
         })
-        
+
         return request.render("records_management.portal_staging_location_create", values)
-    
+
     @http.route(['/my/inventory/location/<int:location_id>/edit'], type='http', auth='user', website=True, methods=['GET', 'POST'])
     def portal_staging_location_edit(self, location_id, **post):
         """Edit/update customer staging location"""
         location = request.env['customer.staging.location'].browse(location_id)
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Security check
         if not location.exists() or location.partner_id.commercial_partner_id != partner:
             return request.redirect('/my/inventory/locations?error=access_denied')
-        
+
         if request.httprequest.method == 'POST':
             # Update location
             vals = {
@@ -6287,83 +6287,83 @@ class RecordsManagementController(http.Controller):
                 'location_type': post.get('location_type', 'other'),
                 'notes': post.get('notes', ''),
             }
-            
+
             # Only update department if provided
             if post.get('department_id'):
                 vals['department_id'] = int(post.get('department_id'))
-            
+
             try:
-                location.write(vals)
+                location.sudo().write(vals)
                 return request.redirect('/my/inventory/location/%s?updated=1' % location.id)
             except Exception as e:
                 return request.render('records_management.portal_error', {
                     'error_message': 'Failed to update location',
                     'error_details': str(e)
                 })
-        
+
         # GET - show edit form
         values = self._prepare_portal_layout_values()
-        
+
         # Get available parent locations (exclude self and children to prevent recursion)
         StagingLocation = request.env['customer.staging.location']
         all_locations = StagingLocation.search([('partner_id', '=', partner.id)])
-        
+
         # Exclude current location and its descendants
         child_locations = StagingLocation.search([('id', 'child_of', location.id)])
         parent_locations = all_locations - child_locations
-        
+
         # Get departments
         departments = request.env['records.department'].search([('partner_id', '=', partner.id)])
-        
+
         values.update({
             'location': location,
             'parent_locations': parent_locations,
             'departments': departments,
             'page_name': 'edit_staging_location',
         })
-        
+
         return request.render("records_management.portal_staging_location_edit", values)
-    
+
     @http.route(['/my/inventory/location/<int:location_id>/archive'], type='http', auth='user', website=True, methods=['POST'])
     def portal_staging_location_archive(self, location_id, **post):
         """Archive/unarchive customer staging location"""
         location = request.env['customer.staging.location'].browse(location_id)
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Security check
         if not location.exists() or location.partner_id.commercial_partner_id != partner:
             return request.redirect('/my/inventory/locations?error=access_denied')
-        
-        # Toggle active state
-        location.write({'active': not location.active})
-        
+
+        # Toggle active state using sudo() for portal user access
+        location.sudo().write({'active': not location.active})
+
         action = 'unarchived' if location.active else 'archived'
         return request.redirect('/my/inventory/locations?%s=%s' % (action, location.id))
-    
+
     @http.route(['/my/inventory/location/<int:location_id>/delete'], type='http', auth='user', website=True, methods=['POST'])
     def portal_staging_location_delete(self, location_id, **post):
         """Delete customer staging location (only if no containers assigned)"""
         location = request.env['customer.staging.location'].browse(location_id)
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Security check
         if not location.exists() or location.partner_id.commercial_partner_id != partner:
             return request.redirect('/my/inventory/locations?error=access_denied')
-        
+
         # Check if location has containers
         if location.container_count > 0:
             return request.render('records_management.portal_error', {
                 'error_message': 'Cannot delete location with containers',
                 'error_details': 'This location has %s container(s) assigned. Please move or remove them before deleting.' % location.container_count
             })
-        
+
         # Check if location has child locations
         if location.child_ids:
             return request.render('records_management.portal_error', {
                 'error_message': 'Cannot delete location with sub-locations',
                 'error_details': 'This location has %s sub-location(s). Please delete or move them first.' % len(location.child_ids)
             })
-        
+
         try:
             location_name = location.complete_name
             location.unlink()
@@ -6373,7 +6373,7 @@ class RecordsManagementController(http.Controller):
                 'error_message': 'Failed to delete location',
                 'error_details': str(e)
             })
-    
+
     @http.route(['/my/inventory/location/<int:location_id>'], type='http', auth='user', website=True)
     def portal_staging_location_detail(self, location_id, **kw):
         """View containers at a specific staging location"""
@@ -6387,7 +6387,7 @@ class RecordsManagementController(http.Controller):
         child_locations = request.env['customer.staging.location'].search([
             ('id', 'child_of', location.id)
         ])
-        
+
         Container = request.env['records.container']
         containers = Container.search([
             ('customer_staging_location_id', 'in', child_locations.ids)
@@ -7056,17 +7056,17 @@ class RecordsManagementController(http.Controller):
         }
 
         return request.render("records_management.portal_reports_export", values)
-    
+
     @http.route(['/records/report/documents'], type='http', auth='user', website=True)
     def portal_report_documents(self, **kw):
         """Document Inventory Report - PDF generation"""
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Get all documents for this customer
         documents = request.env['records.document'].sudo().search([
             ('partner_id', '=', partner.id)
         ], order='file_id, name')
-        
+
         values = {
             'page_name': 'reports',
             'partner': partner,
@@ -7074,20 +7074,20 @@ class RecordsManagementController(http.Controller):
             'total_documents': len(documents),
             'report_date': fields.Date.today(),
         }
-        
+
         # Return PDF report
         return request.env.ref('records_management.action_report_document_inventory').report_action(documents, data=values)
-    
+
     @http.route(['/records/report/certificates'], type='http', auth='user', website=True)
     def portal_report_certificates(self, **kw):
         """Certificate Report - PDF generation"""
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Get all certificates for this customer
         certificates = request.env['naid.certificate'].sudo().search([
             ('partner_id', '=', partner.id)
         ], order='certificate_date desc')
-        
+
         values = {
             'page_name': 'reports',
             'partner': partner,
@@ -7095,20 +7095,20 @@ class RecordsManagementController(http.Controller):
             'total_certificates': len(certificates),
             'report_date': fields.Date.today(),
         }
-        
+
         # Return PDF report
         return request.env.ref('records_management.action_report_naid_certificate').report_action(certificates, data=values)
-    
+
     @http.route(['/records/report/containers'], type='http', auth='user', website=True)
     def portal_report_containers(self, **kw):
         """Container Status Report - PDF generation"""
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Get all containers for this customer
         containers = request.env['records.container'].sudo().search([
             ('partner_id', '=', partner.id)
         ], order='name')
-        
+
         # Calculate summary stats
         summary = {
             'total_containers': len(containers),
@@ -7119,7 +7119,7 @@ class RecordsManagementController(http.Controller):
             'destroyed_containers': len(containers.filtered(lambda c: c.state == 'destroyed')),
             'total_files': sum(containers.mapped('file_count')),
         }
-        
+
         values = {
             'page_name': 'reports',
             'partner': partner,
@@ -7127,7 +7127,7 @@ class RecordsManagementController(http.Controller):
             'summary': summary,
             'report_date': fields.Date.today(),
         }
-        
+
         # Return PDF report
         return request.env.ref('records_management.action_report_container_status').report_action(containers, data=values)
 
@@ -7868,8 +7868,8 @@ class RecordsManagementController(http.Controller):
                 ]
             )
 
-            # Audit log
-            request.env['naid.audit.log'].create({
+            # Audit log using sudo() for portal user access
+            request.env['naid.audit.log'].sudo().create({
                 'action_type': 'export',
                 'user_id': request.env.user.id,
                 'description': _('Inventory exported by %s (%d records)') % (

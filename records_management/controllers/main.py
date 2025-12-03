@@ -1268,7 +1268,8 @@ class RecordsManagementPortal(CustomerPortal):
                 'line_ids': line_commands,
             }
 
-            order = request.env['records.retrieval.order'].create(order_vals)
+            # Use sudo() to allow portal users to create work orders
+            order = request.env['records.retrieval.order'].sudo().create(order_vals)
 
             return request.redirect('/my/document-retrieval/%s' % order.id)
 
@@ -1633,11 +1634,11 @@ class RecordsManagementPortal(CustomerPortal):
                 'description': kw.get('description'),
             }
 
-            # Create pickup request (ACL will enforce permissions)
-            pickup_request = request.env['pickup.request'].create(vals)
+            # Use sudo() to allow portal users to create pickup requests
+            pickup_request = request.env['pickup.request'].sudo().create(vals)
 
             # Submit the request
-            pickup_request.action_submit()
+            pickup_request.sudo().action_submit()
 
             return request.redirect('/my/requests?pickup_created=%s' % pickup_request.id)
 
@@ -1696,20 +1697,20 @@ class RecordsManagementPortal(CustomerPortal):
                 'naid_compliant': True,  # Always NAID compliant for portal requests
             }
 
-            # Create destruction request (ACL will enforce permissions)
-            destruction_request = request.env['records.destruction'].create(vals)
+            # Use sudo() to allow portal users to create destruction requests
+            destruction_request = request.env['records.destruction'].sudo().create(vals)
 
             # If container IDs provided, create destruction items
             container_ids = request.httprequest.form.getlist('container_ids')
             if container_ids:
                 for container_id in container_ids:
-                    request.env['destruction.item'].create({
+                    request.env['destruction.item'].sudo().create({
                         'destruction_id': destruction_request.id,
                         'container_id': int(container_id),
                     })
 
             # Schedule the destruction
-            destruction_request.action_schedule()
+            destruction_request.sudo().action_schedule()
 
             return request.redirect('/my/requests?destruction_created=%s' % destruction_request.id)
 
