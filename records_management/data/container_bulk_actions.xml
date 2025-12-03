@@ -23,17 +23,16 @@ if records:
     if invalid:
         raise UserError("Only containers that are 'In Storage' or 'Out' can be added to retrieval orders.\nInvalid: %s" % ', '.join(invalid.mapped('name')))
 
-    # Create new retrieval work order
+    # Create new retrieval work order (name will be auto-generated from sequence)
     work_order = env['records.retrieval.work.order'].create({
-        'name': 'Retrieval - %s (%s containers)' % (partner.name, len(records)),
         'partner_id': partner.id,
         'user_id': env.user.id,
         'state': 'draft',
-        'delivery_method': 'scan',
+        'delivery_method': 'physical',
         'scanned_barcode_ids': [(6, 0, records.ids)],
     })
 
-    # Post message
+    # Post message with container details
     work_order.message_post(
         body='📦 Created from bulk action with %d container(s): %s' % (len(records), ', '.join(records.mapped('name'))),
         subject='Bulk Retrieval Order Created'
@@ -73,9 +72,8 @@ if records:
     if invalid:
         raise UserError("Only containers that are 'In Storage' or 'Out' can be scheduled for destruction.\nInvalid: %s" % ', '.join(invalid.mapped('name')))
 
-    # Create new destruction work order
+    # Create new destruction work order (name will be auto-generated from sequence)
     work_order = env['container.destruction.work.order'].create({
-        'name': 'Destruction - %s (%s containers)' % (partner.name, len(records)),
         'partner_id': partner.id,
         'user_id': env.user.id,
         'state': 'draft',
@@ -83,7 +81,7 @@ if records:
         'container_ids': [(6, 0, records.ids)],
     })
 
-    # Post message
+    # Post message with container details
     work_order.message_post(
         body='🔥 Created from bulk action with %d container(s): %s' % (len(records), ', '.join(records.mapped('name'))),
         subject='Bulk Destruction Order Created'
@@ -123,9 +121,8 @@ if records:
     if invalid:
         raise UserError("Only containers that are 'In Storage' or 'Out' can have access requests.\nInvalid: %s" % ', '.join(invalid.mapped('name')))
 
-    # Create new portal request for container access
+    # Create new portal request for container access (name will be auto-generated from sequence)
     request = env['portal.request'].create({
-        'name': 'Container Access - %s (%s containers)' % (partner.name, len(records)),
         'partner_id': partner.id,
         'request_type': 'other',
         'state': 'submitted',
@@ -133,9 +130,9 @@ if records:
         'container_ids': [(6, 0, records.ids)],
     })
 
-    # Post message
+    # Post message with container details
     request.message_post(
-        body='🔑 Created from bulk action with %d container(s)' % len(records),
+        body='🔑 Created from bulk action with %d container(s): %s' % (len(records), ', '.join(records.mapped('name'))),
         subject='Bulk Access Request Created'
     )
 
