@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ================================================================== -->
+        <!-- SHREDDING SERVICE HISTORY                                          -->
+        <!-- Complete history of all shredding/destruction services             -->
+        <!-- ================================================================== -->
+
+        <template id="portal_shredding_history" name="Shredding Service History">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Shredding History</t>
+                </t>
+
+                <div class="o_portal_shredding_history">
+                    <!-- Page Header -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">
+                                    <i class="fa fa-history text-info me-2"/>
+                                    Shredding Service History
+                                </h2>
+                                <div class="btn-group">
+                                    <a href="/my/shredding/dashboard" class="btn btn-outline-secondary">
+                                        <i class="fa fa-arrow-left me-1"/> Back to Dashboard
+                                    </a>
+                                    <a href="/my/shredding/request/new" class="btn btn-danger">
+                                        <i class="fa fa-plus me-1"/> New Request
+                                    </a>
+                                </div>
+                            </div>
+                            <p class="text-muted mt-2">
+                                View your complete shredding and destruction service history, including certificates of destruction.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Filter Options -->
+                    <div class="row mb-3">
+                        <div class="col-auto">
+                            <div class="btn-group" role="group">
+                                <a t-attf-href="/my/shredding/history?filterby=all"
+                                   t-attf-class="btn btn-sm #{filterby == 'all' and 'btn-primary' or 'btn-outline-primary'}">
+                                    All Services
+                                </a>
+                                <a t-attf-href="/my/shredding/history?filterby=completed"
+                                   t-attf-class="btn btn-sm #{filterby == 'completed' and 'btn-primary' or 'btn-outline-primary'}">
+                                    Completed
+                                </a>
+                                <a t-attf-href="/my/shredding/history?filterby=with_certificate"
+                                   t-attf-class="btn btn-sm #{filterby == 'with_certificate' and 'btn-primary' or 'btn-outline-primary'}">
+                                    With Certificate
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Service History Table -->
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                <i class="fa fa-list me-2"/>
+                                Service History
+                            </h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <t t-if="service_history">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Service Type</th>
+                                                <th>Description</th>
+                                                <th>Status</th>
+                                                <th>Certificate</th>
+                                                <th>Invoice</th>
+                                                <th class="text-end">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="service_history" t-as="service">
+                                                <tr>
+                                                    <td>
+                                                        <span t-if="service.get('date')" t-esc="service.get('date')"/>
+                                                        <span t-else="" class="text-muted">-</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-danger" t-if="service.get('service_type') == 'shredding'">
+                                                            <i class="fa fa-cut me-1"/> Shredding
+                                                        </span>
+                                                        <span class="badge bg-warning text-dark" t-elif="service.get('service_type') == 'destruction'">
+                                                            <i class="fa fa-fire me-1"/> Destruction
+                                                        </span>
+                                                        <span class="badge bg-info" t-elif="service.get('service_type') == 'purge'">
+                                                            <i class="fa fa-trash me-1"/> Purge
+                                                        </span>
+                                                        <span class="badge bg-secondary" t-else="">
+                                                            <t t-esc="service.get('service_type', 'Service')"/>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <t t-esc="service.get('description', '-')"/>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-success" t-if="service.get('status') == 'completed'">
+                                                            <i class="fa fa-check me-1"/> Completed
+                                                        </span>
+                                                        <span class="badge bg-warning text-dark" t-elif="service.get('status') == 'scheduled'">
+                                                            <i class="fa fa-clock-o me-1"/> Scheduled
+                                                        </span>
+                                                        <span class="badge bg-info" t-elif="service.get('status') == 'in_progress'">
+                                                            <i class="fa fa-spinner me-1"/> In Progress
+                                                        </span>
+                                                        <span class="badge bg-secondary" t-else="">
+                                                            <t t-esc="service.get('status', '-')"/>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <a t-if="service.get('certificate_id')"
+                                                           t-attf-href="/my/certificates/destruction/#{service.get('certificate_id')}"
+                                                           class="btn btn-sm btn-outline-success">
+                                                            <i class="fa fa-certificate me-1"/> View
+                                                        </a>
+                                                        <span t-else="" class="text-muted">-</span>
+                                                    </td>
+                                                    <td>
+                                                        <a t-if="service.get('invoice_id')"
+                                                           t-attf-href="/my/invoices/#{service.get('invoice_id')}"
+                                                           class="btn btn-sm btn-outline-primary">
+                                                            <i class="fa fa-file-text-o me-1"/> Invoice
+                                                        </a>
+                                                        <span t-else="" class="text-muted">-</span>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <div class="btn-group btn-group-sm">
+                                                            <a t-if="service.get('work_order_id')"
+                                                               t-attf-href="/my/workorders/#{service.get('work_order_id')}"
+                                                               class="btn btn-outline-secondary" title="View Work Order">
+                                                                <i class="fa fa-wrench"/>
+                                                            </a>
+                                                            <a t-if="service.get('certificate_id')"
+                                                               t-attf-href="/my/certificates/destruction/#{service.get('certificate_id')}/download"
+                                                               class="btn btn-outline-success" title="Download Certificate">
+                                                                <i class="fa fa-download"/>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="text-center py-5">
+                                    <i class="fa fa-history fa-3x text-muted mb-3"/>
+                                    <h5 class="text-muted">No Service History</h5>
+                                    <p class="text-muted">You don't have any shredding or destruction services yet.</p>
+                                    <a href="/my/shredding/request/new" class="btn btn-danger mt-2">
+                                        <i class="fa fa-plus me-1"/> Request Shredding Service
+                                    </a>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- Information Cards -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card border-info">
+                                <div class="card-body">
+                                    <h6 class="card-title text-info">
+                                        <i class="fa fa-info-circle me-1"/> About Certificates
+                                    </h6>
+                                    <p class="card-text small text-muted">
+                                        Certificates of Destruction are NAID AAA compliant documents that verify 
+                                        your records have been securely destroyed according to industry standards.
+                                        Keep these for your compliance records.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-success">
+                                <div class="card-body">
+                                    <h6 class="card-title text-success">
+                                        <i class="fa fa-shield me-1"/> NAID AAA Certified
+                                    </h6>
+                                    <p class="card-text small text-muted">
+                                        All our destruction services follow NAID AAA certification standards,
+                                        ensuring the highest level of security for your sensitive documents.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -755,6 +755,7 @@
         "templates/portal_add_team_member.xml",
         # Shredding & Destruction Portal
         "templates/portal_shredding_dashboard.xml",
+        "templates/portal_shredding_history.xml",
         # NEW PORTAL TEMPLATES (Grok's routes - separate files)
         "templates/portal_records_templates.xml",
         "templates/portal_elearning_templates.xml",

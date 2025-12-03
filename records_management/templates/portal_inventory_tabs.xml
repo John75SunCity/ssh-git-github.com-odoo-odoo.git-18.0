@@ -100,7 +100,7 @@
                                                 <span class="badge badge-secondary" t-esc="container.barcode or container.temp_barcode or 'No barcode'"/>
                                             </td>
                                             <td>
-                                                <span t-esc="container.current_location_id.name if container.current_location_id else 'Unknown'"/>
+                                                <span t-esc="container.location_id.name if container.location_id else (container.current_location_id.name if container.current_location_id else 'Not Set')"/>
                                             </td>
                                             <td>
                                                 <span class="badge" 
@@ -377,7 +377,7 @@
                                                 <span t-esc="file_folder.container_id.name if file_folder.container_id else 'Not in container'"/>
                                             </td>
                                             <td>
-                                                <span t-esc="file_folder.location_id.name if file_folder.location_id else 'Unknown'"/>                                            </td>
+                                                <span t-esc="file_folder.location_id.name if file_folder.location_id else 'Not Set'"/>                                            </td>
                                             <td>
                                                 <span t-esc="len(file_folder.document_ids)" class="badge badge-info"/>
                                             </td>

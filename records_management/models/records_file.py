@@ -144,6 +144,13 @@ class RecordsFile(models.Model):
              "Organizational unit ownership (not individual users)."
     )
     
+    # Active flag for archiving
+    active = fields.Boolean(
+        string='Active',
+        default=True,
+        help='Uncheck to archive this file. Archived files are hidden from default views.'
+    )
+    
     # ============================================================================
     # DOCUMENT RELATIONSHIPS
     # ============================================================================
