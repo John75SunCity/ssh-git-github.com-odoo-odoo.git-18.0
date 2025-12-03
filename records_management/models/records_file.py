@@ -171,7 +171,8 @@ class RecordsFile(models.Model):
         comodel_name='res.users',
         string='Responsible',
         tracking=True,
-        help='Person responsible for this file. Defaults to customer\'s portal user or department contact.'
+        help='Person responsible for this file. Defaults to customer\'s portal user or department contact.\n'
+             'When a department is selected, the dropdown will show users with their department name.'
     )
 
     # ============================================================================

@@ -50,7 +50,15 @@ class RecordsContainer(models.Model):
         "res.company", string="Company", default=lambda self: self.env.company, required=True, readonly=True
     )
     currency_id = fields.Many2one(related="company_id.currency_id", readonly=True, comodel_name="res.currency")
-    user_id = fields.Many2one("res.users", string="Responsible", default=lambda self: self.env.user, tracking=True)
+    user_id = fields.Many2one(
+        comodel_name="res.users",
+        string="Responsible",
+        default=lambda self: self.env.user,
+        tracking=True,
+        help="User responsible for this container. When a department is selected, "
+             "the dropdown will show department users with their department name to help "
+             "identify the correct person."
+    )
     barcode = fields.Char(
         string="Physical Barcode",
         copy=False,

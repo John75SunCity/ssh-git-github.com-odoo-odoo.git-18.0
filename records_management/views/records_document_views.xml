@@ -193,6 +193,11 @@
                                 <field name="department_id" string="Department"/>
                                 <field name="container_id" string="Container"/>
                                 <field name="file_id" string="File Folder"/>
+                                <field name="responsible_person_id"
+                                       string="Responsible User"
+                                       context="{'records_with_department': True}"
+                                       domain="[('active', '=', True), '|', ('department_assignment_ids.department_id', '=', department_id), ('department_assignment_ids', '=', False)]"
+                                       help="Select the responsible user. Users are shown with their department name in brackets."/>
                             </group>
                             <group string="Barcode">
                                 <field name="temp_barcode" 
@@ -217,7 +222,7 @@
                             </group>
                         </group>
 
-                        <!-- Legal Compliance & Record Series (Optional) -->
+                        <!-- Legal Compliance &amp; Record Series (Optional) -->
                         <group string="Legal Compliance &amp; Record Series (Optional)" name="legal_compliance" col="2">
                             <group>
                                 <field name="record_series_id"

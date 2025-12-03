@@ -355,11 +355,15 @@ Destroy Container</a>
                invisible="location_id"
                options="{'no_open': False}"
                help="Temporary location at customer site (hidden when assigned to warehouse location)"/>
-        <field name="user_id"/>
+        <field name="user_id"
+               string="Responsible User"
+               context="{'records_with_department': True}"
+               domain="[('active', '=', True), '|', ('department_assignment_ids.department_id', '=', department_id), ('department_assignment_ids', '=', False)]"
+               help="Select the responsible user. Users are shown with their department name in brackets to help identify the correct person."/>
                     </group>
                 </group>
 
-                <!-- Legal Compliance & Record Series (Optional) -->
+                <!-- Legal Compliance &amp; Record Series (Optional) -->
                 <group string="Legal Compliance &amp; Record Series (Optional)" name="legal_compliance" col="2">
                     <group>
                         <field name="record_series_id"

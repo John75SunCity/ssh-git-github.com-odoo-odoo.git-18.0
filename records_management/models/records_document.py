@@ -72,7 +72,13 @@ class RecordsDocument(models.Model):
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    responsible_person_id = fields.Many2one(comodel_name='res.users', string='Responsible')
+    responsible_person_id = fields.Many2one(
+        comodel_name='res.users',
+        string='Responsible',
+        tracking=True,
+        help='Person responsible for this document. When a department is selected, '
+             'the dropdown will show users with their department name to help identify the correct person.'
+    )
     reference = fields.Char(string="Reference / Barcode", copy=False, tracking=True)
     # Temporary file barcode (distinct from physical barcode). Assigned automatically if absent.
     temp_barcode = fields.Char(
@@ -115,7 +121,7 @@ class RecordsDocument(models.Model):
         domain="[('partner_id', '=', partner_id)]",
         tracking=True,
     )
-    
+
     # ============================================================================
     # HIERARCHICAL FILE FOLDER RELATIONSHIP
     # Documents belong to File Folders, which belong to Containers.
@@ -128,7 +134,7 @@ class RecordsDocument(models.Model):
         required=True,
         help="File folder this document belongs to. Documents are always inside a file folder."
     )
-    
+
     container_id = fields.Many2one(
         comodel_name="records.container",
         string="Container",
@@ -137,7 +143,7 @@ class RecordsDocument(models.Model):
         readonly=True,
         help="Container inherited from the file folder. Documents cannot exist outside a file folder."
     )
-    
+
     # ============================================================================
     # STOCK INTEGRATION (Hierarchical Inventory)
     # ============================================================================
@@ -158,7 +164,7 @@ class RecordsDocument(models.Model):
              "Tracks document-level movements (e.g., removed for scanning, delivery). "
              "Most documents won't have quant_id - only when tracked independently."
     )
-    
+
     package_id = fields.Many2one(
         comodel_name='stock.quant.package',
         string="Stock Package",
@@ -166,7 +172,7 @@ class RecordsDocument(models.Model):
         help="Auto-created package for Stock Barcode app compatibility. "
              "Nested under file's or container's package."
     )
-    
+
     owner_id = fields.Many2one(
         comodel_name='res.partner',
         related='quant_id.owner_id',
@@ -175,7 +181,7 @@ class RecordsDocument(models.Model):
         readonly=True,
         help="Customer who owns this document (from inventory tracking)"
     )
-    
+
     stock_owner_id = fields.Many2one(
         "res.partner",
         string="Stock Owner",
@@ -187,7 +193,7 @@ class RecordsDocument(models.Model):
              "Auto-filled from File or Container selection. "
              "Organizational unit ownership (not individual users)."
     )
-    
+
     parent_quant_id = fields.Many2one(
         comodel_name='stock.quant',
         related='quant_id.parent_quant_id',
@@ -264,7 +270,7 @@ class RecordsDocument(models.Model):
     media_type = fields.Char("Media Type", tracking=True)
     original_format = fields.Char("Original Format", tracking=True)
     digitized = fields.Boolean("Digitized")
-    
+
     # ============================================================================
     # DIRECT ATTACHMENT FIELDS (Simplified from records.digital.scan)
     # ============================================================================
@@ -344,7 +350,7 @@ class RecordsDocument(models.Model):
     event_date = fields.Date(string="Event Date", help="Date of the last significant event (e.g., access, move, audit).")
     compliance_verified = fields.Boolean(string="Compliance Verified", help="Indicates if the document's handling meets compliance standards.")
     scan_date = fields.Datetime(string="Last Scan Date", help="Timestamp of the last barcode scan.")
-    
+
     # Scanning request tracking (for portal scanning workflow)
     scan_request_id = fields.Many2one(
         comodel_name='portal.request',
@@ -355,7 +361,7 @@ class RecordsDocument(models.Model):
         string='Scan Requested Date',
         help='Date/time when scanning was requested via portal'
     )
-    
+
     last_verified_by_id = fields.Many2one(
         comodel_name="res.users",
         string="Last Verified By",
@@ -427,15 +433,127 @@ class RecordsDocument(models.Model):
     ]
 
     # ============================================================================
+    # CUSTOMER/DEPARTMENT USER HELPERS
+    # ============================================================================
+    @api.model
+    def _get_customer_responsible_user(self, vals):
+        """
+        Get the appropriate responsible user for a document based on customer/department.
+        
+        Priority:
+        1. Department's responsible user (user_id)
+        2. First portal user of the department (user_ids)
+        3. Customer's (partner) first portal user
+        4. None (will remain empty)
+        
+        This ensures documents are assigned to the customer's team, not internal staff.
+        """
+        # Try to get department first
+        department_id = vals.get('department_id')
+        if not department_id and vals.get('file_id'):
+            file_record = self.env['records.file'].browse(vals['file_id'])
+            department_id = file_record.department_id.id if file_record.department_id else None
+        if not department_id and vals.get('container_id'):
+            container = self.env['records.container'].browse(vals['container_id'])
+            department_id = container.department_id.id if container.department_id else None
+
+        if department_id:
+            department = self.env['records.department'].browse(department_id)
+            # Priority 1: Department's responsible user
+            if department.user_id and department.user_id.active:
+                return department.user_id.id
+            # Priority 2: First active portal user in department
+            portal_group = self.env.ref('base.group_portal', raise_if_not_found=False)
+            if portal_group and department.user_ids:
+                portal_users = department.user_ids.filtered(
+                    lambda u: u.active and portal_group in u.groups_id
+                )
+                if portal_users:
+                    return portal_users[0].id
+
+        # Try to get partner
+        partner_id = vals.get('partner_id')
+        if not partner_id:
+            if vals.get('file_id'):
+                file_record = self.env['records.file'].browse(vals['file_id'])
+                partner_id = file_record.owner_id.id if file_record.owner_id else None
+            if not partner_id and vals.get('container_id'):
+                container = self.env['records.container'].browse(vals['container_id'])
+                partner_id = container.partner_id.id if container.partner_id else None
+
+        if partner_id:
+            partner = self.env['res.partner'].browse(partner_id)
+            commercial_partner = partner.commercial_partner_id
+            # Find portal users linked to this customer
+            portal_group = self.env.ref('base.group_portal', raise_if_not_found=False)
+            if portal_group:
+                portal_users = self.env['res.users'].search([
+                    ('partner_id', 'child_of', commercial_partner.id),
+                    ('groups_id', 'in', [portal_group.id]),
+                    ('active', '=', True),
+                ], limit=1)
+                if portal_users:
+                    return portal_users[0].id
+
+        return False
+
+    def _add_customer_followers(self):
+        """
+        Auto-add customer's portal users as followers on this document.
+        
+        This ensures customers receive notifications about their documents.
+        Only adds users who are:
+        - Active
+        - Portal users (group_portal)
+        - Related to the customer (partner)
+        """
+        self.ensure_one()
+
+        partner = self.partner_id
+        if not partner and self.file_id:
+            partner = self.file_id.owner_id
+        if not partner and self.container_id:
+            partner = self.container_id.partner_id
+        if not partner:
+            return
+
+        commercial_partner = partner.commercial_partner_id
+
+        # Find all portal users for this customer
+        portal_group = self.env.ref('base.group_portal', raise_if_not_found=False)
+        if not portal_group:
+            return
+
+        # Get portal users related to this customer
+        portal_users = self.env['res.users'].search([
+            ('partner_id', 'child_of', commercial_partner.id),
+            ('groups_id', 'in', [portal_group.id]),
+            ('active', '=', True),
+        ])
+
+        if portal_users:
+            # Get partner IDs of portal users to add as followers
+            partner_ids = portal_users.mapped('partner_id').ids
+            # Subscribe them as followers (avoid duplicates automatically)
+            self.message_subscribe(partner_ids=partner_ids)
+
+    # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
+        """
+        Create document records with automatic defaults.
+        
+        AUTO-DEFAULTS:
+        - responsible_person_id: Set to customer's portal user or department contact
+        - Followers: Customer's portal users are auto-subscribed
+        """
         # Updated translation usage to project policy (percent interpolation after _()).
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('records.document') or _('New')
-                
+
             # AUTO-INHERIT PARTNER_ID: If not set, inherit from file or container
             if not vals.get('partner_id'):
                 # Try to get partner from file folder
@@ -445,19 +563,19 @@ class RecordsDocument(models.Model):
                         vals['partner_id'] = file_record.owner_id.id
                     elif file_record and file_record.container_id and file_record.container_id.partner_id:
                         vals['partner_id'] = file_record.container_id.partner_id.id
-                
+
                 # Try to get partner from container if still not set
                 if not vals.get('partner_id') and vals.get('container_id'):
                     container_record = self.env['records.container'].browse(vals['container_id'])
                     if container_record and container_record.partner_id:
                         vals['partner_id'] = container_record.partner_id.id
-                
+
                 # Fallback to current user's partner
                 if not vals.get('partner_id'):
                     user_partner = self.env.user.partner_id
                     if user_partner:
                         vals['partner_id'] = user_partner.commercial_partner_id.id
-                        
+
             # Assign TF* temp barcode if absent and no physical barcode present
             if not vals.get('temp_barcode') and not vals.get('barcode'):
                 seq = self.env['ir.sequence'].next_by_code('records.document.temp.barcode')
@@ -495,12 +613,12 @@ class RecordsDocument(models.Model):
                     vals['attachment_date'] = fields.Datetime.now()
                     break  # Only generate one for all records in batch
         result = super().write(vals)
-        
+
         # Sync stock package when barcode, file, or container changes
         if 'barcode' in vals or 'temp_barcode' in vals or 'file_id' in vals or 'container_id' in vals:
             for doc in self:
                 doc._create_or_update_stock_package()
-        
+
         return result
 
     def _create_or_update_stock_package(self):
@@ -510,32 +628,32 @@ class RecordsDocument(models.Model):
         This enables Odoo's Stock Barcode to recognize document barcodes.
         """
         self.ensure_one()
-        
+
         barcode = self.barcode or self.temp_barcode
         if not barcode:
             return
-        
+
         # If document already has a package, update it
         if self.package_id:
             if self.package_id.name != barcode:
                 self.package_id.write({'name': barcode})
             return
-        
+
         # Search for existing package with this barcode
         existing_package = self.env['stock.quant.package'].search([
             ('name', '=', barcode)
         ], limit=1)
-        
+
         if existing_package:
             self.write({'package_id': existing_package.id})
             return
-        
+
         # Create new package
         package_vals = {
             'name': barcode,
             'company_id': self.company_id.id,
         }
-        
+
         package = self.env['stock.quant.package'].create(package_vals)
         self.write({'package_id': package.id})
 
@@ -873,7 +991,7 @@ class RecordsDocument(models.Model):
             try:
                 file_state = record.file_id.state if record.file_id else False
                 container_state = record.file_id.container_id.state if record.file_id and record.file_id.container_id else False
-                
+
                 if container_state == 'destroyed':
                     record.location_status = 'destroyed'
                 elif record.is_missing:
@@ -1269,7 +1387,7 @@ class RecordsDocument(models.Model):
             'returned': 'access',
         }
         action_type = action_type_map.get(event_type, 'other')
-        
+
         self.env["naid.audit.log"].create(
             {
                 "document_id": self.id,
@@ -1483,7 +1601,7 @@ class RecordsDocument(models.Model):
             }
         except Exception as e:
             raise ValidationError(_('Error printing document label: %s') % str(e))
-    
+
     def action_print_qr_label(self):
         """
         Generate QR code label that links to customer portal login.
@@ -1493,10 +1611,10 @@ class RecordsDocument(models.Model):
         Useful for physical document storage or client handouts.
         """
         self.ensure_one()
-        
+
         generator = self.env['zpl.label.generator']
         result = generator.generate_qr_label(self, record_type='document')
-        
+
         attachment = self.env['ir.attachment'].create({
             'name': result['filename'],
             'type': 'binary',
@@ -1505,7 +1623,7 @@ class RecordsDocument(models.Model):
             'res_id': self.id,
             'mimetype': 'application/pdf',
         })
-        
+
         return {
             'type': 'ir.actions.act_url',
             'url': f'/web/content/{attachment.id}?download=true',

@@ -120,6 +120,47 @@ class ResUsers(models.Model):
         help='Departments this user has been assigned to with specific roles and permissions'
     )
     
+    # Computed field to show department names in user selection dropdowns
+    records_department_names = fields.Char(
+        string='Departments',
+        compute='_compute_records_department_names',
+        store=True,
+        help='Comma-separated list of department names for display in selection dropdowns'
+    )
+    
+    @api.depends('department_assignment_ids', 'department_assignment_ids.department_id', 
+                 'department_assignment_ids.department_id.name', 'department_assignment_ids.state')
+    def _compute_records_department_names(self):
+        """Compute a comma-separated string of department names for user display."""
+        for user in self:
+            # Get active department assignments
+            active_assignments = user.department_assignment_ids.filtered(
+                lambda a: a.state == 'active' and a.active
+            )
+            if active_assignments:
+                dept_names = active_assignments.mapped('department_id.name')
+                user.records_department_names = ', '.join(filter(None, dept_names))
+            else:
+                user.records_department_names = False
+
+    def name_get(self):
+        """Override name_get to show department info when records_with_department context is set.
+        
+        When selecting responsible users for containers/files/documents, this shows
+        the user's assigned department(s) to help avoid selecting the wrong person.
+        
+        Usage in views: context="{'records_with_department': True}"
+        """
+        if self.env.context.get('records_with_department'):
+            result = []
+            for user in self:
+                name = user.name or ''
+                if user.records_department_names:
+                    name = f"{name} [{user.records_department_names}]"
+                result.append((user.id, name))
+            return result
+        return super().name_get()
+    
     accessible_department_ids = fields.Many2many(
         'records.department',
         compute='_compute_accessible_department_ids',
