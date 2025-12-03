@@ -377,8 +377,7 @@
                                                 <span t-esc="file_folder.container_id.name if file_folder.container_id else 'Not in container'"/>
                                             </td>
                                             <td>
-                                                <span t-esc="file_folder.current_location_id.name if file_folder.current_location_id else 'Unknown'"/>
-                                            </td>
+                                                <span t-esc="file_folder.location_id.name if file_folder.location_id else 'Unknown'"/>                                            </td>
                                             <td>
                                                 <span t-esc="len(file_folder.document_ids)" class="badge badge-info"/>
                                             </td>

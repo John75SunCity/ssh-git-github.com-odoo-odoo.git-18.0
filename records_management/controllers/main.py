@@ -777,6 +777,61 @@ class RecordsManagementPortal(CustomerPortal):
     Extends customer portal with Records Management specific functionality
     """
 
+    def _get_smart_department_context(self, user=None, partner=None):
+        """Get smart department selection context for portal forms.
+        
+        Returns a dict with:
+        - departments: RecordSet of departments user can select from
+        - default_department: The single department if user has exactly one, else False
+        - has_departments: True if company has ANY departments configured
+        - show_department_selector: True if user should see a dropdown (multiple options)
+        """
+        if user is None:
+            user = request.env.user
+        if partner is None:
+            partner = user.partner_id
+            
+        # Get user's assigned departments via records.storage.department.user
+        user_dept_assignments = request.env['records.storage.department.user'].sudo().search([
+            ('user_id', '=', user.id),
+            ('state', '=', 'active'),
+            ('active', '=', True),
+        ])
+        user_departments = user_dept_assignments.mapped('department_id')
+        
+        # Get all departments for the company
+        company_departments = request.env['records.department'].sudo().search([
+            ('partner_id', '=', partner.commercial_partner_id.id),
+        ])
+        
+        # Determine which departments to show based on user role
+        is_company_admin = user.has_group('records_management.group_portal_company_admin')
+        
+        if user_departments:
+            # User has specific department assignments - include child departments too
+            all_user_depts = user_departments
+            for dept in user_departments:
+                all_user_depts |= dept.child_ids
+            departments = all_user_depts
+        elif is_company_admin:
+            # Company admin sees all departments
+            departments = company_departments
+        else:
+            # Regular user with no assignments - no department selection
+            departments = request.env['records.department'].sudo().browse()
+        
+        # Determine default and selector visibility
+        has_departments = bool(company_departments)
+        show_department_selector = len(departments) > 1
+        default_department = departments[0] if len(departments) == 1 else False
+        
+        return {
+            'departments': departments,
+            'default_department': default_department,
+            'has_departments': has_departments,
+            'show_department_selector': show_department_selector,
+        }
+
     def _collect_records_management_portal_metrics(self, base_values=None):
         """Collect counters and dashboard metadata used on portal landing."""
         partner = request.env.user.partner_id
