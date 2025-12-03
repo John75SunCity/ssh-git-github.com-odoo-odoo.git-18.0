@@ -720,6 +720,7 @@
         # File Templates
         "templates/portal_file_detail.xml",  # NEW: File detail with document list
         "templates/portal_file_create.xml",  # NEW: File creation form
+        "templates/portal_retrieval_cart.xml",  # NEW: Retrieval cart for batch file requests
         # Document & Barcode Templates
         "templates/portal_documents.xml",
         "templates/portal_document_detail.xml",  # NEW: Document detail with attachments

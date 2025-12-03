@@ -2738,6 +2738,9 @@ class RecordsManagementController(http.Controller):
         can_delete = request.env.user.has_group('records_management.group_portal_department_admin')
         permissions = self._get_user_permissions()
 
+        # Retrieval cart count
+        retrieval_cart_count = self._get_retrieval_cart_count(partner)
+
         values = {
             'file': file_record,
             'documents': documents,
@@ -2746,6 +2749,7 @@ class RecordsManagementController(http.Controller):
             'can_edit': can_edit,
             'can_delete': can_delete,
             'permissions': permissions,
+            'retrieval_cart_count': retrieval_cart_count,
             'page_name': 'file_detail',
         }
 
@@ -3039,6 +3043,283 @@ class RecordsManagementController(http.Controller):
         except Exception as e:
             _logger.error(f"Move file to container failed: {str(e)}")
             return request.redirect(f'/my/inventory/file/{file_id}?error=move_failed')
+
+    # ============================================================================
+    # FILE DOCUMENT UPLOAD (Portal Upload with Attachment)
+    # ============================================================================
+
+    @http.route(['/my/inventory/file/<int:file_id>/upload'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
+    def portal_file_upload_document(self, file_id, **post):
+        """Upload a document with attachment to a file folder."""
+        try:
+            partner = request.env.user.partner_id.commercial_partner_id
+            file_record = request.env['records.file'].sudo().browse(file_id)
+
+            # Security: Verify ownership
+            if file_record.partner_id.id != partner.id:
+                return request.redirect('/my/inventory/files?error=unauthorized')
+
+            # Get upload data
+            document_name = post.get('document_name')
+            description = post.get('description', '')
+            attachment = post.get('attachment')
+
+            if not document_name or not attachment:
+                return request.redirect(f'/my/inventory/file/{file_id}?error=missing_fields')
+
+            # Create the document record
+            doc_vals = {
+                'name': document_name,
+                'partner_id': partner.id,
+                'department_id': file_record.department_id.id if file_record.department_id else False,
+                'file_id': file_id,
+                'container_id': file_record.container_id.id if file_record.container_id else False,
+                'description': description,
+                'created_via_portal': True,
+            }
+            doc = request.env['records.document'].sudo().create(doc_vals)
+
+            # Create attachment linked to the document
+            import base64
+            attachment_data = base64.b64encode(attachment.read())
+            attachment_vals = {
+                'name': attachment.filename,
+                'type': 'binary',
+                'datas': attachment_data,
+                'res_model': 'records.document',
+                'res_id': doc.id,
+                'mimetype': attachment.content_type or 'application/octet-stream',
+            }
+            request.env['ir.attachment'].sudo().create(attachment_vals)
+
+            # Audit log
+            request.env['naid.audit.log'].sudo().create({
+                'action_type': 'document_uploaded',
+                'user_id': request.env.user.id,
+                'description': _('Document "%s" uploaded to file %s via portal by %s') % (
+                    document_name, file_record.name, request.env.user.name
+                ),
+                'timestamp': fields.Datetime.now(),
+            })
+
+            return request.redirect(f'/my/inventory/file/{file_id}?document_uploaded=success')
+
+        except Exception as e:
+            _logger.error(f"Document upload failed: {str(e)}", exc_info=True)
+            return request.redirect(f'/my/inventory/file/{file_id}?error=upload_failed')
+
+    # ============================================================================
+    # FILE RETRIEVAL CART (Collect files before submitting request)
+    # ============================================================================
+
+    def _get_or_create_retrieval_cart(self, partner):
+        """Get or create a draft retrieval request to use as cart."""
+        PortalRequest = request.env['portal.request'].sudo()
+
+        # Look for existing draft retrieval request
+        cart = PortalRequest.search([
+            ('partner_id', '=', partner.id),
+            ('request_type', '=', 'retrieval'),
+            ('state', '=', 'draft'),
+        ], limit=1, order='create_date desc')
+
+        if not cart:
+            cart = PortalRequest.create({
+                'name': _('File Retrieval Cart - %s') % partner.name,
+                'partner_id': partner.id,
+                'request_type': 'retrieval',
+                'state': 'draft',
+                'description': _('Files queued for retrieval from storage.'),
+                'created_via_portal': True,
+            })
+
+        return cart
+
+    def _get_retrieval_cart_count(self, partner):
+        """Get count of files in retrieval cart."""
+        cart = request.env['portal.request'].sudo().search([
+            ('partner_id', '=', partner.id),
+            ('request_type', '=', 'retrieval'),
+            ('state', '=', 'draft'),
+        ], limit=1)
+        return len(cart.file_ids) if cart else 0
+
+    @http.route(['/my/retrieval-cart/add'], type='json', auth='user', methods=['POST'])
+    def portal_retrieval_cart_add(self, file_id=None, **kw):
+        """Add a file to the retrieval cart."""
+        try:
+            if not file_id:
+                return {'success': False, 'error': 'No file specified'}
+
+            partner = request.env.user.partner_id.commercial_partner_id
+            file_record = request.env['records.file'].sudo().browse(file_id)
+
+            # Security check
+            if file_record.partner_id.commercial_partner_id.id != partner.id:
+                return {'success': False, 'error': 'You do not have permission to request this file.'}
+
+            # Check file is in storage
+            if file_record.state != 'in':
+                state_msg = {
+                    'pending': 'This file is still pending and not yet in storage.',
+                    'out': 'This file is already checked out.',
+                    'perm_out': 'This file has been permanently removed.',
+                    'destroyed': 'This file has been destroyed.',
+                }.get(file_record.state, 'This file cannot be retrieved.')
+                return {'success': False, 'error': state_msg}
+
+            # Get or create cart
+            cart = self._get_or_create_retrieval_cart(partner)
+
+            # Check if already in cart
+            if file_record.id in cart.file_ids.ids:
+                return {
+                    'success': True,
+                    'message': _('"%s" is already in your cart.') % file_record.name,
+                    'cart_count': len(cart.file_ids),
+                    'already_in_cart': True,
+                }
+
+            # Add to cart
+            cart.sudo().write({
+                'file_ids': [(4, file_record.id)],
+            })
+
+            return {
+                'success': True,
+                'message': _('"%s" added to retrieval cart.') % file_record.name,
+                'cart_count': len(cart.file_ids),
+            }
+
+        except Exception as e:
+            _logger.error(f"Add to retrieval cart failed: {str(e)}", exc_info=True)
+            return {'success': False, 'error': str(e)}
+
+    @http.route(['/my/retrieval-cart/remove'], type='json', auth='user', methods=['POST'])
+    def portal_retrieval_cart_remove(self, file_id=None, **kw):
+        """Remove a file from the retrieval cart."""
+        try:
+            if not file_id:
+                return {'success': False, 'error': 'No file specified'}
+
+            partner = request.env.user.partner_id.commercial_partner_id
+            cart = request.env['portal.request'].sudo().search([
+                ('partner_id', '=', partner.id),
+                ('request_type', '=', 'retrieval'),
+                ('state', '=', 'draft'),
+            ], limit=1)
+
+            if not cart:
+                return {'success': False, 'error': 'No cart found'}
+
+            cart.sudo().write({
+                'file_ids': [(3, int(file_id))],
+            })
+
+            return {
+                'success': True,
+                'message': _('File removed from cart.'),
+                'cart_count': len(cart.file_ids),
+            }
+
+        except Exception as e:
+            _logger.error(f"Remove from retrieval cart failed: {str(e)}", exc_info=True)
+            return {'success': False, 'error': str(e)}
+
+    @http.route(['/my/retrieval-cart'], type='http', auth='user', website=True)
+    def portal_retrieval_cart(self, **kw):
+        """View and manage the file retrieval cart."""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id.commercial_partner_id
+
+        # Get cart
+        cart = request.env['portal.request'].sudo().search([
+            ('partner_id', '=', partner.id),
+            ('request_type', '=', 'retrieval'),
+            ('state', '=', 'draft'),
+        ], limit=1)
+
+        files = cart.file_ids if cart else request.env['records.file']
+
+        values.update({
+            'cart': cart,
+            'files': files,
+            'file_count': len(files),
+            'page_name': 'retrieval_cart',
+            'permissions': self._get_user_permissions(),
+        })
+
+        return request.render("records_management.portal_retrieval_cart", values)
+
+    @http.route(['/my/retrieval-cart/submit'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
+    def portal_retrieval_cart_submit(self, **post):
+        """Submit the retrieval cart and create a work order."""
+        try:
+            partner = request.env.user.partner_id.commercial_partner_id
+            cart = request.env['portal.request'].sudo().search([
+                ('partner_id', '=', partner.id),
+                ('request_type', '=', 'retrieval'),
+                ('state', '=', 'draft'),
+            ], limit=1)
+
+            if not cart or not cart.file_ids:
+                return request.redirect('/my/retrieval-cart?error=empty_cart')
+
+            files = cart.file_ids
+            delivery_notes = post.get('delivery_notes', '')
+
+            # Build file list for description
+            file_list = '\\n'.join('• ' + f.name + (' (in ' + f.container_id.name + ')' if f.container_id else '') for f in files)
+
+            # Update cart to submitted
+            cart.sudo().write({
+                'state': 'submitted',
+                'name': _('File Retrieval Request - %s (%d files)') % (partner.name, len(files)),
+                'description': _('Customer requested retrieval of %d file folder(s) from storage.\\n\\nFiles:\\n%s\\n\\nDelivery Notes:\\n%s') % (
+                    len(files), file_list, delivery_notes or 'None'
+                ),
+                'priority': '2',
+            })
+
+            # Get unique containers
+            container_ids = list(set(f.container_id.id for f in files if f.container_id))
+            if container_ids:
+                cart.sudo().write({
+                    'container_ids': [(6, 0, container_ids)],
+                })
+
+            # Create retrieval work order
+            work_order = request.env['records.retrieval.work.order'].sudo().create({
+                'name': _('Portal File Retrieval - %s (%d files)') % (partner.name, len(files)),
+                'partner_id': partner.id,
+                'user_id': request.env.ref('base.user_admin').id,
+                'state': 'draft',
+                'delivery_method': 'delivery',
+                'notes': _('File retrieval request from portal.\\n\\n%s\\n\\nDelivery Notes: %s') % (file_list, delivery_notes or 'None'),
+            })
+
+            # Create FSM task
+            containers = request.env['records.container'].sudo().browse(container_ids)
+            self._create_fsm_task_for_work_order(work_order, 'retrieval', partner, containers)
+
+            # Link work order to cart
+            cart.sudo().write({
+                'work_order_id': work_order.id,
+            })
+
+            # Notify records management team
+            cart.message_post(
+                body=_('🔔 File retrieval request submitted via portal.\\n\\n%d file(s) requested for delivery.') % len(files),
+                subject=_('New File Retrieval Request'),
+                subtype_xmlid='mail.mt_comment',
+                message_type='notification',
+            )
+
+            return request.redirect(f'/my/requests/{cart.id}?submitted=success')
+
+        except Exception as e:
+            _logger.error(f"Submit retrieval cart failed: {str(e)}", exc_info=True)
+            return request.redirect('/my/retrieval-cart?error=submit_failed')
 
     # ============================================================================
     # DOCUMENTS CRUD OPERATIONS (Full Create, Read, Update, Delete)

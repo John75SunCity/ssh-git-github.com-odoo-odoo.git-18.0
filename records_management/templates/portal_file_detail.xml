@@ -175,10 +175,14 @@
 
                             <!-- Documents in File -->
                             <div class="card shadow-sm mb-4">
-                                <div class="card-header">
+                                <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0">
                                         <i class="fa fa-file-text"></i> Documents (<t t-esc="len(documents or [])"/>)
                                     </h5>
+                                    <!-- Upload Document button -->
+                                    <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#uploadDocumentModal">
+                                        <i class="fa fa-upload"></i> Upload Document
+                                    </button>
                                 </div>
                                 <div class="card-body">
                                     <t t-if="documents">
@@ -223,9 +227,36 @@
                                     <h5 class="mb-0"><i class="fa fa-bolt"></i> Quick Actions</h5>
                                 </div>
                                 <div class="card-body">
-                                    <a href="/my/inventory/files" class="btn btn-secondary">
-                                        <i class="fa fa-arrow-left"></i> Back to Files
-                                    </a>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <!-- Add to Retrieval Cart - only for files in storage -->
+                                        <t t-if="file.state == 'in'">
+                                            <button type="button" class="btn btn-primary" onclick="addToRetrievalCart()">
+                                                <i class="fa fa-shopping-cart"></i> Add to Retrieval Cart
+                                            </button>
+                                        </t>
+                                        <t t-elif="file.state == 'out'">
+                                            <span class="btn btn-outline-secondary disabled" title="This file is already checked out">
+                                                <i class="fa fa-check-circle"></i> Already Out
+                                            </span>
+                                        </t>
+                                        <t t-elif="file.state == 'pending'">
+                                            <span class="btn btn-outline-warning disabled" title="This file hasn't been received into storage yet">
+                                                <i class="fa fa-clock-o"></i> Pending Receipt
+                                            </span>
+                                        </t>
+                                        
+                                        <!-- View Retrieval Cart -->
+                                        <a href="/my/retrieval-cart" class="btn btn-outline-primary">
+                                            <i class="fa fa-shopping-cart"></i> View Cart
+                                            <t t-if="retrieval_cart_count">
+                                                <span class="badge bg-danger ms-1"><t t-esc="retrieval_cart_count"/></span>
+                                            </t>
+                                        </a>
+                                        
+                                        <a href="/my/inventory/files" class="btn btn-secondary">
+                                            <i class="fa fa-arrow-left"></i> Back to Files
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -239,24 +270,24 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Edit File</h5>
-                                    <button type="button" class="close" data-dismiss="modal">&#215;</button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                 </div>
                                 <form t-attf-action="/my/inventory/file/#{file.id}/edit" method="POST">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                     <div class="modal-body">
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label>File Name *</label>
                                             <input type="text" class="form-control" name="name" t-att-value="file.name" required="required"/>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label>Barcode</label>
                                             <input type="text" class="form-control" name="barcode" t-att-value="file.barcode"/>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label>Description</label>
                                             <textarea class="form-control" name="description" rows="3"><t t-esc="file.description"/></textarea>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label>Container</label>
                                             <select class="form-control" name="container_id">
                                                 <option value="">-- Select Container --</option>
@@ -267,7 +298,7 @@
                                                 </t>
                                             </select>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group mb-3">
                                             <label>Department</label>
                                             <select class="form-control" name="department_id">
                                                 <option value="">-- Select Department --</option>
@@ -280,7 +311,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                         <button type="submit" class="btn btn-primary">Save Changes</button>
                                     </div>
                                 </form>
@@ -288,28 +319,98 @@
                         </div>
                     </div>
                 </t>
+                
+                <!-- Upload Document Modal -->
+                <div class="modal fade" id="uploadDocumentModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"><i class="fa fa-upload"></i> Upload Document</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form t-attf-action="/my/inventory/file/#{file.id}/upload" method="POST" enctype="multipart/form-data">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Document Name *</label>
+                                        <input type="text" class="form-control" name="document_name" required="required" 
+                                               placeholder="e.g., Employment Contract, Tax Form W-2"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">File Attachment *</label>
+                                        <input type="file" class="form-control" name="attachment" required="required"
+                                               accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.tiff,.tif"/>
+                                        <small class="text-muted">Accepted formats: PDF, Word, Excel, Images (max 25MB)</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Description</label>
+                                        <textarea class="form-control" name="description" rows="2" 
+                                                  placeholder="Optional description of document contents"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fa fa-upload"></i> Upload Document
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
-                <!-- Delete JavaScript -->
+                <!-- JavaScript for File Actions -->
                 <script type="text/javascript">
                     function deleteFile() {
                         if (confirm('Are you sure you want to archive this file? This action can be reversed by an administrator.')) {
-                            $.ajax({
-                                url: '/my/inventory/file/<t t-esc="file.id"/>/delete',
-                                type: 'POST',
-                                contentType: 'application/json',
-                                data: JSON.stringify({}),
-                                success: function(result) {
-                                    if (result.success) {
-                                        window.location.href = '/my/inventory/files?deleted=success';
-                                    } else {
-                                        alert('Error: ' + result.error);
-                                    }
-                                },
-                                error: function(xhr) {
-                                    alert('Error deleting file: ' + xhr.responseText);
+                            fetch('/my/inventory/file/<t t-esc="file.id"/>/delete', {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({jsonrpc: '2.0', method: 'call', params: {}})
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.result &amp;&amp; data.result.success) {
+                                    window.location.href = '/my/inventory/files?deleted=success';
+                                } else {
+                                    alert('Error: ' + (data.result ? data.result.error : 'Unknown error'));
                                 }
-                            });
+                            })
+                            .catch(error => alert('Error deleting file: ' + error));
                         }
+                    }
+                    
+                    function addToRetrievalCart() {
+                        fetch('/my/retrieval-cart/add', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                jsonrpc: '2.0',
+                                method: 'call',
+                                params: {file_id: <t t-esc="file.id"/>}
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.result &amp;&amp; data.result.success) {
+                                // Show success message
+                                var alertDiv = document.createElement('div');
+                                alertDiv.className = 'alert alert-success alert-dismissible fade show';
+                                alertDiv.innerHTML = '<i class="fa fa-check-circle"></i> ' + data.result.message + 
+                                    ' <a href="/my/retrieval-cart" class="alert-link">View Cart (' + data.result.cart_count + ')</a>' +
+                                    '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+                                document.querySelector('.container.my-4').insertBefore(alertDiv, document.querySelector('.container.my-4').firstChild);
+                                
+                                // Update cart badge if exists
+                                var badge = document.querySelector('.btn-outline-primary .badge');
+                                if (badge) {
+                                    badge.textContent = data.result.cart_count;
+                                }
+                            } else {
+                                alert('Error: ' + (data.result ? data.result.error : 'Could not add to cart'));
+                            }
+                        })
+                        .catch(error => alert('Network error. Please try again.'));
                     }
                 </script>
             </t>

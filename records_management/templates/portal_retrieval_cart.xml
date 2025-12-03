@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ================================================================== -->
+        <!-- FILE RETRIEVAL CART                                                -->
+        <!-- Allows customers to collect multiple files before submitting       -->
+        <!-- a single retrieval request (creates one work order)                -->
+        <!-- ================================================================== -->
+
+        <template id="portal_retrieval_cart" name="File Retrieval Cart">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">File Retrieval Cart</t>
+
+                <div class="container my-4">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- Page Header -->
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h2>
+                                    <i class="fa fa-shopping-cart text-primary"></i> File Retrieval Cart
+                                    <t t-if="file_count">
+                                        <span class="badge bg-primary"><t t-esc="file_count"/> files</span>
+                                    </t>
+                                </h2>
+                                <a href="/my/inventory/files" class="btn btn-outline-secondary">
+                                    <i class="fa fa-folder"></i> Browse Files
+                                </a>
+                            </div>
+
+                            <!-- Success/Error Messages -->
+                            <t t-if="request.params.get('submitted')">
+                                <div class="alert alert-success alert-dismissible fade show">
+                                    <i class="fa fa-check-circle"></i> Your retrieval request has been submitted! Our team will process it shortly.
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            </t>
+                            <t t-if="request.params.get('error') == 'empty_cart'">
+                                <div class="alert alert-warning alert-dismissible fade show">
+                                    <i class="fa fa-exclamation-triangle"></i> Your cart is empty. Please add files before submitting.
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            </t>
+
+                            <t t-if="files">
+                                <!-- Cart Contents -->
+                                <div class="card shadow-sm mb-4">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="mb-0">
+                                            <i class="fa fa-list"></i> Files to Retrieve
+                                        </h5>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover mb-0">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>File Name</th>
+                                                        <th>Barcode</th>
+                                                        <th>Container</th>
+                                                        <th>Location</th>
+                                                        <th class="text-center">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <t t-foreach="files" t-as="file">
+                                                        <tr t-att-id="'cart-item-%s' % file.id">
+                                                            <td>
+                                                                <a t-attf-href="/my/inventory/file/#{file.id}">
+                                                                    <strong><t t-esc="file.name"/></strong>
+                                                                </a>
+                                                                <t t-if="file.description">
+                                                                    <br/><small class="text-muted"><t t-esc="file.description[:100]"/>...</small>
+                                                                </t>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge bg-secondary">
+                                                                    <t t-esc="file.barcode or 'No barcode'"/>
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <t t-if="file.container_id">
+                                                                    <a t-attf-href="/my/inventory/container/#{file.container_id.id}">
+                                                                        <t t-esc="file.container_id.name"/>
+                                                                    </a>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <span class="text-muted">Not in container</span>
+                                                                </t>
+                                                            </td>
+                                                            <td>
+                                                                <t t-esc="file.location_id.name if file.location_id else (file.container_id.location_id.name if file.container_id and file.container_id.location_id else 'Not Set')"/>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                                                        t-att-onclick="'removeFromCart(%s)' % file.id">
+                                                                    <i class="fa fa-trash"></i> Remove
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Form -->
+                                <div class="card shadow-sm">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="fa fa-truck"></i> Request Delivery</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form action="/my/retrieval-cart/submit" method="POST">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label">Delivery Notes (Optional)</label>
+                                                <textarea class="form-control" name="delivery_notes" rows="3"
+                                                          placeholder="Any special instructions for delivery (e.g., contact person, preferred delivery time, etc.)"></textarea>
+                                            </div>
+                                            
+                                            <div class="alert alert-info">
+                                                <i class="fa fa-info-circle"></i>
+                                                <strong>What happens next?</strong>
+                                                <ul class="mb-0 mt-2">
+                                                    <li>Our team will receive your request and locate the files in our warehouse</li>
+                                                    <li>Each file will be pulled from its container and barcode-verified</li>
+                                                    <li>Files will be staged for delivery to your location</li>
+                                                    <li>You'll receive a notification when the delivery is on its way</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="d-flex justify-content-between">
+                                                <a href="/my/inventory/files" class="btn btn-outline-secondary">
+                                                    <i class="fa fa-plus"></i> Add More Files
+                                                </a>
+                                                <button type="submit" class="btn btn-primary btn-lg">
+                                                    <i class="fa fa-paper-plane"></i> Submit Retrieval Request (<t t-esc="file_count"/> files)
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <t t-else="">
+                                <!-- Empty Cart -->
+                                <div class="card shadow-sm">
+                                    <div class="card-body text-center py-5">
+                                        <i class="fa fa-shopping-cart fa-4x text-muted mb-3"></i>
+                                        <h4 class="text-muted">Your retrieval cart is empty</h4>
+                                        <p class="text-muted">
+                                            Browse your file folders and add items you'd like to have delivered to your location.
+                                        </p>
+                                        <a href="/my/inventory/files" class="btn btn-primary btn-lg mt-3">
+                                            <i class="fa fa-folder"></i> Browse File Folders
+                                        </a>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JavaScript -->
+                <script type="text/javascript">
+                    function removeFromCart(fileId) {
+                        if (!confirm('Remove this file from your cart?')) return;
+                        
+                        fetch('/my/retrieval-cart/remove', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                jsonrpc: '2.0',
+                                method: 'call',
+                                params: {file_id: fileId}
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.result &amp;&amp; data.result.success) {
+                                // Remove row from table
+                                var row = document.getElementById('cart-item-' + fileId);
+                                if (row) row.remove();
+                                
+                                // Update count or reload if empty
+                                if (data.result.cart_count === 0) {
+                                    window.location.reload();
+                                }
+                            } else {
+                                alert('Error: ' + (data.result ? data.result.error : 'Could not remove file'));
+                            }
+                        })
+                        .catch(error => alert('Network error. Please try again.'));
+                    }
+                </script>
+            </t>
+        </template>
+    </data>
+</odoo>
