@@ -2799,31 +2799,47 @@ class RecordsManagementController(http.Controller):
                     'error_message': _('Please provide file name and container.'),
                 })
 
-            # Department validation (if provided)
+            # Get container to inherit department if not specified
+            container = request.env['records.container'].sudo().browse(int(container_id))
+            if not container.exists() or container.partner_id.id != partner.id:
+                return request.render('records_management.portal_error', {
+                    'error_title': _('Invalid Container'),
+                    'error_message': _('The selected container is invalid or does not belong to you.'),
+                })
+
+            # Department validation - inherit from container if not provided
+            final_department_id = False
             if department_id:
                 department = request.env['records.department'].sudo().browse(int(department_id))
-                if department.company_id.id != partner.id:
+                if not department.exists() or department.partner_id.id != partner.id:
                     return request.render('records_management.portal_error', {
                         'error_title': _('Invalid Department'),
                         'error_message': _('The selected department is invalid.'),
                     })
-
-            # Department access check
-            if not request.env.user.has_group('records_management.group_portal_company_admin'):
-                accessible_depts = request.env.user.accessible_department_ids.ids
-                if int(department_id) not in accessible_depts:
-                    return request.render('records_management.portal_error', {
-                        'error_title': _('Unauthorized Department'),
-                        'error_message': _('You do not have access to this department.'),
-                    })
+                final_department_id = int(department_id)
+                
+                # Department access check for non-company-admins
+                if not request.env.user.has_group('records_management.group_portal_company_admin'):
+                    accessible_depts = request.env.user.accessible_department_ids.ids
+                    if final_department_id not in accessible_depts:
+                        return request.render('records_management.portal_error', {
+                            'error_title': _('Unauthorized Department'),
+                            'error_message': _('You do not have access to this department.'),
+                        })
+            elif container.department_id:
+                # Inherit department from container
+                final_department_id = container.department_id.id
 
             file_vals = {
                 'name': name,
                 'partner_id': partner.id,
-                'department_id': int(department_id),
                 'container_id': int(container_id),
                 'created_via_portal': True,
             }
+            
+            # Only set department if we have one
+            if final_department_id:
+                file_vals['department_id'] = final_department_id
 
             if post.get('description'):
                 file_vals['description'] = post.get('description')

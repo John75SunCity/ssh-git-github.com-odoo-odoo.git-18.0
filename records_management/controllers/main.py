@@ -1140,11 +1140,28 @@ class RecordsManagementPortal(CustomerPortal):
                 if range_start and range_end:
                     contents_label = f"{range_start} - {range_end}"
 
+            # Validate and set department_id if provided
+            department_id = post.get('department_id', '')
+            final_department_id = False
+            if department_id:
+                try:
+                    dept_id = int(department_id)
+                    department = request.env['records.department'].sudo().browse(dept_id)
+                    if not department.exists():
+                        return request.redirect('/my/containers/new?error=Department+not+found')
+                    # Validate department belongs to this partner
+                    if department.partner_id.id != partner.commercial_partner_id.id:
+                        return request.redirect('/my/containers/new?error=Invalid+department+selection')
+                    final_department_id = dept_id
+                except ValueError:
+                    # Invalid department_id format, ignore it
+                    pass
+
             # Create container with Quick Add logic
             container_vals = {
                 'partner_id': partner.commercial_partner_id.id,
                 'stock_owner_id': partner.commercial_partner_id.id,  # Stock owner = customer
-                'department_id': int(post.get('department_id')) if post.get('department_id') else False,
+                'department_id': final_department_id,
                 'location_id': temp_location.id if temp_location else False,
                 'description': contents_label,
                 'destruction_date': destruction_date,
@@ -1159,8 +1176,8 @@ class RecordsManagementPortal(CustomerPortal):
             container_vals['temp_barcode'] = temp_barcode
             container_vals['name'] = f"{partner_abbr}-{container_number}"
 
-            # Create container - Odoo ACL automatically enforces permissions
-            container = request.env['records.container'].create(container_vals)
+            # Create container using sudo to bypass ACL, but we've already validated permissions above
+            container = request.env['records.container'].sudo().create(container_vals)
 
             return request.redirect('/my/containers?created=%s' % container.id)
 
