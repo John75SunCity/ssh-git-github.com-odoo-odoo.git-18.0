@@ -110,7 +110,7 @@
                                     <list>
                                         <field name="name" />
                                         <field name="reference" />
-                                        <field name="state" />
+                                        <field name="file_id" />
                                         <field name="received_date" />
                                         <field name="destruction_eligible_date" />
                                     </list>

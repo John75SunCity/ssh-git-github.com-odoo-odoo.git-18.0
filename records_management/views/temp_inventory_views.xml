@@ -76,7 +76,7 @@
                                     <list>
                                         <field name="name" />
                                         <field name="document_type_id" />
-                                        <field name="state" />
+                                        <field name="file_id" />
                                     </list>
                                 </field>
                             </page>
