@@ -409,7 +409,7 @@ class WorkOrderRetrieval(models.Model):
         }
 
     def action_open_picklist_scanner(self):
-        """Open the barcode scanning interface for this work order's pick list."""
+        """Open the barcode scanning interface for this work order's pick list (wizard popup)."""
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
@@ -422,6 +422,38 @@ class WorkOrderRetrieval(models.Model):
                 'default_partner_id': self.partner_id.id,
             },
         }
+
+    def action_open_camera_scanner(self):
+        """
+        Directly open the camera barcode scanner (bypasses wizard popup).
+        
+        This launches the Scanbot SDK camera scanner as a client action.
+        Scanned barcodes are automatically sent to action_scan_barcode().
+        Perfect for mobile scanning workflows on work orders.
+        
+        Returns:
+            dict: Client action to launch rm_camera_scanner
+        """
+        self.ensure_one()
+        if self.state not in ['draft', 'confirmed', 'assigned', 'in_progress']:
+            raise UserError(_("Can only scan barcodes for active work orders."))
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'rm_camera_scanner',
+            'name': _('Camera Scanner - %s') % self.name,
+            'context': {
+                'operation_mode': 'work_order',
+                'work_order_model': self._name,
+                'work_order_id': self.id,
+            },
+        }
+
+    def action_scan_barcode(self, barcode):
+        """
+        Alias for action_scan_container - required by the camera scanner.
+        The camera scanner calls action_scan_barcode on the work order model.
+        """
+        return self.action_scan_container(barcode)
 
     def action_scan_container(self, barcode):
         """

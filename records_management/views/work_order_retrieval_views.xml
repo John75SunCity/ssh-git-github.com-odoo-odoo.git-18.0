@@ -23,7 +23,8 @@
                 <form string="Work Order Retrieval">
                     <header>
                         <button name="action_start_retrieval" type="object" string="Start Retrieval" class="oe_highlight" invisible="state != 'draft'"/>
-                        <button name="action_open_picklist_scanner" type="object" string="📱 Scan Containers" class="btn-success" invisible="state not in ('in_progress', 'assigned')"/>
+                        <button name="action_open_camera_scanner" type="object" string="📷 Camera Scan" class="btn-info" invisible="state not in ('in_progress', 'assigned')" title="Scan containers using phone camera"/>
+                        <button name="action_open_picklist_scanner" type="object" string="⌨️ Keyboard Scan" class="btn-secondary" invisible="state not in ('in_progress', 'assigned')" title="Type barcodes manually or use USB scanner"/>
                         <button name="action_complete_retrieval" type="object" string="Complete Retrieval" class="oe_highlight" invisible="state != 'in_progress'"/>
                         <button name="action_create_invoice" type="object" string="Create Invoice" 
                                 class="btn-primary" invisible="state != 'completed' or invoice_id"

@@ -388,6 +388,14 @@
             <!-- OPERATIONS MENU - Daily Workflow          -->
             <!-- ========================================== -->
 
+            <!-- ➕ NEW WORK ORDER - Primary Entry Point for All Work Orders -->
+    <menuitem id="menu_new_work_order_operations"
+              name="➕ New Work Order"
+              parent="records_management.menu_records_operations"
+              action="action_work_order_creation_wizard"
+              sequence="1"
+              groups="records_management.group_records_user"/>
+
             <!-- Quick Add Container Wizard -->
     <menuitem id="menu_container_quick_add"
               name="Quick Add Container"
