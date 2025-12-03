@@ -258,6 +258,29 @@ export class RMCameraScannerAction extends Component {
         });
     }
 
+    /**
+     * Navigate back to the work order form or close the action.
+     * This properly handles returning from a client action.
+     */
+    async goBack() {
+        if (this.isDestroyed) return;
+
+        // For work order mode, navigate back to the work order form
+        if (this.operationMode === 'work_order' && this.workOrderModel && this.workOrderId) {
+            await this.action.doAction({
+                type: "ir.actions.act_window",
+                res_model: this.workOrderModel,
+                res_id: this.workOrderId,
+                views: [[false, "form"]],
+                target: "current",
+            });
+        } else {
+            // For other modes, use history.back() as fallback
+            // This works better than act_window_close for client actions
+            window.history.back();
+        }
+    }
+
     async launchScanner() {
         try {
             this.notification.add(_t("Starting camera scanner..."), { type: "info", sticky: false });
@@ -273,8 +296,8 @@ export class RMCameraScannerAction extends Component {
                 await this.processBarcode(scanResult.text);
             } else if (scanResult.cancelled) {
                 this.notification.add(_t("Scanning cancelled"), { type: "info", sticky: false });
-                // Go back
-                this.action.doAction({ type: 'ir.actions.act_window_close' });
+                // Go back to work order
+                await this.goBack();
             }
         } catch (error) {
             console.error("Scanner error:", error);
@@ -286,7 +309,7 @@ export class RMCameraScannerAction extends Component {
             // Go back on error
             setTimeout(() => {
                 if (!this.isDestroyed) {
-                    this.action.doAction({ type: 'ir.actions.act_window_close' });
+                    this.goBack();
                 }
             }, 2000);
         }
@@ -344,7 +367,7 @@ export class RMCameraScannerAction extends Component {
                     });
                 } else {
                     // Close and go back
-                    this.action.doAction({ type: 'ir.actions.act_window_close' });
+                    await this.goBack();
                 }
             } else {
                 ScannerAudio.playError();
@@ -364,7 +387,7 @@ export class RMCameraScannerAction extends Component {
                     // Close after showing error
                     setTimeout(() => {
                         if (!this.isDestroyed) {
-                            this.action.doAction({ type: 'ir.actions.act_window_close' });
+                            this.goBack();
                         }
                     }, 2000);
                 }
@@ -385,6 +408,13 @@ export class RMCameraScannerAction extends Component {
                 setTimeout(() => {
                     if (!this.isDestroyed) {
                         this.launchScanner();
+                    }
+                }, 2000);
+            } else {
+                // Go back after showing error for non-work order mode
+                setTimeout(() => {
+                    if (!this.isDestroyed) {
+                        this.goBack();
                     }
                 }, 2000);
             }
