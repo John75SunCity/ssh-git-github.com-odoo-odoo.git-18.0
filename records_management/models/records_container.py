@@ -53,11 +53,9 @@ class RecordsContainer(models.Model):
     user_id = fields.Many2one(
         comodel_name="res.users",
         string="Responsible",
-        default=lambda self: self.env.user,
         tracking=True,
-        help="User responsible for this container. When a department is selected, "
-             "the dropdown will show department users with their department name to help "
-             "identify the correct person."
+        help="User responsible for this container. Defaults to the department's responsible user "
+             "when a department is selected. The dropdown shows users with their department name."
     )
     barcode = fields.Char(
         string="Physical Barcode",
@@ -503,6 +501,30 @@ class RecordsContainer(models.Model):
             if not vals.get("stock_owner_id") and vals.get("partner_id"):
                 vals["stock_owner_id"] = vals["partner_id"]
 
+            # ============================================================================
+            # DEFAULT RESPONSIBLE USER FROM DEPARTMENT
+            # ============================================================================
+            # Priority: Department's responsible user > First department user > Current user
+            if not vals.get("user_id"):
+                user_set = False
+                if vals.get("department_id"):
+                    department = self.env['records.department'].browse(vals["department_id"])
+                    if department.exists():
+                        # Priority 1: Department's responsible user (user_id)
+                        if department.user_id and department.user_id.active:
+                            vals["user_id"] = department.user_id.id
+                            user_set = True
+                        # Priority 2: First active user in department's user_ids
+                        elif department.user_ids:
+                            active_users = department.user_ids.filtered(lambda u: u.active)
+                            if active_users:
+                                vals["user_id"] = active_users[0].id
+                                user_set = True
+                
+                # Fallback: Current user if no department user found
+                if not user_set:
+                    vals["user_id"] = self.env.user.id
+
             # ⚠️ REMOVED: Automatic name generation
             # Customer must provide their own container name/number
             # No more auto-generated sequential names - customer controls naming
@@ -811,7 +833,7 @@ class RecordsContainer(models.Model):
     @api.onchange('partner_id', 'department_id')
     def _onchange_partner_department_stock_owner(self):
         """
-        Auto-set stock_owner_id based on organizational hierarchy.
+        Auto-set stock_owner_id and user_id based on organizational hierarchy.
         
         Ownership Hierarchy (all res.partner records):
         1. Company (top level): Main customer company
@@ -822,6 +844,11 @@ class RecordsContainer(models.Model):
         - If department selected: stock_owner = department's partner contact
         - If only customer selected: stock_owner = customer company
         - Filter shows: Company + Departments (children) + Child Departments (grandchildren)
+        
+        Responsible User Logic:
+        - If department selected: default to department's responsible user (user_id)
+        - Fallback to first active user in department's user_ids
+        - If no department: keep current user or leave empty
         
         Example:
         - Customer: City of Las Cruces (company)
@@ -839,6 +866,21 @@ class RecordsContainer(models.Model):
         else:
             # No customer selected - clear stock owner
             self.stock_owner_id = False
+
+        # ============================================================================
+        # AUTO-SET RESPONSIBLE USER FROM DEPARTMENT
+        # ============================================================================
+        # When department changes, suggest the department's responsible user
+        if self.department_id:
+            # Priority 1: Department's responsible user (user_id field on department)
+            if self.department_id.user_id and self.department_id.user_id.active:
+                self.user_id = self.department_id.user_id.id
+            # Priority 2: First active user in department's user_ids
+            elif self.department_id.user_ids:
+                active_users = self.department_id.user_ids.filtered(lambda u: u.active)
+                if active_users:
+                    self.user_id = active_users[0].id
+            # If no department users found, leave user_id as-is (could be manually set)
 
         # Build domain to filter stock_owner_id options
         if self.partner_id:
