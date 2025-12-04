@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <!-- Portal Requests List Template -->
-        <template id="my_requests_template" name="My Requests">
+        <template id="portal_requests_template" name="My Requests">
             <t t-call="portal.portal_layout">
                 <t t-set="breadcrumbs_searchbar" t-value="True"/>
                 <t t-set="title">My Requests</t>
@@ -221,7 +221,7 @@
         </template>
 
         <!-- Request Detail Template -->
-        <template id="my_request_detail_template" name="Request Detail">
+        <template id="portal_request_detail" name="Request Detail">
             <t t-call="portal.portal_layout">
                 <t t-set="title">Request Details</t>
 
