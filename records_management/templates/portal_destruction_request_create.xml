@@ -96,7 +96,7 @@
                                             <div class="alert alert-info">
                                                 <i class="fa fa-info-circle"></i>
                                                 You don't have any containers in storage yet.
-                                                <a href="/my/containers/new" class="alert-link">Create containers first</a>
+                                                <a href="/my/inventory/containers/create" class="alert-link">Create containers first</a>
                                                 before requesting destruction.
                                             </div>
                                         </t>

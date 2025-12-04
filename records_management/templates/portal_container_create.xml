@@ -52,7 +52,7 @@
                                         </div>
                                     </t>
                                     
-                                    <form action="/my/containers/create" method="POST" class="o_portal_form">
+                                    <form action="/my/inventory/containers/create" method="POST" class="o_portal_form">
                                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                         
                                         <!-- Container Identification -->

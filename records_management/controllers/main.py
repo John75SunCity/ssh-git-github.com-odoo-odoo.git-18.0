@@ -1039,196 +1039,26 @@ class RecordsManagementPortal(CustomerPortal):
         return request.render('records_management.portal_my_containers', values)
 
     @http.route(['/my/containers/new'], type='http', auth='user', website=True)
-    def portal_container_create_form(self, error=None, **kw):
-        """Portal form to create a new container (Quick Add style)"""
-        partner = request.env.user.partner_id
-        user = request.env.user
-
-        # Use smart department helper for consistent behavior across portal
-        dept_context = self._get_smart_department_context(user, partner)
-
-        # Build permissions dict expected by template
-        # Check user groups to determine permission level
-        is_company_admin = user.has_group('records_management.group_portal_company_admin')
-        is_dept_admin = user.has_group('records_management.group_portal_department_admin')
-        is_dept_user = user.has_group('records_management.group_portal_department_user')
-        is_readonly = user.has_group('records_management.group_portal_readonly_employee')
-
-        # Determine user role name and permission level
-        if is_company_admin:
-            user_role = 'Company Admin'
-            can_create = True
-            can_update = True
-            can_request_destruction = True
-            level = 'full'
-            color = 'green'
-            message = 'Full access: You can add, view, edit, and request destruction'
-        elif is_dept_admin:
-            user_role = 'Department Admin'
-            can_create = True
-            can_update = True
-            can_request_destruction = False
-            level = 'partial'
-            color = 'yellow'
-            message = 'Partial access: You can add, view, and edit'
-        elif is_dept_user:
-            user_role = 'Department User'
-            can_create = True
-            can_update = True
-            can_request_destruction = False
-            level = 'partial'
-            color = 'yellow'
-            message = 'Partial access: You can add, view, and edit'
-        elif is_readonly:
-            user_role = 'Read-Only'
-            can_create = False
-            can_update = False
-            can_request_destruction = False
-            level = 'readonly'
-            color = 'yellow'
-            message = 'Read only: You can view but cannot make changes'
-        else:
-            user_role = 'Portal User'
-            can_create = True
-            can_update = True
-            can_request_destruction = False
-            level = 'partial'
-            color = 'yellow'
-            message = 'Partial access: You can add, view, and edit'
-
-        permissions = {
-            'user_role': user_role,
-            'containers': {
-                'level': level,
-                'color': color,
-                'message': message,
-                'can_create': can_create,
-                'can_read': True,
-                'can_update': can_update,
-                'can_request_destruction': can_request_destruction,
-                'can_delete': can_request_destruction,  # Alias for backward compatibility
-            },
-        }
-
-        # Get retention policies for dropdown
-        retention_policies = request.env['records.retention.policy'].sudo().search([
-            ('active', '=', True)
-        ], order='name')
-
-        # Get today's date for default storage_start_date
-        today = fields.Date.today()
-
-        values = {
-            'page_name': 'container_create',
-            'partner': partner,
-            'permissions': permissions,
-            'error': error,
-            'retention_policies': retention_policies,
-            'today': today,
-            **dept_context,  # departments, default_department, has_departments, show_department_selector
-        }
-        return request.render('records_management.portal_container_create_form', values)
+    def portal_container_create_form_redirect(self, error=None, **kw):
+        """DEPRECATED: Redirect to canonical container create route.
+        
+        Legacy route - redirects to /my/inventory/containers/create for consistency.
+        All container creation now handled by single route in portal.py.
+        """
+        redirect_url = '/my/inventory/containers/create'
+        if error:
+            redirect_url += '?error=%s' % error
+        return request.redirect(redirect_url)
 
     @http.route(['/my/containers/create'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
-    def portal_container_create(self, **post):
-        """Handle portal container creation with Quick Add Wizard logic
+    def portal_container_create_redirect(self, **post):
+        """DEPRECATED: Redirect POST to canonical container create route.
         
-        Permission is handled by ACL:
-        - Portal Company Admin: Full CRUD
-        - Portal Dept Admin: Read, Write, Create  
-        - Portal Dept User: Read, Write, Create
-        - Portal Read-Only: Read only
+        Legacy route - redirects to /my/inventory/containers/create.
+        Preserves POST data via redirect with 307 status.
         """
-        partner = request.env.user.partner_id
-
-        try:
-            # Try to create - ACL will enforce permissions automatically
-            # If user doesn't have create rights, Odoo will raise AccessError
-
-            # Get default temp location
-            temp_location = request.env['stock.location'].search([
-                ('name', 'ilike', 'temp'),
-                ('usage', '=', 'internal')
-            ], limit=1)
-
-            if not temp_location:
-                # Create or get temp location
-                temp_location = request.env['stock.location'].sudo().search([
-                    ('complete_name', '=', 'WH/Stock/Temporary Receiving')
-                ], limit=1)
-
-            # Calculate destruction date based on retention period
-            retention = post.get('retention_period', '7')
-            destruction_date = False
-            if retention and retention != 'permanent':
-                try:
-                    years = int(retention) if retention != 'custom' else int(post.get('custom_retention_years', 7))
-                    from dateutil.relativedelta import relativedelta
-                    destruction_date = fields.Date.today() + relativedelta(years=years)
-                except:
-                    pass
-
-            # Build contents label (range or description)
-            contents_label = ''
-            contents_type = post.get('contents_type', 'alphabetical')
-
-            if contents_type == 'custom':
-                contents_label = post.get('contents_description', '')
-            else:
-                range_start = post.get('range_start', '')
-                range_end = post.get('range_end', '')
-                if range_start and range_end:
-                    contents_label = f"{range_start} - {range_end}"
-
-            # Validate and set department_id if provided
-            department_id = post.get('department_id', '')
-            final_department_id = False
-            if department_id:
-                try:
-                    dept_id = int(department_id)
-                    department = request.env['records.department'].sudo().browse(dept_id)
-                    if not department.exists():
-                        return request.redirect('/my/containers/new?error=Department+not+found')
-                    # Validate department belongs to this partner
-                    if department.partner_id.id != partner.commercial_partner_id.id:
-                        return request.redirect('/my/containers/new?error=Invalid+department+selection')
-                    final_department_id = dept_id
-                except ValueError:
-                    # Invalid department_id format, ignore it
-                    pass
-
-            # Create container with Quick Add logic
-            container_vals = {
-                'partner_id': partner.commercial_partner_id.id,
-                'stock_owner_id': partner.commercial_partner_id.id,  # Stock owner = customer
-                'department_id': final_department_id,
-                'location_id': temp_location.id if temp_location else False,
-                'description': contents_label,
-                'destruction_date': destruction_date,
-            }
-
-            # Generate temp barcode (same logic as wizard)
-            container_number = post.get('container_number', '').strip()
-            partner_abbr = partner.commercial_partner_id.name[:4].upper() if partner.commercial_partner_id else 'TEMP'
-            date_str = fields.Date.today().strftime('%Y%m%d')
-            temp_barcode = f"TEMP-{partner_abbr}-{date_str}-{container_number}"
-
-            container_vals['temp_barcode'] = temp_barcode
-            container_vals['name'] = f"{partner_abbr}-{container_number}"
-
-            # Create container using sudo to bypass ACL, but we've already validated permissions above
-            container = request.env['records.container'].sudo().create(container_vals)
-
-            return request.redirect('/my/containers?created=%s' % container.id)
-
-        except AccessError:
-            # User doesn't have create permission (Read-Only Employee group)
-            return request.redirect('/my/containers/new?error=no_permission')
-        except Exception as e:
-            import logging
-            _logger = logging.getLogger(__name__)
-            _logger.error("Portal container creation error: %s", str(e))
-            return request.redirect('/my/containers/new?error=%s' % str(e))
+        # Use 307 redirect to preserve POST method and data
+        return request.redirect('/my/inventory/containers/create', code=307)
 
     # ============================================================================
     # PORTAL DOCUMENT RETRIEVAL
