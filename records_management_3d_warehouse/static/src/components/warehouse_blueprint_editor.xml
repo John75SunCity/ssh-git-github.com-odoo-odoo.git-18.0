@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- 2D Blueprint Editor Template -->
+    <t t-name="records_management_3d_warehouse.WarehouseBlueprintEditor" owl="1">
+        <div class="warehouse-blueprint-editor h-100 d-flex flex-column">
+            
+            <!-- Loading State -->
+            <t t-if="state.loading">
+                <div class="d-flex justify-content-center align-items-center h-100">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading blueprint...</span>
+                    </div>
+                </div>
+            </t>
+            
+            <!-- Error State -->
+            <t t-elif="state.error">
+                <div class="alert alert-danger m-3">
+                    <i class="fa fa-exclamation-triangle me-2"/>
+                    <span t-esc="state.error"/>
+                </div>
+            </t>
+            
+            <!-- Main Editor -->
+            <t t-else="">
+                <!-- Toolbar -->
+                <div class="blueprint-toolbar bg-light border-bottom p-2 d-flex flex-wrap gap-2 align-items-center">
+                    
+                    <!-- Mode Selection -->
+                    <div class="btn-group" role="group">
+                        <button type="button" 
+                                t-att-class="'btn btn-sm ' + (state.mode === 'select' ? 'btn-primary' : 'btn-outline-secondary')"
+                                t-on-click="() => this.setMode('select')"
+                                title="Select mode">
+                            <i class="fa fa-mouse-pointer"/> Select
+                        </button>
+                        <button type="button"
+                                t-att-class="'btn btn-sm ' + (state.mode === 'wall' ? 'btn-primary' : 'btn-outline-secondary')"
+                                t-on-click="() => this.setMode('wall')"
+                                title="Draw walls">
+                            <i class="fa fa-minus"/> Wall
+                        </button>
+                        <button type="button"
+                                t-att-class="'btn btn-sm ' + (state.mode === 'zone' ? 'btn-primary' : 'btn-outline-secondary')"
+                                t-on-click="() => this.setMode('zone')"
+                                title="Add zone">
+                            <i class="fa fa-square-o"/> Zone
+                        </button>
+                        <button type="button"
+                                t-att-class="'btn btn-sm ' + (state.mode === 'shelf' ? 'btn-primary' : 'btn-outline-secondary')"
+                                t-on-click="() => this.setMode('shelf')"
+                                title="Add shelving unit">
+                            <i class="fa fa-th-large"/> Shelf
+                        </button>
+                        <button type="button"
+                                t-att-class="'btn btn-sm ' + (state.mode === 'aisle' ? 'btn-primary' : 'btn-outline-secondary')"
+                                t-on-click="() => this.setMode('aisle')"
+                                title="Draw aisle">
+                            <i class="fa fa-road"/> Aisle
+                        </button>
+                    </div>
+                    
+                    <div class="vr mx-2"/>
+                    
+                    <!-- Navigation Mode -->
+                    <button type="button"
+                            t-att-class="'btn btn-sm ' + (state.navigationMode ? 'btn-success' : 'btn-outline-success')"
+                            t-on-click="() => this.setMode('navigate')"
+                            title="Indoor navigation mode">
+                        <i class="fa fa-location-arrow"/> Navigate
+                    </button>
+                    
+                    <div class="vr mx-2"/>
+                    
+                    <!-- View Controls -->
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                t-on-click="toggleGrid"
+                                t-att-class="'btn btn-sm ' + (state.showGrid ? 'btn-secondary' : 'btn-outline-secondary')"
+                                title="Toggle grid">
+                            <i class="fa fa-th"/>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                t-on-click="toggleLabels"
+                                t-att-class="'btn btn-sm ' + (state.showLabels ? 'btn-secondary' : 'btn-outline-secondary')"
+                                title="Toggle labels">
+                            <i class="fa fa-tag"/>
+                        </button>
+                    </div>
+                    
+                    <!-- Zoom Controls -->
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                t-on-click="zoomOut" title="Zoom out">
+                            <i class="fa fa-search-minus"/>
+                        </button>
+                        <span class="btn btn-sm btn-light disabled" t-esc="Math.round(state.zoom * 100) + '%'"/>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                t-on-click="zoomIn" title="Zoom in">
+                            <i class="fa fa-search-plus"/>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                t-on-click="resetView" title="Reset view">
+                            <i class="fa fa-crosshairs"/>
+                        </button>
+                    </div>
+                    
+                    <div class="vr mx-2"/>
+                    
+                    <!-- Export -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" 
+                                type="button" data-bs-toggle="dropdown">
+                            <i class="fa fa-download"/> Export
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="#" 
+                                   t-on-click.prevent="() => { this.state.coordinateFormat = 'json'; this.exportCoordinates(); }">
+                                    <i class="fa fa-code me-2"/> JSON (for 3D)
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#"
+                                   t-on-click.prevent="() => { this.state.coordinateFormat = 'csv'; this.exportCoordinates(); }">
+                                    <i class="fa fa-table me-2"/> CSV (Excel)
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#"
+                                   t-on-click.prevent="() => { this.state.coordinateFormat = 'geojson'; this.exportCoordinates(); }">
+                                    <i class="fa fa-globe me-2"/> GeoJSON (Maps)
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Open in 3D -->
+                    <button type="button" class="btn btn-sm btn-primary ms-auto"
+                            t-on-click="openIn3DView"
+                            title="Open in 3D visualization">
+                        <i class="fa fa-cube"/> View in 3D
+                    </button>
+                </div>
+                
+                <!-- Main Content Area -->
+                <div class="d-flex flex-grow-1 overflow-hidden">
+                    
+                    <!-- Canvas Area -->
+                    <div class="blueprint-canvas-container flex-grow-1 position-relative bg-white">
+                        <canvas t-ref="blueprint-canvas" class="position-absolute top-0 start-0"/>
+                        <canvas t-ref="overlay-canvas" class="position-absolute top-0 start-0" style="pointer-events: auto;"/>
+                        
+                        <!-- Blueprint Info Overlay -->
+                        <div class="position-absolute top-0 start-0 m-3 p-2 bg-white bg-opacity-90 rounded shadow-sm" style="z-index: 10;">
+                            <small class="text-muted d-block">
+                                <i class="fa fa-building me-1"/>
+                                <span t-esc="state.blueprint?.name || 'No blueprint'"/>
+                            </small>
+                            <small class="text-muted d-block" t-if="state.blueprint">
+                                <i class="fa fa-arrows-alt me-1"/>
+                                <span t-esc="Math.round(state.blueprint.length / 12)"/> × 
+                                <span t-esc="Math.round(state.blueprint.width / 12)"/> ft
+                            </small>
+                        </div>
+                        
+                        <!-- Mode Indicator -->
+                        <div class="position-absolute bottom-0 start-0 m-3 p-2 bg-primary text-white rounded" style="z-index: 10;">
+                            <small>
+                                <t t-if="state.mode === 'select'"><i class="fa fa-mouse-pointer me-1"/> Select Mode</t>
+                                <t t-elif="state.mode === 'wall'"><i class="fa fa-minus me-1"/> Drawing Wall</t>
+                                <t t-elif="state.mode === 'zone'"><i class="fa fa-square-o me-1"/> Drawing Zone</t>
+                                <t t-elif="state.mode === 'shelf'"><i class="fa fa-th-large me-1"/> Placing Shelf</t>
+                                <t t-elif="state.mode === 'aisle'"><i class="fa fa-road me-1"/> Drawing Aisle</t>
+                                <t t-elif="state.navigationMode"><i class="fa fa-location-arrow me-1"/> Navigation Mode</t>
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Sidebar - Navigation Directions -->
+                    <div t-if="state.currentDirections" 
+                         class="blueprint-sidebar border-start p-3" style="width: 300px; overflow-y: auto;">
+                        
+                        <h6 class="mb-3">
+                            <i class="fa fa-map-signs me-2 text-primary"/>
+                            Turn-by-Turn Directions
+                        </h6>
+                        
+                        <!-- Route Summary -->
+                        <div class="alert alert-info mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small><i class="fa fa-road me-1"/> Distance:</small>
+                                <strong t-esc="state.currentDirections.totalDistance + ' ft'"/>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <small><i class="fa fa-clock-o me-1"/> Est. Time:</small>
+                                <strong t-esc="'~' + state.currentDirections.estimatedTime + ' min'"/>
+                            </div>
+                        </div>
+                        
+                        <!-- Direction Steps -->
+                        <div class="directions-list">
+                            <t t-foreach="state.currentDirections.directions" t-as="dir" t-key="dir.step">
+                                <div class="direction-step d-flex align-items-start mb-2 p-2 border rounded">
+                                    <div class="direction-icon me-2 text-center" style="width: 30px;">
+                                        <span class="fs-4" t-esc="dir.icon"/>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-bold" t-esc="dir.instruction"/>
+                                        <small class="text-muted">
+                                            <span t-esc="dir.distance + ' ft'"/>
+                                            <span t-if="dir.landmark" class="ms-2">
+                                                <i class="fa fa-map-marker"/> near <t t-esc="dir.landmark"/>
+                                            </span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </t>
+                            
+                            <!-- Arrival -->
+                            <div class="direction-step d-flex align-items-center p-2 border rounded bg-success bg-opacity-10">
+                                <div class="direction-icon me-2 text-center text-success" style="width: 30px;">
+                                    <i class="fa fa-flag-checkered fs-4"/>
+                                </div>
+                                <div class="fw-bold text-success">Arrive at destination</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Clear Navigation -->
+                        <button type="button" class="btn btn-sm btn-outline-secondary w-100 mt-3"
+                                t-on-click="cancelCurrentAction">
+                            <i class="fa fa-times me-1"/> Clear Route
+                        </button>
+                    </div>
+                    
+                    <!-- Right Sidebar - Selected Element -->
+                    <div t-elif="state.selectedElement"
+                         class="blueprint-sidebar border-start p-3" style="width: 300px; overflow-y: auto;">
+                        
+                        <h6 class="mb-3">
+                            <i class="fa fa-info-circle me-2 text-primary"/>
+                            Selected: <t t-esc="state.selectedElement.type"/>
+                        </h6>
+                        
+                        <div class="selected-details">
+                            <t t-if="state.selectedElement.type === 'location'">
+                                <dl class="row mb-0">
+                                    <dt class="col-5">Name:</dt>
+                                    <dd class="col-7" t-esc="state.selectedElement.data.name"/>
+                                    
+                                    <dt class="col-5">Barcode:</dt>
+                                    <dd class="col-7" t-esc="state.selectedElement.data.barcode || '-'"/>
+                                    
+                                    <dt class="col-5">Position:</dt>
+                                    <dd class="col-7">
+                                        <span t-esc="Math.round(state.selectedElement.data.posx / 12)"/>,
+                                        <span t-esc="Math.round(state.selectedElement.data.posy / 12)"/> ft
+                                    </dd>
+                                    
+                                    <dt class="col-5">Capacity:</dt>
+                                    <dd class="col-7">
+                                        <span t-esc="state.selectedElement.data.current_usage || 0"/>
+                                        / <span t-esc="state.selectedElement.data.max_capacity || '-'"/>
+                                    </dd>
+                                </dl>
+                                
+                                <button type="button" class="btn btn-sm btn-success w-100 mt-3"
+                                        t-on-click="() => this.navigateToLocation(state.selectedElement.data.id)">
+                                    <i class="fa fa-location-arrow me-1"/> Navigate Here
+                                </button>
+                            </t>
+                            
+                            <t t-elif="state.selectedElement.type === 'shelf'">
+                                <dl class="row mb-0">
+                                    <dt class="col-5">Name:</dt>
+                                    <dd class="col-7" t-esc="state.selectedElement.data.name"/>
+                                    
+                                    <dt class="col-5">Size:</dt>
+                                    <dd class="col-7">
+                                        <span t-esc="Math.round(state.selectedElement.data.width / 12)"/> × 
+                                        <span t-esc="Math.round(state.selectedElement.data.depth / 12)"/> ft
+                                    </dd>
+                                    
+                                    <dt class="col-5">Capacity:</dt>
+                                    <dd class="col-7" t-esc="state.selectedElement.data.capacity || '-'"/>
+                                </dl>
+                            </t>
+                            
+                            <t t-elif="state.selectedElement.type === 'zone'">
+                                <dl class="row mb-0">
+                                    <dt class="col-5">Name:</dt>
+                                    <dd class="col-7" t-esc="state.selectedElement.data.name"/>
+                                    
+                                    <dt class="col-5">Type:</dt>
+                                    <dd class="col-7" t-esc="state.selectedElement.data.zone_type"/>
+                                    
+                                    <dt class="col-5">Size:</dt>
+                                    <dd class="col-7">
+                                        <span t-esc="Math.round(state.selectedElement.data.width / 12)"/> × 
+                                        <span t-esc="Math.round(state.selectedElement.data.length / 12)"/> ft
+                                    </dd>
+                                </dl>
+                            </t>
+                        </div>
+                    </div>
+                    
+                    <!-- Help Panel (when nothing selected) -->
+                    <div t-elif="!state.currentDirections"
+                         class="blueprint-sidebar border-start p-3" style="width: 250px; overflow-y: auto;">
+                        
+                        <h6 class="mb-3">
+                            <i class="fa fa-question-circle me-2 text-info"/>
+                            Quick Help
+                        </h6>
+                        
+                        <div class="help-content small">
+                            <p><strong>Drawing:</strong></p>
+                            <ul class="ps-3">
+                                <li>Select a tool from the toolbar</li>
+                                <li>Click and drag to draw</li>
+                                <li>Release to complete</li>
+                            </ul>
+                            
+                            <p><strong>Navigation:</strong></p>
+                            <ul class="ps-3">
+                                <li>Click <i class="fa fa-location-arrow"/> Navigate</li>
+                                <li>Click start point</li>
+                                <li>Click destination</li>
+                                <li>View turn-by-turn directions</li>
+                            </ul>
+                            
+                            <p><strong>View:</strong></p>
+                            <ul class="ps-3">
+                                <li>Scroll to zoom</li>
+                                <li>Drag to pan</li>
+                                <li>Double-click to select</li>
+                            </ul>
+                            
+                            <p><strong>Export:</strong></p>
+                            <ul class="ps-3">
+                                <li><strong>JSON</strong> - For 3D integration</li>
+                                <li><strong>CSV</strong> - For Excel/analysis</li>
+                                <li><strong>GeoJSON</strong> - For mapping apps</li>
+                            </ul>
+                        </div>
+                        
+                        <hr/>
+                        
+                        <div class="legend small">
+                            <h6 class="mb-2">Legend</h6>
+                            <div class="d-flex align-items-center mb-1">
+                                <div class="me-2" style="width: 20px; height: 3px; background: #333;"/>
+                                <span>Wall</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-1">
+                                <div class="me-2" style="width: 20px; height: 10px; background: #795548;"/>
+                                <span>Shelf</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-1">
+                                <div class="me-2" style="width: 20px; height: 10px; background: rgba(33, 150, 243, 0.3); border: 1px dashed #2196F3;"/>
+                                <span>Zone</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-1">
+                                <div class="me-2" style="width: 10px; height: 10px; background: #4CAF50; border-radius: 50%;"/>
+                                <span>Location</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-1">
+                                <div class="me-2" style="width: 20px; height: 2px; background: #FFB74D;"/>
+                                <span>Aisle</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </t>
+        </div>
+    </t>
+    
+</templates>

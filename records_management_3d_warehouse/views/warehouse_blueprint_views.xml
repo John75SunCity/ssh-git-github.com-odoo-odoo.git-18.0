@@ -22,10 +22,16 @@
         <field name="arch" type="xml">
             <form string="Warehouse Blueprint">
                 <header>
+                    <button name="action_open_2d_editor" 
+                            type="object" 
+                            string="2D Blueprint Editor" 
+                            class="btn-secondary"
+                            icon="fa-pencil-square-o"/>
                     <button name="action_open_3d_view" 
                             type="object" 
                             string="Open 3D View" 
-                            class="btn-primary"/>
+                            class="btn-primary"
+                            icon="fa-cube"/>
                 </header>
                 <sheet>
                     <group>
