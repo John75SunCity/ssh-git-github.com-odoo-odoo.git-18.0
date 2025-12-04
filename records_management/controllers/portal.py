@@ -5013,7 +5013,6 @@ class RecordsManagementController(http.Controller):
 
         return request.render("records_management.portal_destruction_pending", values)
 
-    @http.route(['/my/certificates'], type='http', auth='user', website=True)
     def portal_certificates(self, page=1, search=None, **kw):
         """
         List destruction certificates with download capability
@@ -5669,7 +5668,6 @@ class RecordsManagementController(http.Controller):
     # NOTE: portal_container_detail is defined earlier in this file (around line 2066)
     # with full CRUD support and permission handling
 
-    @http.route(['/my/inventory/file/<int:file_id>'], type='http', auth="user", website=True)
     def portal_file_detail(self, file_id, **kw):
         """Individual file folder detail view"""
         file_folder = request.env['records.file'].sudo().browse(file_id)
@@ -5901,7 +5899,6 @@ class RecordsManagementController(http.Controller):
 
 
 
-    @http.route(['/my/inventory/recent_activity'], type='http', auth='user', website=True)
     def portal_recent_activity(self, **kw):
         """Get recent activity for overview dashboard"""
         partner = request.env.user.partner_id.commercial_partner_id
@@ -6408,7 +6405,6 @@ class RecordsManagementController(http.Controller):
                 'error': 'Failed to load movement data'
             }
 
-    @http.route(['/my/inventory/container/<int:container_id>/movements'], type='http', auth='user', website=True)
     def portal_container_movements(self, container_id, **kw):
         """Individual container movement history"""
         # Security Layer Pattern: Use sudo() but filter by partner
@@ -6870,7 +6866,6 @@ class RecordsManagementController(http.Controller):
     # BARCODE MAIN MENU AND SCANNING INTERFACE
     # ============================================================================
 
-    @http.route(['/my/barcode/main'], type='http', auth='user', website=True)
     def portal_barcode_main_menu(self, **kw):
         """
         Barcode main menu - central hub for all barcode operations.
@@ -7061,292 +7056,6 @@ class RecordsManagementController(http.Controller):
 
         return {'error': _('Unknown operation: %s') % operation}
 
-    # ================================================================
-    # SERVICE REQUEST CREATION ROUTES
-    # ================================================================
-
-    @http.route(['/my/request/new/<string:request_type>'], type='http', auth='user', website=True)
-    def portal_request_new(self, request_type='retrieval', **kw):
-        """Service request creation form for different request types."""
-        partner = request.env.user.partner_id.commercial_partner_id
-
-        # Define request type configurations
-        request_configs = {
-            'retrieval': {
-                'title': _('Request Document Retrieval'),
-                'icon': 'fa-truck',
-                'description': _('Request physical documents to be retrieved from storage'),
-                'form_fields': ['container_ids', 'delivery_date', 'special_instructions'],
-            },
-            'destruction': {
-                'title': _('Request Destruction Service'),
-                'icon': 'fa-fire',
-                'description': _('Request secure destruction of physical documents (NAID compliant)'),
-                'form_fields': ['container_ids', 'destruction_method', 'witness_required'],
-            },
-            'pickup': {
-                'title': _('Schedule Pickup'),
-                'icon': 'fa-calendar',
-                'description': _('Schedule pickup of documents for storage'),
-                'form_fields': ['pickup_date', 'pickup_address', 'estimated_boxes'],
-            },
-            'scanning': {
-                'title': _('Request Document Scanning'),
-                'icon': 'fa-scanner',
-                'description': _('Request documents to be scanned and digitized'),
-                'form_fields': ['document_ids', 'scan_resolution', 'file_format'],
-            },
-        }
-
-        config = request_configs.get(request_type, request_configs['retrieval'])
-
-        # Get available containers for selection
-        containers = request.env['records.container'].sudo().search([
-            ('partner_id', '=', partner.id),
-            ('state', 'in', ['storage', 'active'])
-        ])
-
-        values = {
-            'page_name': f'request_{request_type}',
-            'request_type': request_type,
-            'config': config,
-            'containers': containers,
-            'partner': partner,
-        }
-
-        return request.render("records_management.portal_request_form", values)
-
-    # ================================================================
-    # DESTRUCTION MANAGEMENT ROUTES
-    # ================================================================
-
-    @http.route(['/my/destruction'], type='http', auth='user', website=True)
-    def portal_destruction_requests(self, **kw):
-        """List all destruction requests for the customer."""
-        partner = request.env.user.partner_id.commercial_partner_id
-
-        destruction_requests = request.env['portal.request'].search([
-            ('partner_id', '=', partner.id),
-            ('request_type', '=', 'destruction')
-        ], order='create_date desc')
-
-        values = {
-            'page_name': 'destruction',
-            'requests': destruction_requests,
-        }
-
-        return request.render("records_management.portal_destruction_list", values)
-
-    @http.route(['/my/destruction/pending'], type='http', auth='user', website=True)
-    def portal_destruction_pending(self, **kw):
-        """Destruction requests pending approval."""
-        partner = request.env.user.partner_id.commercial_partner_id
-
-        pending_requests = request.env['portal.request'].search([
-            ('partner_id', '=', partner.id),
-            ('request_type', '=', 'destruction'),
-            ('state', 'in', ['draft', 'pending_approval'])
-        ])
-
-        values = {
-            'page_name': 'destruction',
-            'requests': pending_requests,
-        }
-
-        return request.render("records_management.portal_destruction_pending", values)
-
-    @http.route(['/my/custody/chain'], type='http', auth='user', website=True)
-    def portal_chain_of_custody(self, **kw):
-        """Chain of custody tracking for all containers."""
-        partner = request.env.user.partner_id.commercial_partner_id
-
-        # Use sudo() but filter by partner to ensure security
-        custody_records = request.env['chain.of.custody'].sudo().search([
-            ('partner_id', '=', partner.id)
-        ], order='transfer_date desc', limit=100)
-
-        values = {
-            'page_name': 'custody',
-            'custody_records': custody_records,
-        }
-
-        return request.render("records_management.portal_chain_of_custody", values)
-
-    # ================================================================
-    # BILLING & INVOICES ROUTES
-    # ================================================================
-
-    @http.route(['/my/invoices/history'], type='http', auth='user', website=True)
-    def portal_invoice_history(self, **kw):
-        """Payment history and archived invoices."""
-        partner = request.env.user.partner_id.commercial_partner_id
-
-        # Get paid invoices
-        invoices = request.env['account.move'].search([
-            ('partner_id', '=', partner.id),
-            ('move_type', '=', 'out_invoice'),
-            ('state', '=', 'posted'),
-            ('payment_state', 'in', ['paid', 'in_payment'])
-        ], order='invoice_date desc')
-
-        values = {
-            'page_name': 'invoices',
-            'invoices': invoices,
-            'payment_history': True,
-        }
-
-        return request.render("records_management.portal_invoice_history", values)
-
-    @http.route(['/my/billing/rates'], type='http', auth='user', website=True)
-    def portal_billing_rates(self, **kw):
-        """Display current billing rates and pricing information."""
-        partner = request.env.user.partner_id.commercial_partner_id
-
-        # Get customer's billing configuration
-        billing_info = request.env['records.billing'].search([
-            ('partner_id', '=', partner.id)
-        ], limit=1)
-
-        # Get product pricing
-        products = request.env['product.product'].search([
-            ('categ_id.name', 'ilike', 'records management')
-        ])
-
-        values = {
-            'page_name': 'billing',
-            'billing_info': billing_info,
-            'products': products,
-        }
-
-        return request.render("records_management.portal_billing_rates", values)
-
-    @http.route(['/my/billing/statements'], type='http', auth='user', website=True)
-    def portal_billing_statements(self, **kw):
-        """Download billing statements."""
-        partner = request.env.user.partner_id.commercial_partner_id
-
-        # Get recent invoices for statements
-        statements = request.env['account.move'].search([
-            ('partner_id', '=', partner.id),
-            ('move_type', '=', 'out_invoice'),
-            ('state', '=', 'posted')
-        ], order='invoice_date desc', limit=12)
-
-        values = {
-            'page_name': 'billing',
-            'statements': statements,
-        }
-
-        return request.render("records_management.portal_billing_statements", values)
-
-    # ================================================================
-    # REPORTS & ANALYTICS ROUTES
-    # ================================================================
-
-    @http.route(['/my/reports'], type='http', auth='user', website=True)
-    def portal_reports_inventory(self, **kw):
-        """Inventory reports and summaries."""
-        partner = request.env.user.partner_id.commercial_partner_id
-
-        # Generate inventory summary
-        containers = request.env['records.container'].sudo().search([
-            ('partner_id', '=', partner.id)
-        ])
-
-        summary = {
-            'total_containers': len(containers),
-            'pending_containers': len(containers.filtered(lambda c: c.state == 'pending')),
-            'in_storage': len(containers.filtered(lambda c: c.state == 'in')),
-            'out_containers': len(containers.filtered(lambda c: c.state == 'out')),
-            'perm_out_containers': len(containers.filtered(lambda c: c.state == 'perm_out')),
-            'destroyed_containers': len(containers.filtered(lambda c: c.state == 'destroyed')),
-            'total_files': sum(containers.mapped('file_count')),
-        }
-
-        values = {
-            'page_name': 'reports',
-            'summary': summary,
-            'containers': containers,
-        }
-
-        return request.render("records_management.portal_reports_inventory", values)
-
-    @http.route(['/my/reports/activity'], type='http', auth='user', website=True)
-    def portal_reports_activity(self, **kw):
-        """Activity reports showing customer requests and container movements."""
-        partner = request.env.user.partner_id.commercial_partner_id
-
-        # Get recent service requests
-        requests = request.env['portal.request'].sudo().search([
-            ('partner_id', '=', partner.id)
-        ], order='create_date desc', limit=50)
-
-        # Get recent container activity (location changes, status updates)
-        containers = request.env['records.container'].sudo().search([
-            ('partner_id', '=', partner.id),
-            ('write_date', '>=', fields.Datetime.now() - timedelta(days=90))
-        ], order='write_date desc', limit=50)
-
-        # Get recent file activity
-        files = request.env['records.file'].sudo().search([
-            ('partner_id', '=', partner.id),
-            ('write_date', '>=', fields.Datetime.now() - timedelta(days=90))
-        ], order='write_date desc', limit=50)
-
-        # Get chain of custody events (movements to/from storage)
-        custody_events = request.env['chain.of.custody.event'].sudo().search([
-            ('custody_id.partner_id', '=', partner.id)
-        ], order='event_date desc', limit=50)
-
-        values = {
-            'page_name': 'reports',
-            'requests': requests,
-            'containers': containers,
-            'files': files,
-            'custody_events': custody_events,
-        }
-
-        return request.render("records_management.portal_reports_activity", values)
-
-    @http.route(['/my/reports/compliance'], type='http', auth='user', website=True)
-    def portal_reports_compliance(self, **kw):
-        """NAID compliance and audit reports."""
-        partner = request.env.user.partner_id.commercial_partner_id
-
-        # Get compliance data - use sudo() with partner filter for portal security
-        certificates = request.env['naid.certificate'].sudo().search([
-            ('partner_id', '=', partner.id)
-        ])
-
-        audit_logs = request.env['naid.audit.log'].sudo().search([
-            ('partner_id', '=', partner.id)
-        ], order='timestamp desc', limit=100)
-
-        values = {
-            'page_name': 'reports',
-            'certificates': certificates,
-            'audit_logs': audit_logs,
-        }
-
-        return request.render("records_management.portal_reports_compliance", values)
-
-    @http.route(['/my/reports/export'], type='http', auth='user', website=True)
-    def portal_reports_export(self, **kw):
-        """Export data in various formats."""
-        partner = request.env.user.partner_id.commercial_partner_id
-
-        values = {
-            'page_name': 'reports',
-            'export_options': [
-                {'format': 'csv', 'icon': 'fa-file-csv', 'label': _('CSV Export')},
-                {'format': 'xlsx', 'icon': 'fa-file-excel', 'label': _('Excel Export')},
-                {'format': 'pdf', 'icon': 'fa-file-pdf', 'label': _('PDF Report')},
-            ],
-        }
-
-        return request.render("records_management.portal_reports_export", values)
-
-    @http.route(['/records/report/documents'], type='http', auth='user', website=True)
     def portal_report_documents(self, **kw):
         """Document Inventory Report - PDF generation"""
         partner = request.env.user.partner_id.commercial_partner_id
@@ -7424,32 +7133,6 @@ class RecordsManagementController(http.Controller):
     # FEEDBACK & SUPPORT ROUTES
     # ================================================================
 
-    @http.route(['/my/feedback'], type='http', auth='user', website=True)
-    def portal_feedback_submit(self, **kw):
-        """Submit feedback form."""
-        values = {
-            'page_name': 'feedback',
-        }
-
-        return request.render("records_management.portal_feedback_form", values)
-
-    @http.route(['/my/feedback/history'], type='http', auth='user', website=True)
-    def portal_feedback_history(self, **kw):
-        """Feedback submission history."""
-        partner = request.env.user.partner_id.commercial_partner_id
-
-        feedback_records = request.env['customer.feedback'].search([
-            ('partner_id', '=', partner.id)
-        ], order='create_date desc')
-
-        values = {
-            'page_name': 'feedback',
-            'feedback_records': feedback_records,
-        }
-
-        return request.render("records_management.portal_feedback_history", values)
-
-    @http.route(['/help'], type='http', auth='user', website=True)
     def portal_help_center(self, **kw):
         """Help center with documentation."""
         values = {
@@ -7645,44 +7328,6 @@ class RecordsManagementController(http.Controller):
         except Exception as e:
             return {'success': False, 'error': str(e)}
 
-    @http.route(['/my/notifications'], type='http', auth='user', website=True)
-    def portal_notifications_settings(self, **kw):
-        """Notification preferences."""
-        user = request.env.user
-
-        values = {
-            'page_name': 'settings',
-            'user': user,
-            'notification_channels': [
-                {'type': 'email', 'label': _('Email Notifications'), 'enabled': True},
-                {'type': 'sms', 'label': _('SMS Alerts'), 'enabled': False},
-                {'type': 'portal', 'label': _('Portal Messages'), 'enabled': True},
-            ],
-        }
-
-        return request.render("records_management.portal_notifications", values)
-
-    @http.route(['/my/access'], type='http', auth='user', website=True)
-    def portal_access_management(self, **kw):
-        """Access management (for department admins)."""
-        if not request.env.user.has_group('records_management.group_portal_department_admin'):
-            return request.redirect('/my/home')
-
-        partner = request.env.user.partner_id
-
-        # Get access permissions
-        access_records = request.env['portal.user.access'].search([
-            ('partner_id', '=', partner.id)
-        ])
-
-        values = {
-            'page_name': 'settings',
-            'access_records': access_records,
-        }
-
-        return request.render("records_management.portal_access_management", values)
-
-    @http.route(['/my/inventory/advanced_search'], type='http', auth='user', website=True)
     def portal_advanced_search(self, **kw):
         """Advanced search interface for inventory."""
         values = {
@@ -7940,149 +7585,6 @@ class RecordsManagementController(http.Controller):
     # INTERACTIVE FEATURES - AJAX ENDPOINTS
     # =============================
 
-    @http.route(['/my/document-retrieval/calculate-price'], type='json', auth='user')
-    def portal_document_retrieval_calculate_price(self, container_ids=None, **kw):
-        """
-        Calculate price for document retrieval request
-        
-        Security: Ensures containers belong to user's commercial partner
-        Used by: portal_interactive_features.js - PortalDocumentRetrieval widget
-        """
-        try:
-            if not container_ids or not isinstance(container_ids, list):
-                return {'error': _('Invalid container selection'), 'total_price': 0}
-
-            # Security: Get user's commercial partner
-            partner = request.env.user.partner_id.commercial_partner_id
-
-            # Security: Filter containers by partner ownership
-            Container = request.env['records.container']
-            containers = Container.search([
-                ('id', 'in', container_ids),
-                ('partner_id', 'child_of', partner.commercial_partner_id.id)
-            ])
-
-            # Calculate retrieval price
-            # Base rate: $25 per container + $2.50 per box within container
-            base_rate = 25.00
-            box_rate = 2.50
-            total_price = 0.0
-
-            for container in containers:
-                total_price += base_rate
-                total_price += (container.box_count or 0) * box_rate
-
-            return {
-                'success': True,
-                'total_price': total_price,
-                'container_count': len(containers),
-                'base_rate': base_rate,
-                'box_rate': box_rate
-            }
-
-        except Exception as e:
-            _logger.error(f"Price calculation failed: {str(e)}", exc_info=True)
-            return {
-                'error': _('Price calculation failed: %s') % str(e),
-                'total_price': 0
-            }
-
-    @http.route(['/my/barcode/process/<string:scan_type>'], type='json', auth='user')
-    def portal_barcode_process(self, scan_type, barcode=None, **kw):
-        """
-        Process barcode scan from portal
-        
-        Security: Returns only records belonging to user's commercial partner
-        Used by: portal_interactive_features.js - PortalBarcodeScanner widget
-        
-        Args:
-            scan_type: 'container', 'box', or 'document'
-            barcode: Scanned barcode value
-        """
-        try:
-            if not barcode:
-                return {'success': False, 'error': _('No barcode provided')}
-
-            # Security: Get user's commercial partner
-            partner = request.env.user.partner_id.commercial_partner_id
-
-            # Process based on scan type
-            if scan_type == 'container':
-                Container = request.env['records.container']
-                record = Container.search([
-                    ('barcode', '=', barcode),
-                    ('partner_id', 'child_of', partner.commercial_partner_id.id)
-                ], limit=1)
-
-                if record:
-                    return {
-                        'success': True,
-                        'record': {
-                            'id': record.id,
-                            'name': record.name,
-                            'barcode': record.barcode,
-                            'location': record.location_id.name if record.location_id else False,
-                            'box_count': record.box_count or 0,
-                            'status': record.state,
-                        }
-                    }
-
-            elif scan_type == 'box':
-                Box = request.env['records.box']
-                record = Box.search([
-                    ('barcode', '=', barcode),
-                    ('partner_id', 'child_of', partner.commercial_partner_id.id)
-                ], limit=1)
-
-                if record:
-                    return {
-                        'success': True,
-                        'record': {
-                            'id': record.id,
-                            'name': record.name,
-                            'barcode': record.barcode,
-                            'container': record.container_id.name if record.container_id else False,
-                            'location': record.location_id.name if record.location_id else False,
-                            'status': record.state,
-                        }
-                    }
-
-            elif scan_type == 'document':
-                Document = request.env['records.document']
-                record = Document.search([
-                    ('barcode', '=', barcode),
-                    ('partner_id', 'child_of', partner.commercial_partner_id.id)
-                ], limit=1)
-
-                if record:
-                    return {
-                        'success': True,
-                        'record': {
-                            'id': record.id,
-                            'name': record.name,
-                            'barcode': record.barcode,
-                            'box': record.box_id.name if record.box_id else False,
-                            'document_type': record.document_type_id.name if record.document_type_id else False,
-                        }
-                    }
-
-            else:
-                return {'success': False, 'error': _('Invalid scan type: %s') % scan_type}
-
-            # No record found
-            return {
-                'success': False,
-                'error': _('No %s found with barcode: %s') % (scan_type, barcode)
-            }
-
-        except Exception as e:
-            _logger.error(f"Barcode processing failed: {str(e)}", exc_info=True)
-            return {
-                'success': False,
-                'error': _('Barcode processing failed: %s') % str(e)
-            }
-
-    @http.route(['/my/inventory/export'], type='http', auth='user')
     def portal_inventory_export(self, **kw):
         """
         Export inventory to Excel/CSV
