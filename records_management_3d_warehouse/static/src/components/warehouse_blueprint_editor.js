@@ -319,6 +319,13 @@ export class WarehouseBlueprintEditor extends Component {
 
             // Coordinate export
             coordinateFormat: 'json', // json, csv, geojson
+
+            // Cursor tracking and coordinate picking
+            cursorPosition: { x: 0, y: 0 },
+            showCursor: true,
+            pickCoordinatesMode: false,
+            pickedPoints: [], // Array of {x, y, label} for marked points
+            pickingStep: 'start', // 'start' or 'end'
         });
 
         // Canvas context
@@ -901,7 +908,17 @@ export class WarehouseBlueprintEditor extends Component {
             this.drawDragPreview(ctx);
         }
 
+        // Draw picked coordinate points
+        if (this.state.pickedPoints.length > 0) {
+            this.drawPickedPoints(ctx);
+        }
+
         ctx.restore();
+
+        // Draw cursor position indicator (outside transform for screen coordinates)
+        if (this.state.showCursor) {
+            this.drawCursorInfo(this.overlayCtx);
+        }
     }
 
     drawNavigationPath(ctx) {
@@ -1031,6 +1048,12 @@ export class WarehouseBlueprintEditor extends Component {
     onMouseDown(ev) {
         const pos = this.getMousePosition(ev);
 
+        // Handle coordinate picking mode
+        if (this.state.pickCoordinatesMode) {
+            this.handleCoordinatePick(pos);
+            return;
+        }
+
         if (this.state.navigationMode) {
             this.handleNavigationClick(pos);
             return;
@@ -1046,10 +1069,20 @@ export class WarehouseBlueprintEditor extends Component {
     onMouseMove(ev) {
         const pos = this.getMousePosition(ev);
 
+        // Always update cursor position for coordinate display
+        this.state.cursorPosition = {
+            x: Math.round(pos.x),
+            y: Math.round(pos.y),
+            xFeet: Math.round(pos.x / 12 * 10) / 10,
+            yFeet: Math.round(pos.y / 12 * 10) / 10
+        };
+
         if (this.state.isDragging) {
             this.state.dragCurrent = pos;
-            this.renderOverlay();
         }
+
+        // Always re-render overlay to show cursor position
+        this.renderOverlay();
     }
 
     onMouseUp(ev) {
@@ -1290,7 +1323,203 @@ export class WarehouseBlueprintEditor extends Component {
         this.state.navigationMode = false;
         this.state.navigationStart = null;
         this.state.navigationEnd = null;
+        this.state.pickCoordinatesMode = false;
+        this.state.pickingStep = 'start';
         this.renderOverlay();
+    }
+
+    clearPickedPoints() {
+        this.state.pickedPoints = [];
+        this.state.pickingStep = 'start';
+        this.renderOverlay();
+    }
+
+    togglePickCoordinatesMode() {
+        this.state.pickCoordinatesMode = !this.state.pickCoordinatesMode;
+        if (this.state.pickCoordinatesMode) {
+            this.state.mode = 'select';
+            this.state.pickedPoints = [];
+            this.state.pickingStep = 'start';
+            this.notification.add("Click to mark START point, then END point for wall coordinates", { type: "info" });
+        } else {
+            this.notification.add("Coordinate picking disabled", { type: "info" });
+        }
+        this.renderOverlay();
+    }
+
+    handleCoordinatePick(pos) {
+        const point = {
+            x: Math.round(pos.x),
+            y: Math.round(pos.y),
+            xFeet: Math.round(pos.x / 12 * 10) / 10,
+            yFeet: Math.round(pos.y / 12 * 10) / 10,
+            label: this.state.pickingStep === 'start' ? 'START' : 'END'
+        };
+
+        if (this.state.pickingStep === 'start') {
+            // Clear previous points and add start
+            this.state.pickedPoints = [point];
+            this.state.pickingStep = 'end';
+            this.notification.add(`START: X=${point.x}" (${point.xFeet}ft), Y=${point.y}" (${point.yFeet}ft) - Now click END point`, { type: "success" });
+        } else {
+            // Add end point
+            this.state.pickedPoints.push(point);
+            this.state.pickingStep = 'start';
+            
+            const start = this.state.pickedPoints[0];
+            const end = point;
+            
+            // Show complete wall coordinates
+            this.notification.add(
+                `Wall coordinates: Start(${start.x}, ${start.y}) → End(${end.x}, ${end.y}) | ` +
+                `In feet: Start(${start.xFeet}, ${start.yFeet}) → End(${end.xFeet}, ${end.yFeet})`,
+                { type: "success", sticky: true }
+            );
+        }
+
+        this.renderOverlay();
+    }
+
+    drawPickedPoints(ctx) {
+        const scale = this.getScale();
+
+        for (let i = 0; i < this.state.pickedPoints.length; i++) {
+            const point = this.state.pickedPoints[i];
+            const x = point.x * scale;
+            const y = point.y * scale;
+
+            // Draw marker circle
+            ctx.beginPath();
+            ctx.arc(x, y, 12, 0, Math.PI * 2);
+            ctx.fillStyle = point.label === 'START' ? '#4CAF50' : '#F44336';
+            ctx.fill();
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Draw label
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 10px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(point.label === 'START' ? 'S' : 'E', x, y);
+
+            // Draw coordinate box
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            const coordText = `${point.x}", ${point.y}" (${point.xFeet}ft, ${point.yFeet}ft)`;
+            const textWidth = ctx.measureText(coordText).width + 10;
+            const boxY = point.label === 'START' ? y - 35 : y + 20;
+            
+            ctx.fillRect(x - textWidth / 2, boxY, textWidth, 18);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = '11px Arial';
+            ctx.fillText(coordText, x, boxY + 10);
+
+            // Draw line between points if we have both
+            if (i === 1 && this.state.pickedPoints.length === 2) {
+                const start = this.state.pickedPoints[0];
+                ctx.beginPath();
+                ctx.moveTo(start.x * scale, start.y * scale);
+                ctx.lineTo(x, y);
+                ctx.strokeStyle = '#2196F3';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([8, 4]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Draw length label
+                const dx = point.x - start.x;
+                const dy = point.y - start.y;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const midX = (start.x * scale + x) / 2;
+                const midY = (start.y * scale + y) / 2;
+
+                ctx.fillStyle = 'rgba(33, 150, 243, 0.9)';
+                const lengthText = `Length: ${Math.round(length)}" (${Math.round(length / 12 * 10) / 10}ft)`;
+                const lengthWidth = ctx.measureText(lengthText).width + 10;
+                ctx.fillRect(midX - lengthWidth / 2, midY - 10, lengthWidth, 20);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = 'bold 11px Arial';
+                ctx.fillText(lengthText, midX, midY + 4);
+            }
+        }
+    }
+
+    drawCursorInfo(ctx) {
+        const canvas = this.overlayCanvasRef.el;
+        const pos = this.state.cursorPosition;
+
+        // Only show if cursor is within blueprint bounds
+        if (!this.state.blueprint || pos.x < 0 || pos.y < 0 ||
+            pos.x > this.state.blueprint.length || pos.y > this.state.blueprint.width) {
+            return;
+        }
+
+        // Draw cursor crosshair on the canvas (in transformed space)
+        const scale = this.getScale();
+        const screenX = pos.x * scale * this.state.zoom + this.state.panX;
+        const screenY = pos.y * scale * this.state.zoom + this.state.panY;
+
+        // Crosshair lines
+        ctx.strokeStyle = 'rgba(33, 150, 243, 0.5)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([5, 5]);
+
+        // Vertical line
+        ctx.beginPath();
+        ctx.moveTo(screenX, 0);
+        ctx.lineTo(screenX, canvas.height);
+        ctx.stroke();
+
+        // Horizontal line
+        ctx.beginPath();
+        ctx.moveTo(0, screenY);
+        ctx.lineTo(canvas.width, screenY);
+        ctx.stroke();
+
+        ctx.setLineDash([]);
+
+        // Coordinate display box (bottom-right corner)
+        const boxWidth = 200;
+        const boxHeight = this.state.pickCoordinatesMode ? 80 : 60;
+        const boxX = canvas.width - boxWidth - 10;
+        const boxY = canvas.height - boxHeight - 10;
+
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+        ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = '12px monospace';
+        ctx.textAlign = 'left';
+
+        // Title
+        ctx.font = 'bold 11px Arial';
+        ctx.fillText('📍 Cursor Position', boxX + 10, boxY + 16);
+
+        // Coordinates
+        ctx.font = '12px monospace';
+        ctx.fillText(`X: ${pos.x}" (${pos.xFeet} ft)`, boxX + 10, boxY + 34);
+        ctx.fillText(`Y: ${pos.y}" (${pos.yFeet} ft)`, boxX + 10, boxY + 50);
+
+        // Pick mode indicator
+        if (this.state.pickCoordinatesMode) {
+            ctx.fillStyle = this.state.pickingStep === 'start' ? '#4CAF50' : '#F44336';
+            ctx.fillText(`Click: ${this.state.pickingStep.toUpperCase()} point`, boxX + 10, boxY + 68);
+        }
+
+        // Axis labels on the edges
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(screenX - 25, 5, 50, 18);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${pos.x}"`, screenX, 17);
+
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(5, screenY - 9, 50, 18);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.textAlign = 'left';
+        ctx.fillText(`${pos.y}"`, 10, screenY + 5);
     }
 
     deleteSelectedElement() {

@@ -73,6 +73,23 @@
                     
                     <div class="vr mx-2"/>
                     
+                    <!-- Pick Coordinates Mode -->
+                    <button type="button"
+                            t-att-class="'btn btn-sm ' + (state.pickCoordinatesMode ? 'btn-warning' : 'btn-outline-warning')"
+                            t-on-click="togglePickCoordinatesMode"
+                            title="Pick coordinates for walls">
+                        <i class="fa fa-crosshairs"/> Pick Coords
+                    </button>
+                    <button type="button" 
+                            class="btn btn-sm btn-outline-secondary"
+                            t-on-click="clearPickedPoints"
+                            t-att-disabled="state.pickedPoints.length === 0"
+                            title="Clear picked points">
+                        <i class="fa fa-eraser"/>
+                    </button>
+                    
+                    <div class="vr mx-2"/>
+                    
                     <!-- View Controls -->
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-sm btn-outline-secondary"
@@ -168,7 +185,8 @@
                         <!-- Mode Indicator -->
                         <div class="position-absolute bottom-0 start-0 m-3 p-2 bg-primary text-white rounded" style="z-index: 10;">
                             <small>
-                                <t t-if="state.mode === 'select'"><i class="fa fa-mouse-pointer me-1"/> Select Mode</t>
+                                <t t-if="state.pickCoordinatesMode"><i class="fa fa-crosshairs me-1"/> Pick Coordinates Mode</t>
+                                <t t-elif="state.mode === 'select'"><i class="fa fa-mouse-pointer me-1"/> Select Mode</t>
                                 <t t-elif="state.mode === 'wall'"><i class="fa fa-minus me-1"/> Drawing Wall</t>
                                 <t t-elif="state.mode === 'zone'"><i class="fa fa-square-o me-1"/> Drawing Zone</t>
                                 <t t-elif="state.mode === 'shelf'"><i class="fa fa-th-large me-1"/> Placing Shelf</t>
@@ -178,8 +196,92 @@
                         </div>
                     </div>
                     
+                    <!-- Right Sidebar - Picked Coordinates -->
+                    <div t-if="state.pickCoordinatesMode || state.pickedPoints.length > 0"
+                         class="blueprint-sidebar border-start p-3" style="width: 320px; overflow-y: auto;">
+                        
+                        <h6 class="mb-3">
+                            <i class="fa fa-crosshairs me-2 text-warning"/>
+                            Coordinate Picker
+                        </h6>
+                        
+                        <!-- Instructions -->
+                        <div class="alert alert-warning mb-3">
+                            <small>
+                                <strong>How to use:</strong><br/>
+                                1. Click on the blueprint to mark START point<br/>
+                                2. Click again to mark END point<br/>
+                                3. Copy the coordinates for your wall
+                            </small>
+                        </div>
+                        
+                        <!-- Current Picking Status -->
+                        <div class="mb-3">
+                            <span class="badge" t-att-class="state.pickingStep === 'start' ? 'bg-success' : 'bg-danger'">
+                                <t t-if="state.pickingStep === 'start'">Click to set START point</t>
+                                <t t-else="">Click to set END point</t>
+                            </span>
+                        </div>
+                        
+                        <!-- Picked Points Display -->
+                        <t t-if="state.pickedPoints.length > 0">
+                            <div class="picked-coordinates mb-3">
+                                <t t-foreach="state.pickedPoints" t-as="point" t-key="point.label">
+                                    <div class="card mb-2">
+                                        <div class="card-body p-2">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="badge" t-att-class="point.label === 'START' ? 'bg-success' : 'bg-danger'">
+                                                    <t t-esc="point.label"/>
+                                                </span>
+                                            </div>
+                                            <div class="mt-2 small">
+                                                <div><strong>Inches:</strong> X=<t t-esc="point.x"/>, Y=<t t-esc="point.y"/></div>
+                                                <div><strong>Feet:</strong> X=<t t-esc="point.xFeet"/>ft, Y=<t t-esc="point.yFeet"/>ft</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                            
+                            <!-- Copy-Ready Format for Wall Tab -->
+                            <t t-if="state.pickedPoints.length === 2">
+                                <div class="card bg-light mb-3">
+                                    <div class="card-header py-2">
+                                        <strong>📋 Wall Coordinates (copy these):</strong>
+                                    </div>
+                                    <div class="card-body p-2">
+                                        <table class="table table-sm table-borderless mb-0">
+                                            <tr>
+                                                <td><strong>Start X:</strong></td>
+                                                <td><code t-esc="state.pickedPoints[0].x"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Start Y:</strong></td>
+                                                <td><code t-esc="state.pickedPoints[0].y"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>End X:</strong></td>
+                                                <td><code t-esc="state.pickedPoints[1].x"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>End Y:</strong></td>
+                                                <td><code t-esc="state.pickedPoints[1].y"/></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </t>
+                            
+                            <!-- Clear Button -->
+                            <button type="button" class="btn btn-sm btn-outline-secondary w-100"
+                                    t-on-click="clearPickedPoints">
+                                <i class="fa fa-eraser me-1"/> Clear Points
+                            </button>
+                        </t>
+                    </div>
+                    
                     <!-- Right Sidebar - Navigation Directions -->
-                    <div t-if="state.currentDirections" 
+                    <div t-if="state.currentDirections and not state.pickCoordinatesMode and state.pickedPoints.length === 0" 
                          class="blueprint-sidebar border-start p-3" style="width: 300px; overflow-y: auto;">
                         
                         <h6 class="mb-3">
@@ -235,7 +337,7 @@
                     </div>
                     
                     <!-- Right Sidebar - Selected Element -->
-                    <div t-elif="state.selectedElement"
+                    <div t-elif="state.selectedElement and not state.pickCoordinatesMode and state.pickedPoints.length === 0"
                          class="blueprint-sidebar border-start p-3" style="width: 300px; overflow-y: auto;">
                         
                         <h6 class="mb-3">
@@ -306,7 +408,7 @@
                     </div>
                     
                     <!-- Help Panel (when nothing selected) -->
-                    <div t-elif="!state.currentDirections"
+                    <div t-elif="!state.currentDirections and not state.pickCoordinatesMode and state.pickedPoints.length === 0"
                          class="blueprint-sidebar border-start p-3" style="width: 250px; overflow-y: auto;">
                         
                         <h6 class="mb-3">
@@ -315,6 +417,14 @@
                         </h6>
                         
                         <div class="help-content small">
+                            <p><strong>📍 Pick Coordinates:</strong></p>
+                            <ul class="ps-3">
+                                <li>Click <i class="fa fa-crosshairs"/> Pick Coords</li>
+                                <li>Click start point on blueprint</li>
+                                <li>Click end point</li>
+                                <li>Copy X/Y values for walls</li>
+                            </ul>
+                            
                             <p><strong>Drawing:</strong></p>
                             <ul class="ps-3">
                                 <li>Select a tool from the toolbar</li>
