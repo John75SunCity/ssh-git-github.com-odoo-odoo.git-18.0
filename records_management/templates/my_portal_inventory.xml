@@ -593,83 +593,8 @@
             </t>
         </template>
 
-        <!-- Enhanced Requests Template with Signatures -->
-        <template id="portal_requests" name="My Requests">
-            <t t-call="portal.portal_layout">
-                <t t-set="title">My Requests</t>
-                
-                <div class="o_portal_requests">
-                    <div class="card mb-4">
-                        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">
-                                <i class="fa fa-tasks"></i>
-                                Service Requests
-                            </h5>
-                            <button class="btn btn-dark" onclick="createRequest()">
-                                <i class="fa fa-plus"></i> New Request
-                            </button>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead class="thead-dark">
-                                        <tr>
-                                            <th>Request #</th>
-                                            <th>Type</th>
-                                            <th>Status</th>
-                                            <th>Created</th>
-                                            <th>Signature</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <t t-foreach="requests" t-as="req">
-                                            <tr>
-                                                <td>
-                                                    <strong t-esc="req.name"/>
-                                                </td>
-                                                <td>
-                                                    <span class="badge badge-info" t-esc="req.request_type.replace('_', ' ').title()"/>
-                                                </td>
-                                                <td>
-                                                    <span t-att-class="'badge badge-' + ('success' if req.state == 'completed' else 'warning' if req.state == 'in_progress' else 'secondary')"
-                                                          t-esc="req.state.replace('_', ' ').title()"/>
-                                                </td>
-                                                <td t-esc="req.create_date" t-options="{'widget': 'date'}"/>
-                                                <td>
-                                                    <t t-if="req.sign_request_id">
-                                                        <a href="#" t-att-onclick="'signRequest(' + str(req.sign_request_id.id) + ')'" 
-                                                           class="btn btn-sm btn-outline-primary">
-                                                            <i class="fa fa-signature"></i> Sign
-                                                        </a>
-                                                    </t>
-                                                    <t t-else="">
-                                                        <span class="text-muted">N/A</span>
-                                                    </t>
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group btn-group-sm">
-                                                        <a t-attf-href="/my/requests/#{req.id}" class="btn btn-outline-primary">
-                                                            <i class="fa fa-eye"></i>
-                                                        </a>
-                                                        <button class="btn btn-outline-info" 
-                                                                t-att-onclick="'trackRequest(' + str(req.id) + ')'"
-                                                                t-if="req.state in ['submitted', 'in_progress']">
-                                                            <i class="fa fa-map-marker"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </t>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </t>
-        </template>
-
+        <!-- NOTE: portal_requests removed 2025-12-04 - Use portal_requests_template in portal_requests_template.xml -->
+        
         <!-- Enhanced User Management Template -->
         <template id="portal_users" name="User Management">
             <t t-call="portal.portal_layout">

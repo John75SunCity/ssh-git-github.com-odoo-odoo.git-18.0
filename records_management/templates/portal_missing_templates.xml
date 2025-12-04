@@ -1037,49 +1037,7 @@
         <!-- FEEDBACK & SUPPORT TEMPLATES                                       -->
         <!-- ================================================================== -->
         
-        <template id="portal_feedback_form" name="Feedback Form">
-            <t t-call="portal.portal_layout">
-                <t t-set="page_name" t-value="'feedback'"/>
-                
-                <div class="container my-5">
-                    <div class="row">
-                        <div class="col-lg-8 mx-auto">
-                            <div class="card shadow">
-                                <div class="card-header bg-primary text-white">
-                                    <h3 class="mb-0"><i class="fa fa-comment-dots me-2"/>Submit Feedback</h3>
-                                </div>
-                                <div class="card-body">
-                                    <form method="POST" action="/my/feedback/submit">
-                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                        
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Rating</label>
-                                            <select name="rating" class="form-select" required="required">
-                                                <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
-                                                <option value="4">⭐⭐⭐⭐ Good</option>
-                                                <option value="3">⭐⭐⭐ Average</option>
-                                                <option value="2">⭐⭐ Poor</option>
-                                                <option value="1">⭐ Very Poor</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Your Feedback</label>
-                                            <textarea name="comments" class="form-control" rows="6" required="required"
-                                                      placeholder="Tell us about your experience..."/>
-                                        </div>
-                                        
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fa fa-paper-plane me-2"/>Submit Feedback
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </t>
-        </template>
+        <!-- NOTE: portal_feedback_form removed 2025-12-04 - Use feedback_form_template in portal_feedback.xml -->
         
         <template id="portal_feedback_history" name="Feedback History">
             <t t-call="portal.portal_layout">

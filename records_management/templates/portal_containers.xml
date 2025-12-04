@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <!-- Portal Container Form Template -->
-        <template id="portal_container_form" name="Create Container">
-            <t t-call="portal.portal_layout">
-                <t t-set="title">Create New Container</t>
-
-                <div class="o_portal_container_form">
-                    <div class="card">
-                        <div class="card-header bg-success text-white">
-                            <h3 class="mb-0">
-                                <i class="fa fa-plus-circle"></i>
-                                Create New Container
-                            </h3>
-                        </div>
-                        <div class="card-body">
-                            <form method="POST" action="/my/inventory/containers/create">
-                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+        <!-- 
+        NOTE: Duplicate templates removed on 2025-12-04
+        - portal_container_form: Use portal_container_create_form in portal_container_create.xml
+        - container_detail: Use portal_container_detail in portal_inventory_detail.xml
+        -->
+    </data>
+</odoo>
 
                                 <div class="form-group">
                                     <label for="container_type_id">Container Type *</label>

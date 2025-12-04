@@ -1,25 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <!-- Portal Location Detail Template (for customer portal) -->
-        <template id="portal_location_detail" name="Portal Location Detail">
-            <t t-call="portal.portal_layout">
-                <t t-set="title">Location Details</t>
-
-                <div class="o_portal_location_detail">
-                    <div class="card">
-                        <div class="card-header bg-info text-white">
-                            <h3 class="mb-0">
-                                <i class="fa fa-map-marker-alt"></i>
-                                Location: <span t-esc="location.name"/>
-                            </h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <dl class="row">
-                                        <dt class="col-sm-4">Complete Name:</dt>
-                                        <dd class="col-sm-8" t-esc="location.complete_name"/>
+        <!-- 
+        NOTE: Duplicate templates removed on 2025-12-04
+        - portal_location_detail: Use portal_staging_location_detail in portal_staging_location_forms.xml
+        - location_detail: Use portal_staging_location_detail in portal_staging_location_forms.xml
+        -->
+    </data>
+</odoo>
 
                                         <dt class="col-sm-4">Usage:</dt>
                                         <dd class="col-sm-8" t-esc="location.usage"/>
