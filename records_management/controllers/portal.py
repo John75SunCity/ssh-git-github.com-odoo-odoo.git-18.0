@@ -7345,77 +7345,161 @@ class RecordsManagementController(http.Controller):
     def portal_organization_chart(self, **kw):
         """
         Portal Organization Chart - Shows customer company structure
-        Uses res.partner hierarchy to build organization diagram similar to hr_org_chart
+        
+        ARCHITECTURE:
+        - Company (res.partner with is_company=True) 
+          → Departments (records.department)
+            → Department Users (records.storage.department.user → res.users)
+        
+        This now uses the actual records.department and records.storage.department.user
+        models instead of relying solely on res.partner hierarchy.
         """
         partner = request.env.user.partner_id
         company = partner.commercial_partner_id  # Get the main company
 
-        # Build organization structure from contacts
+        # Build organization structure
         nodes = []
         edges = []
-        partner_ids = set()
-
-        def add_partner_node(p, parent_id=None):
-            """Recursively add partner and children to nodes/edges"""
-            if p.id in partner_ids:
-                return  # Avoid duplicates
-
-            partner_ids.add(p.id)
-
-            # Determine node type and color
-            if p.is_company:
-                node_type = 'company'
-                color = '#f39c12'  # Gold for companies
-            elif p.parent_id and p.parent_id.is_company:
-                node_type = 'department'
-                color = '#27ae60'  # Green for departments
-            else:
-                node_type = 'person'
-                # Red for current user, blue for internal, pink for portal
-                if p.id == partner.id:
-                    color = '#e74c3c'  # Red - you are here
-                elif p.user_ids and not p.user_ids[0].share:
-                    color = '#3498db'  # Blue - internal user
+        added_ids = set()  # Track what's been added (using composite keys)
+        
+        # =====================================================================
+        # STEP 1: Add Company Node (root)
+        # =====================================================================
+        company_node_id = f'company_{company.id}'
+        nodes.append({
+            'id': company_node_id,
+            'label': company.name,
+            'name': company.name,
+            'type': 'company',
+            'color': '#f39c12',  # Gold for companies
+            'email': company.email or '',
+            'phone': company.phone or '',
+            'job_title': 'Company',
+            'image': f'/web/image/res.partner/{company.id}/avatar_128',
+            'is_current_user': False,
+        })
+        added_ids.add(company_node_id)
+        
+        # =====================================================================
+        # STEP 2: Add Departments (records.department)
+        # =====================================================================
+        departments = request.env['records.department'].sudo().search([
+            ('partner_id', '=', company.id),
+            ('active', '=', True),
+        ])
+        
+        for dept in departments:
+            dept_node_id = f'dept_{dept.id}'
+            if dept_node_id not in added_ids:
+                # Determine parent (company or parent department)
+                if dept.parent_department_id:
+                    parent_node_id = f'dept_{dept.parent_department_id.id}'
                 else:
-                    color = '#e91e63'  # Pink - portal user
-
-            # Create node - vis-network requires 'label' field for display
-            node = {
-                'id': p.id,
-                'label': p.name,  # vis-network displays this
-                'name': p.name,   # Keep for compatibility
-                'type': node_type,
-                'color': color,
-                'email': p.email or '',
-                'phone': p.phone or '',
-                'job_title': p.function or '',
-                'image': f'/web/image/res.partner/{p.id}/avatar_128' if p.id else '',
-                'is_current_user': p.id == partner.id,
-            }
-            nodes.append(node)
-
-            # Create edge to parent
-            if parent_id:
-                edges.append({
-                    'from': parent_id,
-                    'to': p.id,
-                    'color': '#27ae60'  # Green connections
+                    parent_node_id = company_node_id
+                
+                nodes.append({
+                    'id': dept_node_id,
+                    'label': dept.name,
+                    'name': dept.name,
+                    'type': 'department',
+                    'color': '#27ae60',  # Green for departments
+                    'email': '',
+                    'phone': '',
+                    'job_title': f'Department ({dept.state})',
+                    'image': '',
+                    'is_current_user': False,
+                    'container_count': dept.container_count or 0,
+                    'file_count': dept.file_count or 0,
                 })
-
-            # Add child partners - use sudo() for portal user access
-            children = request.env['res.partner'].sudo().search([
-                ('parent_id', '=', p.id),
-                ('active', '=', True)
-            ])
-            for child in children:
-                add_partner_node(child, p.id)
-
-        # Start with the main company and build tree
-        add_partner_node(company)
-
-        # If current user is not in tree yet, add them under their parent
-        if partner.id not in partner_ids:
-            add_partner_node(partner, partner.parent_id.id if partner.parent_id else company.id)
+                added_ids.add(dept_node_id)
+                
+                # Edge from parent to department
+                edges.append({
+                    'from': parent_node_id,
+                    'to': dept_node_id,
+                    'color': '#27ae60'
+                })
+        
+        # =====================================================================
+        # STEP 3: Add Department Users (records.storage.department.user)
+        # =====================================================================
+        dept_users = request.env['records.storage.department.user'].sudo().search([
+            ('department_id.partner_id', '=', company.id),
+            ('state', '=', 'active'),
+            ('active', '=', True),
+        ])
+        
+        current_user = request.env.user
+        for du in dept_users:
+            user = du.user_id
+            user_partner = user.partner_id
+            user_node_id = f'user_{user.id}'
+            
+            if user_node_id not in added_ids:
+                # Determine color based on user type
+                if user.id == current_user.id:
+                    color = '#e74c3c'  # Red - you are here
+                elif user.share:
+                    color = '#e91e63'  # Pink - portal user
+                else:
+                    color = '#3498db'  # Blue - internal user
+                
+                # Role badge
+                role_label = dict(du._fields['role'].selection).get(du.role, 'User')
+                
+                nodes.append({
+                    'id': user_node_id,
+                    'label': user.name,
+                    'name': user.name,
+                    'type': 'person',
+                    'color': color,
+                    'email': user.email or user_partner.email or '',
+                    'phone': user_partner.phone or '',
+                    'job_title': f'{role_label} ({du.access_level})',
+                    'image': f'/web/image/res.users/{user.id}/avatar_128' if user.id else '',
+                    'is_current_user': user.id == current_user.id,
+                    'role': du.role,
+                    'access_level': du.access_level,
+                })
+                added_ids.add(user_node_id)
+            
+            # Edge from department to user (always add, even if user was already added - they may be in multiple depts)
+            dept_node_id = f'dept_{du.department_id.id}'
+            edge_key = f'{dept_node_id}->{user_node_id}'
+            if edge_key not in added_ids:
+                edges.append({
+                    'from': dept_node_id,
+                    'to': user_node_id,
+                    'color': '#3498db'  # Blue for user connections
+                })
+                added_ids.add(edge_key)
+        
+        # =====================================================================
+        # STEP 4: Add current user if not already in diagram
+        # =====================================================================
+        current_user_node_id = f'user_{current_user.id}'
+        if current_user_node_id not in added_ids:
+            nodes.append({
+                'id': current_user_node_id,
+                'label': current_user.name + ' (You)',
+                'name': current_user.name,
+                'type': 'person',
+                'color': '#e74c3c',  # Red - you are here
+                'email': current_user.email or '',
+                'phone': current_user.partner_id.phone or '',
+                'job_title': 'Portal User',
+                'image': f'/web/image/res.users/{current_user.id}/avatar_128',
+                'is_current_user': True,
+            })
+            added_ids.add(current_user_node_id)
+            
+            # Connect to company if no department assignment
+            edges.append({
+                'from': company_node_id,
+                'to': current_user_node_id,
+                'color': '#e74c3c',
+                'dashes': True  # Dashed line for "unassigned"
+            })
 
         # Calculate statistics
         stats = {
