@@ -19,68 +19,7 @@ class PortalInteractiveController(CustomerPortal):
     - Export functionality
     """
 
-    @http.route(['/my/document-retrieval/calculate-price'], type='json', auth="user", website=True)
-    def calculate_retrieval_price(self, container_ids=None, **kw):
-        """
-        Calculate price for document retrieval request using customer rates.
-        
-        Rate lookup order:
-        1. Customer negotiated rate (if active)
-        2. Base rate (company default)
-        3. Fallback defaults
-        
-        :param container_ids: List of container IDs to retrieve
-        :return: Dictionary with pricing breakdown
-        """
-        if not container_ids:
-            return {'total_price': 0.0, 'breakdown': {}}
-        
-        try:
-            Container = request.env['records.container']
-            containers = Container.browse(container_ids)
-            partner = request.env.user.partner_id
-            
-            # Get rates from customer negotiated rates or base rates
-            rates = self._get_customer_rates(partner)
-            
-            base_price = rates.get('document_retrieval_rate', 25.00)
-            per_container = rates.get('per_container_fee', 5.00)
-            delivery_rate = rates.get('delivery_rate', 50.00)
-            
-            # Calculate volume/weight based pricing if needed
-            total_volume = sum(c.volume or 0 for c in containers)
-            volume_surcharge = 0.0
-            if total_volume > 10.0:  # Cubic feet
-                volume_surcharge = (total_volume - 10.0) * 2.00
-            
-            # Same-day delivery surcharge
-            same_day = kw.get('same_day_delivery', False)
-            delivery_surcharge = delivery_rate if same_day else 0.0
-            
-            subtotal = base_price + (len(containers) * per_container) + volume_surcharge
-            total = subtotal + delivery_surcharge
-            
-            return {
-                'success': True,
-                'total_price': total,
-                'breakdown': {
-                    'base_fee': base_price,
-                    'container_count': len(containers),
-                    'per_container_fee': per_container,
-                    'container_fees': len(containers) * per_container,
-                    'volume_cubic_feet': total_volume,
-                    'volume_surcharge': volume_surcharge,
-                    'delivery_surcharge': delivery_surcharge,
-                    'subtotal': subtotal,
-                    'total': total,
-                }
-            }
-        except Exception as e:
-            return {
-                'success': False,
-                'error': str(e),
-                'total_price': 0.0
-            }
+    # NOTE: calculate_retrieval_price moved to portal.py to avoid duplicate routes
     
     def _get_customer_rates(self, partner):
         """
