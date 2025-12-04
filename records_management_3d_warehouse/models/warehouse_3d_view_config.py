@@ -409,12 +409,12 @@ class Warehouse3DViewConfig(models.Model):
                 'customer': container.partner_id.name,
                 'customer_id': container.partner_id.id,
                 'type': container.container_type_id.name if container.container_type_id else 'N/A',
-                'monthly_fee': container.monthly_storage_fee or 0,
-                'age_days': container.storage_duration_days or 0,
-                'has_fsm': bool(container.fsm_order_ids),
-                'has_files': bool(container.file_folder_ids),
-                'file_count': len(container.file_folder_ids),
-                'security_level': container.location_id.security_level or 'internal',
+                'monthly_fee': getattr(container, 'monthly_storage_fee', 0) or 0,
+                'age_days': getattr(container, 'storage_duration_days', 0) or 0,
+                'has_fsm': bool(getattr(container, 'fsm_order_ids', False)),
+                'has_files': bool(getattr(container, 'file_folder_ids', False)),
+                'file_count': len(getattr(container, 'file_folder_ids', [])),
+                'security_level': getattr(container.location_id, 'security_level', 'internal') or 'internal',
             })
         return data
     

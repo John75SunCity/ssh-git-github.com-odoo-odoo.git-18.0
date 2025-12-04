@@ -281,7 +281,7 @@
                     </div>
                     
                     <!-- Right Sidebar - Navigation Directions -->
-                    <div t-if="state.currentDirections and not state.pickCoordinatesMode and state.pickedPoints.length === 0" 
+                    <div t-if="state.currentDirections and !state.pickCoordinatesMode and state.pickedPoints.length === 0" 
                          class="blueprint-sidebar border-start p-3" style="width: 300px; overflow-y: auto;">
                         
                         <h6 class="mb-3">
@@ -337,7 +337,7 @@
                     </div>
                     
                     <!-- Right Sidebar - Selected Element -->
-                    <div t-elif="state.selectedElement and not state.pickCoordinatesMode and state.pickedPoints.length === 0"
+                    <div t-elif="state.selectedElement and !state.pickCoordinatesMode and state.pickedPoints.length === 0"
                          class="blueprint-sidebar border-start p-3" style="width: 300px; overflow-y: auto;">
                         
                         <h6 class="mb-3">
@@ -408,7 +408,7 @@
                     </div>
                     
                     <!-- Help Panel (when nothing selected) -->
-                    <div t-elif="!state.currentDirections and not state.pickCoordinatesMode and state.pickedPoints.length === 0"
+                    <div t-elif="!state.currentDirections and !state.pickCoordinatesMode and state.pickedPoints.length === 0"
                          class="blueprint-sidebar border-start p-3" style="width: 250px; overflow-y: auto;">
                         
                         <h6 class="mb-3">
