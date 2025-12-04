@@ -625,7 +625,6 @@ class PortalRequest(models.Model):
                 "user_ids": [(6, 0, [self.user_id.id])] if self.user_id else [],
                 "date_deadline": self.deadline.date() if self.deadline else fields.Date.today(),
                 "description": self.description,
-                "planned_hours": self.estimated_hours or 1.0,
             }
             task = self.env['project.task'].create(task_vals)
             self.work_order_id = task.id

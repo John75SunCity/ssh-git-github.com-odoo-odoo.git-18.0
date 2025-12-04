@@ -2267,18 +2267,31 @@ class RecordsManagementController(http.Controller):
     # ============================================================================
 
     @http.route(['/my/inventory/containers'], type='http', auth="user", website=True)
-    def portal_inventory_containers(self, page=1, sortby=None, filterby=None, search=None, **kw):
-        """Containers tab - backend-style list view with bulk actions"""
+    def portal_inventory_containers(self, page=1, sortby=None, filterby=None, search=None, state_filter=None, **kw):
+        """Containers tab - backend-style list view with bulk actions and state filtering"""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id.commercial_partner_id
 
         Container = request.env['records.container'].sudo()
-        domain = [('partner_id', '=', partner.id)]
+        base_domain = [('partner_id', '=', partner.id)]
 
         if search:
-            domain += ['|', '|', ('name', 'ilike', search), ('barcode', 'ilike', search), ('temp_barcode', 'ilike', search)]
+            base_domain += ['|', '|', ('name', 'ilike', search), ('barcode', 'ilike', search), ('temp_barcode', 'ilike', search)]
 
-        # Filtering options
+        # Calculate counts for each state (for tab badges)
+        counts = {
+            'all': Container.search_count(base_domain),
+            'in': Container.search_count(base_domain + [('state', '=', 'in')]),
+            'out': Container.search_count(base_domain + [('state', '=', 'out')]),
+            'pending': Container.search_count(base_domain + [('state', '=', 'pending')]),
+        }
+
+        # Apply state filter to domain
+        domain = list(base_domain)
+        if state_filter and state_filter != 'all':
+            domain += [('state', '=', state_filter)]
+
+        # Legacy status filter (for backward compatibility with filterby dropdown)
         searchbar_filters = {
             'all': {'label': 'All Containers', 'domain': []},
             'active': {'label': 'Active', 'domain': [('state', '=', 'active')]},
@@ -2305,7 +2318,7 @@ class RecordsManagementController(http.Controller):
         container_count = Container.search_count(domain)
         pager = request.website.pager(
             url="/my/inventory/containers",
-            url_args={'sortby': sortby, 'filterby': filterby, 'search': search},
+            url_args={'sortby': sortby, 'filterby': filterby, 'search': search, 'state_filter': state_filter},
             total=container_count,
             page=page,
             step=20,
@@ -2326,6 +2339,8 @@ class RecordsManagementController(http.Controller):
             'filterby': filterby,
             'search': search or '',
             'container_count': container_count,
+            'state_filter': state_filter or 'all',
+            'counts': counts,
             'permissions': permissions,
         })
 

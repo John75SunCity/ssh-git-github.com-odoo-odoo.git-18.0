@@ -118,7 +118,7 @@
                                         <div class="row">
                                             <div class="col-md-12 mb-3">
                                                 <label class="form-label">Select Industry Template *</label>
-                                                <div class="btn-group btn-group-toggle d-flex flex-wrap" data-toggle="buttons">
+                                                <div class="btn-group btn-group-toggle d-flex flex-wrap" role="group" aria-label="Industry Template">
                                                     <label class="btn btn-outline-primary active">
                                                         <input type="radio" name="industry_template" value="legal" checked="checked"/> Legal
                                                     </label>
@@ -331,27 +331,51 @@
                 
                 <!-- JavaScript for dynamic form behavior -->
                 <script type="text/javascript">
-                    $(document).ready(function() {
-                        // Toggle range fields vs custom description
-                        $('#contents_type').on('change', function() {
-                            if ($(this).val() === 'custom') {
-                                $('#range_fields').hide();
-                                $('#custom_description').show();
-                            } else {
-                                $('#range_fields').show();
-                                $('#custom_description').hide();
+                    (function() {
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Industry template radio button toggle (Bootstrap 5 compatible)
+                            const industryLabels = document.querySelectorAll('[name="industry_template"]');
+                            industryLabels.forEach(function(radio) {
+                                radio.addEventListener('change', function() {
+                                    // Remove active class from all labels
+                                    document.querySelectorAll('.btn-group-toggle .btn').forEach(function(label) {
+                                        label.classList.remove('active');
+                                    });
+                                    // Add active class to the parent label of checked radio
+                                    if (this.checked) {
+                                        this.parentElement.classList.add('active');
+                                    }
+                                });
+                            });
+                            
+                            // Toggle range fields vs custom description
+                            var contentsType = document.getElementById('contents_type');
+                            if (contentsType) {
+                                contentsType.addEventListener('change', function() {
+                                    var rangeFields = document.getElementById('range_fields');
+                                    var customDesc = document.getElementById('custom_description');
+                                    if (this.value === 'custom') {
+                                        if (rangeFields) rangeFields.style.display = 'none';
+                                        if (customDesc) customDesc.style.display = 'block';
+                                    } else {
+                                        if (rangeFields) rangeFields.style.display = '';
+                                        if (customDesc) customDesc.style.display = 'none';
+                                    }
+                                });
                             }
+                            
+                            // Toggle custom retention years
+                            var retentionRadios = document.querySelectorAll('input[name="retention_period"]');
+                            retentionRadios.forEach(function(radio) {
+                                radio.addEventListener('change', function() {
+                                    var customRetention = document.getElementById('custom_retention');
+                                    if (customRetention) {
+                                        customRetention.style.display = this.value === 'custom' ? 'block' : 'none';
+                                    }
+                                });
+                            });
                         });
-                        
-                        // Toggle custom retention years
-                        $('input[name="retention_period"]').on('change', function() {
-                            if ($(this).val() === 'custom') {
-                                $('#custom_retention').show();
-                            } else {
-                                $('#custom_retention').hide();
-                            }
-                        });
-                    });
+                    })();
                 </script>
             </t>
         </template>

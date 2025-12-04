@@ -97,28 +97,28 @@
                 <ul class="nav nav-tabs mb-3" id="containerStateTabs" role="tablist">
                     <li class="nav-item" role="presentation">
                         <a t-att-class="'nav-link' + (' active' if not state_filter or state_filter == 'all' else '')" 
-                           href="/my/inventory/containers?state_filter=all">
+                           href="/my/containers?state_filter=all">
                             <i class="fa fa-list"></i> All
                             <span class="badge bg-secondary ms-1" t-esc="counts.get('all', 0)"/>
                         </a>
                     </li>
                     <li class="nav-item" role="presentation">
                         <a t-att-class="'nav-link' + (' active' if state_filter == 'in' else '')"
-                           href="/my/inventory/containers?state_filter=in">
+                           href="/my/containers?state_filter=in">
                             <i class="fa fa-warehouse text-success"></i> In Storage
                             <span class="badge bg-success ms-1" t-esc="counts.get('in', 0)"/>
                         </a>
                     </li>
                     <li class="nav-item" role="presentation">
                         <a t-att-class="'nav-link' + (' active' if state_filter == 'out' else '')"
-                           href="/my/inventory/containers?state_filter=out">
+                           href="/my/containers?state_filter=out">
                             <i class="fa fa-truck text-warning"></i> Out (With You)
                             <span class="badge bg-warning text-dark ms-1" t-esc="counts.get('out', 0)"/>
                         </a>
                     </li>
                     <li class="nav-item" role="presentation">
                         <a t-att-class="'nav-link' + (' active' if state_filter == 'pending' else '')"
-                           href="/my/inventory/containers?state_filter=pending">
+                           href="/my/containers?state_filter=pending">
                             <i class="fa fa-clock text-info"></i> Pending (Ready for Storage)
                             <span class="badge bg-info ms-1" t-esc="counts.get('pending', 0)"/>
                         </a>
