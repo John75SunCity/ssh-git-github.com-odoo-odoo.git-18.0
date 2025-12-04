@@ -116,10 +116,10 @@
             }
             
             // web_vis_network module should have loaded vis.js already via assets
-            // If not available, wait briefly for async asset loading
+            // If not available, wait briefly for async asset loading, then try CDN fallback
             return new Promise((resolve, reject) => {
                 let attempts = 0;
-                const maxAttempts = 10;
+                const maxAttempts = 5; // Reduced attempts before CDN fallback
                 const checkInterval = 100; // ms
                 
                 const checkVisLoaded = () => {
@@ -128,14 +128,47 @@
                         console.log('[OrgDiagramPortal] vis.Network loaded successfully');
                         resolve();
                     } else if (attempts >= maxAttempts) {
-                        console.error('[OrgDiagramPortal] vis.Network not available - ensure web_vis_network module is installed');
-                        reject(new Error('vis.Network not loaded - web_vis_network module required'));
+                        // Fallback: Load from CDN
+                        console.warn('[OrgDiagramPortal] vis.Network not in assets, loading from CDN...');
+                        this._loadFromCDN().then(resolve).catch(reject);
                     } else {
                         setTimeout(checkVisLoaded, checkInterval);
                     }
                 };
                 
                 checkVisLoaded();
+            });
+        }
+
+        _loadFromCDN() {
+            return new Promise((resolve, reject) => {
+                // Load vis-network CSS
+                const cssLink = document.createElement('link');
+                cssLink.rel = 'stylesheet';
+                cssLink.href = 'https://unpkg.com/vis-network@9.1.9/dist/dist/vis-network.min.css';
+                document.head.appendChild(cssLink);
+
+                // Load vis-network JS
+                const script = document.createElement('script');
+                script.src = 'https://unpkg.com/vis-network@9.1.9/dist/vis-network.min.js';
+                script.onload = () => {
+                    // Check multiple times as vis may take a moment to initialize
+                    let checkCount = 0;
+                    const checkVis = () => {
+                        checkCount++;
+                        if (window.vis && window.vis.Network) {
+                            console.log('[OrgDiagramPortal] vis.Network loaded from CDN');
+                            resolve();
+                        } else if (checkCount < 10) {
+                            setTimeout(checkVis, 100);
+                        } else {
+                            reject(new Error('vis.Network not available after CDN load'));
+                        }
+                    };
+                    checkVis();
+                };
+                script.onerror = () => reject(new Error('Failed to load vis-network from CDN'));
+                document.head.appendChild(script);
             });
         }
 

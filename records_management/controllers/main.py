@@ -1054,29 +1054,59 @@ class RecordsManagementPortal(CustomerPortal):
         is_dept_user = user.has_group('records_management.group_portal_department_user')
         is_readonly = user.has_group('records_management.group_portal_readonly_employee')
 
-        # Determine user role name
+        # Determine user role name and permission level
         if is_company_admin:
             user_role = 'Company Admin'
             can_create = True
+            can_update = True
+            can_request_destruction = True
+            level = 'full'
+            color = 'green'
+            message = 'Full access: You can add, view, edit, and request destruction'
         elif is_dept_admin:
             user_role = 'Department Admin'
             can_create = True
+            can_update = True
+            can_request_destruction = False
+            level = 'partial'
+            color = 'yellow'
+            message = 'Partial access: You can add, view, and edit'
         elif is_dept_user:
             user_role = 'Department User'
             can_create = True
+            can_update = True
+            can_request_destruction = False
+            level = 'partial'
+            color = 'yellow'
+            message = 'Partial access: You can add, view, and edit'
         elif is_readonly:
             user_role = 'Read-Only'
             can_create = False
+            can_update = False
+            can_request_destruction = False
+            level = 'readonly'
+            color = 'yellow'
+            message = 'Read only: You can view but cannot make changes'
         else:
             user_role = 'Portal User'
-            can_create = True  # Default portal users can create
+            can_create = True
+            can_update = True
+            can_request_destruction = False
+            level = 'partial'
+            color = 'yellow'
+            message = 'Partial access: You can add, view, and edit'
 
         permissions = {
             'user_role': user_role,
             'containers': {
+                'level': level,
+                'color': color,
+                'message': message,
                 'can_create': can_create,
                 'can_read': True,
-                'can_update': not is_readonly,
+                'can_update': can_update,
+                'can_request_destruction': can_request_destruction,
+                'can_delete': can_request_destruction,  # Alias for backward compatibility
             },
         }
 
