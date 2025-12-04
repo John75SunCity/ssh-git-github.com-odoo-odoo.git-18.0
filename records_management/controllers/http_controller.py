@@ -458,7 +458,7 @@ class RecordsManagementController(http.Controller):
             'search_term': search_term,
         }
 
-        return request.render('records_management.my_requests_template', context)
+        return request.render('records_management.portal_requests_template', context)
 
     @http.route('/my/requests/<int:request_id>', type='http', auth='user', website=True, methods=['GET'])
     def my_request_detail(self, request_id, **get):
@@ -488,7 +488,7 @@ class RecordsManagementController(http.Controller):
             'can_cancel': customer_request.state in ['draft', 'submitted'],
         }
 
-        return request.render('records_management.my_request_detail_template', context)
+        return request.render('records_management.portal_request_detail', context)
 
     @http.route('/my/requests/<int:request_id>/cancel', type='http', auth='user', methods=['POST'], csrf=True)
     def cancel_request(self, request_id, **post):

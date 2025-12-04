@@ -387,7 +387,7 @@ class DestructionPortalController(CustomerPortal):
             'partner': partner,
         })
 
-        return request.render("records_management.portal_request_bin_service", values)
+        return request.render("records_management.portal_shredding_bins", values)
 
     # =========================================================================
     # SHREDDING REQUEST ROUTES
@@ -533,7 +533,7 @@ class DestructionPortalController(CustomerPortal):
             'partner': partner,
         })
 
-        return request.render("records_management.portal_shredding_certificate_detail", values)
+        return request.render("records_management.portal_certificate_detail", values)
 
     @http.route(['/my/shredding/certificate/<int:cert_id>/download'], type='http', auth='user')
     def portal_download_certificate(self, cert_id, **kw):

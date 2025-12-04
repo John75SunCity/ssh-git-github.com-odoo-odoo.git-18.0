@@ -1485,7 +1485,7 @@ class RecordsManagementController(http.Controller):
             'partner': partner,
         }
 
-        return request.render('records_management.portal_hub_page', values)
+        return request.render('records_management.portal_my_home_preconfigured', values)
 
     # ============================================================================
     # CERTIFICATES PORTAL ROUTES
@@ -4964,7 +4964,7 @@ class RecordsManagementController(http.Controller):
 
         # Require department admin+ permissions
         if not user.has_group('records_management.group_portal_department_admin'):
-            return request.render('records_management.portal_errors', {
+            return request.render('records_management.portal_error', {
                 'error_title': _('Access Denied'),
                 'error_message': _('You do not have permission to view pending destruction approvals.'),
             })
@@ -5224,7 +5224,7 @@ class RecordsManagementController(http.Controller):
             'pager': pager,
             'invoice_count': invoice_count,
         })
-        return request.render('records_management.portal_invoices', values)
+        return request.render('records_management.portal_billing', values)
 
     @http.route(['/my/invoices/history'], type='http', auth='user', website=True)
     def portal_invoices_history(self, page=1, **kw):
@@ -5249,7 +5249,7 @@ class RecordsManagementController(http.Controller):
             'page_name': 'payment_history',
             'pager': pager,
         })
-        return request.render('records_management.portal_payment_history', values)
+        return request.render('records_management.portal_billing_details', values)
 
     @http.route(['/my/billing/rates'], type='http', auth='user', website=True)
     def portal_billing_rates(self, **kw):
@@ -5375,7 +5375,7 @@ class RecordsManagementController(http.Controller):
             'counts': counts,
             'page_name': 'inventory_counts',
         })
-        return request.render('records_management.portal_inventory_counts', values)
+        return request.render('records_management.portal_inventory_enhanced', values)
 
     @http.route(['/my/inventory/recent_activity'], type='http', auth='user', website=True)
     def portal_inventory_recent_activity(self, page=1, **kw):
@@ -5405,7 +5405,7 @@ class RecordsManagementController(http.Controller):
             'page_name': 'recent_activity',
             'pager': pager,
         })
-        return request.render('records_management.portal_recent_activity', values)
+        return request.render('records_management.portal_reports_activity', values)
 
     @http.route(['/my/billing/summary'], type='http', auth='user', website=True)
     def portal_billing_summary(self, **kw):
@@ -5428,7 +5428,7 @@ class RecordsManagementController(http.Controller):
             'summary': summary,
             'page_name': 'billing_summary',
         })
-        return request.render('records_management.portal_billing_summary', values)
+        return request.render('records_management.portal_billing_dashboard', values)
 
     @http.route(['/my/reports/audit'], type='http', auth='user', website=True)
     def portal_reports_audit(self, page=1, **kw):
@@ -5458,7 +5458,7 @@ class RecordsManagementController(http.Controller):
             'page_name': 'audit_reports',
             'pager': pager,
         })
-        return request.render('records_management.portal_audit_reports', values)
+        return request.render('records_management.portal_reports', values)
 
     # ============================================================================
     # BARCODE ROUTES (3 routes)
@@ -5469,7 +5469,7 @@ class RecordsManagementController(http.Controller):
         """Barcode scanning center."""
         values = self._prepare_portal_layout_values()
         values.update({'page_name': 'barcode_main'})
-        return request.render('records_management.portal_barcode_main', values)
+        return request.render('records_management.portal_barcode_main_menu', values)
 
     @http.route(['/my/barcode/scan/container'], type='http', auth='user', website=True, methods=['GET', 'POST'], csrf=True)
     def portal_barcode_scan_container(self, barcode_data=None, **post):
@@ -5495,7 +5495,7 @@ class RecordsManagementController(http.Controller):
                 values.update({'error': _('Container not found')})
 
         values.update({'page_name': 'barcode_scan_container'})
-        return request.render('records_management.portal_barcode_scan', values)
+        return request.render('records_management.portal_barcode_scanner', values)
 
     @http.route(['/my/barcode/scan/file'], type='http', auth='user', website=True, methods=['GET', 'POST'], csrf=True)
     def portal_barcode_scan_file(self, barcode_data=None, **post):
@@ -5521,7 +5521,7 @@ class RecordsManagementController(http.Controller):
                 values.update({'error': _('File not found')})
 
         values.update({'page_name': 'barcode_scan_file'})
-        return request.render('records_management.portal_barcode_scan', values)
+        return request.render('records_management.portal_barcode_scanner', values)
 
     # ============================================================================
     # FEEDBACK & SETTINGS ROUTES (5 routes)
@@ -5542,7 +5542,7 @@ class RecordsManagementController(http.Controller):
             return request.redirect('/my/feedback/history?submitted=success')
 
         values.update({'page_name': 'feedback'})
-        return request.render('records_management.portal_feedback', values)
+        return request.render('records_management.feedback_form_template', values)
 
     @http.route(['/my/feedback/history'], type='http', auth='user', website=True)
     def portal_feedback_history(self, page=1, **kw):
@@ -5606,7 +5606,7 @@ class RecordsManagementController(http.Controller):
 
         # Require department admin+ permissions
         if not user.has_group('records_management.group_portal_department_admin'):
-            return request.render('records_management.portal_errors', {
+            return request.render('records_management.portal_error', {
                 'error_title': _('Access Denied'),
                 'error_message': _('You do not have permission to manage access.'),
             })
@@ -5621,7 +5621,7 @@ class RecordsManagementController(http.Controller):
             'department_users': department_users,
             'page_name': 'access_management',
         })
-        return request.render('records_management.portal_access', values)
+        return request.render('records_management.portal_access_management', values)
 
     # ============================================================================
     # TEMPORARY INVENTORY & OTHER ROUTES
