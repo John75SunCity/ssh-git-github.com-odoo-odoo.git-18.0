@@ -1365,10 +1365,10 @@ export class WarehouseBlueprintEditor extends Component {
             // Add end point
             this.state.pickedPoints.push(point);
             this.state.pickingStep = 'start';
-            
+
             const start = this.state.pickedPoints[0];
             const end = point;
-            
+
             // Show complete wall coordinates
             this.notification.add(
                 `Wall coordinates: Start(${start.x}, ${start.y}) → End(${end.x}, ${end.y}) | ` +
@@ -1409,7 +1409,7 @@ export class WarehouseBlueprintEditor extends Component {
             const coordText = `${point.x}", ${point.y}" (${point.xFeet}ft, ${point.yFeet}ft)`;
             const textWidth = ctx.measureText(coordText).width + 10;
             const boxY = point.label === 'START' ? y - 35 : y + 20;
-            
+
             ctx.fillRect(x - textWidth / 2, boxY, textWidth, 18);
             ctx.fillStyle = '#FFFFFF';
             ctx.font = '11px Arial';
