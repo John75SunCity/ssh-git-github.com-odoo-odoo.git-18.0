@@ -2412,10 +2412,14 @@ class RecordsManagementController(http.Controller):
                 ('company_id', '=', partner.id)
             ])
             container_types = request.env['records.container.type'].sudo().search([])
-            # Get retention policies for the form
-            retention_policies = request.env['records.retention.rule'].sudo().search([])
+            # Get retention policies for the form (use records.retention.policy, not rule)
+            retention_policies = request.env['records.retention.policy'].sudo().search([
+                ('active', '=', True)
+            ], order='name')
             # Get user permissions for traffic light indicators
             permissions = self._get_user_permissions()
+            # Get smart department context
+            dept_context = self._get_smart_department_context(request.env.user, request.env.user.partner_id)
 
             values = {
                 'departments': departments,
@@ -2423,6 +2427,7 @@ class RecordsManagementController(http.Controller):
                 'retention_policies': retention_policies,
                 'permissions': permissions,
                 'page_name': 'container_create',
+                **dept_context,  # departments, default_department, has_departments, show_department_selector
             }
             return request.render("records_management.portal_container_create_form", values)
 
