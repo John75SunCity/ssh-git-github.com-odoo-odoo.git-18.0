@@ -4,15 +4,15 @@
          PORTAL BARCODE MAIN MENU
          Central hub for all barcode operations with quick stats
          ============================================================================ -->
-    
+
     <template id="portal_barcode_main_menu" name="Portal Barcode Main Menu">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
-            
+
             <t t-call="portal.portal_searchbar">
                 <t t-set="title">Barcode Operations</t>
             </t>
-            
+
             <div class="container mt-4">
                 <!-- Page Header -->
                 <div class="row mb-4">
@@ -24,7 +24,7 @@
                         <p class="text-muted">Select a barcode operation or scan O-CMD.MAIN-MENU to return here</p>
                     </div>
                 </div>
-                
+
                 <!-- Container Statistics Cards -->
                 <div class="row mb-4">
                     <div class="col-md-3 col-6 mb-3">
@@ -68,7 +68,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Barcode Operations Grid -->
                 <div class="row">
                     <t t-foreach="barcode_operations" t-as="operation">
@@ -90,7 +90,7 @@
                         </div>
                     </t>
                 </div>
-                
+
                 <!-- Standard Commands Reference -->
                 <div class="row mt-5">
                     <div class="col-12">
@@ -129,20 +129,20 @@
             </div>
         </t>
     </template>
-    
+
     <!-- ============================================================================
          PORTAL BARCODE SCANNER INTERFACE
          Universal scanner with auto-submit and command processing
          ============================================================================ -->
-    
+
     <template id="portal_barcode_scanner" name="Portal Barcode Scanner">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
-            
+
             <t t-call="portal.portal_searchbar">
                 <t t-set="title" t-esc="scan_config['title']"/>
             </t>
-            
+
             <div class="container mt-4 barcode-scanner">
                 <!-- Scanner Header -->
                 <div class="row mb-4">
@@ -158,7 +158,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Scanner Input -->
                 <div class="row mb-4">
                     <div class="col-12">
@@ -174,26 +174,34 @@
                                             <span class="input-group-text bg-primary text-white">
                                                 <i class="fa fa-qrcode"></i>
                                             </span>
-                                            <input 
-                                                type="text" 
-                                                id="barcode_input" 
-                                                name="barcode" 
-                                                class="form-control form-control-lg" 
+                                            <input
+                                                type="text"
+                                                id="barcode_input"
+                                                name="barcode"
+                                                class="form-control form-control-lg"
                                                 t-att-placeholder="scan_config['placeholder']"
                                                 autocomplete="off"
                                                 autofocus="autofocus"
                                                 required="required"
                                             />
+                                            <!-- Camera Scan Button (Scanbot SDK) -->
+                                            <button type="button"
+                                                    class="btn btn-success btn-camera-scan"
+                                                    id="camera_scan_btn"
+                                                    title="Scan with Camera">
+                                                <i class="fa fa-camera me-1"></i>
+                                                <span class="d-none d-md-inline">Camera</span>
+                                            </button>
                                             <button type="submit" class="btn btn-primary">
                                                 <i class="fa fa-search me-2"></i>Process
                                             </button>
                                         </div>
                                         <small class="form-text text-muted mt-2">
                                             <i class="fa fa-info-circle me-1"></i>
-                                            Focus this field and scan barcode, or type manually and press Enter
+                                            Focus this field and scan barcode, type manually, or tap <strong>Camera</strong> to use your device's camera
                                         </small>
                                     </div>
-                                    
+
                                     <input type="hidden" name="operation" t-att-value="scan_type"/>
                                     <input type="hidden" name="endpoint" t-att-value="scan_config['endpoint']"/>
                                 </form>
@@ -201,7 +209,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Scan Results Area -->
                 <div class="row">
                     <div class="col-12">
@@ -216,7 +224,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Scanned Items Queue (for multi-scan operations) -->
                 <div class="row mt-4" t-if="scan_type in ['pickup', 'retrieval']">
                     <div class="col-12">
@@ -248,7 +256,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Quick Command Reference -->
                 <div class="row mt-4">
                     <div class="col-12">
@@ -281,5 +289,5 @@
             </div>
         </t>
     </template>
-    
+
 </odoo>

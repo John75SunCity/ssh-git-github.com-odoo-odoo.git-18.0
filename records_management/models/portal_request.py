@@ -598,22 +598,87 @@ class PortalRequest(models.Model):
             container_data['container'].matching_reasons = ', '.join(container_data['reasons'])
         
         return result
+
     def _create_work_order(self):
         """Create an FSM task for service-type requests."""
         self.ensure_one()
-        if self.request_type in ['destruction', 'pickup', 'retrieval', 'shredding'] and not self.work_order_id:
+        if self.request_type in ['destruction', 'pickup', 'retrieval', 'shredding', 'scanning', 'audit'] and not self.work_order_id:
             fsm_project = self.env.ref('industry_fsm.fsm_project', raise_if_not_found=False)
             if not fsm_project:
                 raise UserError(_("FSM Project not found. Please ensure the Field Service module is installed correctly."))
 
+            # Map request type to task name prefix
+            type_labels = {
+                'destruction': _("Destruction Service"),
+                'pickup': _("Pickup Service"),
+                'retrieval': _("File Retrieval"),
+                'shredding': _("Shredding Service"),
+                'scanning': _("Document Scanning"),
+                'audit': _("Compliance Audit"),
+            }
+            task_name = "%s: %s" % (type_labels.get(self.request_type, _("Service")), self.name)
+            
             task_vals = {
-                "name": _("Request: %s", self.name),
+                "name": task_name,
                 "project_id": fsm_project.id,
                 "partner_id": self.partner_id.id,
                 "user_ids": [(6, 0, [self.user_id.id])] if self.user_id else [],
                 "date_deadline": self.deadline.date() if self.deadline else fields.Date.today(),
                 "description": self.description,
+                "planned_hours": self.estimated_hours or 1.0,
             }
             task = self.env['project.task'].create(task_vals)
             self.work_order_id = task.id
             self.message_post(body=_("Work Order %s created.", task.name))
+            return task
+        return False
+
+    def action_create_work_order(self):
+        """
+        Manual action to create work order from customer request.
+        Allows internal staff to convert any portal request into a work order
+        as if they took the order directly from the customer.
+        """
+        self.ensure_one()
+        if self.work_order_id:
+            raise UserError(_("A work order already exists for this request: %s", self.work_order_id.name))
+        
+        # If request is in draft, auto-approve it first
+        if self.state == 'draft':
+            self.write({'state': 'submitted', 'requested_date': fields.Datetime.now()})
+            self.message_post(body=_("Request auto-submitted by staff for work order creation."))
+        
+        if self.state == 'submitted':
+            self.write({'state': 'approved'})
+            self.message_post(body=_("Request approved by %s for work order creation.", self.env.user.name))
+        
+        # Create the work order
+        task = self._create_work_order()
+        
+        if task:
+            # Automatically start progress
+            self.write({'state': 'in_progress'})
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Work Order'),
+                'res_model': 'project.task',
+                'view_mode': 'form',
+                'res_id': task.id,
+                'target': 'current',
+            }
+        else:
+            raise UserError(_("Could not create work order. Request type may not support work orders."))
+
+    def action_view_work_order(self):
+        """Open the linked work order."""
+        self.ensure_one()
+        if not self.work_order_id:
+            raise UserError(_("No work order linked to this request."))
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Work Order'),
+            'res_model': 'project.task',
+            'view_mode': 'form',
+            'res_id': self.work_order_id.id,
+            'target': 'current',
+        }

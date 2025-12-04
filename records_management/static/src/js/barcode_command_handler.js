@@ -54,6 +54,7 @@ class BarcodeScannerHandler {
         const input = document.getElementById('barcode_input');
         const clearBtn = document.getElementById('clear_scanned_items');
         const submitBtn = document.getElementById('submit_scanned_items');
+        const cameraScanBtn = document.getElementById('camera_scan_btn');
 
         if (!form || !input) {
             return; // Not on barcode scanner page
@@ -64,6 +65,14 @@ class BarcodeScannerHandler {
             e.preventDefault();
             this.processBarcode();
         });
+
+        // Camera scan button (Scanbot SDK)
+        if (cameraScanBtn) {
+            cameraScanBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.launchCameraScanner();
+            });
+        }
 
         // Auto-submit after scan delay
         input.addEventListener('keyup', (e) => {
@@ -338,6 +347,64 @@ class BarcodeScannerHandler {
             console.error('Batch submission error:', error);
             this.showError('Error creating request. Please try again or contact support.');
         }
+    }
+
+    /**
+     * Launch camera scanner using Scanbot SDK (via PortalCameraScanner)
+     * This method integrates with the portal_camera_scanner.js component
+     */
+    async launchCameraScanner() {
+        const input = document.getElementById('barcode_input');
+        const operation = document.querySelector('input[name="operation"]')?.value || 'container';
+        
+        // Check if PortalCameraScanner is available
+        if (window.PortalCameraScanner) {
+            try {
+                this.showInfo('Starting camera scanner...');
+                
+                // Launch with callback to process the scanned barcode
+                await window.PortalCameraScanner.launch({
+                    scanType: operation,
+                    continuous: false,
+                    onScan: (barcode) => {
+                        // Fill input with scanned barcode and process
+                        if (input && barcode) {
+                            input.value = barcode;
+                            this.processBarcode();
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Camera scanner error:', error);
+                this.showError('Camera scanner error: ' + error.message);
+            }
+        } else {
+            // Fallback: Try to use native input capture on mobile
+            this.showCameraFallback(input);
+        }
+    }
+
+    /**
+     * Fallback camera input for devices without Scanbot SDK support
+     */
+    showCameraFallback(input) {
+        // Create a temporary file input for camera capture
+        const cameraInput = document.createElement('input');
+        cameraInput.type = 'file';
+        cameraInput.accept = 'image/*';
+        cameraInput.capture = 'environment'; // Use back camera
+        cameraInput.style.display = 'none';
+        
+        cameraInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                this.showInfo('Camera capture not available. Please type the barcode manually or use a handheld scanner.');
+            }
+            cameraInput.remove();
+        });
+        
+        document.body.appendChild(cameraInput);
+        cameraInput.click();
     }
 
     /**

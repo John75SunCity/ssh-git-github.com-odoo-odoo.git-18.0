@@ -6,7 +6,8 @@
  * 
  * ARCHITECTURE:
  * - Consumes JSON from #diagram-data element (server-rendered in template)
- * - Renders via vis-network library (loaded from CDN)
+ * - Renders via vis-network library (bundled in web_vis_network module)
+ * - Falls back to CDN if web_vis_network not available
  * - Graceful fallback when vis.js not loaded
  * 
  * DATA FLOW:
@@ -19,7 +20,8 @@
  * - Removed: odoo.define(), publicWidget dependency
  * - Replaced: jQuery with native DOM APIs
  * - Added: IIFE wrapper for module isolation
- * - Preserved: All features, vis-network integration
+ * - Uses web_vis_network module's bundled vis.js library
+ * - CDN fallback removed - now relies on web_vis_network
  * 
  * FEATURES:
  * ✓ Interactive diagram with drag/zoom
@@ -107,29 +109,33 @@
         }
 
         _loadVisNetwork() {
-            // Check if already loaded
+            // Check if already loaded (from web_vis_network module or previously)
             if (window.vis && window.vis.Network) {
+                console.log('[OrgDiagramPortal] vis.Network already loaded from web_vis_network module');
                 return Promise.resolve();
             }
             
-            // Load from CDN
-            const CDN_VERSION = '9.1.6';
-            const CDN_CSS = `https://unpkg.com/vis-network@${CDN_VERSION}/dist/vis-network.min.css`;
-            const CDN_JS = `https://unpkg.com/vis-network@${CDN_VERSION}/dist/vis-network.min.js`;
-            
+            // web_vis_network module should have loaded vis.js already via assets
+            // If not available, wait briefly for async asset loading
             return new Promise((resolve, reject) => {
-                // Load CSS
-                const cssLink = document.createElement('link');
-                cssLink.rel = 'stylesheet';
-                cssLink.href = CDN_CSS;
-                document.head.appendChild(cssLink);
+                let attempts = 0;
+                const maxAttempts = 10;
+                const checkInterval = 100; // ms
                 
-                // Load JS
-                const script = document.createElement('script');
-                script.src = CDN_JS;
-                script.onload = resolve;
-                script.onerror = reject;
-                document.head.appendChild(script);
+                const checkVisLoaded = () => {
+                    attempts++;
+                    if (window.vis && window.vis.Network) {
+                        console.log('[OrgDiagramPortal] vis.Network loaded successfully');
+                        resolve();
+                    } else if (attempts >= maxAttempts) {
+                        console.error('[OrgDiagramPortal] vis.Network not available - ensure web_vis_network module is installed');
+                        reject(new Error('vis.Network not loaded - web_vis_network module required'));
+                    } else {
+                        setTimeout(checkVisLoaded, checkInterval);
+                    }
+                };
+                
+                checkVisLoaded();
             });
         }
 
