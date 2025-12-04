@@ -237,17 +237,22 @@
                                         
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
-                                                <label class="form-label">Retention Policy *</label>
-                                                <select class="form-control" id="retention_policy_id" name="retention_policy_id" required="required">
-                                                    <option value="">-- Select Retention Policy --</option>
-                                                    <t t-foreach="retention_policies" t-as="policy">
+                                                <label class="form-label">Retention Policy</label>
+                                                <select class="form-control" id="retention_policy_id" name="retention_policy_id">
+                                                    <option value="">-- No Retention Policy --</option>
+                                                    <t t-foreach="retention_policies or []" t-as="policy">
                                                         <option t-att-value="policy.id">
                                                             <t t-esc="policy.name"/> (<t t-esc="policy.retention_years"/> years)
                                                         </option>
                                                     </t>
                                                 </select>
                                                 <small class="form-text text-muted">
-                                                    How long these records must be retained before destruction
+                                                    <t t-if="retention_policies">
+                                                        How long these records must be retained before destruction
+                                                    </t>
+                                                    <t t-else="">
+                                                        No retention policies configured. Contact your administrator.
+                                                    </t>
                                                 </small>
                                             </div>
                                             
@@ -266,19 +271,27 @@
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="storage_start_date" class="form-label">Storage Start Date</label>
-                                                <input type="date" class="form-control" id="storage_start_date" 
-                                                       name="storage_start_date"/>
+                                                <input type="date" class="form-control bg-light" id="storage_start_date" 
+                                                       name="storage_start_date" 
+                                                       t-att-value="today"
+                                                       readonly="readonly"/>
                                                 <small class="form-text text-muted">
-                                                    When this container entered storage
+                                                    Automatically set to today's date when container is created
                                                 </small>
                                             </div>
                                             
                                             <div class="col-md-6 mb-3">
                                                 <label for="destruction_due_date" class="form-label">Destruction Due Date</label>
-                                                <input type="date" class="form-control" id="destruction_due_date" 
-                                                       name="destruction_due_date"/>
+                                                <!-- Improved date input with text fallback for easier year entry -->
+                                                <div class="input-group">
+                                                    <input type="date" class="form-control" id="destruction_due_date" 
+                                                           name="destruction_due_date"/>
+                                                    <span class="input-group-text" title="Format: YYYY-MM-DD">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
                                                 <small class="form-text text-muted">
-                                                    When these records can be destroyed (auto-calculated if retention policy set)
+                                                    Auto-calculated from retention policy, or enter manually (YYYY-MM-DD)
                                                 </small>
                                             </div>
                                         </div>

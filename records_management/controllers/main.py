@@ -1080,11 +1080,21 @@ class RecordsManagementPortal(CustomerPortal):
             },
         }
 
+        # Get retention policies for dropdown
+        retention_policies = request.env['records.retention.policy'].sudo().search([
+            ('active', '=', True)
+        ], order='name')
+
+        # Get today's date for default storage_start_date
+        today = fields.Date.today()
+
         values = {
             'page_name': 'container_create',
             'partner': partner,
             'permissions': permissions,
             'error': error,
+            'retention_policies': retention_policies,
+            'today': today,
             **dept_context,  # departments, default_department, has_departments, show_department_selector
         }
         return request.render('records_management.portal_container_create_form', values)

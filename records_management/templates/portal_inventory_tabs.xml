@@ -313,17 +313,59 @@
                 
                 <!-- Search Bar -->
                 <div class="row mb-3">
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <input type="text" class="form-control search-input" placeholder="Search file folders..." 
                                t-att-value="search" name="search" id="search_input"/>
                     </div>
-                    <div class="col-md-4 text-right">
-                        <button class="btn btn-success btn-export mr-2" type="button">
-                            <i class="fa fa-download"></i> Export
+                    <div class="col-md-6 text-right d-flex justify-content-end align-items-center gap-2">
+                        <!-- Export Dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-success dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-download"></i> Export
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="exportDropdown">
+                                <li><a class="dropdown-item" href="#" onclick="exportFiles('xlsx')"><i class="fa fa-file-excel-o text-success"></i> Excel (.xlsx)</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="exportFiles('csv')"><i class="fa fa-file-text-o text-primary"></i> CSV</a></li>
+                                <li><hr class="dropdown-divider"/></li>
+                                <li><a class="dropdown-item" href="/my/import/template/files"><i class="fa fa-download text-info"></i> Download Import Template</a></li>
+                            </ul>
+                        </div>
+                        <!-- Import Button -->
+                        <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#importFilesModal">
+                            <i class="fa fa-upload"></i> Import
                         </button>
                         <button class="btn btn-primary" onclick="performSearch()">
                             <i class="fa fa-search"></i> Search
                         </button>
+                    </div>
+                </div>
+                
+                <!-- Import Modal -->
+                <div class="modal fade" id="importFilesModal" tabindex="-1" aria-labelledby="importFilesModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="importFilesModalLabel"><i class="fa fa-upload"></i> Import File Folders</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="/my/import/files" method="POST" enctype="multipart/form-data">
+                                <div class="modal-body">
+                                    <p class="text-muted">Upload a CSV or Excel file to bulk import file folders.</p>
+                                    <div class="mb-3">
+                                        <label for="importFile" class="form-label">Select File</label>
+                                        <input type="file" class="form-control" id="importFile" name="file" accept=".csv,.xlsx" required="required"/>
+                                    </div>
+                                    <div class="alert alert-info">
+                                        <strong>Tip:</strong> <a href="/my/import/template/files">Download the import template</a> to see the required format.
+                                    </div>
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> Import</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
 
@@ -541,6 +583,21 @@
                     function performSearch() {
                         var searchValue = document.getElementById('search_input').value;
                         window.location.href = '/my/inventory/files?search=' + encodeURIComponent(searchValue);
+                    }
+                    
+                    function exportFiles(format) {
+                        // Check if specific files are selected
+                        var selectedIds = [];
+                        if (typeof FileBulkActions !== 'undefined' &amp;&amp; FileBulkActions.selectedFiles.size > 0) {
+                            selectedIds = Array.from(FileBulkActions.selectedFiles);
+                        }
+                        
+                        var url = '/my/files/export?format=' + format;
+                        if (selectedIds.length > 0) {
+                            url += '&amp;file_ids=' + selectedIds.join(',');
+                        }
+                        
+                        window.location.href = url;
                     }
                 </script>
             </div>

@@ -1154,9 +1154,61 @@
                 <div class="container my-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2><i class="fa fa-users me-2"/>Department Users</h2>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
-                            <i class="fa fa-plus me-2"/>Add New User
-                        </button>
+                        <div class="btn-group">
+                            <!-- Export Dropdown -->
+                            <div class="dropdown me-2">
+                                <button class="btn btn-success dropdown-toggle" type="button" id="exportUsersDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-download"></i> Export
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="exportUsersDropdown">
+                                    <li><a class="dropdown-item" href="/my/users/export?format=xlsx"><i class="fa fa-file-excel-o text-success"></i> Excel (.xlsx)</a></li>
+                                    <li><a class="dropdown-item" href="/my/users/export?format=csv"><i class="fa fa-file-text-o text-primary"></i> CSV</a></li>
+                                    <li><hr class="dropdown-divider"/></li>
+                                    <li><a class="dropdown-item" href="/my/import/template/users"><i class="fa fa-download text-info"></i> Download Import Template</a></li>
+                                </ul>
+                            </div>
+                            <!-- Import Button -->
+                            <button class="btn btn-outline-primary me-2" type="button" data-bs-toggle="modal" data-bs-target="#importUsersModal">
+                                <i class="fa fa-upload"></i> Import
+                            </button>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                                <i class="fa fa-plus me-2"/>Add New User
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Import Users Modal -->
+                    <div class="modal fade" id="importUsersModal" tabindex="-1" aria-labelledby="importUsersModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="importUsersModalLabel"><i class="fa fa-upload"></i> Import Portal Users</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form action="/my/users/import" method="POST" enctype="multipart/form-data">
+                                    <div class="modal-body">
+                                        <p class="text-muted">Upload a CSV or Excel file to bulk import portal users. Users will receive invitation emails.</p>
+                                        <div class="mb-3">
+                                            <label for="importUserFile" class="form-label">Select File</label>
+                                            <input type="file" class="form-control" id="importUserFile" name="file" accept=".csv,.xlsx" required="required"/>
+                                        </div>
+                                        <div class="alert alert-info">
+                                            <strong>Required columns:</strong> Name, Email, Department<br/>
+                                            <strong>Optional columns:</strong> Phone, Job Title<br/>
+                                            <a href="/my/import/template/users">Download the import template</a> to see the required format.
+                                        </div>
+                                        <div class="alert alert-warning">
+                                            <i class="fa fa-exclamation-triangle"></i> <strong>Note:</strong> Department names must match existing departments exactly.
+                                        </div>
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> Import Users</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- Success/Error Messages -->
@@ -1169,6 +1221,18 @@
                     <t t-if="request.params.get('updated') == 'success'">
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <i class="fa fa-check-circle me-2"/>User updated successfully!
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </t>
+                    <t t-if="request.params.get('imported')">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fa fa-check-circle me-2"/>Successfully imported <t t-esc="request.params.get('imported')"/> users! Invitation emails have been sent.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </t>
+                    <t t-if="request.params.get('error')">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fa fa-exclamation-circle me-2"/>Error: <t t-esc="request.params.get('error')"/>
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     </t>

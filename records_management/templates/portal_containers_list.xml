@@ -43,9 +43,53 @@
                         <a href="/my/inventory/files" class="btn btn-outline-primary">
                             <i class="fa fa-folder"></i> View All Files
                         </a>
-                        <button class="btn btn-secondary btn-export" data-format="xlsx">
-                            <i class="fa fa-download"></i> Export
+                        <!-- Export Dropdown -->
+                        <div class="dropdown d-inline-block">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="exportContainersDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-download"></i> Export
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="exportContainersDropdown">
+                                <li><a class="dropdown-item" href="#" onclick="exportContainers('xlsx')"><i class="fa fa-file-excel-o text-success"></i> Excel (.xlsx)</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="exportContainers('csv')"><i class="fa fa-file-text-o text-primary"></i> CSV</a></li>
+                                <li><hr class="dropdown-divider"/></li>
+                                <li><a class="dropdown-item" href="/my/import/template/containers"><i class="fa fa-download text-info"></i> Download Import Template</a></li>
+                            </ul>
+                        </div>
+                        <!-- Import Button -->
+                        <button class="btn btn-outline-success" type="button" data-bs-toggle="modal" data-bs-target="#importContainersModal">
+                            <i class="fa fa-upload"></i> Import
                         </button>
+                    </div>
+                </div>
+                
+                <!-- Import Containers Modal -->
+                <div class="modal fade" id="importContainersModal" tabindex="-1" aria-labelledby="importContainersModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="importContainersModalLabel"><i class="fa fa-upload"></i> Import Containers</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="/my/import/containers" method="POST" enctype="multipart/form-data">
+                                <div class="modal-body">
+                                    <p class="text-muted">Upload a CSV or Excel file to bulk import containers.</p>
+                                    <div class="mb-3">
+                                        <label for="importContainerFile" class="form-label">Select File</label>
+                                        <input type="file" class="form-control" id="importContainerFile" name="file" accept=".csv,.xlsx" required="required"/>
+                                    </div>
+                                    <div class="alert alert-info">
+                                        <strong>Required columns:</strong> Container Number<br/>
+                                        <strong>Optional columns:</strong> Description, Department, Retention Policy, Destruction Due Date<br/>
+                                        <a href="/my/import/template/containers">Download the import template</a> to see the required format.
+                                    </div>
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> Import</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 
@@ -222,12 +266,13 @@
                 </t>
                 
                 <!-- Bulk Action Toolbar (hidden by default, appears when items selected) -->
-                <div id="container_bulk_action_toolbar" class="alert alert-info" style="display:none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1050; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 8px; min-width: 500px;">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="me-3">
+                <!-- Mobile-responsive: uses max-width on larger screens, full-width on mobile -->
+                <div id="container_bulk_action_toolbar" class="alert alert-info" style="display:none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 1050; box-shadow: 0 -4px 12px rgba(0,0,0,0.15); border-radius: 8px 8px 0 0; margin: 0; padding: 12px;">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+                        <div class="text-center text-md-start mb-2 mb-md-0">
                             <strong><i class="fa fa-box"></i> <span id="container_selection_count">0</span> container(s) selected</strong>
                         </div>
-                        <div class="btn-group flex-wrap" role="group" id="bulk_action_buttons">
+                        <div class="d-flex flex-wrap justify-content-center gap-1" role="group" id="bulk_action_buttons">
                             <!-- Dynamic buttons based on state filter -->
                         </div>
                     </div>
@@ -447,32 +492,34 @@
                         },
                         
                         exportSelected: function() {
-                            var selectedContainers = [];
-                            document.querySelectorAll('.container-checkbox:checked').forEach(function(checkbox) {
-                                selectedContainers.push({
-                                    id: checkbox.value,
-                                    name: checkbox.dataset.name || '',
-                                    barcode: checkbox.dataset.barcode || ''
-                                });
-                            });
+                            // Get selected container IDs
+                            var selectedIds = Array.from(this.selectedContainers);
                             
-                            if (selectedContainers.length === 0) {
-                                alert('Please select at least one container to export');
+                            if (selectedIds.length === 0) {
+                                // If no selection, export all visible containers
+                                // Redirect to server-side export with current filters
+                                window.location.href = '/my/containers/export?format=xlsx';
                                 return;
                             }
                             
-                            var csvContent = 'Container ID,Container Name,Barcode\\n';
-                            selectedContainers.forEach(function(container) {
-                                csvContent += container.id + ',"' + container.name + '","' + container.barcode + '"\\n';
-                            });
-                            
-                            var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                            var link = document.createElement('a');
-                            link.href = URL.createObjectURL(blob);
-                            link.download = 'containers_export_' + new Date().toISOString().split('T')[0] + '.csv';
-                            link.click();
+                            // Export selected containers via server-side handler
+                            window.location.href = '/my/containers/export?format=xlsx&amp;container_ids=' + selectedIds.join(',');
+                        },
+                        
+                        exportAllAsCsv: function() {
+                            window.location.href = '/my/containers/export?format=csv';
                         }
                     };
+                    
+                    // Global export function for dropdown
+                    function exportContainers(format) {
+                        var selectedIds = Array.from(ContainerBulkActions.selectedContainers);
+                        var url = '/my/containers/export?format=' + format;
+                        if (selectedIds.length > 0) {
+                            url += '&amp;container_ids=' + selectedIds.join(',');
+                        }
+                        window.location.href = url;
+                    }
                     
                     document.addEventListener('DOMContentLoaded', function() {
                         ContainerBulkActions.init();
