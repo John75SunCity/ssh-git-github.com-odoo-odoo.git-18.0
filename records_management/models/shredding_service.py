@@ -347,13 +347,11 @@ class ShreddingService(models.Model):
         for record in self:
             record.total_requests = len(record.destruction_request_ids)
             record.total_certificates = len(record.certificate_ids)
-
-            # Count destruction items from related destruction orders
-            destruction_orders = self.env['records.destruction'].search([
-                ('request_id', 'in', record.destruction_request_ids.ids)
-            ])
-            record.total_destruction_items = len(destruction_orders.mapped('destruction_item_ids'))
-            record.total_weight = sum(item.weight or 0.0 for item in destruction_orders.mapped('destruction_item_ids'))
+            # Note: destruction items/weight would need a direct relationship
+            # between records.destruction and portal.request to compute accurately.
+            # For now, set to 0 as there's no request_id field on records.destruction.
+            record.total_destruction_items = 0
+            record.total_weight = 0.0
 
     @api.depends('destruction_request_ids.create_date')
     def _compute_last_used_date(self):
