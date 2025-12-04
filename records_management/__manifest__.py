@@ -104,6 +104,7 @@
         "data/legal_citations_data.xml",  # Legal citations, record series, disposition methods
         "data/naid_certificate_data.xml",
         "data/paper_products_data.xml",
+        "data/retention_policy_data.xml",  # Default retention policies
         "data/website_portal_menus.xml",
         "data/website_pages.xml",
         "data/core_configurator_data.xml",

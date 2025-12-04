@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ================================================================== -->
+        <!-- DEFAULT RETENTION POLICIES                                         -->
+        <!-- Common retention periods used in records management                -->
+        <!-- ================================================================== -->
+
+        <!-- Standard Retention Periods -->
+        <record id="retention_policy_1_year" model="records.retention.policy">
+            <field name="name">1 Year Retention</field>
+            <field name="code">RET-1Y</field>
+            <field name="description">Standard 1 year retention period for temporary records and routine correspondence.</field>
+            <field name="retention_period">1</field>
+            <field name="retention_unit">years</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="retention_policy_2_years" model="records.retention.policy">
+            <field name="name">2 Years Retention</field>
+            <field name="code">RET-2Y</field>
+            <field name="description">2 year retention for short-term administrative records.</field>
+            <field name="retention_period">2</field>
+            <field name="retention_unit">years</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="retention_policy_3_years" model="records.retention.policy">
+            <field name="name">3 Years Retention</field>
+            <field name="code">RET-3Y</field>
+            <field name="description">3 year retention period for general business records.</field>
+            <field name="retention_period">3</field>
+            <field name="retention_unit">years</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="retention_policy_5_years" model="records.retention.policy">
+            <field name="name">5 Years Retention</field>
+            <field name="code">RET-5Y</field>
+            <field name="description">5 year retention for contracts and financial documents.</field>
+            <field name="retention_period">5</field>
+            <field name="retention_unit">years</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="retention_policy_7_years" model="records.retention.policy">
+            <field name="name">7 Years Retention (Tax/Financial)</field>
+            <field name="code">RET-7Y</field>
+            <field name="description">IRS standard retention period for tax and financial records. Includes payroll, invoices, receipts, and bank statements.</field>
+            <field name="retention_period">7</field>
+            <field name="retention_unit">years</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="retention_policy_10_years" model="records.retention.policy">
+            <field name="name">10 Years Retention</field>
+            <field name="code">RET-10Y</field>
+            <field name="description">Extended retention for important contracts, legal documents, and compliance records.</field>
+            <field name="retention_period">10</field>
+            <field name="retention_unit">years</field>
+            <field name="state">active</field>
+        </record>
+
+        <!-- Healthcare Specific -->
+        <record id="retention_policy_hipaa_6_years" model="records.retention.policy">
+            <field name="name">HIPAA Medical Records (6 Years)</field>
+            <field name="code">RET-HIPAA-6Y</field>
+            <field name="description">HIPAA minimum retention period for medical records from date of creation or last effective date.</field>
+            <field name="retention_period">6</field>
+            <field name="retention_unit">years</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="retention_policy_medical_adult" model="records.retention.policy">
+            <field name="name">Medical Records - Adult (10 Years)</field>
+            <field name="code">RET-MED-ADULT</field>
+            <field name="description">Standard medical record retention for adult patients. May vary by state requirements.</field>
+            <field name="retention_period">10</field>
+            <field name="retention_unit">years</field>
+            <field name="state">active</field>
+        </record>
+
+        <!-- HR/Personnel -->
+        <record id="retention_policy_personnel_7_years" model="records.retention.policy">
+            <field name="name">Personnel Files (7 Years)</field>
+            <field name="code">RET-HR-7Y</field>
+            <field name="description">Employee personnel records retained for 7 years after termination.</field>
+            <field name="retention_period">7</field>
+            <field name="retention_unit">years</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="retention_policy_i9_forms" model="records.retention.policy">
+            <field name="name">I-9 Employment Verification (3 Years)</field>
+            <field name="code">RET-I9</field>
+            <field name="description">I-9 forms retained for 3 years after hire or 1 year after termination, whichever is later.</field>
+            <field name="retention_period">3</field>
+            <field name="retention_unit">years</field>
+            <field name="state">active</field>
+        </record>
+
+        <!-- Legal -->
+        <record id="retention_policy_contracts" model="records.retention.policy">
+            <field name="name">Contracts &amp; Agreements (10 Years)</field>
+            <field name="code">RET-LEGAL-10Y</field>
+            <field name="description">Legal contracts and agreements retained for 10 years after expiration.</field>
+            <field name="retention_period">10</field>
+            <field name="retention_unit">years</field>
+            <field name="state">active</field>
+        </record>
+
+        <!-- Permanent -->
+        <record id="retention_policy_permanent" model="records.retention.policy">
+            <field name="name">Permanent Retention</field>
+            <field name="code">RET-PERM</field>
+            <field name="description">Records to be retained permanently. Includes corporate formation documents, meeting minutes, intellectual property records.</field>
+            <field name="retention_period">99</field>
+            <field name="retention_unit">years</field>
+            <field name="state">active</field>
+        </record>
+
+    </data>
+</odoo>

@@ -32,7 +32,7 @@
                                     </button>
                                 </div>
                                 <div class="btn-group">
-                                    <button class="btn btn-outline-info" data-toggle="modal" data-target="#diagram-help-modal">
+                                    <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#diagram-help-modal">
                                         <i class="fa fa-question-circle"/> Help
                                     </button>
                                 </div>
@@ -180,15 +180,14 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="node-modal-title">Node Details</h5>
-                                <button type="button" class="close" data-dismiss="modal">
-                                    <span>&#215;</span>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                 </button>
                             </div>
                             <div class="modal-body" id="node-modal-body">
                                 <!-- Node details will be populated here -->
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 <button type="button" class="btn btn-primary d-none" id="message-user-btn">
                                     <i class="fa fa-envelope"/> Send Message
                                 </button>
@@ -203,8 +202,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">Organization Diagram Help</h5>
-                                <button type="button" class="close" data-dismiss="modal">
-                                    <span>&#215;</span>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                 </button>
                             </div>
                             <div class="modal-body">
@@ -241,7 +239,7 @@
                                 </ul>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" data-dismiss="modal">Got it!</button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got it!</button>
                             </div>
                         </div>
                     </div>

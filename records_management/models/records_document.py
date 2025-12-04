@@ -71,6 +71,13 @@ class RecordsDocument(models.Model):
     )
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     active = fields.Boolean(default=True)
+    permanently_flagged = fields.Boolean(
+        string="Permanently Flagged",
+        default=False,
+        tracking=True,
+        help="Mark this document as permanently flagged for special attention or review. "
+             "Flagged documents remain visible but are highlighted in lists and reports."
+    )
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     responsible_person_id = fields.Many2one(
         comodel_name='res.users',
