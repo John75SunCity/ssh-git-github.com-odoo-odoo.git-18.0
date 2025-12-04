@@ -352,20 +352,19 @@
                             </span>
                         </div>
                     </a>
-                </div>
-                <div class="col-lg-6">
+                    <!-- Coordinators Dashboard (for portal admins) -->
                     <a href="/my/coordinators" class="list-group-item list-group-item-action d-flex align-items-center p-3">
                         <div class="mr-3">
                             <i class="fa fa-sitemap fa-2x text-info"/>
                         </div>
                         <div class="flex-grow-1">
-                            <strong>Coordinators</strong>
+                            <strong>Coordinators Dashboard</strong>
                             <br/>
-                            <span class="text-muted">Multi-service coordination status</span>
+                            <span class="text-muted">Unified view of all work orders</span>
                         </div>
                         <div>
                             <span class="badge badge-pill badge-info">
-                                <t t-esc="coordinator_count or 0"/>
+                                <i class="fa fa-dashboard"/>
                             </span>
                         </div>
                     </a>

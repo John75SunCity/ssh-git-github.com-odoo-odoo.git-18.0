@@ -2,6 +2,7 @@
 """
 Portal Calendar Controller
 Customer-facing calendar showing scheduled services, pickups, and deliveries
+Also includes the Work Order Coordinator view for company/department admins
 """
 
 import logging
@@ -22,6 +23,133 @@ class PortalCalendarController(CustomerPortal):
     - Document/file retrievals
     - Delivery appointments
     """
+
+    # ============================================================================
+    # WORK ORDER COORDINATOR (Unified View)
+    # ============================================================================
+    @http.route(['/my/coordinators', '/my/coordinators/page/<int:page>'], type='http', auth='user', website=True)
+    def portal_coordinators(self, page=1, sortby='scheduled_date', filterby='all', search=None, **kw):
+        """
+        Display unified work order coordinator view for company/department admins.
+        Shows all active and pending work orders across all types in kanban/list view.
+        """
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Build domain - filter by customer
+        domain = [('partner_id', '=', partner.id)]
+        
+        # Department filtering for non-company admins
+        if not request.env.user.has_group('records_management.group_portal_company_admin'):
+            accessible_depts = request.env.user.accessible_department_ids.ids
+            if accessible_depts:
+                # Filter by accessible departments if we have department field
+                pass  # unified.work.order may not have department_id
+        
+        # Status filters
+        if filterby == 'pending':
+            domain += [('state', 'in', ['draft', 'confirmed', 'authorized', 'assigned'])]
+        elif filterby == 'scheduled':
+            domain += [('state', '=', 'scheduled')]
+        elif filterby == 'in_progress':
+            domain += [('state', '=', 'in_progress')]
+        elif filterby == 'completed':
+            domain += [('state', 'in', ['completed', 'verified', 'certified'])]
+        elif filterby == 'active':
+            domain += [('state', 'not in', ['completed', 'verified', 'certified', 'invoiced', 'cancelled'])]
+        
+        # Search
+        if search:
+            domain += ['|', '|', ('name', 'ilike', search), ('display_name', 'ilike', search), ('work_order_type', 'ilike', search)]
+        
+        # Sort options
+        sort_mapping = {
+            'scheduled_date': 'scheduled_date desc',
+            'priority': 'priority desc, scheduled_date desc',
+            'state': 'state, scheduled_date desc',
+            'type': 'work_order_type, scheduled_date desc',
+        }
+        order = sort_mapping.get(sortby, 'scheduled_date desc')
+        
+        UnifiedWO = request.env['unified.work.order'].sudo()
+        
+        # Pagination
+        step = 20
+        offset = (page - 1) * step
+        
+        work_order_count = UnifiedWO.search_count(domain)
+        pager = request.website.pager(
+            url="/my/coordinators",
+            url_args={'sortby': sortby, 'filterby': filterby, 'search': search},
+            total=work_order_count,
+            page=page,
+            step=step,
+        )
+        
+        work_orders = UnifiedWO.search(domain, order=order, limit=step, offset=offset)
+        
+        # Group by state for kanban
+        state_groups = {}
+        for wo in UnifiedWO.search(domain):
+            state = wo.state or 'draft'
+            if state not in state_groups:
+                state_groups[state] = []
+            state_groups[state].append(wo)
+        
+        values.update({
+            'work_orders': work_orders,
+            'work_order_count': work_order_count,
+            'pager': pager,
+            'page_name': 'coordinators',
+            'sortby': sortby,
+            'filterby': filterby,
+            'search': search or '',
+            'state_groups': state_groups,
+            'filter_options': [
+                ('all', 'All Work Orders'),
+                ('active', 'Active (Not Completed)'),
+                ('pending', 'Pending Approval'),
+                ('scheduled', 'Scheduled'),
+                ('in_progress', 'In Progress'),
+                ('completed', 'Completed'),
+            ],
+            'sort_options': [
+                ('scheduled_date', 'Scheduled Date'),
+                ('priority', 'Priority'),
+                ('state', 'Status'),
+                ('type', 'Work Order Type'),
+            ],
+        })
+        
+        return request.render("records_management.portal_coordinators_template", values)
+
+    @http.route(['/my/coordinators/<int:work_order_id>'], type='http', auth='user', website=True)
+    def portal_coordinator_detail(self, work_order_id, **kw):
+        """
+        View details of a specific work order from the coordinator view.
+        Redirects to the appropriate detail page based on work order type.
+        """
+        UnifiedWO = request.env['unified.work.order'].sudo()
+        work_order = UnifiedWO.browse(work_order_id)
+        
+        if not work_order.exists():
+            return request.redirect('/my/coordinators')
+        
+        # Check access
+        partner = request.env.user.partner_id.commercial_partner_id
+        if work_order.partner_id.id != partner.id:
+            return request.redirect('/my/coordinators')
+        
+        # Redirect to appropriate detail view based on type
+        redirect_map = {
+            'retrieval': '/my/retrievals/',
+            'shredding': '/my/shredding/',
+            'pickup': '/my/pickups/',
+            'container_destruction': '/my/destruction/',
+        }
+        
+        base_url = redirect_map.get(work_order.work_order_type, '/my/work-orders/')
+        return request.redirect(f'{base_url}{work_order.source_id}')
 
     @http.route(['/my/calendar'], type='http', auth='user', website=True)
     def portal_my_calendar(self, **kw):

@@ -733,6 +733,7 @@
         "templates/portal_barcode_row.xml",
         "templates/portal_centralized_docs.xml",
         "templates/portal_calendar_view.xml",  # NEW: Service calendar (shredding, pickups, retrievals)
+        "templates/portal_coordinators_template.xml",  # NEW: Coordinators work order dashboard
         # Service Photos Portal (technician job photos - NOT inventory documents)
         "templates/portal_service_photos.xml",
         # Request & Workflow Templates

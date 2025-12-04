@@ -18,10 +18,11 @@
                         </div>
                         <div class="card-body">
                             <!-- Search Bar -->
-                            <t t-if="search_term">
+                            <t t-set="search_display" t-value="search_term or search"/>
+                            <t t-if="search_display">
                                 <div class="alert alert-info mb-3">
                                     <i class="fa fa-search"></i>
-                                    Searching for: <strong t-esc="search_term"/>
+                                    Searching for: <strong t-esc="search_display"/>
                                     <a href="/my/requests" class="btn btn-sm btn-outline-secondary ml-2">
                                         <i class="fa fa-times"></i> Clear Search
                                     </a>
@@ -36,7 +37,7 @@
                                             <h5 class="text-info mb-2">
                                                 <i class="fa fa-file-text"></i>
                                             </h5>
-                                            <h4 class="mb-0" t-esc="total_count"/>
+                                            <h4 class="mb-0" t-esc="total_count or request_count or len(requests)"/>
                                             <small class="text-muted">Total Requests</small>
                                         </div>
                                     </div>
@@ -181,8 +182,13 @@
                                     </table>
                                 </div>
 
-                                <!-- Pagination -->
-                                <t t-if="total_pages &gt; 1">
+                                <!-- Pagination - supports both pager object and manual pagination -->
+                                <t t-if="pager">
+                                    <!-- Standard Odoo pager -->
+                                    <t t-call="portal.pager"/>
+                                </t>
+                                <t t-elif="total_pages and total_pages > 1">
+                                    <!-- Manual pagination fallback -->
                                     <nav aria-label="Request pagination">
                                         <ul class="pagination justify-content-center mt-4">
                                             <li t-att-class="'page-item' + (' disabled' if not has_prev else '')">
