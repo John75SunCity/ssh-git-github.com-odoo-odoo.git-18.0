@@ -12,6 +12,14 @@ class RecordsRetrievalWorkOrder(models.Model):
     # ============================================================================
     name = fields.Char(string='Work Order', required=True, readonly=True)
     active = fields.Boolean(default=True)
+    portal_request_id = fields.Many2one(
+        comodel_name='portal.request',
+        string='Portal Request',
+        ondelete='set null',
+        index=True,
+        tracking=True,
+        help='Original portal request that initiated this retrieval work order'
+    )
     state = fields.Selection([
         ('draft', 'Draft'),
         ('in_progress', 'In Progress'),

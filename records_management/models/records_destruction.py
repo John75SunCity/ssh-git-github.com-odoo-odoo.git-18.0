@@ -84,6 +84,14 @@ class RecordsDestruction(models.Model):
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
+    portal_request_id = fields.Many2one(
+        comodel_name='portal.request',
+        string='Portal Request',
+        ondelete='set null',
+        index=True,
+        tracking=True,
+        help='Original portal request that initiated this destruction order'
+    )
     destruction_item_ids = fields.One2many(
         'destruction.item',
         'destruction_id',

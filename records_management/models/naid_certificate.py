@@ -53,6 +53,16 @@ class NaidCertificate(models.Model):
         help="Shredding service that produced this certificate.",
     )
 
+    # Portal Request Traceability
+    portal_request_id = fields.Many2one(
+        comodel_name="portal.request",
+        string="Portal Request",
+        ondelete="set null",
+        index=True,
+        tracking=True,
+        help="Original portal request that initiated this NAID certificate",
+    )
+
     # FSM & Operational Links
     fsm_task_id = fields.Many2one(
         "project.task",

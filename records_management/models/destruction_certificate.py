@@ -66,6 +66,14 @@ class DestructionCertificate(models.Model):
     # ============================================================================
     # SERVICE TRACKING
     # ============================================================================
+    portal_request_id = fields.Many2one(
+        comodel_name="portal.request",
+        string="Portal Request",
+        ondelete="set null",
+        index=True,
+        tracking=True,
+        help="Original portal request that initiated this destruction certificate"
+    )
     fsm_task_id = fields.Many2one(comodel_name="project.task", string="FSM Task", readonly=True)
     shredding_team_id = fields.Many2one(comodel_name="shredding.team", string="Shredding Team")
     work_order_id = fields.Many2one(comodel_name="work.order.shredding", string="Work Order")
