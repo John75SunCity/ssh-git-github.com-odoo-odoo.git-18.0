@@ -1,7 +1,7 @@
 /** @odoo-module **/
 /**
  * 2D Warehouse Blueprint Editor with Indoor Navigation
- * 
+ *
  * Features:
  * - Canvas-based blueprint drawing from measurements
  * - Drag & drop walls, doors, aisles, shelving units
@@ -9,7 +9,7 @@
  * - Indoor navigation / pathfinding (A* algorithm)
  * - Turn-by-turn directions like Google Maps
  * - Overlay 2D on 3D view mode
- * 
+ *
  * Based on Grok recommendations: Floorspace.js patterns + Three.js integration
  */
 
