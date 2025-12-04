@@ -6,12 +6,14 @@ class PortalRequest(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Portal Customer Request'
     _order = 'priority desc, create_date desc'
-    _rec_name = 'name'
+    _rec_name = 'display_name'
 
     # ============================================================================
     # CORE FIELDS
     # ============================================================================
-    name = fields.Char(string='Request #', required=True, copy=False, readonly=True, default=lambda self: "New")
+    name = fields.Char(string='Request #', required=True, copy=False, readonly=True, default='New', index=True)
+    title = fields.Char(string='Request Title', help='Descriptive title for this request')
+    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     active = fields.Boolean(default=True)
     partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
@@ -19,6 +21,16 @@ class PortalRequest(models.Model):
     # Contextual label disambiguation (Batch 2)
     description = fields.Html(string='Request Details', required=True)
     
+    @api.depends('name', 'title', 'request_type', 'partner_id')
+    def _compute_display_name(self):
+        for record in self:
+            if record.title:
+                record.display_name = "%s - %s" % (record.name, record.title)
+            elif record.partner_id:
+                record.display_name = "%s - %s" % (record.name, record.partner_id.name)
+            else:
+                record.display_name = record.name
+
     # Portal-specific fields (added for controller compatibility)
     department_id = fields.Many2one(
         comodel_name='records.department', 
@@ -291,8 +303,14 @@ class PortalRequest(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('portal.request') or _('New')
+            # If name is being passed in (from old code), move it to title field
+            if vals.get('name') and vals.get('name') not in ('New', _('New')):
+                # Old code passed descriptive name, move it to title
+                vals['title'] = vals.get('name')
+                vals['name'] = 'New'
+            # Generate sequence number for request #
+            if vals.get('name', 'New') == 'New':
+                vals['name'] = self.env['ir.sequence'].next_by_code('portal.request') or 'New'
         return super().create(vals_list)
 
     # ============================================================================

@@ -156,7 +156,7 @@
             <field name="name">Portal Request Sequence</field>
             <field name="code">portal.request</field>
             <field name="prefix">REQ</field>
-            <field name="padding">4</field>
+            <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
 
