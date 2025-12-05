@@ -15,12 +15,11 @@
             <field name="sequence">10</field>
         </record>
 
-        <record id="portal_menu_requests" model="website.menu">
-            <field name="name">Service Requests</field>
-            <field name="url">/my/requests</field>
-            <field name="parent_id" ref="website.main_menu"/>
-            <field name="sequence">20</field>
-        </record>
+        <!-- Service Requests menu removed in v18.0.1.0.27
+             REASON: Redundant - My Inventory handles storage requests,
+             Shredding handles destruction requests. Request tracking
+             still available at /my/requests but not prominent in menu.
+             Streamlines portal navigation. -->
 
         <record id="portal_menu_documents" model="website.menu">
             <field name="name">My Documents</field>

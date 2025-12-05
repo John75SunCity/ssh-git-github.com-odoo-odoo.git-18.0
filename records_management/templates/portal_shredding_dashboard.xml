@@ -23,6 +23,9 @@
                                     Shredding &amp; Destruction Services
                                 </h2>
                                 <div class="btn-group">
+                                    <a href="/my/requests" class="btn btn-outline-info" title="View all service requests">
+                                        <i class="fa fa-clipboard-list me-1"/> My Requests
+                                    </a>
                                     <a href="/my/shredding/request/new" class="btn btn-danger">
                                         <i class="fa fa-plus me-1"/> New Shredding Request
                                     </a>
