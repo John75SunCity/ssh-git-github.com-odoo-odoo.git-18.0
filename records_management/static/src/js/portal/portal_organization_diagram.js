@@ -106,6 +106,33 @@
                     this._onLayoutChanged();
                 });
             }
+            
+            // Message User button
+            const messageBtn = this.container.querySelector('#message-user-btn');
+            if (messageBtn) {
+                messageBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this._sendMessage();
+                });
+            }
+            
+            // Email User button
+            const emailBtn = this.container.querySelector('#email-user-btn');
+            if (emailBtn) {
+                emailBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this._sendEmail();
+                });
+            }
+            
+            // Live Chat button
+            const liveChatBtn = this.container.querySelector('#livechat-user-btn');
+            if (liveChatBtn) {
+                liveChatBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this._startLiveChat();
+                });
+            }
         }
 
         _loadVisNetwork() {
@@ -327,30 +354,56 @@
             const modal = this.container.querySelector('#node-details-modal');
             const title = this.container.querySelector('#node-modal-title');
             const body = this.container.querySelector('#node-modal-body');
+            const messageBtn = this.container.querySelector('#message-user-btn');
+            const emailBtn = this.container.querySelector('#email-user-btn');
             
             if (!modal || !title || !body) return;
+            
+            // Store current node for messaging
+            this.currentNode = node;
             
             title.textContent = node.name || node.label || 'Unknown';
             
             let html = '<div class="row">';
             html += '<div class="col-md-4 text-center">';
             if (node.image) {
-                html += `<img src="${node.image}" class="img-fluid rounded mb-3" alt="${node.name}" style="max-width: 150px;">`;
+                html += `<img src="${node.image}" class="img-fluid rounded mb-3" alt="${node.name}" style="max-width: 150px;" onerror="this.style.display='none'">`;
             }
+            // Show node type icon
+            const iconMap = { company: 'fa-building', department: 'fa-sitemap', person: 'fa-user' };
+            const colorMap = { company: '#f39c12', department: '#27ae60', person: node.color || '#3498db' };
+            html += `<div class="mt-2"><i class="fa ${iconMap[node.type] || 'fa-circle'} fa-2x" style="color: ${colorMap[node.type]}"></i></div>`;
             html += '</div>';
             html += '<div class="col-md-8">';
             html += '<table class="table table-sm">';
             if (node.type) {
-                html += `<tr><th>Type:</th><td><span class="badge badge-primary">${node.type}</span></td></tr>`;
-            }
-            if (node.email) {
-                html += `<tr><th>Email:</th><td><a href="mailto:${node.email}">${node.email}</a></td></tr>`;
-            }
-            if (node.phone) {
-                html += `<tr><th>Phone:</th><td>${node.phone}</td></tr>`;
+                const typeLabels = { company: 'Company', department: 'Department', person: 'Person' };
+                html += `<tr><th>Type:</th><td><span class="badge" style="background-color: ${colorMap[node.type]}; color: white;">${typeLabels[node.type] || node.type}</span></td></tr>`;
             }
             if (node.job_title) {
-                html += `<tr><th>Job Title:</th><td>${node.job_title}</td></tr>`;
+                html += `<tr><th>Role:</th><td>${node.job_title}</td></tr>`;
+            }
+            if (node.email) {
+                html += `<tr><th>Email:</th><td><a href="mailto:${node.email}"><i class="fa fa-envelope"></i> ${node.email}</a></td></tr>`;
+            }
+            if (node.phone) {
+                html += `<tr><th>Phone:</th><td><a href="tel:${node.phone}"><i class="fa fa-phone"></i> ${node.phone}</a></td></tr>`;
+            }
+            // Show department stats if available
+            if (node.type === 'department') {
+                if (node.container_count !== undefined) {
+                    html += `<tr><th>Containers:</th><td><i class="fa fa-archive"></i> ${node.container_count}</td></tr>`;
+                }
+                if (node.file_count !== undefined) {
+                    html += `<tr><th>Files:</th><td><i class="fa fa-file"></i> ${node.file_count}</td></tr>`;
+                }
+            }
+            // Show access level for users
+            if (node.role) {
+                html += `<tr><th>Access:</th><td>${node.role} (${node.access_level || 'standard'})</td></tr>`;
+            }
+            if (node.is_current_user) {
+                html += `<tr><td colspan="2" class="text-center"><span class="badge badge-danger bg-danger">This is you!</span></td></tr>`;
             }
             html += '</table>';
             html += '</div>';
@@ -358,17 +411,150 @@
             
             body.innerHTML = html;
             
-            // Show modal using Bootstrap 5
+            // Show/hide action buttons based on node type
+            if (messageBtn) {
+                // Show message button only for persons (not current user) with email
+                if (node.type === 'person' && !node.is_current_user && node.email) {
+                    messageBtn.classList.remove('d-none');
+                } else {
+                    messageBtn.classList.add('d-none');
+                }
+            }
+            if (emailBtn) {
+                // Show email button for any node with email
+                if (node.email && !node.is_current_user) {
+                    emailBtn.classList.remove('d-none');
+                } else {
+                    emailBtn.classList.add('d-none');
+                }
+            }
+            
+            // Show modal using Bootstrap 5 (preferred)
+            this._showModal(modal);
+        }
+        
+        _showModal(modal) {
+            // Clean up any existing backdrop first
+            this._cleanupModal();
+            
             if (window.bootstrap && window.bootstrap.Modal) {
-                const modalInstance = new bootstrap.Modal(modal);
-                modalInstance.show();
+                // Bootstrap 5 - use native modal
+                const existingInstance = bootstrap.Modal.getInstance(modal);
+                if (existingInstance) {
+                    existingInstance.dispose();
+                }
+                this.modalInstance = new bootstrap.Modal(modal, {
+                    backdrop: true,
+                    keyboard: true,
+                    focus: true
+                });
+                this.modalInstance.show();
             } else {
-                // Fallback for older Bootstrap
+                // Manual fallback for non-Bootstrap environments
                 modal.classList.add('show');
                 modal.style.display = 'block';
+                modal.setAttribute('aria-modal', 'true');
+                modal.removeAttribute('aria-hidden');
+                document.body.classList.add('modal-open');
+                
+                // Create backdrop
                 const backdrop = document.createElement('div');
                 backdrop.className = 'modal-backdrop fade show';
+                backdrop.id = 'org-diagram-backdrop';
                 document.body.appendChild(backdrop);
+                
+                // Close handlers
+                const closeModal = () => this._hideModal(modal);
+                
+                // Close on backdrop click
+                backdrop.addEventListener('click', closeModal);
+                
+                // Close on X button and Close button
+                modal.querySelectorAll('[data-bs-dismiss="modal"], .btn-close').forEach(btn => {
+                    btn.addEventListener('click', closeModal);
+                });
+                
+                // Close on Escape key
+                this._escHandler = (e) => {
+                    if (e.key === 'Escape') closeModal();
+                };
+                document.addEventListener('keydown', this._escHandler);
+            }
+        }
+        
+        _hideModal(modal) {
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+            modal.removeAttribute('aria-modal');
+            document.body.classList.remove('modal-open');
+            this._cleanupModal();
+        }
+        
+        _cleanupModal() {
+            // Remove any existing backdrops
+            document.querySelectorAll('.modal-backdrop, #org-diagram-backdrop').forEach(el => el.remove());
+            
+            // Remove escape handler if exists
+            if (this._escHandler) {
+                document.removeEventListener('keydown', this._escHandler);
+                this._escHandler = null;
+            }
+        }
+        
+        _sendMessage() {
+            if (!this.currentNode || !this.currentNode.email) {
+                console.warn('[OrgDiagramPortal] No node selected or no email available');
+                return;
+            }
+            
+            // Try to open Odoo's mail compose if available, otherwise open mailto
+            const partnerId = this.currentNode.id.replace('user_', '').replace('company_', '').replace('dept_', '');
+            
+            // Check if we're in Odoo context with mail composer available
+            if (window.odoo && window.odoo.define) {
+                // Try Odoo's internal messaging
+                this._openOdooComposer(partnerId);
+            } else {
+                // Fallback: Open mailto with pre-filled subject
+                const subject = encodeURIComponent('Message from Organization Portal');
+                const body = encodeURIComponent(`Hi ${this.currentNode.name},\n\n`);
+                window.location.href = `mailto:${this.currentNode.email}?subject=${subject}&body=${body}`;
+            }
+            
+            // Close the modal
+            const modal = this.container.querySelector('#node-details-modal');
+            if (modal && this.modalInstance) {
+                this.modalInstance.hide();
+            } else if (modal) {
+                this._hideModal(modal);
+            }
+        }
+        
+        _sendEmail() {
+            if (!this.currentNode || !this.currentNode.email) {
+                console.warn('[OrgDiagramPortal] No node selected or no email available');
+                return;
+            }
+            
+            // Open mailto directly
+            const subject = encodeURIComponent(`Regarding: ${this.currentNode.name}`);
+            const body = encodeURIComponent(`Hi ${this.currentNode.name},\n\n`);
+            window.open(`mailto:${this.currentNode.email}?subject=${subject}&body=${body}`, '_blank');
+        }
+        
+        _openOdooComposer(partnerId) {
+            // Try to use Odoo's discuss/chat functionality
+            // This opens the chat with the user if available
+            const chatUrl = `/mail/chat/${partnerId}`;
+            
+            // Check if LiveChat or Discuss is available
+            if (window.odoo && window.odoo.session_info) {
+                // Try to open chat panel
+                window.location.href = chatUrl;
+            } else {
+                // Fallback to email
+                this._sendEmail();
             }
         }
 
@@ -403,11 +589,112 @@
         }
 
         _onExport() {
-            const blob = new Blob([JSON.stringify(this.diagramData, null, 2)], { type: 'application/json' });
+            // Export as Excel-compatible CSV format
+            const nodes = this.diagramData.nodes || [];
+            const edges = this.diagramData.edges || [];
+            
+            // Build CSV content with BOM for Excel UTF-8 compatibility
+            const BOM = '\uFEFF';
+            let csv = BOM;
+            
+            // Sheet 1: Organization Members
+            csv += 'ORGANIZATION DIRECTORY\n';
+            csv += 'Generated:,' + new Date().toLocaleDateString() + '\n\n';
+            
+            // Headers for nodes
+            csv += 'Name,Type,Email,Phone,Role,Department/Company,Access Level,Containers,Files\n';
+            
+            // Sort nodes: companies first, then departments, then people
+            const sortOrder = { company: 0, department: 1, person: 2 };
+            const sortedNodes = [...nodes].sort((a, b) => 
+                (sortOrder[a.type] || 99) - (sortOrder[b.type] || 99)
+            );
+            
+            // Data rows
+            sortedNodes.forEach(node => {
+                const name = this._escapeCSV(node.name || node.label || '');
+                const type = this._escapeCSV(node.type || '');
+                const email = this._escapeCSV(node.email || '');
+                const phone = this._escapeCSV(node.phone || '');
+                const jobTitle = this._escapeCSV(node.job_title || '');
+                const accessLevel = this._escapeCSV(node.access_level || '');
+                const containers = node.container_count !== undefined ? node.container_count : '';
+                const files = node.file_count !== undefined ? node.file_count : '';
+                
+                csv += `${name},${type},${email},${phone},${jobTitle},${accessLevel},${containers},${files}\n`;
+            });
+            
+            // Add summary section
+            csv += '\n\nSUMMARY\n';
+            csv += 'Metric,Count\n';
+            const stats = this.diagramData.stats || {};
+            csv += `Companies,${stats.companies || 0}\n`;
+            csv += `Departments,${stats.departments || 0}\n`;
+            csv += `People,${stats.users || 0}\n`;
+            csv += `Connections,${stats.connections || 0}\n`;
+            
+            // Add relationships section
+            csv += '\n\nRELATIONSHIPS\n';
+            csv += 'From,To,Type\n';
+            edges.forEach(edge => {
+                const fromNode = nodes.find(n => n.id === edge.from);
+                const toNode = nodes.find(n => n.id === edge.to);
+                const fromName = this._escapeCSV(fromNode?.name || fromNode?.label || edge.from);
+                const toName = this._escapeCSV(toNode?.name || toNode?.label || edge.to);
+                const relType = edge.dashes ? 'Unassigned' : 'Reports To';
+                csv += `${fromName},${toName},${relType}\n`;
+            });
+            
+            // Create and download file
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = 'organization_diagram.json';
+            a.download = 'organization_directory_' + new Date().toISOString().split('T')[0] + '.csv';
+            document.body.appendChild(a);
             a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+            
+            console.log('[OrgDiagramPortal] Exported organization directory to Excel (CSV)');
+        }
+        
+        _escapeCSV(str) {
+            // Escape CSV field: wrap in quotes if contains comma, quote, or newline
+            if (!str) return '';
+            str = String(str);
+            if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                return '"' + str.replace(/"/g, '""') + '"';
+            }
+            return str;
+        }
+        
+        _startLiveChat() {
+            if (!this.currentNode) {
+                console.warn('[OrgDiagramPortal] No node selected for live chat');
+                return;
+            }
+            
+            // Try to open Odoo's LiveChat or Discuss
+            const userId = this.currentNode.id.replace('user_', '');
+            
+            // Method 1: Try Odoo Discuss direct channel
+            if (window.odoo) {
+                // Open discuss with this partner
+                const discussUrl = `/web#action=mail.action_discuss&active_id=mail.channel_${userId}`;
+                window.open(discussUrl, '_blank');
+            } else {
+                // Fallback: Show message that live chat requires login
+                alert('Live Chat requires logging into the main application. Click OK to open email instead.');
+                this._sendEmail();
+            }
+            
+            // Close modal
+            const modal = this.container.querySelector('#node-details-modal');
+            if (modal && this.modalInstance) {
+                this.modalInstance.hide();
+            } else if (modal) {
+                this._hideModal(modal);
+            }
         }
 
         _applySearch() {
