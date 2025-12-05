@@ -121,9 +121,9 @@
                                             <div class="col-md-12 mb-3">
                                                 <label class="form-label">Container Type *</label>
                                                 <div class="container-type-grid">
-                                                    <!-- Type 01 - Default and Currently Accepted -->
+                                                    <!-- Type 01 - Standard Box - Default and Selectable -->
                                                     <t t-foreach="container_types or []" t-as="ctype">
-                                                        <t t-if="ctype.code == 'TYPE01' or ctype.code == '01' or ctype.name == 'Type 01'">
+                                                        <t t-if="ctype.code == 'TYPE-01-STD'">
                                                             <div class="card mb-2 border-primary">
                                                                 <div class="card-body p-2">
                                                                     <div class="form-check">
@@ -137,18 +137,10 @@
                                                                                 <i class="fa fa-check-circle"></i>
                                                                                 <t t-esc="ctype.name"/>
                                                                             </strong>
-                                                                            <span class="badge bg-success ms-2">Currently Accepted</span>
+                                                                            <span class="badge bg-success ms-2">Default</span>
                                                                             <br/>
                                                                             <small class="text-muted">
-                                                                                <t t-if="ctype.dimensions">
-                                                                                    Dimensions: <t t-esc="ctype.dimensions"/>
-                                                                                </t>
-                                                                                <t t-elif="ctype.length and ctype.width and ctype.height">
-                                                                                    <t t-esc="ctype.length"/>″ x <t t-esc="ctype.width"/>″ x <t t-esc="ctype.height"/>″
-                                                                                </t>
-                                                                                <t t-if="ctype.cubic_feet">
-                                                                                    | <t t-esc="'%.2f' % ctype.cubic_feet"/> cu ft
-                                                                                </t>
+                                                                                <t t-esc="ctype.length"/>″ x <t t-esc="ctype.width"/>″ x <t t-esc="ctype.height"/>″
                                                                             </small>
                                                                         </label>
                                                                     </div>
@@ -157,32 +149,56 @@
                                                         </t>
                                                     </t>
                                                     
-                                                    <!-- Other Types - Shown as disabled/read-only for reference -->
+                                                    <!-- Type 02 - Legal/Banker Box - Selectable -->
+                                                    <t t-foreach="container_types or []" t-as="ctype">
+                                                        <t t-if="ctype.code == 'TYPE-02-LEGAL'">
+                                                            <div class="card mb-2 border-secondary">
+                                                                <div class="card-body p-2">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" 
+                                                                               name="container_type_id" 
+                                                                               t-att-id="'type_%s' % ctype.id"
+                                                                               t-att-value="ctype.id"/>
+                                                                        <label class="form-check-label w-100" t-att-for="'type_%s' % ctype.id">
+                                                                            <strong>
+                                                                                <i class="fa fa-cube"></i>
+                                                                                <t t-esc="ctype.name"/>
+                                                                            </strong>
+                                                                            <br/>
+                                                                            <small class="text-muted">
+                                                                                <t t-esc="ctype.length"/>″ x <t t-esc="ctype.width"/>″ x <t t-esc="ctype.height"/>″
+                                                                            </small>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </t>
+                                                    </t>
+                                                    
+                                                    <!-- Types 03-06 - Displayed for reference only (not selectable) -->
                                                     <div class="mt-3">
                                                         <a class="text-muted small" data-bs-toggle="collapse" href="#otherContainerTypes" role="button" aria-expanded="false">
-                                                            <i class="fa fa-info-circle"></i> View other container sizes (not currently accepted)
+                                                            <i class="fa fa-info-circle"></i> View other container sizes (contact us to use these)
                                                         </a>
                                                         <div class="collapse mt-2" id="otherContainerTypes">
                                                             <div class="card card-body bg-light p-2">
                                                                 <small class="text-muted mb-2">
-                                                                    <i class="fa fa-lock"></i> These sizes are for reference only. We currently only accept Type 01 containers.
+                                                                    <i class="fa fa-lock"></i> These specialty sizes require prior arrangement. Contact us for availability.
                                                                 </small>
                                                                 <t t-foreach="container_types or []" t-as="ctype">
-                                                                    <t t-if="ctype.code != 'TYPE01' and ctype.code != '01' and ctype.name != 'Type 01'">
+                                                                    <t t-if="ctype.code in ['TYPE-03-MAP', 'TYPE-04-ODD', 'TYPE-05-TUBE', 'TYPE-06-PATH']">
                                                                         <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
                                                                             <span class="text-muted">
                                                                                 <i class="fa fa-cube"></i>
                                                                                 <t t-esc="ctype.name"/>
-                                                                                <t t-if="ctype.code">
-                                                                                    (<t t-esc="ctype.code"/>)
-                                                                                </t>
                                                                             </span>
                                                                             <small class="text-muted">
-                                                                                <t t-if="ctype.dimensions">
-                                                                                    <t t-esc="ctype.dimensions"/>
-                                                                                </t>
-                                                                                <t t-elif="ctype.length and ctype.width and ctype.height">
+                                                                                <t t-if="ctype.length and ctype.width and ctype.height">
                                                                                     <t t-esc="ctype.length"/>″ x <t t-esc="ctype.width"/>″ x <t t-esc="ctype.height"/>″
+                                                                                </t>
+                                                                                <t t-else="">Custom</t>
+                                                                                <t t-if="ctype.standard_rate">
+                                                                                    | $<t t-esc="'%.2f' % ctype.standard_rate"/>/mo
                                                                                 </t>
                                                                             </small>
                                                                         </div>
@@ -192,7 +208,7 @@
                                                         </div>
                                                     </div>
                                                     
-                                                    <!-- Fallback: If no Type 01 found, show first type or create hidden default -->
+                                                    <!-- Fallback: If no container types found -->
                                                     <t t-if="not container_types">
                                                         <div class="alert alert-info">
                                                             <i class="fa fa-info-circle"></i>

@@ -5,10 +5,11 @@
     <data>
         <!-- ============================================ -->
         <!-- STANDARD CONTAINER TYPES - BASE RATES -->
-        <!-- Type 01 - Type 06 Box Classifications -->
+        <!-- 6 Unique Types: Type 01 - Type 06 -->
+        <!-- Portal: Types 01-02 selectable, Types 03-06 read-only -->
         <!-- ============================================ -->
 
-        <!-- Type 01: Standard Box (1.2 CF) -->
+        <!-- Type 01: Standard Box (1.04 CF) - DEFAULT FOR PORTAL -->
         <record id="container_type_01_standard" model="records.container.type">
             <field name="name">Type 01 - Standard Box</field>
             <field name="code">TYPE-01-STD</field>
@@ -22,7 +23,7 @@
             <field name="handling_fee">25.00</field>
         </record>
 
-        <!-- Type 02: Legal/Banker Box (2.4 CF) -->
+        <!-- Type 02: Legal/Banker Box (1.04 CF) - SELECTABLE IN PORTAL -->
         <record id="container_type_02_legal_banker" model="records.container.type">
             <field name="name">Type 02 - Legal/Banker Box</field>
             <field name="code">TYPE-02-LEGAL</field>
@@ -36,145 +37,166 @@
             <field name="handling_fee">30.00</field>
         </record>
 
-        <!-- Type 03: Map Box (0.875 CF) -->
+        <!-- Type 03: Map Box (1.17 CF) - READ-ONLY IN PORTAL -->
         <record id="container_type_03_map" model="records.container.type">
             <field name="name">Type 03 - Map Box</field>
             <field name="code">TYPE-03-MAP</field>
             <field name="description">Map box for blueprints and large format documents (14" x 18" x 8")</field>
             <field name="active">True</field>
-            
             <field name="length">14</field>
             <field name="width">18</field>
             <field name="height">8</field>
             <field name="weight_capacity">40.0</field>
             <field name="standard_rate">18.00</field>
             <field name="handling_fee">28.00</field>
-            
         </record>
 
-        <!-- Type 04: Odd Size/Temp Box (5.0 CF) -->
-        <record id="container_type_04_odd_size_temp" model="records.container.type">
-            <field name="name">Type 04 - Odd Size/Temp Box</field>
+        <!-- Type 04: Odd Size / Custom Price - READ-ONLY IN PORTAL -->
+        <!-- Zero dimensions - custom pricing per item -->
+        <record id="container_type_04_odd_size" model="records.container.type">
+            <field name="name">Type 04 - Odd Size / Custom Price</field>
             <field name="code">TYPE-04-ODD</field>
-            <field name="description">Odd size/temporary box for irregular items and temporary storage (24" x 15" x 12")</field>
+            <field name="description">Odd size container with custom pricing - dimensions vary per item</field>
             <field name="active">True</field>
-            
-            <field name="length">24</field>
-            <field name="width">15</field>
-            <field name="height">12</field>
+            <field name="length">0</field>
+            <field name="width">0</field>
+            <field name="height">0</field>
             <field name="weight_capacity">100.0</field>
-            <field name="standard_rate">35.00</field>
-            <field name="handling_fee">45.00</field>
-            
+            <field name="standard_rate">0.00</field>
+            <field name="handling_fee">0.00</field>
         </record>
 
-        <!-- Type 06: Pathology Box (0.042 CF) -->
+        <!-- Type 05: Drafting Doc Tube - READ-ONLY IN PORTAL -->
+        <!-- $1.25/month per tube -->
+        <record id="container_type_05_drafting_tube" model="records.container.type">
+            <field name="name">Type 05 - Drafting Doc Tube</field>
+            <field name="code">TYPE-05-TUBE</field>
+            <field name="description">Drafting document tube for rolled blueprints and plans (14" x 18" x 4")</field>
+            <field name="active">True</field>
+            <field name="length">14</field>
+            <field name="width">18</field>
+            <field name="height">4</field>
+            <field name="weight_capacity">20.0</field>
+            <field name="standard_rate">1.25</field>
+            <field name="handling_fee">15.00</field>
+        </record>
+
+        <!-- Type 06: Pathology Box (0.08 CF) - READ-ONLY IN PORTAL -->
         <record id="container_type_06_pathology" model="records.container.type">
             <field name="name">Type 06 - Pathology Box</field>
             <field name="code">TYPE-06-PATH</field>
             <field name="description">Pathology box for medical specimens and small items (6" x 6" x 4")</field>
             <field name="active">True</field>
-            
             <field name="length">6</field>
             <field name="width">6</field>
             <field name="height">4</field>
             <field name="weight_capacity">10.0</field>
             <field name="standard_rate">8.00</field>
             <field name="handling_fee">15.00</field>
-            
         </record>
 
-        <!-- Type 04: Specialty Boxes -->
+        <!-- ============================================ -->
+        <!-- DEACTIVATED CONTAINER TYPES -->
+        <!-- These types have been discontinued but records -->
+        <!-- are kept with active=False for data integrity -->
+        <!-- ============================================ -->
+
+        <!-- DEACTIVATED: Replaced by container_type_04_odd_size -->
+        <record id="container_type_04_odd_size_temp" model="records.container.type">
+            <field name="name">Type 04 - Odd Size/Temp Box (Discontinued)</field>
+            <field name="code">TYPE-04-ODD-OLD</field>
+            <field name="description">DISCONTINUED - Replaced by Type 04 - Odd Size / Custom Price</field>
+            <field name="active">False</field>
+            <field name="length">24</field>
+            <field name="width">15</field>
+            <field name="height">12</field>
+            <field name="weight_capacity">100.0</field>
+            <field name="standard_rate">35.00</field>
+            <field name="handling_fee">45.00</field>
+        </record>
+
+        <!-- DEACTIVATED: Type 04 - Secure Storage (no longer offered) -->
         <record id="container_type_04_secure_storage" model="records.container.type">
-            <field name="name">Type 04 - Secure Storage Box</field>
+            <field name="name">Type 04 - Secure Storage Box (Discontinued)</field>
             <field name="code">TYPE-04-SECURE</field>
-            <field name="description">High-security box with enhanced locking for confidential documents</field>
-            <field name="active">True</field>
-            
+            <field name="description">DISCONTINUED - High-security box</field>
+            <field name="active">False</field>
             <field name="length">12</field>
             <field name="width">15</field>
             <field name="height">10</field>
             <field name="weight_capacity">50.0</field>
             <field name="standard_rate">25.00</field>
             <field name="handling_fee">35.00</field>
-            
         </record>
 
+        <!-- DEACTIVATED: Type 04 - Fireproof (no longer offered) -->
         <record id="container_type_04_fireproof" model="records.container.type">
-            <field name="name">Type 04 - Fireproof Storage Box</field>
+            <field name="name">Type 04 - Fireproof Storage Box (Discontinued)</field>
             <field name="code">TYPE-04-FIREPROOF</field>
-            <field name="description">Fire-resistant box for critical document protection</field>
-            <field name="active">True</field>
-            
+            <field name="description">DISCONTINUED - Fire-resistant box</field>
+            <field name="active">False</field>
             <field name="length">14</field>
             <field name="width">11</field>
             <field name="height">8</field>
             <field name="weight_capacity">40.0</field>
             <field name="standard_rate">45.00</field>
             <field name="handling_fee">55.00</field>
-            
         </record>
 
-        <!-- Type 05: Archive Boxes -->
+        <!-- DEACTIVATED: Type 05 - Archive Standard (no longer offered) -->
         <record id="container_type_05_archive_standard" model="records.container.type">
-            <field name="name">Type 05 - Archive Storage Box</field>
+            <field name="name">Type 05 - Archive Storage Box (Discontinued)</field>
             <field name="code">TYPE-05-ARCHIVE</field>
-            <field name="description">Long-term archive box with acid-free materials for document preservation</field>
-            <field name="active">True</field>
-            
+            <field name="description">DISCONTINUED - Long-term archive box</field>
+            <field name="active">False</field>
             <field name="length">16</field>
             <field name="width">12</field>
             <field name="height">12</field>
             <field name="weight_capacity">60.0</field>
             <field name="standard_rate">18.00</field>
             <field name="handling_fee">28.00</field>
-            
         </record>
 
+        <!-- DEACTIVATED: Type 05 - Archive Legal (no longer offered) -->
         <record id="container_type_05_archive_legal" model="records.container.type">
-            <field name="name">Type 05 - Archive Legal Box</field>
+            <field name="name">Type 05 - Archive Legal Box (Discontinued)</field>
             <field name="code">TYPE-05-ARCHIVE-LEGAL</field>
-            <field name="description">Legal size archive box for long-term legal document storage</field>
-            <field name="active">True</field>
-            
+            <field name="description">DISCONTINUED - Legal size archive box</field>
+            <field name="active">False</field>
             <field name="length">18</field>
             <field name="width">12</field>
             <field name="height">12</field>
             <field name="weight_capacity">60.0</field>
             <field name="standard_rate">20.00</field>
             <field name="handling_fee">28.00</field>
-            
         </record>
 
-        <!-- Type 06: Specialty Containers -->
+        <!-- DEACTIVATED: Type 06 - Media Storage (no longer offered) -->
         <record id="container_type_06_media_storage" model="records.container.type">
-            <field name="name">Type 06 - Media Storage Box</field>
+            <field name="name">Type 06 - Media Storage Box (Discontinued)</field>
             <field name="code">TYPE-06-MEDIA</field>
-            <field name="description">Specialized container for digital media, tapes, and electronic storage</field>
-            <field name="active">True</field>
-            
+            <field name="description">DISCONTINUED - Digital media container</field>
+            <field name="active">False</field>
             <field name="length">14</field>
             <field name="width">11</field>
             <field name="height">8</field>
             <field name="weight_capacity">30.0</field>
             <field name="standard_rate">12.00</field>
             <field name="handling_fee">20.00</field>
-            
         </record>
 
+        <!-- DEACTIVATED: Type 06 - Emergency Access (no longer offered) -->
         <record id="container_type_06_emergency_access" model="records.container.type">
-            <field name="name">Type 06 - Emergency Access Box</field>
+            <field name="name">Type 06 - Emergency Access Box (Discontinued)</field>
             <field name="code">TYPE-06-EMERGENCY</field>
-            <field name="description">Emergency access container for critical documents requiring immediate retrieval</field>
-            <field name="active">True</field>
-            
+            <field name="description">DISCONTINUED - Emergency access container</field>
+            <field name="active">False</field>
             <field name="length">12</field>
             <field name="width">15</field>
             <field name="height">10</field>
             <field name="weight_capacity">50.0</field>
             <field name="standard_rate">30.00</field>
             <field name="handling_fee">40.00</field>
-            
         </record>
 
         <!-- Alias XMLID to maintain backward-compatible references in demo data -->
