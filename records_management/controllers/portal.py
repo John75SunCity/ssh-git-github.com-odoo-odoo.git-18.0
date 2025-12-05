@@ -2486,12 +2486,22 @@ class RecordsManagementController(http.Controller):
                     'error_message': _('Please select a department.'),
                 })
             
-            # Container type - auto-select default if not provided
+            # Container type - auto-select Type 01 if not provided (standard accepted size)
             if not container_type_id:
+                # First try to find Type 01 by code or name
                 default_type = request.env['records.container.type'].sudo().search([
-                    ('is_default', '=', True)
+                    '|', '|',
+                    ('code', '=', 'TYPE01'),
+                    ('code', '=', '01'),
+                    ('name', 'ilike', 'Type 01')
                 ], limit=1)
                 if not default_type:
+                    # Fallback to any default type
+                    default_type = request.env['records.container.type'].sudo().search([
+                        ('is_default', '=', True)
+                    ], limit=1)
+                if not default_type:
+                    # Last resort - first available type
                     default_type = request.env['records.container.type'].sudo().search([], limit=1)
                 if default_type:
                     container_type_id = default_type.id
