@@ -183,7 +183,7 @@
         <record id="demo_container_004" model="records.container">
             <field name="name">Container-004</field>
             <field name="barcode">RM004234567893</field>
-            <field name="container_type_id" ref="container_type_04_odd_size"/>
+            <field name="container_type_id" ref="container_type_04_odd_size_temp"/>
             <field name="partner_id" ref="demo_customer_abc_corp"/>
             <field name="location_id" ref="demo_location_warehouse_b"/>
             <field name="content_description">Irregular items awaiting processing and reboxing</field>

@@ -52,8 +52,8 @@
         </record>
 
         <!-- Type 04: Odd Size / Custom Price - READ-ONLY IN PORTAL -->
-        <!-- Zero dimensions - custom pricing per item -->
-        <record id="container_type_04_odd_size" model="records.container.type">
+        <!-- Uses original XML ID to update existing database record -->
+        <record id="container_type_04_odd_size_temp" model="records.container.type">
             <field name="name">Type 04 - Odd Size / Custom Price</field>
             <field name="code">TYPE-04-ODD</field>
             <field name="description">Odd size container with custom pricing - dimensions vary per item</field>
@@ -99,20 +99,6 @@
         <!-- These types have been discontinued but records -->
         <!-- are kept with active=False for data integrity -->
         <!-- ============================================ -->
-
-        <!-- DEACTIVATED: Old Type 04 - now Type 07 placeholder for data integrity -->
-        <record id="container_type_04_odd_size_temp" model="records.container.type">
-            <field name="name">Type 07 - Placeholder (Inactive)</field>
-            <field name="code">TYPE-07-PLACEHOLDER</field>
-            <field name="description">INACTIVE - Placeholder record for data integrity (previously Type 04 Odd Size/Temp)</field>
-            <field name="active">False</field>
-            <field name="length">0</field>
-            <field name="width">0</field>
-            <field name="height">0</field>
-            <field name="weight_capacity">0</field>
-            <field name="standard_rate">0.00</field>
-            <field name="handling_fee">0.00</field>
-        </record>
 
         <!-- DEACTIVATED: Type 04 - Secure Storage (no longer offered) -->
         <record id="container_type_04_secure_storage" model="records.container.type">
