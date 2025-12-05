@@ -132,6 +132,11 @@
                                 <i class="fa fa-clock-o"></i> <t t-esc="location.pending_pickup_count"/> pending pickup
                             </span>
                         </t>
+                        <t t-if="location.barcode">
+                            | <span class="text-info">
+                                <i class="fa fa-barcode"></i> <t t-esc="location.barcode"/>
+                            </span>
+                        </t>
                     </small>
                 </div>
                 <div class="btn-group">
@@ -144,6 +149,12 @@
                        class="btn btn-sm btn-outline-secondary"
                        title="Edit Location">
                         <i class="fa fa-edit"></i> Edit
+                    </a>
+                    <a t-attf-href="/my/inventory/location/#{location.id}/print-barcode" 
+                       class="btn btn-sm btn-outline-info"
+                       target="_blank"
+                       title="Print Barcode Label">
+                        <i class="fa fa-print"></i> Print
                     </a>
                 </div>
             </div>

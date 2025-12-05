@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="0">
+    <!-- Staging Location Barcode Report Action -->
+    <record id="action_report_staging_location_barcode" model="ir.actions.report">
+      <field name="name">Staging Location Barcode Labels</field>
+      <field name="model">customer.staging.location</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">records_management.report_staging_location_barcode</field>
+      <field name="report_file">records_management.report_staging_location_barcode</field>
+      <field name="print_report_name">'Location_Barcode_%s' % (object.barcode or object.id)</field>
+      <field name="binding_model_id" ref="records_management.model_customer_staging_location"/>
+      <field name="binding_type">report</field>
+      <field name="paperformat_id" ref="container_barcode_reports.paperformat_label_sheet"/>
+      <field name="attachment_use" eval="False"/>
+      <field name="attachment" eval="False"/>
+    </record>
+  </data>
+
+  <data>
+    <!-- Staging Location Barcode Labels Template -->
+    <template id="report_staging_location_barcode">
+      <t t-call="web.basic_layout">
+        <t t-call="web.html_container">
+          <!-- 2 columns x 5 rows = 10 labels per page (4" x 2" each for larger location labels) -->
+          <t t-set="nRows" t-value="5"/>
+          <t t-set="nCols" t-value="2"/>
+          <t t-set="labelsPerPage" t-value="nRows * nCols"/>
+
+          <!-- Loop through pages -->
+          <t t-foreach="[docs[x:x + labelsPerPage] for x in range(0, len(docs), labelsPerPage)]" t-as="page_docs">
+            <div class="page" style="padding: 5mm; font-family: Arial, sans-serif;">
+              <table class="table table-borderless" style="width:100%; table-layout:fixed;">
+                <t t-foreach="range(nRows)" t-as="row">
+                  <tr>
+                    <t t-foreach="range(nCols)" t-as="col">
+                      <t t-set="idx" t-value="row * nCols + col"/>
+                      <td style="width:50%; height:50mm; vertical-align:middle; padding:2mm;">
+                        <t t-if="idx &lt; len(page_docs)">
+                          <t t-set="loc" t-value="page_docs[idx]"/>
+                          <div style="border:2px solid #333; padding:3mm; height:46mm; text-align:center; border-radius:3mm;">
+                            <!-- Location Type Badge -->
+                            <div style="margin-bottom:1mm;">
+                              <span style="background:#0066cc; color:white; padding:1mm 3mm; border-radius:2mm; font-size:8pt; text-transform:uppercase;">
+                                <t t-esc="dict(loc._fields['location_type'].selection).get(loc.location_type, 'LOCATION')"/>
+                              </span>
+                            </div>
+
+                            <!-- Location Name - LARGE -->
+                            <div style="font-weight:bold; font-size:14pt; margin-bottom:2mm; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                              <t t-esc="loc.name"/>
+                            </div>
+
+                            <!-- Full Path - Smaller -->
+                            <div style="font-size:8pt; color:#555; margin-bottom:2mm; max-height:8mm; overflow:hidden;">
+                              <t t-esc="loc.complete_name"/>
+                            </div>
+
+                            <!-- Barcode -->
+                            <t t-if="loc.barcode">
+                              <img t-att-src="'/report/barcode/Code128/%s?width=350&amp;height=50' % loc.barcode"
+                                   style="width:95%; height:14mm;"/>
+                              <div style="font-size:12pt; font-weight:bold; margin-top:1mm; letter-spacing:1px;">
+                                <t t-esc="loc.barcode"/>
+                              </div>
+                            </t>
+                            <t t-else="">
+                              <div style="font-size:10pt; color:#999; margin-top:5mm;">
+                                <em>No barcode assigned</em>
+                              </div>
+                            </t>
+
+                            <!-- Customer Name - Small Footer -->
+                            <t t-if="loc.partner_id">
+                              <div style="font-size:7pt; color:#666; margin-top:1mm; border-top:1px dotted #ccc; padding-top:1mm;">
+                                <t t-esc="loc.partner_id.name"/>
+                              </div>
+                            </t>
+                          </div>
+                        </t>
+                      </td>
+                    </t>
+                  </tr>
+                </t>
+              </table>
+            </div>
+          </t>
+        </t>
+      </t>
+    </template>
+
+    <!-- Fallback HTML Template for Portal (when report not available) -->
+    <template id="portal_staging_location_barcode" name="Staging Location Barcode Print Page">
+      <t t-call="portal.portal_layout">
+        <div class="container mt-4">
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+              <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                  <h4 class="mb-0"><i class="fa fa-barcode"></i> Location Barcode Label</h4>
+                  <button class="btn btn-light btn-sm" onclick="window.print();">
+                    <i class="fa fa-print"></i> Print
+                  </button>
+                </div>
+                <div class="card-body text-center" style="padding: 30px;">
+                  <!-- Printable Label Area -->
+                  <div class="barcode-label" style="border: 2px solid #333; padding: 20px; display: inline-block; min-width: 300px; border-radius: 8px;">
+                    <!-- Location Type -->
+                    <div style="margin-bottom: 10px;">
+                      <span class="badge badge-primary" style="font-size: 10pt;">
+                        <t t-esc="dict(location._fields['location_type'].selection).get(location.location_type, 'LOCATION')"/>
+                      </span>
+                    </div>
+
+                    <!-- Location Name -->
+                    <h3 style="font-weight: bold; margin-bottom: 5px;">
+                      <t t-esc="location.name"/>
+                    </h3>
+
+                    <!-- Full Path -->
+                    <p class="text-muted" style="font-size: 10pt; margin-bottom: 15px;">
+                      <t t-esc="location.complete_name"/>
+                    </p>
+
+                    <!-- Barcode Image -->
+                    <t t-if="location.barcode">
+                      <div style="margin: 15px 0;">
+                        <img t-att-src="'/report/barcode/Code128/%s?width=400&amp;height=60' % location.barcode"
+                             style="max-width: 100%;"/>
+                      </div>
+                      <div style="font-size: 14pt; font-weight: bold; letter-spacing: 2px;">
+                        <t t-esc="location.barcode"/>
+                      </div>
+                    </t>
+                    <t t-else="">
+                      <div class="alert alert-warning">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        No barcode assigned to this location.
+                        <a t-attf-href="/my/inventory/location/#{location.id}/generate-barcode"
+                           class="btn btn-sm btn-primary ml-2">Generate Barcode</a>
+                      </div>
+                    </t>
+
+                    <!-- Customer Name -->
+                    <t t-if="location.partner_id">
+                      <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dotted #ccc; font-size: 9pt; color: #666;">
+                        <t t-esc="location.partner_id.name"/>
+                      </div>
+                    </t>
+                  </div>
+                </div>
+                <div class="card-footer text-center">
+                  <a href="/my/inventory/locations" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Back to Locations
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Print Styles -->
+        <style type="text/css" media="print">
+          @page { margin: 0; }
+          body { margin: 0; }
+          .container, .card, .card-body {
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+          }
+          .card-header, .card-footer, .btn, nav, header, footer {
+            display: none !important;
+          }
+          .barcode-label {
+            margin: 20mm auto !important;
+            page-break-inside: avoid;
+          }
+        </style>
+      </t>
+    </template>
+  </data>
+</odoo>

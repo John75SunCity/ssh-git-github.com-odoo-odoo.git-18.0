@@ -6727,6 +6727,56 @@ class RecordsManagementController(http.Controller):
                 'error_details': str(e)
             })
 
+    @http.route(['/my/inventory/location/<int:location_id>/print-barcode'], type='http', auth='user', website=True)
+    def portal_staging_location_print_barcode(self, location_id, **kw):
+        """Generate and print barcode label for staging location."""
+        location = request.env['customer.staging.location'].sudo().browse(location_id)
+        partner = request.env.user.partner_id.commercial_partner_id
+
+        # Security check
+        if not location.exists() or location.partner_id.commercial_partner_id != partner:
+            return request.redirect('/my/inventory/locations?error=access_denied')
+
+        # Generate barcode if not exists
+        if not location.barcode:
+            location.action_generate_barcode()
+
+        # Render barcode label as PDF
+        report = request.env.ref('records_management.action_report_staging_location_barcode', raise_if_not_found=False)
+        if report:
+            pdf_content, _ = request.env['ir.actions.report'].sudo()._render_qweb_pdf(report.report_name, [location.id])
+            pdfhttpheaders = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', len(pdf_content)),
+                ('Content-Disposition', 'attachment; filename="Location-Barcode-%s.pdf"' % (location.barcode or location.id)),
+            ]
+            return request.make_response(pdf_content, headers=pdfhttpheaders)
+        else:
+            # Fallback: render simple HTML barcode page
+            return request.render('records_management.portal_staging_location_barcode', {
+                'location': location,
+                'page_name': 'location_barcode',
+            })
+
+    @http.route(['/my/inventory/location/<int:location_id>/generate-barcode'], type='json', auth='user', methods=['POST'])
+    def portal_staging_location_generate_barcode(self, location_id, **kw):
+        """AJAX endpoint to generate barcode for staging location."""
+        try:
+            location = request.env['customer.staging.location'].sudo().browse(location_id)
+            partner = request.env.user.partner_id.commercial_partner_id
+
+            if not location.exists() or location.partner_id.commercial_partner_id != partner:
+                return {'success': False, 'error': 'Access denied'}
+
+            location.action_generate_barcode()
+            return {
+                'success': True,
+                'barcode': location.barcode,
+                'message': 'Barcode generated successfully'
+            }
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+
     @http.route(['/my/inventory/location/<int:location_id>'], type='http', auth='user', website=True)
     def portal_staging_location_detail(self, location_id, **kw):
         """View containers at a specific staging location"""

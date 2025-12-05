@@ -137,6 +137,17 @@ class CustomerStagingLocation(models.Model):
     )
 
     # ============================================================================
+    # BARCODE - For location labels customers can print
+    # ============================================================================
+    barcode = fields.Char(
+        string="Location Barcode",
+        copy=False,
+        index=True,
+        help="Unique barcode for this staging location. "
+             "Customers can print labels with this barcode to identify their pickup locations."
+    )
+
+    # ============================================================================
     # LOCATION DETAILS
     # ============================================================================
     location_type = fields.Selection(
@@ -289,6 +300,33 @@ class CustomerStagingLocation(models.Model):
             'domain': [('customer_staging_location_id', 'in', child_locations.ids)],
             'context': {'default_customer_staging_location_id': self.id}
         }
+
+    def action_generate_barcode(self):
+        """Generate a unique barcode for this staging location."""
+        self.ensure_one()
+        if not self.barcode:
+            # Use sequence or generate based on ID
+            sequence = self.env['ir.sequence'].sudo().search([
+                ('code', '=', 'customer.staging.location.barcode')
+            ], limit=1)
+            if sequence:
+                self.barcode = sequence.next_by_id()
+            else:
+                # Fallback: generate from partner code + location type + ID
+                partner_code = (self.partner_id.ref or 'CUST')[:4].upper()
+                loc_type = (self.location_type or 'LOC')[:3].upper()
+                self.barcode = 'SL-%s-%s-%06d' % (partner_code, loc_type, self.id)
+        return True
+
+    def action_print_barcode(self):
+        """Print barcode label for this staging location."""
+        self.ensure_one()
+        # Generate barcode if not exists
+        if not self.barcode:
+            self.action_generate_barcode()
+        
+        # Return report action for printing
+        return self.env.ref('records_management.action_report_staging_location_barcode').report_action(self)
 
     def name_get(self):
         """Display complete path"""
