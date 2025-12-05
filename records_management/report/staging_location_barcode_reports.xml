@@ -11,7 +11,7 @@
       <field name="print_report_name">'Location_Barcode_%s' % (object.barcode or object.id)</field>
       <field name="binding_model_id" ref="records_management.model_customer_staging_location"/>
       <field name="binding_type">report</field>
-      <field name="paperformat_id" ref="container_barcode_reports.paperformat_label_sheet"/>
+      <field name="paperformat_id" ref="records_management.paperformat_label_sheet"/>
       <field name="attachment_use" eval="False"/>
       <field name="attachment" eval="False"/>
     </record>
