@@ -2448,43 +2448,69 @@ class RecordsManagementController(http.Controller):
 
         # POST request - create container
         try:
-            # Validate required fields
-            name = post.get('name')
+            # Validate required fields - accept both 'name' and 'container_number'
+            name = post.get('name') or post.get('container_number')
             container_type_id = post.get('container_type_id')
             department_id = post.get('department_id')
-
-            if not all([name, container_type_id, department_id]):
+            
+            # Name is always required
+            if not name:
                 return request.render('records_management.portal_error', {
                     'error_title': _('Missing Required Fields'),
-                    'error_message': _('Please provide container name, type, and department.'),
+                    'error_message': _('Please provide a container name/number.'),
                 })
-
-            # Department validation
-            department = request.env['records.department'].sudo().browse(int(department_id))
-            if not department or department.company_id.id != partner.id:
-                return request.render('records_management.portal_error', {
-                    'error_title': _('Invalid Department'),
-                    'error_message': _('The selected department is invalid.'),
-                })
-
-            # Check department access for non-company-admins
-            if not request.env.user.has_group('records_management.group_portal_company_admin'):
-                accessible_depts = request.env.user.accessible_department_ids.ids
-                if int(department_id) not in accessible_depts:
+            
+            # Department handling for company admins vs regular users
+            is_company_admin = request.env.user.has_group('records_management.group_portal_company_admin')
+            
+            # Department is optional for company admins, required for others
+            if department_id:
+                department = request.env['records.department'].sudo().browse(int(department_id))
+                if not department.exists() or department.partner_id.id != partner.id:
                     return request.render('records_management.portal_error', {
-                        'error_title': _('Unauthorized Department'),
-                        'error_message': _('You do not have access to this department.'),
+                        'error_title': _('Invalid Department'),
+                        'error_message': _('The selected department is invalid.'),
                     })
+                # Check department access for non-company-admins
+                if not is_company_admin:
+                    accessible_depts = request.env.user.accessible_department_ids.ids
+                    if int(department_id) not in accessible_depts:
+                        return request.render('records_management.portal_error', {
+                            'error_title': _('Unauthorized Department'),
+                            'error_message': _('You do not have access to this department.'),
+                        })
+            elif not is_company_admin:
+                # Non-admins must have a department
+                return request.render('records_management.portal_error', {
+                    'error_title': _('Missing Required Fields'),
+                    'error_message': _('Please select a department.'),
+                })
+            
+            # Container type - auto-select default if not provided
+            if not container_type_id:
+                default_type = request.env['records.container.type'].sudo().search([
+                    ('is_default', '=', True)
+                ], limit=1)
+                if not default_type:
+                    default_type = request.env['records.container.type'].sudo().search([], limit=1)
+                if default_type:
+                    container_type_id = default_type.id
 
             # Create container
             container_vals = {
                 'name': name,
                 'partner_id': partner.id,
-                'department_id': int(department_id),
-                'container_type_id': int(container_type_id),
                 'status': 'draft',
                 'created_via_portal': True,
             }
+            
+            # Add department if provided
+            if department_id:
+                container_vals['department_id'] = int(department_id)
+            
+            # Add container type if available
+            if container_type_id:
+                container_vals['container_type_id'] = int(container_type_id)
 
             # Optional fields
             if post.get('description'):
