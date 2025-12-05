@@ -1,0 +1,850 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- ============================================== -->
+        <!-- NAID AAA COMPLIANCE TRAINING - Quiz Questions -->
+        <!-- ============================================== -->
+
+        <!-- Quiz Slide for NAID Course -->
+        <record id="slide_naid_quiz" model="slide.slide">
+            <field name="name">NAID AAA Certification Quiz</field>
+            <field name="channel_id" ref="slide_channel_naid_aaa_training"/>
+            <field name="slide_type">quiz</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- NAID Quiz - Question 1: What does NAID stand for? -->
+        <record id="naid_question_1" model="slide.question">
+            <field name="question">What does NAID stand for?</field>
+            <field name="slide_id" ref="slide_naid_quiz"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="naid_q1_answer_1" model="slide.answer">
+            <field name="text_value">National Association for Information Destruction</field>
+            <field name="question_id" ref="naid_question_1"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="naid_q1_answer_2" model="slide.answer">
+            <field name="text_value">National Alliance for Industrial Development</field>
+            <field name="question_id" ref="naid_question_1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="naid_q1_answer_3" model="slide.answer">
+            <field name="text_value">North American Information Database</field>
+            <field name="question_id" ref="naid_question_1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="naid_q1_answer_4" model="slide.answer">
+            <field name="text_value">National Archive Information Directory</field>
+            <field name="question_id" ref="naid_question_1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- NAID Quiz - Question 2: AAA Certification Level -->
+        <record id="naid_question_2" model="slide.question">
+            <field name="question">What does the AAA level in NAID AAA certification represent?</field>
+            <field name="slide_id" ref="slide_naid_quiz"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="naid_q2_answer_1" model="slide.answer">
+            <field name="text_value">The highest level of certification with rigorous standards</field>
+            <field name="question_id" ref="naid_question_2"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="naid_q2_answer_2" model="slide.answer">
+            <field name="text_value">The basic entry-level certification</field>
+            <field name="question_id" ref="naid_question_2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="naid_q2_answer_3" model="slide.answer">
+            <field name="text_value">A certification only for government agencies</field>
+            <field name="question_id" ref="naid_question_2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="naid_q2_answer_4" model="slide.answer">
+            <field name="text_value">An annual audit certification</field>
+            <field name="question_id" ref="naid_question_2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- NAID Quiz - Question 3: Chain of Custody -->
+        <record id="naid_question_3" model="slide.question">
+            <field name="question">Which of the following is NOT a key element of chain of custody?</field>
+            <field name="slide_id" ref="slide_naid_quiz"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="naid_q3_answer_1" model="slide.answer">
+            <field name="text_value">Marketing materials for the company</field>
+            <field name="question_id" ref="naid_question_3"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="naid_q3_answer_2" model="slide.answer">
+            <field name="text_value">Document identification with unique tracking numbers</field>
+            <field name="question_id" ref="naid_question_3"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="naid_q3_answer_3" model="slide.answer">
+            <field name="text_value">Timestamp recording for every movement</field>
+            <field name="question_id" ref="naid_question_3"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="naid_q3_answer_4" model="slide.answer">
+            <field name="text_value">Personnel tracking records</field>
+            <field name="question_id" ref="naid_question_3"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- NAID Quiz - Question 4: Paper Destruction Standard -->
+        <record id="naid_question_4" model="slide.question">
+            <field name="question">For cross-cut shredding of paper documents, what is the maximum particle size allowed?</field>
+            <field name="slide_id" ref="slide_naid_quiz"/>
+            <field name="sequence">4</field>
+        </record>
+        <record id="naid_q4_answer_1" model="slide.answer">
+            <field name="text_value">1" x 5"</field>
+            <field name="question_id" ref="naid_question_4"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="naid_q4_answer_2" model="slide.answer">
+            <field name="text_value">2" x 8"</field>
+            <field name="question_id" ref="naid_question_4"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="naid_q4_answer_3" model="slide.answer">
+            <field name="text_value">3" x 10"</field>
+            <field name="question_id" ref="naid_question_4"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="naid_q4_answer_4" model="slide.answer">
+            <field name="text_value">1/8" x 1/2"</field>
+            <field name="question_id" ref="naid_question_4"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- NAID Quiz - Question 5: Audit Findings -->
+        <record id="naid_question_5" model="slide.question">
+            <field name="question">What is the most frequent issue found during NAID AAA audits?</field>
+            <field name="slide_id" ref="slide_naid_quiz"/>
+            <field name="sequence">5</field>
+        </record>
+        <record id="naid_q5_answer_1" model="slide.answer">
+            <field name="text_value">Incomplete chain of custody documentation</field>
+            <field name="question_id" ref="naid_question_5"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="naid_q5_answer_2" model="slide.answer">
+            <field name="text_value">Too many employees</field>
+            <field name="question_id" ref="naid_question_5"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="naid_q5_answer_3" model="slide.answer">
+            <field name="text_value">Office furniture arrangement</field>
+            <field name="question_id" ref="naid_question_5"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="naid_q5_answer_4" model="slide.answer">
+            <field name="text_value">Marketing budget</field>
+            <field name="question_id" ref="naid_question_5"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- ============================================== -->
+        <!-- HIPAA COMPLIANCE TRAINING - Quiz Questions    -->
+        <!-- ============================================== -->
+
+        <!-- Quiz Slide for HIPAA Course -->
+        <record id="slide_hipaa_quiz" model="slide.slide">
+            <field name="name">HIPAA Compliance Quiz</field>
+            <field name="channel_id" ref="slide_channel_hipaa_privacy_training"/>
+            <field name="slide_type">quiz</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- HIPAA Quiz - Question 1: What is HIPAA -->
+        <record id="hipaa_question_1" model="slide.question">
+            <field name="question">What does HIPAA stand for?</field>
+            <field name="slide_id" ref="slide_hipaa_quiz"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="hipaa_q1_answer_1" model="slide.answer">
+            <field name="text_value">Health Insurance Portability and Accountability Act</field>
+            <field name="question_id" ref="hipaa_question_1"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="hipaa_q1_answer_2" model="slide.answer">
+            <field name="text_value">Health Information Privacy and Access Act</field>
+            <field name="question_id" ref="hipaa_question_1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="hipaa_q1_answer_3" model="slide.answer">
+            <field name="text_value">Healthcare Insurance Processing and Administration Act</field>
+            <field name="question_id" ref="hipaa_question_1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="hipaa_q1_answer_4" model="slide.answer">
+            <field name="text_value">Hospital Information Protection and Assurance Act</field>
+            <field name="question_id" ref="hipaa_question_1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- HIPAA Quiz - Question 2: Maximum Penalty -->
+        <record id="hipaa_question_2" model="slide.question">
+            <field name="question">What is the maximum fine per HIPAA violation?</field>
+            <field name="slide_id" ref="slide_hipaa_quiz"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="hipaa_q2_answer_1" model="slide.answer">
+            <field name="text_value">$50,000</field>
+            <field name="question_id" ref="hipaa_question_2"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="hipaa_q2_answer_2" model="slide.answer">
+            <field name="text_value">$5,000</field>
+            <field name="question_id" ref="hipaa_question_2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="hipaa_q2_answer_3" model="slide.answer">
+            <field name="text_value">$100</field>
+            <field name="question_id" ref="hipaa_question_2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="hipaa_q2_answer_4" model="slide.answer">
+            <field name="text_value">$500</field>
+            <field name="question_id" ref="hipaa_question_2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- HIPAA Quiz - Question 3: PHI Definition -->
+        <record id="hipaa_question_3" model="slide.question">
+            <field name="question">Which of the following is an example of Protected Health Information (PHI)?</field>
+            <field name="slide_id" ref="slide_hipaa_quiz"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="hipaa_q3_answer_1" model="slide.answer">
+            <field name="text_value">All of the above</field>
+            <field name="question_id" ref="hipaa_question_3"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">4</field>
+        </record>
+        <record id="hipaa_q3_answer_2" model="slide.answer">
+            <field name="text_value">Medical records and histories</field>
+            <field name="question_id" ref="hipaa_question_3"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="hipaa_q3_answer_3" model="slide.answer">
+            <field name="text_value">Patient names and addresses</field>
+            <field name="question_id" ref="hipaa_question_3"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="hipaa_q3_answer_4" model="slide.answer">
+            <field name="text_value">Insurance information</field>
+            <field name="question_id" ref="hipaa_question_3"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+
+        <!-- HIPAA Quiz - Question 4: Access Control -->
+        <record id="hipaa_question_4" model="slide.question">
+            <field name="question">What is the PRIMARY purpose of access control in physical document storage?</field>
+            <field name="slide_id" ref="slide_hipaa_quiz"/>
+            <field name="sequence">4</field>
+        </record>
+        <record id="hipaa_q4_answer_1" model="slide.answer">
+            <field name="text_value">Prevent unauthorized access to sensitive information</field>
+            <field name="question_id" ref="hipaa_question_4"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="hipaa_q4_answer_2" model="slide.answer">
+            <field name="text_value">Make the office look more secure</field>
+            <field name="question_id" ref="hipaa_question_4"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="hipaa_q4_answer_3" model="slide.answer">
+            <field name="text_value">Track employee arrival times</field>
+            <field name="question_id" ref="hipaa_question_4"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="hipaa_q4_answer_4" model="slide.answer">
+            <field name="text_value">Improve building aesthetics</field>
+            <field name="question_id" ref="hipaa_question_4"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- HIPAA Quiz - Question 5: HIPAA Rules -->
+        <record id="hipaa_question_5" model="slide.question">
+            <field name="question">Which HIPAA rule controls the disclosure of Protected Health Information?</field>
+            <field name="slide_id" ref="slide_hipaa_quiz"/>
+            <field name="sequence">5</field>
+        </record>
+        <record id="hipaa_q5_answer_1" model="slide.answer">
+            <field name="text_value">Privacy Rule</field>
+            <field name="question_id" ref="hipaa_question_5"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="hipaa_q5_answer_2" model="slide.answer">
+            <field name="text_value">Security Rule</field>
+            <field name="question_id" ref="hipaa_question_5"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="hipaa_q5_answer_3" model="slide.answer">
+            <field name="text_value">Enforcement Rule</field>
+            <field name="question_id" ref="hipaa_question_5"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="hipaa_q5_answer_4" model="slide.answer">
+            <field name="text_value">Breach Notification Rule</field>
+            <field name="question_id" ref="hipaa_question_5"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- ============================================== -->
+        <!-- CUSTOMER RECORDS SETUP - Quiz Questions       -->
+        <!-- ============================================== -->
+
+        <!-- Quiz Slide for Customer Setup Course -->
+        <record id="slide_customer_setup_quiz" model="slide.slide">
+            <field name="name">Records Management Setup Quiz</field>
+            <field name="channel_id" ref="slide_channel_customer_records_setup"/>
+            <field name="slide_type">quiz</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- Customer Setup Quiz - Question 1: Why Setup Matters -->
+        <record id="setup_question_1" model="slide.question">
+            <field name="question">Why is proper records management setup important?</field>
+            <field name="slide_id" ref="slide_customer_setup_quiz"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="setup_q1_answer_1" model="slide.answer">
+            <field name="text_value">All of the above</field>
+            <field name="question_id" ref="setup_question_1"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">4</field>
+        </record>
+        <record id="setup_q1_answer_2" model="slide.answer">
+            <field name="text_value">Compliance with legal requirements</field>
+            <field name="question_id" ref="setup_question_1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="setup_q1_answer_3" model="slide.answer">
+            <field name="text_value">Quick document retrieval</field>
+            <field name="question_id" ref="setup_question_1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="setup_q1_answer_4" model="slide.answer">
+            <field name="text_value">Protection of sensitive information</field>
+            <field name="question_id" ref="setup_question_1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+
+        <!-- Customer Setup Quiz - Question 2: Container Labeling -->
+        <record id="setup_question_2" model="slide.question">
+            <field name="question">How many panels should you label on each container?</field>
+            <field name="slide_id" ref="slide_customer_setup_quiz"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="setup_q2_answer_1" model="slide.answer">
+            <field name="text_value">Only ONE panel to prevent confusion</field>
+            <field name="question_id" ref="setup_question_2"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="setup_q2_answer_2" model="slide.answer">
+            <field name="text_value">All four sides for visibility</field>
+            <field name="question_id" ref="setup_question_2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="setup_q2_answer_3" model="slide.answer">
+            <field name="text_value">Two opposite sides</field>
+            <field name="question_id" ref="setup_question_2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="setup_q2_answer_4" model="slide.answer">
+            <field name="text_value">The top and one side</field>
+            <field name="question_id" ref="setup_question_2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- Customer Setup Quiz - Question 3: Minimum Digits -->
+        <record id="setup_question_3" model="slide.question">
+            <field name="question">What is the minimum number of digits required for container labels?</field>
+            <field name="slide_id" ref="slide_customer_setup_quiz"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="setup_q3_answer_1" model="slide.answer">
+            <field name="text_value">4 digits minimum</field>
+            <field name="question_id" ref="setup_question_3"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="setup_q3_answer_2" model="slide.answer">
+            <field name="text_value">2 digits minimum</field>
+            <field name="question_id" ref="setup_question_3"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="setup_q3_answer_3" model="slide.answer">
+            <field name="text_value">6 digits minimum</field>
+            <field name="question_id" ref="setup_question_3"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="setup_q3_answer_4" model="slide.answer">
+            <field name="text_value">No minimum requirement</field>
+            <field name="question_id" ref="setup_question_3"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- Customer Setup Quiz - Question 4: Key Principles -->
+        <record id="setup_question_4" model="slide.question">
+            <field name="question">What are the three key principles of records management?</field>
+            <field name="slide_id" ref="slide_customer_setup_quiz"/>
+            <field name="sequence">4</field>
+        </record>
+        <record id="setup_q4_answer_1" model="slide.answer">
+            <field name="text_value">Consistency, Clarity, and Security</field>
+            <field name="question_id" ref="setup_question_4"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="setup_q4_answer_2" model="slide.answer">
+            <field name="text_value">Speed, Size, and Storage</field>
+            <field name="question_id" ref="setup_question_4"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="setup_q4_answer_3" model="slide.answer">
+            <field name="text_value">Cost, Convenience, and Compliance</field>
+            <field name="question_id" ref="setup_question_4"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="setup_q4_answer_4" model="slide.answer">
+            <field name="text_value">Profit, Performance, and Process</field>
+            <field name="question_id" ref="setup_question_4"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- Customer Setup Quiz - Question 5: Label Content -->
+        <record id="setup_question_5" model="slide.question">
+            <field name="question">What should NOT be included on container labels for security purposes?</field>
+            <field name="slide_id" ref="slide_customer_setup_quiz"/>
+            <field name="sequence">5</field>
+        </record>
+        <record id="setup_q5_answer_1" model="slide.answer">
+            <field name="text_value">Detailed descriptions of sensitive contents</field>
+            <field name="question_id" ref="setup_question_5"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="setup_q5_answer_2" model="slide.answer">
+            <field name="text_value">Container identification number</field>
+            <field name="question_id" ref="setup_question_5"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="setup_q5_answer_3" model="slide.answer">
+            <field name="text_value">Department code</field>
+            <field name="question_id" ref="setup_question_5"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="setup_q5_answer_4" model="slide.answer">
+            <field name="text_value">Date range</field>
+            <field name="question_id" ref="setup_question_5"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- ============================================== -->
+        <!-- LEGAL CITATIONS TRAINING - Quiz Questions     -->
+        <!-- ============================================== -->
+
+        <!-- Quiz Slide for Legal Citations Course -->
+        <record id="slide_legal_citations_quiz" model="slide.slide">
+            <field name="name">Legal Citations &amp; Retention Quiz</field>
+            <field name="channel_id" ref="slide_channel_legal_citations"/>
+            <field name="slide_type">quiz</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- Legal Citations Quiz - Question 1: Why Track Citations -->
+        <record id="legal_question_1" model="slide.question">
+            <field name="question">Why is legal citation tracking important for records management?</field>
+            <field name="slide_id" ref="slide_legal_citations_quiz"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="legal_q1_answer_1" model="slide.answer">
+            <field name="text_value">All of the above</field>
+            <field name="question_id" ref="legal_question_1"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">4</field>
+        </record>
+        <record id="legal_q1_answer_2" model="slide.answer">
+            <field name="text_value">Avoid fines and penalties</field>
+            <field name="question_id" ref="legal_question_1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="legal_q1_answer_3" model="slide.answer">
+            <field name="text_value">Demonstrate compliance during audits</field>
+            <field name="question_id" ref="legal_question_1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="legal_q1_answer_4" model="slide.answer">
+            <field name="text_value">Reduce liability through proper handling</field>
+            <field name="question_id" ref="legal_question_1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+
+        <!-- Legal Citations Quiz - Question 2: Citation Types -->
+        <record id="legal_question_2" model="slide.question">
+            <field name="question">How many standard citation types are used in the system?</field>
+            <field name="slide_id" ref="slide_legal_citations_quiz"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="legal_q2_answer_1" model="slide.answer">
+            <field name="text_value">Six types</field>
+            <field name="question_id" ref="legal_question_2"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="legal_q2_answer_2" model="slide.answer">
+            <field name="text_value">Three types</field>
+            <field name="question_id" ref="legal_question_2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="legal_q2_answer_3" model="slide.answer">
+            <field name="text_value">Ten types</field>
+            <field name="question_id" ref="legal_question_2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="legal_q2_answer_4" model="slide.answer">
+            <field name="text_value">Only one type</field>
+            <field name="question_id" ref="legal_question_2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- Legal Citations Quiz - Question 3: System Components -->
+        <record id="legal_question_3" model="slide.question">
+            <field name="question">Which of these is NOT a component of the Legal Citations system?</field>
+            <field name="slide_id" ref="slide_legal_citations_quiz"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="legal_q3_answer_1" model="slide.answer">
+            <field name="text_value">Marketing Campaigns</field>
+            <field name="question_id" ref="legal_question_3"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="legal_q3_answer_2" model="slide.answer">
+            <field name="text_value">Citation Types</field>
+            <field name="question_id" ref="legal_question_3"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="legal_q3_answer_3" model="slide.answer">
+            <field name="text_value">Record Series</field>
+            <field name="question_id" ref="legal_question_3"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="legal_q3_answer_4" model="slide.answer">
+            <field name="text_value">Disposition Methods</field>
+            <field name="question_id" ref="legal_question_3"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- Legal Citations Quiz - Question 4: Retention Benefits -->
+        <record id="legal_question_4" model="slide.question">
+            <field name="question">What does the system do automatically based on legal citations?</field>
+            <field name="slide_id" ref="slide_legal_citations_quiz"/>
+            <field name="sequence">4</field>
+        </record>
+        <record id="legal_q4_answer_1" model="slide.answer">
+            <field name="text_value">Calculates destruction dates</field>
+            <field name="question_id" ref="legal_question_4"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="legal_q4_answer_2" model="slide.answer">
+            <field name="text_value">Generates marketing reports</field>
+            <field name="question_id" ref="legal_question_4"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="legal_q4_answer_3" model="slide.answer">
+            <field name="text_value">Creates employee schedules</field>
+            <field name="question_id" ref="legal_question_4"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="legal_q4_answer_4" model="slide.answer">
+            <field name="text_value">Prints shipping labels</field>
+            <field name="question_id" ref="legal_question_4"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- Legal Citations Quiz - Question 5: Pre-loaded Citations -->
+        <record id="legal_question_5" model="slide.question">
+            <field name="question">Which of these is an example of a pre-loaded legal citation in the system?</field>
+            <field name="slide_id" ref="slide_legal_citations_quiz"/>
+            <field name="sequence">5</field>
+        </record>
+        <record id="legal_q5_answer_1" model="slide.answer">
+            <field name="text_value">All of the above</field>
+            <field name="question_id" ref="legal_question_5"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">4</field>
+        </record>
+        <record id="legal_q5_answer_2" model="slide.answer">
+            <field name="text_value">IRS tax records</field>
+            <field name="question_id" ref="legal_question_5"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="legal_q5_answer_3" model="slide.answer">
+            <field name="text_value">HIPAA</field>
+            <field name="question_id" ref="legal_question_5"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="legal_q5_answer_4" model="slide.answer">
+            <field name="text_value">SOX (Sarbanes-Oxley)</field>
+            <field name="question_id" ref="legal_question_5"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+
+        <!-- ============================================== -->
+        <!-- BILLING MODELS TRAINING - Quiz Questions      -->
+        <!-- ============================================== -->
+
+        <!-- Quiz Slide for Billing Models Course -->
+        <record id="slide_billing_models_quiz" model="slide.slide">
+            <field name="name">Billing Models &amp; Architecture Quiz</field>
+            <field name="channel_id" ref="slide_channel_billing_models"/>
+            <field name="slide_type">quiz</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- Billing Quiz - Question 1: Storage Record Model -->
+        <record id="billing_question_1" model="slide.question">
+            <field name="question">What is the technical name for the model that tracks storage contracts?</field>
+            <field name="slide_id" ref="slide_billing_models_quiz"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="billing_q1_answer_1" model="slide.answer">
+            <field name="text_value">records.management.storage</field>
+            <field name="question_id" ref="billing_question_1"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="billing_q1_answer_2" model="slide.answer">
+            <field name="text_value">sale.order</field>
+            <field name="question_id" ref="billing_question_1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="billing_q1_answer_3" model="slide.answer">
+            <field name="text_value">account.move</field>
+            <field name="question_id" ref="billing_question_1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="billing_q1_answer_4" model="slide.answer">
+            <field name="text_value">product.product</field>
+            <field name="question_id" ref="billing_question_1"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- Billing Quiz - Question 2: Invoice Model -->
+        <record id="billing_question_2" model="slide.question">
+            <field name="question">Which Odoo model is used for customer invoices?</field>
+            <field name="slide_id" ref="slide_billing_models_quiz"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="billing_q2_answer_1" model="slide.answer">
+            <field name="text_value">account.move</field>
+            <field name="question_id" ref="billing_question_2"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="billing_q2_answer_2" model="slide.answer">
+            <field name="text_value">sale.order</field>
+            <field name="question_id" ref="billing_question_2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="billing_q2_answer_3" model="slide.answer">
+            <field name="text_value">purchase.order</field>
+            <field name="question_id" ref="billing_question_2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="billing_q2_answer_4" model="slide.answer">
+            <field name="text_value">res.partner</field>
+            <field name="question_id" ref="billing_question_2"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- Billing Quiz - Question 3: FSM Integration -->
+        <record id="billing_question_3" model="slide.question">
+            <field name="question">What field is added to project.task for records management integration?</field>
+            <field name="slide_id" ref="slide_billing_models_quiz"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="billing_q3_answer_1" model="slide.answer">
+            <field name="text_value">is_records_task</field>
+            <field name="question_id" ref="billing_question_3"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="billing_q3_answer_2" model="slide.answer">
+            <field name="text_value">billing_type</field>
+            <field name="question_id" ref="billing_question_3"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="billing_q3_answer_3" model="slide.answer">
+            <field name="text_value">invoice_ready</field>
+            <field name="question_id" ref="billing_question_3"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="billing_q3_answer_4" model="slide.answer">
+            <field name="text_value">storage_linked</field>
+            <field name="question_id" ref="billing_question_3"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- Billing Quiz - Question 4: Timesheet Model -->
+        <record id="billing_question_4" model="slide.question">
+            <field name="question">Which model is used for labor time tracking in Odoo?</field>
+            <field name="slide_id" ref="slide_billing_models_quiz"/>
+            <field name="sequence">4</field>
+        </record>
+        <record id="billing_q4_answer_1" model="slide.answer">
+            <field name="text_value">account.analytic.line</field>
+            <field name="question_id" ref="billing_question_4"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="billing_q4_answer_2" model="slide.answer">
+            <field name="text_value">hr.attendance</field>
+            <field name="question_id" ref="billing_question_4"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="billing_q4_answer_3" model="slide.answer">
+            <field name="text_value">project.task.log</field>
+            <field name="question_id" ref="billing_question_3"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="billing_q4_answer_4" model="slide.answer">
+            <field name="text_value">time.tracker</field>
+            <field name="question_id" ref="billing_question_4"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- Billing Quiz - Question 5: Model Inheritance -->
+        <record id="billing_question_5" model="slide.question">
+            <field name="question">What does records.management.storage inherit from for pricing features?</field>
+            <field name="slide_id" ref="slide_billing_models_quiz"/>
+            <field name="sequence">5</field>
+        </record>
+        <record id="billing_q5_answer_1" model="slide.answer">
+            <field name="text_value">product.product</field>
+            <field name="question_id" ref="billing_question_5"/>
+            <field name="is_correct" eval="True"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="billing_q5_answer_2" model="slide.answer">
+            <field name="text_value">sale.order.line</field>
+            <field name="question_id" ref="billing_question_5"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">2</field>
+        </record>
+        <record id="billing_q5_answer_3" model="slide.answer">
+            <field name="text_value">account.move.line</field>
+            <field name="question_id" ref="billing_question_5"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">3</field>
+        </record>
+        <record id="billing_q5_answer_4" model="slide.answer">
+            <field name="text_value">res.partner</field>
+            <field name="question_id" ref="billing_question_5"/>
+            <field name="is_correct" eval="False"/>
+            <field name="sequence">4</field>
+        </record>
+
+    </data>
+</odoo>

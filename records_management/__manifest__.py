@@ -143,6 +143,7 @@
         "data/training_courses_billing_models.xml",
         "data/training_courses_complete_user_guide.xml",
         "data/training_courses_legal_citations.xml",  # Legal Citations & Records Retention training course
+        "data/training_courses_quizzes.xml",  # Quiz questions for all training courses
         # ============================================================================
         # TEMPORARY: Demo data moved to regular data section to force load
         # NOTE: intelligent_search_demo_data.xml disabled - references missing partners
