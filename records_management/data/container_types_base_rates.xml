@@ -19,8 +19,8 @@
             <field name="width">15</field>
             <field name="height">10</field>
             <field name="weight_capacity">50.0</field>
-            <field name="standard_rate">15.00</field>
-            <field name="handling_fee">25.00</field>
+            <field name="standard_rate">0.32</field>
+            <field name="handling_fee">5.00</field>
         </record>
 
         <!-- Type 02: Legal/Banker Box (1.04 CF) - SELECTABLE IN PORTAL -->
@@ -33,8 +33,8 @@
             <field name="width">12</field>
             <field name="height">10</field>
             <field name="weight_capacity">75.0</field>
-            <field name="standard_rate">22.00</field>
-            <field name="handling_fee">30.00</field>
+            <field name="standard_rate">0.75</field>
+            <field name="handling_fee">5.00</field>
         </record>
 
         <!-- Type 03: Map Box (1.17 CF) - READ-ONLY IN PORTAL -->
@@ -47,8 +47,8 @@
             <field name="width">18</field>
             <field name="height">8</field>
             <field name="weight_capacity">40.0</field>
-            <field name="standard_rate">18.00</field>
-            <field name="handling_fee">28.00</field>
+            <field name="standard_rate">0.75</field>
+            <field name="handling_fee">5.00</field>
         </record>
 
         <!-- Type 04: Odd Size / Custom Price - READ-ONLY IN PORTAL -->
@@ -62,12 +62,11 @@
             <field name="width">0</field>
             <field name="height">0</field>
             <field name="weight_capacity">100.0</field>
-            <field name="standard_rate">0.00</field>
-            <field name="handling_fee">0.00</field>
+            <field name="standard_rate">1.00</field>
+            <field name="handling_fee">5.00</field>
         </record>
 
         <!-- Type 05: Drafting Doc Tube - READ-ONLY IN PORTAL -->
-        <!-- $1.25/month per tube -->
         <record id="container_type_05_drafting_tube" model="records.container.type">
             <field name="name">Type 05 - Drafting Doc Tube</field>
             <field name="code">TYPE-05-TUBE</field>
@@ -78,7 +77,7 @@
             <field name="height">4</field>
             <field name="weight_capacity">20.0</field>
             <field name="standard_rate">1.25</field>
-            <field name="handling_fee">15.00</field>
+            <field name="handling_fee">5.00</field>
         </record>
 
         <!-- Type 06: Pathology Box (0.08 CF) - READ-ONLY IN PORTAL -->
@@ -91,8 +90,8 @@
             <field name="width">6</field>
             <field name="height">4</field>
             <field name="weight_capacity">10.0</field>
-            <field name="standard_rate">8.00</field>
-            <field name="handling_fee">15.00</field>
+            <field name="standard_rate">0.75</field>
+            <field name="handling_fee">5.00</field>
         </record>
 
         <!-- ============================================ -->
