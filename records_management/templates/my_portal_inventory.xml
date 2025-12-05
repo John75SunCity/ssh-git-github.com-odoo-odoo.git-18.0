@@ -418,72 +418,75 @@
                 </div>
 
                 <!-- New: My Visit History Section (Integrated for self-service auditing) -->
-                <div class="o_portal_visit_history mt-5">
-                    <div class="card">
-                        <div class="card-header bg-info text-white">
-                            <h5 class="mb-0">
-                                <i class="fa fa-calendar-check"></i>
-                                My Visit History
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <p>View your past visits, linked shred transactions, and download destruction certificates for NAID compliance.</p>
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead class="thead-dark">
-                                        <tr>
-                                            <th>Visit Date</th>
-                                            <th>Service</th>
-                                            <th>Transaction</th>
-                                            <th>Certificate</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <t t-foreach="request.env['frontdesk.visitor'].search([('partner_id', '=', request.env.user.partner_id.id)])" t-as="visit">
+                <!-- Only show if Frontdesk module is installed -->
+                <t t-if="'frontdesk.visitor' in request.env">
+                    <div class="o_portal_visit_history mt-5">
+                        <div class="card">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0">
+                                    <i class="fa fa-calendar-check"></i>
+                                    My Visit History
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <p>View your past visits, linked shred transactions, and download destruction certificates for NAID compliance.</p>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead class="thead-dark">
                                             <tr>
-                                                <td><t t-esc="visit.check_in.strftime('%Y-%m-%d %H:%M') if visit.check_in else '-'"/></td>
-                                                <td>
-                                                    <t t-if="visit.is_shred_customer">
-                                                        <span class="badge badge-success">Shredding Service</span>
-                                                    </t>
-                                                    <t t-else="">
-                                                        <span class="badge badge-secondary">General Visit</span>
-                                                    </t>
-                                                </td>
-                                                <td>
-                                                    <t t-if="visit.pos_order_id">
-                                                        <a t-attf-href="/my/orders/#{visit.pos_order_id.id}"><t t-esc="visit.pos_order_id.name"/></a>
-                                                    </t>
-                                                    <t t-else="">
-                                                        <span class="text-muted">No Transaction</span>
-                                                    </t>
-                                                </td>
-                                                <td>
-                                                    <t t-if="visit.pos_order_id">
-                                                        <a t-attf-href="/my/certificates/#{visit.id}" class="btn btn-sm btn-primary">
-                                                            <i class="fa fa-download"></i> Download Certificate
-                                                        </a>
-                                                    </t>
-                                                    <t t-else="">
-                                                        <span class="text-muted">N/A</span>
-                                                    </t>
-                                                </td>
+                                                <th>Visit Date</th>
+                                                <th>Service</th>
+                                                <th>Transaction</th>
+                                                <th>Certificate</th>
                                             </tr>
-                                        </t>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="mt-3">
-                                <button class="btn btn-primary" t-attf-onclick="window.location.href='/my/schedule-visit'">Schedule a Visit</button>
-                            </div>
-                            <!-- Modern Filter for Visits -->
-                            <div class="form-group mt-3">
-                                <label for="date_filter">Filter by Date:</label>
-                                <input type="date" id="date_filter" class="form-control" placeholder="Select date" onchange="filterVisitsByDate(this.value)"/>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="request.env['frontdesk.visitor'].search([('partner_id', '=', request.env.user.partner_id.id)])" t-as="visit">
+                                                <tr>
+                                                    <td><t t-esc="visit.check_in.strftime('%Y-%m-%d %H:%M') if visit.check_in else '-'"/></td>
+                                                    <td>
+                                                        <t t-if="visit.is_shred_customer">
+                                                            <span class="badge badge-success">Shredding Service</span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="badge badge-secondary">General Visit</span>
+                                                        </t>
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="visit.pos_order_id">
+                                                            <a t-attf-href="/my/orders/#{visit.pos_order_id.id}"><t t-esc="visit.pos_order_id.name"/></a>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">No Transaction</span>
+                                                        </t>
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="visit.pos_order_id">
+                                                            <a t-attf-href="/my/certificates/#{visit.id}" class="btn btn-sm btn-primary">
+                                                                <i class="fa fa-download"></i> Download Certificate
+                                                            </a>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">N/A</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="mt-3">
+                                    <button class="btn btn-primary" t-attf-onclick="window.location.href='/my/schedule-visit'">Schedule a Visit</button>
+                                </div>
+                                <!-- Modern Filter for Visits -->
+                                <div class="form-group mt-3">
+                                    <label for="date_filter">Filter by Date:</label>
+                                    <input type="date" id="date_filter" class="form-control" placeholder="Select date" onchange="filterVisitsByDate(this.value)"/>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </t>
 
                 <!-- Removed inline legacy JS: visit date filter and inventory init now handled via Owl component & future dedicated module. -->
             </t>
