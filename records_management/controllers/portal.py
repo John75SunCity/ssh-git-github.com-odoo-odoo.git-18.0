@@ -5411,10 +5411,9 @@ class RecordsManagementController(http.Controller):
         values.update({'page_name': 'reports_export'})
         return request.render('records_management.portal_reports_export', values)
 
-    @http.route(['/my/inventory/counts'], type='http', auth='user', website=True)
+    @http.route(['/my/inventory/counts'], type='json', auth='user', website=True)
     def portal_inventory_counts(self, **kw):
-        """Inventory count summary."""
-        values = self._prepare_portal_layout_values()
+        """Inventory count summary - Returns JSON for AJAX calls."""
         user = request.env.user
         partner = user.partner_id
 
@@ -5425,17 +5424,26 @@ class RecordsManagementController(http.Controller):
             if accessible_departments:
                 domain.append(('department_id', 'in', accessible_departments))
 
-        counts = {
-            'containers': request.env['records.container'].search_count(domain),
-            'files': request.env['records.file'].search_count(domain),
-            'documents': request.env['records.document'].search_count(domain),
-        }
+        # Get counts for all inventory types
+        containers_count = request.env['records.container'].search_count(domain)
+        files_count = request.env['records.file'].search_count(domain)
+        documents_count = request.env['records.document'].search_count(domain)
+        
+        # Temp inventory count
+        temp_domain = [('partner_id', '=', partner.commercial_partner_id.id)]
+        temp_count = request.env['temp.inventory'].search_count(temp_domain)
+        
+        # Customer staging locations count
+        locations_domain = [('partner_id', '=', partner.commercial_partner_id.id)]
+        locations_count = request.env['customer.staging.location'].search_count(locations_domain)
 
-        values.update({
-            'counts': counts,
-            'page_name': 'inventory_counts',
-        })
-        return request.render('records_management.portal_inventory_enhanced', values)
+        return {
+            'containers': containers_count,
+            'files': files_count,
+            'documents': documents_count,
+            'temp': temp_count,
+            'locations': locations_count,
+        }
 
     @http.route(['/my/inventory/recent_activity'], type='http', auth='user', website=True)
     def portal_inventory_recent_activity(self, page=1, **kw):

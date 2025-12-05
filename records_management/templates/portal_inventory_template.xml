@@ -259,7 +259,7 @@
                                             <p><strong>Document Count:</strong> <t t-esc="box.document_count"/></p>
                                         </div>
                                         <div class="col-md-6">
-                                            <p><strong>Status:</strong> <t t-esc="box.status"/></p>
+                                            <p><strong>Status:</strong> <t t-esc="dict(box._fields['state'].selection).get(box.state, box.state) if box.state else 'Pending'"/></p>
                                             <p><strong>Last Activity:</strong> <t t-esc="box.last_activity_date"/></p>
                                             <p><strong>Storage Fee:</strong> <t t-esc="box.storage_fee_monthly"/></p>
                                         </div>
