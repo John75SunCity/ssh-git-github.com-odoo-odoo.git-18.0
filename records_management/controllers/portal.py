@@ -3931,6 +3931,7 @@ class RecordsManagementController(http.Controller):
 
             values = {
                 'request_type': request_type,
+                'partner': partner,
                 'departments': departments,
                 'containers': containers_sudo,
                 'container_data': container_data,  # Safe data without ORM access
