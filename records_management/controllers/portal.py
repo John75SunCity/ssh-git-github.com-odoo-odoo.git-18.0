@@ -2506,6 +2506,11 @@ class RecordsManagementController(http.Controller):
                 if default_type:
                     container_type_id = default_type.id
 
+            # Get container type for default weight
+            container_type = None
+            if container_type_id:
+                container_type = request.env['records.container.type'].sudo().browse(int(container_type_id))
+
             # Create container
             container_vals = {
                 'name': name,
@@ -2521,6 +2526,9 @@ class RecordsManagementController(http.Controller):
             # Add container type if available
             if container_type_id:
                 container_vals['container_type_id'] = int(container_type_id)
+                # Set default weight from container type's average weight (for route planning/statistics)
+                if container_type and container_type.average_weight_lbs:
+                    container_vals['weight'] = container_type.average_weight_lbs
 
             # Optional fields
             if post.get('description'):

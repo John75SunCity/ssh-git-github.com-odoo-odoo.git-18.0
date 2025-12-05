@@ -104,8 +104,31 @@ class PickupRequest(models.Model):
         help="Containers included in this pickup request"
     )
 
-    estimated_volume = fields.Float(string='Estimated Volume (cubic feet)', tracking=True)
-    estimated_weight = fields.Float(string='Estimated Weight (lbs)', tracking=True)
+    # ============================================================================
+    # CUSTOMER-FACING FIELDS (Simple quantity for portal requests)
+    # ============================================================================
+    pickup_item_type = fields.Selection([
+        ('boxes', 'Records Boxes'),
+        ('hard_drives', 'Hard Drives (for shredding)'),
+        ('media', 'Media/Tapes (for shredding)'),
+        ('documents', 'Loose Documents'),
+        ('other', 'Other'),
+    ], string='Item Type', default='boxes', tracking=True,
+       help="Type of items to be picked up - used for simple portal requests")
+    
+    pickup_quantity = fields.Integer(
+        string='Quantity (# of units)', 
+        tracking=True,
+        help="Number of items to be picked up (boxes, drives, etc.)"
+    )
+
+    # ============================================================================
+    # TECHNICIAN FIELDS (Volume/weight for route planning - hidden from portal)
+    # ============================================================================
+    estimated_volume = fields.Float(string='Estimated Volume (cubic feet)', tracking=True,
+                                    help="For technician use - route planning and vehicle capacity")
+    estimated_weight = fields.Float(string='Estimated Weight (lbs)', tracking=True,
+                                    help="For technician use - route planning and lifting requirements")
 
     # Billing Information
     billable = fields.Boolean(string='Billable', default=True)

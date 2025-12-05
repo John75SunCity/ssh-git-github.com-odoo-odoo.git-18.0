@@ -830,6 +830,18 @@ class RecordsContainer(models.Model):
         if rates:
             self.customer_rate_id = rates.id
 
+    @api.onchange('container_type_id')
+    def _onchange_container_type_default_weight(self):
+        """Set default weight from container type's average weight.
+        
+        This provides a reasonable estimate for route planning and statistics.
+        The weight field is typically hidden from portal users but used internally.
+        """
+        if self.container_type_id and self.container_type_id.average_weight_lbs:
+            # Only set if weight hasn't been manually set
+            if not self.weight or self.weight == 0:
+                self.weight = self.container_type_id.average_weight_lbs
+
     @api.onchange('partner_id', 'department_id')
     def _onchange_partner_department_stock_owner(self):
         """
