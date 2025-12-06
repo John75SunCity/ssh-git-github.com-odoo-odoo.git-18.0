@@ -2608,9 +2608,9 @@ class RecordsManagementController(http.Controller):
                 if new_dept.company_id.id == partner.id:
                     update_vals['department_id'] = new_dept_id
 
-            # Status change - department admin+
-            if post.get('status') and request.env.user.has_group('records_management.group_portal_department_admin'):
-                update_vals['status'] = post.get('status')
+            # State change - department admin+
+            if post.get('state') and request.env.user.has_group('records_management.group_portal_department_admin'):
+                update_vals['state'] = post.get('state')
 
             if update_vals:
                 container.sudo().write(update_vals)
