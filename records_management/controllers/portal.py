@@ -1485,7 +1485,8 @@ class RecordsManagementController(http.Controller):
             'partner': partner,
         }
 
-        return request.render('records_management.portal_my_home_preconfigured', values)
+        # Render the base portal home template - our inheritance will apply automatically
+        return request.render('portal.portal_my_home', values)
 
     # ============================================================================
     # CERTIFICATES PORTAL ROUTES
