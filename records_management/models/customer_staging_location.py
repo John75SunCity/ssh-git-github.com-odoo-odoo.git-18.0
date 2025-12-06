@@ -277,12 +277,13 @@ class CustomerStagingLocation(models.Model):
         }
         
         if self.stock_location_id:
-            # Update existing
-            self.stock_location_id.write(location_vals)
+            # Update existing (use sudo to bypass stock.location permissions)
+            self.stock_location_id.sudo().write(location_vals)
         else:
-            # Create new
-            stock_location = self.env['stock.location'].create(location_vals)
-            self.stock_location_id = stock_location.id
+            # Create new (use sudo - portal users can create staging locations
+            # but don't have direct stock.location create permissions)
+            stock_location = self.env['stock.location'].sudo().create(location_vals)
+            self.sudo().stock_location_id = stock_location.id
 
     # ============================================================================
     # ACTIONS

@@ -5425,18 +5425,18 @@ class RecordsManagementController(http.Controller):
             if accessible_departments:
                 domain.append(('department_id', 'in', accessible_departments))
 
-        # Get counts for all inventory types
-        containers_count = request.env['records.container'].search_count(domain)
-        files_count = request.env['records.file'].search_count(domain)
-        documents_count = request.env['records.document'].search_count(domain)
+        # Get counts for all inventory types (use sudo for portal access)
+        containers_count = request.env['records.container'].sudo().search_count(domain)
+        files_count = request.env['records.file'].sudo().search_count(domain)
+        documents_count = request.env['records.document'].sudo().search_count(domain)
         
         # Temp inventory count
         temp_domain = [('partner_id', '=', partner.commercial_partner_id.id)]
-        temp_count = request.env['temp.inventory'].search_count(temp_domain)
+        temp_count = request.env['temp.inventory'].sudo().search_count(temp_domain)
         
         # Customer staging locations count
         locations_domain = [('partner_id', '=', partner.commercial_partner_id.id)]
-        locations_count = request.env['customer.staging.location'].search_count(locations_domain)
+        locations_count = request.env['customer.staging.location'].sudo().search_count(locations_domain)
 
         return {
             'containers': containers_count,
@@ -6586,8 +6586,8 @@ class RecordsManagementController(http.Controller):
         partner = request.env.user.partner_id.commercial_partner_id
 
         if request.httprequest.method == 'POST':
-            # Create location
-            StagingLocation = request.env['customer.staging.location']
+            # Create location (use sudo for portal users to create staging locations)
+            StagingLocation = request.env['customer.staging.location'].sudo()
 
             vals = {
                 'name': post.get('name'),
