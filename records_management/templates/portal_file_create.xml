@@ -76,26 +76,8 @@
                                             </small>
                                         </div>
                                         
-                                        <!-- File State - Read-only, defaults to container state or 'pending' -->
-                                        <div class="form-group">
-                                            <label for="state_display">File State</label>
-                                            <input type="text" class="form-control bg-light" id="state_display" 
-                                                   value="Pending" readonly="readonly"/>
-                                            <small class="form-text text-muted">
-                                                File state is set automatically. It will change to "In Storage" when received at warehouse.
-                                            </small>
-                                        </div>
-                                        
-                                        <!-- Only Date Created - defaults to today, Date Received is set by technician -->
-                                        <div class="form-group">
-                                            <label for="date_created">Date Created</label>
-                                            <input type="date" class="form-control" id="date_created" name="date_created"
-                                                   t-att-value="today"/>
-                                            <small class="form-text text-muted">
-                                                When this file was originally created (defaults to today)
-                                            </small>
-                                        </div>
-                                        <!-- Date Received hidden - set when technician scans container to work order -->
+                                        <!-- File State and Date Created hidden - managed by system -->
+                                        <!-- State inherited from container, dates shown in reports/lists only -->
 
                                         <div class="form-group">
                                             <label for="description">Description</label>

@@ -2870,6 +2870,13 @@ class RecordsManagementController(http.Controller):
         partner = request.env.user.partner_id.commercial_partner_id
         file_record = request.env['records.file'].sudo().browse(file_id)
 
+        # Check if file exists
+        if not file_record.exists():
+            return request.render('records_management.portal_error', {
+                'error_title': _('File Not Found'),
+                'error_message': _('The requested file could not be found.'),
+            })
+
         # Security: Verify ownership
         if file_record.partner_id.id != partner.id:
             return request.redirect('/my/home?error=unauthorized')
@@ -2943,7 +2950,6 @@ class RecordsManagementController(http.Controller):
                 'permissions': self._get_user_permissions(),
                 'page_name': 'file_create',
                 'file_categories': file_categories,
-                'today': date.today().strftime('%Y-%m-%d'),
                 **dept_context,  # departments, default_department, has_departments, show_department_selector
             }
             return request.render("records_management.portal_file_create", values)
@@ -2996,7 +3002,7 @@ class RecordsManagementController(http.Controller):
                 'partner_id': partner.id,
                 'container_id': int(container_id),
                 'created_via_portal': True,
-                'state': 'in',  # Default state - will be managed by system
+                # State defaults to 'in' per model definition - managed by system
             }
 
             # Only set department if we have one
@@ -3010,11 +3016,7 @@ class RecordsManagementController(http.Controller):
             if post.get('file_category'):
                 file_vals['file_category'] = post.get('file_category')
             
-            # Set date_created (defaults to today if not provided)
-            if post.get('date_created'):
-                file_vals['date_created'] = post.get('date_created')
-            else:
-                file_vals['date_created'] = date.today()
+            # date_created defaults via model field definition (fields.Date.context_today)
 
             # Generate temp barcode for tracking (similar to container temp barcode)
             import re
