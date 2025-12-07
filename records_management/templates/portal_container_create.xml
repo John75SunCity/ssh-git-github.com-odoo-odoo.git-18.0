@@ -55,6 +55,28 @@
                                     <form action="/my/inventory/containers/create" method="POST" class="o_portal_form">
                                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                         
+                                        <!-- Customer Code Info Banner -->
+                                        <div class="alert alert-info mb-4">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-8">
+                                                    <h6 class="mb-1">
+                                                        <i class="fa fa-barcode"></i> Your Company Barcode Prefix
+                                                    </h6>
+                                                    <p class="mb-0 small">
+                                                        All temp barcodes will start with: 
+                                                        <strong class="text-primary font-monospace">
+                                                            TMP-<t t-esc="partner.customer_code or partner.customer_code_display or 'CUST'"/>-
+                                                        </strong>
+                                                    </p>
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <span class="badge bg-secondary font-monospace" style="font-size: 1rem;">
+                                                        <t t-esc="partner.customer_code or partner.customer_code_display or 'CUST'"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
                                         <!-- Container Identification -->
                                         <div class="row">
                                             <div class="col-md-12">

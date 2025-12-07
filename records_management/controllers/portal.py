@@ -2443,6 +2443,7 @@ class RecordsManagementController(http.Controller):
             dept_context = self._get_smart_department_context(request.env.user, request.env.user.partner_id)
 
             values = {
+                'partner': partner,
                 'departments': departments,
                 'container_types': container_types,
                 'retention_policies': retention_policies,
@@ -2562,7 +2563,7 @@ class RecordsManagementController(http.Controller):
             # Barcode handling - generate temp barcode if staging location assigned
             if staging_location:
                 # Generate TMP barcode for tracking at customer site
-                # Format: TMP-{COMPANY_REF}-{DEPT_CODE}-{CHILD_CODE}-{SEQ}
+                # Format: TMP-{COMPANY_CODE}-{DEPT_CODE}-{CHILD_CODE}-{SEQ}
                 # 
                 # Structure (all 4-digit codes, 6-digit sequence):
                 # - Company only:      TMP-0915-000001
@@ -2573,9 +2574,12 @@ class RecordsManagementController(http.Controller):
                 
                 import re
                 
-                # Get 4-char company code (sanitized partner ref)
-                raw_company_ref = partner.ref or 'CUST'
-                company_code = re.sub(r'[^A-Za-z0-9]', '', raw_company_ref).upper()[:4].ljust(4, '0')
+                # Get 4-char company code (prefer customer_code field, fallback to ref)
+                if partner.customer_code and len(partner.customer_code) == 4:
+                    company_code = partner.customer_code.upper()
+                else:
+                    raw_company_ref = partner.ref or 'CUST'
+                    company_code = re.sub(r'[^A-Za-z0-9]', '', raw_company_ref).upper()[:4].ljust(4, '0')
                 
                 # Build barcode prefix based on department hierarchy
                 barcode_prefix = f'TMP-{company_code}'
@@ -2587,17 +2591,15 @@ class RecordsManagementController(http.Controller):
                 if department_id:
                     department = request.env['records.department'].sudo().browse(int(department_id))
                     if department.exists():
-                        # Get 4-char department code
-                        raw_dept_code = department.code or 'DEPT'
-                        dept_code = re.sub(r'[^A-Za-z0-9]', '', raw_dept_code).upper()[:4].ljust(4, '0')
+                        # Get 4-char department code (should already be validated as 4 chars)
+                        dept_code = (department.code or 'DEPT').upper()[:4].ljust(4, '0')
                         barcode_prefix += f'-{dept_code}'
                         
                         # Check if this department has a parent (making it a child dept)
                         if department.parent_department_id:
                             # This IS a child department - get parent code too
                             parent_dept = department.parent_department_id
-                            raw_parent_code = parent_dept.code or 'PRNT'
-                            parent_code = re.sub(r'[^A-Za-z0-9]', '', raw_parent_code).upper()[:4].ljust(4, '0')
+                            parent_code = (parent_dept.code or 'PRNT').upper()[:4].ljust(4, '0')
                             # Rebuild prefix: TMP-COMPANY-PARENT-CHILD
                             barcode_prefix = f'TMP-{company_code}-{parent_code}-{dept_code}'
                 

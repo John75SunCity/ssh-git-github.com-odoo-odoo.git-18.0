@@ -1,5 +1,5 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, AccessError
+from odoo.exceptions import UserError, AccessError, ValidationError
 
 
 class Company(models.Model):
@@ -27,6 +27,20 @@ class ResPartner(models.Model):
         string="Is a Records Management Customer",
         default=True,
         help="Check this box if this partner is a customer of the records management services."
+    )
+    
+    # Customer Reference Code (4-digit) for temp barcodes
+    customer_code = fields.Char(
+        string='Customer Code',
+        size=4,
+        help="4-character alphanumeric code for this customer (e.g., 0915, CITY, PASO).\n"
+             "Used in temp barcodes: TMP-{CUSTOMER_CODE}-{DEPT}-{SEQ}\n"
+             "If not set, the Internal Reference (ref) field will be used."
+    )
+    customer_code_display = fields.Char(
+        string='Barcode Customer Code',
+        compute='_compute_customer_code_display',
+        help="The 4-character code used in temp barcodes"
     )
     
     # ============================================================================
@@ -280,6 +294,40 @@ class ResPartner(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
+    @api.depends('customer_code', 'ref')
+    def _compute_customer_code_display(self):
+        """
+        Compute the 4-character code used in temp barcodes.
+        Priority: customer_code > ref (sanitized) > 'CUST'
+        """
+        import re
+        for partner in self:
+            if partner.customer_code and len(partner.customer_code) == 4:
+                partner.customer_code_display = partner.customer_code.upper()
+            elif partner.ref:
+                # Sanitize ref to alphanumeric only, take first 4 chars
+                clean_ref = re.sub(r'[^A-Za-z0-9]', '', partner.ref).upper()[:4]
+                partner.customer_code_display = clean_ref.ljust(4, '0') if clean_ref else 'CUST'
+            else:
+                partner.customer_code_display = 'CUST'
+
+    @api.constrains('customer_code')
+    def _check_customer_code_format(self):
+        """Ensure customer code is exactly 4 alphanumeric characters if set."""
+        import re
+        for partner in self:
+            if partner.customer_code:
+                clean_code = re.sub(r'[^A-Za-z0-9]', '', partner.customer_code)
+                if len(clean_code) != 4:
+                    raise ValidationError(
+                        _("Customer Code must be exactly 4 alphanumeric characters.\\n"
+                          "Examples: 0915, CITY, PASO, ABC1\\n"
+                          "Current value: '%s' (%d chars)") % (partner.customer_code, len(partner.customer_code))
+                    )
+                # Auto-uppercase and clean
+                if partner.customer_code != clean_code.upper():
+                    partner.customer_code = clean_code.upper()
+
     @api.depends('department_ids')
     def _compute_department_count(self):
         """Computes the number of departments associated with this partner."""

@@ -17,7 +17,13 @@ class RecordsDepartment(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string='Department Name', required=True, tracking=True, index=True)
-    code = fields.Char(string='Code', required=True)
+    code = fields.Char(
+        string='Department Code',
+        required=True,
+        size=4,
+        help="Exactly 4 alphanumeric characters (e.g., HR01, LGL1, FIN2).\n"
+             "Used in temp barcodes: TMP-{COMPANY}-{DEPT}-{SEQ}"
+    )
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
@@ -79,12 +85,33 @@ class RecordsDepartment(models.Model):
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
-    # SQL constraints
     _sql_constraints = [
         ('name_company_uniq', 'unique(name, company_id)', 'Department name must be unique per company.'),
         ('code_company_uniq', 'unique(code, company_id)', 'Department code must be unique per company.'),
         ('name_partner_uniq', 'UNIQUE(name, partner_id, company_id)', 'The department name must be unique per customer.'),
+        ('code_length_check', 'CHECK(LENGTH(code) = 4)', 'Department code must be exactly 4 characters.'),
     ]
+
+    # ============================================================================
+    # VALIDATION
+    # ============================================================================
+    @api.constrains('code')
+    def _check_code_format(self):
+        """Ensure department code is exactly 4 alphanumeric characters."""
+        import re
+        for dept in self:
+            if dept.code:
+                # Remove any non-alphanumeric and check length
+                clean_code = re.sub(r'[^A-Za-z0-9]', '', dept.code)
+                if len(clean_code) != 4:
+                    raise ValidationError(
+                        _("Department code must be exactly 4 alphanumeric characters.\n"
+                          "Examples: HR01, LGL1, FIN2, ACCT\n"
+                          "Current value: '%s' (%d chars)") % (dept.code, len(dept.code))
+                    )
+                # Auto-uppercase and clean
+                if dept.code != clean_code.upper():
+                    dept.code = clean_code.upper()
 
     # ============================================================================
     # COMPUTE METHODS
