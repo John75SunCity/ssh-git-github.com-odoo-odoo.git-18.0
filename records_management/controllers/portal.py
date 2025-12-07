@@ -2561,13 +2561,36 @@ class RecordsManagementController(http.Controller):
 
             # Barcode handling - generate temp barcode if staging location assigned
             if staging_location:
-                # Generate a TEMP barcode for tracking at customer site
-                # Format: TEMP-{PARTNER_REF}-{TIMESTAMP}-{RANDOM}
-                partner_ref = (partner.ref or 'CUST')[:6].upper()
-                timestamp = datetime.now().strftime('%y%m%d%H%M')
-                import random
-                random_suffix = ''.join(random.choices('0123456789', k=4))
-                temp_barcode = f'TEMP-{partner_ref}-{timestamp}-{random_suffix}'
+                # Generate a TMP barcode for tracking at customer site
+                # Format: TMP-{PARTNER_CODE}-{YYYYMMDDHHMM}-{SEQ}
+                # 
+                # Rules for barcode-safe format:
+                # - No slashes or special chars (breaks scanners/URLs)
+                # - Fixed length for reliable scanning (~32 chars)
+                # - Partner code: sanitized ref (alphanumeric only, max 8 chars)
+                # - Timestamp: YYYYMMDDHHMM (12 digits)
+                # - Sequence: 4-digit incrementing number for uniqueness
+                
+                import re
+                # Sanitize partner ref - remove all non-alphanumeric, uppercase, max 8 chars
+                raw_ref = partner.ref or 'CUST'
+                partner_code = re.sub(r'[^A-Za-z0-9]', '', raw_ref).upper()[:8]
+                # Pad short codes to 4 chars minimum for consistency
+                if len(partner_code) < 4:
+                    partner_code = partner_code.ljust(4, '0')
+                
+                timestamp = datetime.now().strftime('%Y%m%d%H%M')
+                
+                # Get next sequence number for this partner today (ensures uniqueness)
+                # Search for existing temp barcodes with same prefix today
+                today_prefix = f'TMP-{partner_code}-{timestamp[:8]}'
+                existing_today = request.env['records.container'].sudo().search_count([
+                    ('barcode', 'like', today_prefix + '%'),
+                    ('partner_id', '=', partner.id)
+                ])
+                seq_num = str(existing_today + 1).zfill(4)  # 0001, 0002, etc.
+                
+                temp_barcode = f'TMP-{partner_code}-{timestamp}-{seq_num}'
                 container_vals['barcode'] = temp_barcode
             elif post.get('generate_barcode'):
                 # Auto-generate barcode using sequence
