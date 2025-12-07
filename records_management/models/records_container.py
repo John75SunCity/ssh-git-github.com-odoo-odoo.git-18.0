@@ -83,6 +83,11 @@ class RecordsContainer(models.Model):
         store=True,
         help="Indicates a physical warehouse barcode from pre-printed sheet has been assigned."
     )
+    created_via_portal = fields.Boolean(
+        string="Created via Portal",
+        default=False,
+        help="Indicates this container was created by a customer through the portal interface."
+    )
 
     # ============================================================================
     # RELATIONSHIPS
