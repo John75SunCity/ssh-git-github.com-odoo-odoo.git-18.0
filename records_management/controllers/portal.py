@@ -2561,36 +2561,55 @@ class RecordsManagementController(http.Controller):
 
             # Barcode handling - generate temp barcode if staging location assigned
             if staging_location:
-                # Generate a TMP barcode for tracking at customer site
-                # Format: TMP-{PARTNER_CODE}-{YYYYMMDDHHMM}-{SEQ}
+                # Generate TMP barcode for tracking at customer site
+                # Format: TMP-{COMPANY_REF}-{DEPT_CODE}-{CHILD_CODE}-{SEQ}
                 # 
-                # Rules for barcode-safe format:
-                # - No slashes or special chars (breaks scanners/URLs)
-                # - Fixed length for reliable scanning (~32 chars)
-                # - Partner code: sanitized ref (alphanumeric only, max 8 chars)
-                # - Timestamp: YYYYMMDDHHMM (12 digits)
-                # - Sequence: 4-digit incrementing number for uniqueness
+                # Structure (all 4-digit codes, 6-digit sequence):
+                # - Company only:      TMP-0915-000001
+                # - With department:   TMP-0915-HR01-000001  
+                # - With child dept:   TMP-0915-HR01-LGL1-000001
+                #
+                # Sequence resets to 000001 when a new department/child is added
                 
                 import re
-                # Sanitize partner ref - remove all non-alphanumeric, uppercase, max 8 chars
-                raw_ref = partner.ref or 'CUST'
-                partner_code = re.sub(r'[^A-Za-z0-9]', '', raw_ref).upper()[:8]
-                # Pad short codes to 4 chars minimum for consistency
-                if len(partner_code) < 4:
-                    partner_code = partner_code.ljust(4, '0')
                 
-                timestamp = datetime.now().strftime('%Y%m%d%H%M')
+                # Get 4-char company code (sanitized partner ref)
+                raw_company_ref = partner.ref or 'CUST'
+                company_code = re.sub(r'[^A-Za-z0-9]', '', raw_company_ref).upper()[:4].ljust(4, '0')
                 
-                # Get next sequence number for this partner today (ensures uniqueness)
-                # Search for existing temp barcodes with same prefix today
-                today_prefix = f'TMP-{partner_code}-{timestamp[:8]}'
-                existing_today = request.env['records.container'].sudo().search_count([
-                    ('barcode', 'like', today_prefix + '%'),
+                # Build barcode prefix based on department hierarchy
+                barcode_prefix = f'TMP-{company_code}'
+                
+                # Get department info if assigned
+                dept_code = None
+                child_code = None
+                department = None
+                if department_id:
+                    department = request.env['records.department'].sudo().browse(int(department_id))
+                    if department.exists():
+                        # Get 4-char department code
+                        raw_dept_code = department.code or 'DEPT'
+                        dept_code = re.sub(r'[^A-Za-z0-9]', '', raw_dept_code).upper()[:4].ljust(4, '0')
+                        barcode_prefix += f'-{dept_code}'
+                        
+                        # Check if this department has a parent (making it a child dept)
+                        if department.parent_department_id:
+                            # This IS a child department - get parent code too
+                            parent_dept = department.parent_department_id
+                            raw_parent_code = parent_dept.code or 'PRNT'
+                            parent_code = re.sub(r'[^A-Za-z0-9]', '', raw_parent_code).upper()[:4].ljust(4, '0')
+                            # Rebuild prefix: TMP-COMPANY-PARENT-CHILD
+                            barcode_prefix = f'TMP-{company_code}-{parent_code}-{dept_code}'
+                
+                # Get next sequence number for this exact prefix
+                # This ensures sequence resets when department structure changes
+                existing_count = request.env['records.container'].sudo().search_count([
+                    ('barcode', 'like', barcode_prefix + '-%'),
                     ('partner_id', '=', partner.id)
                 ])
-                seq_num = str(existing_today + 1).zfill(4)  # 0001, 0002, etc.
+                seq_num = str(existing_count + 1).zfill(6)  # 000001, 000002, etc.
                 
-                temp_barcode = f'TMP-{partner_code}-{timestamp}-{seq_num}'
+                temp_barcode = f'{barcode_prefix}-{seq_num}'
                 container_vals['barcode'] = temp_barcode
             elif post.get('generate_barcode'):
                 # Auto-generate barcode using sequence
