@@ -2432,6 +2432,11 @@ class RecordsManagementController(http.Controller):
             retention_policies = request.env['records.retention.policy'].sudo().search([
                 ('active', '=', True)
             ], order='name')
+            # Get staging locations for the customer
+            staging_locations = request.env['customer.staging.location'].sudo().search([
+                ('partner_id', '=', partner.id),
+                ('active', '=', True)
+            ], order='complete_name')
             # Get user permissions for traffic light indicators
             permissions = self._get_user_permissions()
             # Get smart department context
@@ -2441,6 +2446,7 @@ class RecordsManagementController(http.Controller):
                 'departments': departments,
                 'container_types': container_types,
                 'retention_policies': retention_policies,
+                'staging_locations': staging_locations,
                 'permissions': permissions,
                 'page_name': 'container_create',
                 **dept_context,  # departments, default_department, has_departments, show_department_selector
@@ -2512,11 +2518,23 @@ class RecordsManagementController(http.Controller):
             if container_type_id:
                 container_type = request.env['records.container.type'].sudo().browse(int(container_type_id))
 
+            # Staging location validation (required for proper tracking)
+            staging_location_id = post.get('staging_location_id')
+            staging_location = None
+            if staging_location_id:
+                staging_location = request.env['customer.staging.location'].sudo().browse(int(staging_location_id))
+                # Verify ownership
+                if staging_location.partner_id.id != partner.id:
+                    return request.render('records_management.portal_error', {
+                        'error_title': _('Invalid Staging Location'),
+                        'error_message': _('The selected staging location does not belong to your organization.'),
+                    })
+
             # Create container
             container_vals = {
                 'name': name,
                 'partner_id': partner.id,
-                'status': 'draft',
+                'state': 'pending',  # Correct field name is 'state', not 'status'
                 'created_via_portal': True,
             }
             
@@ -2531,14 +2549,27 @@ class RecordsManagementController(http.Controller):
                 if container_type and container_type.average_weight_lbs:
                     container_vals['weight'] = container_type.average_weight_lbs
 
+            # Add staging location if provided
+            if staging_location:
+                container_vals['customer_staging_location_id'] = staging_location.id
+
             # Optional fields
             if post.get('description'):
                 container_vals['description'] = post.get('description')
             if post.get('location_id'):
                 container_vals['current_location_id'] = int(post.get('location_id'))
 
-            # Barcode handling - generate or use custom
-            if post.get('generate_barcode'):
+            # Barcode handling - generate temp barcode if staging location assigned
+            if staging_location:
+                # Generate a TEMP barcode for tracking at customer site
+                # Format: TEMP-{PARTNER_REF}-{TIMESTAMP}-{RANDOM}
+                partner_ref = (partner.ref or 'CUST')[:6].upper()
+                timestamp = datetime.now().strftime('%y%m%d%H%M')
+                import random
+                random_suffix = ''.join(random.choices('0123456789', k=4))
+                temp_barcode = f'TEMP-{partner_ref}-{timestamp}-{random_suffix}'
+                container_vals['barcode'] = temp_barcode
+            elif post.get('generate_barcode'):
                 # Auto-generate barcode using sequence
                 container_vals['barcode'] = request.env['ir.sequence'].sudo().next_by_code('records.container') or f'CNT-{name[:10].upper()}'
             elif post.get('custom_barcode'):
@@ -2549,11 +2580,16 @@ class RecordsManagementController(http.Controller):
             container = request.env['records.container'].sudo().create(container_vals)
 
             # Audit log
+            audit_description = _('Container %s created via portal by %s') % (container.name, request.env.user.name)
+            if staging_location:
+                audit_description += _(' | Staging location: %s | Temp barcode: %s') % (
+                    staging_location.complete_name, container.barcode
+                )
             request.env['naid.audit.log'].sudo().create({
                 'action_type': 'container_created',
                 'user_id': request.env.user.id,
                 'container_id': container.id,
-                'description': _('Container %s created via portal by %s') % (container.name, request.env.user.name),
+                'description': audit_description,
                 'timestamp': datetime.now(),
             })
 

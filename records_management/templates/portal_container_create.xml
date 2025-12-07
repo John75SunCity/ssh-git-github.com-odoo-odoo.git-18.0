@@ -108,6 +108,57 @@
                                             </t>
                                         </div>
                                         
+                                        <!-- Staging Location Selection (REQUIRED for tracking) -->
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h5 class="border-bottom pb-2 mb-3 mt-3">
+                                                    <i class="fa fa-map-marker-alt text-danger"></i> Pickup Location *
+                                                </h5>
+                                                <p class="text-muted small">
+                                                    <i class="fa fa-info-circle"></i> 
+                                                    Where is this container located? This helps our technicians find it during pickup.
+                                                    A temporary barcode will be generated for tracking.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-8 mb-3">
+                                                <label for="staging_location_id" class="form-label">
+                                                    Staging Location * 
+                                                    <span class="badge bg-warning text-dark">Required</span>
+                                                </label>
+                                                <t t-if="staging_locations">
+                                                    <select class="form-control" id="staging_location_id" name="staging_location_id" required="required">
+                                                        <option value="">-- Select where this container is located --</option>
+                                                        <t t-foreach="staging_locations" t-as="loc">
+                                                            <option t-att-value="loc.id" t-esc="loc.complete_name"/>
+                                                        </t>
+                                                    </select>
+                                                    <small class="form-text text-muted">
+                                                        Choose the building/room where technicians will find this container
+                                                    </small>
+                                                </t>
+                                                <t t-else="">
+                                                    <div class="alert alert-warning">
+                                                        <i class="fa fa-exclamation-triangle"></i>
+                                                        <strong>No staging locations configured.</strong>
+                                                        <br/>
+                                                        <a href="/my/staging-locations/create" class="btn btn-sm btn-outline-primary mt-2">
+                                                            <i class="fa fa-plus"></i> Create a Staging Location First
+                                                        </a>
+                                                    </div>
+                                                    <input type="hidden" name="staging_location_id" value=""/>
+                                                </t>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">&amp;nbsp;</label>
+                                                <a href="/my/staging-locations/create" class="btn btn-outline-secondary d-block">
+                                                    <i class="fa fa-plus"></i> Add New Location
+                                                </a>
+                                            </div>
+                                        </div>
+                                        
                                         <!-- Container Size/Type -->
                                         <div class="row">
                                             <div class="col-md-12">
