@@ -2575,11 +2575,13 @@ class RecordsManagementController(http.Controller):
                 import re
                 
                 # Get 4-char company code (prefer customer_code field, fallback to ref)
-                if partner.customer_code and len(partner.customer_code) == 4:
-                    company_code = partner.customer_code.upper()
+                # Always take first 4 alphanumeric chars and pad if needed
+                if partner.customer_code:
+                    company_code = re.sub(r'[^A-Za-z0-9]', '', partner.customer_code).upper()[:4].ljust(4, '0')
+                elif partner.ref:
+                    company_code = re.sub(r'[^A-Za-z0-9]', '', partner.ref).upper()[:4].ljust(4, '0')
                 else:
-                    raw_company_ref = partner.ref or 'CUST'
-                    company_code = re.sub(r'[^A-Za-z0-9]', '', raw_company_ref).upper()[:4].ljust(4, '0')
+                    company_code = 'CUST'
                 
                 # Build barcode prefix based on department hierarchy
                 barcode_prefix = f'TMP-{company_code}'
@@ -2591,15 +2593,17 @@ class RecordsManagementController(http.Controller):
                 if department_id:
                     department = request.env['records.department'].sudo().browse(int(department_id))
                     if department.exists():
-                        # Get 4-char department code (should already be validated as 4 chars)
-                        dept_code = (department.code or 'DEPT').upper()[:4].ljust(4, '0')
+                        # Get 4-char department code (take first 4 chars, pad if needed)
+                        raw_code = department.code or 'DEPT'
+                        dept_code = re.sub(r'[^A-Za-z0-9]', '', raw_code).upper()[:4].ljust(4, '0')
                         barcode_prefix += f'-{dept_code}'
                         
                         # Check if this department has a parent (making it a child dept)
                         if department.parent_department_id:
                             # This IS a child department - get parent code too
                             parent_dept = department.parent_department_id
-                            parent_code = (parent_dept.code or 'PRNT').upper()[:4].ljust(4, '0')
+                            raw_parent = parent_dept.code or 'PRNT'
+                            parent_code = re.sub(r'[^A-Za-z0-9]', '', raw_parent).upper()[:4].ljust(4, '0')
                             # Rebuild prefix: TMP-COMPANY-PARENT-CHILD
                             barcode_prefix = f'TMP-{company_code}-{parent_code}-{dept_code}'
                 

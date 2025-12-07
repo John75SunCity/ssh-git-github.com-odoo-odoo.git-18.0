@@ -299,11 +299,14 @@ class ResPartner(models.Model):
         """
         Compute the 4-character code used in temp barcodes.
         Priority: customer_code > ref (sanitized) > 'CUST'
+        Always returns exactly 4 characters (truncated or padded).
         """
         import re
         for partner in self:
-            if partner.customer_code and len(partner.customer_code) == 4:
-                partner.customer_code_display = partner.customer_code.upper()
+            if partner.customer_code:
+                # Take first 4 alphanumeric chars, pad if needed
+                clean_code = re.sub(r'[^A-Za-z0-9]', '', partner.customer_code).upper()[:4]
+                partner.customer_code_display = clean_code.ljust(4, '0') if clean_code else 'CUST'
             elif partner.ref:
                 # Sanitize ref to alphanumeric only, take first 4 chars
                 clean_ref = re.sub(r'[^A-Za-z0-9]', '', partner.ref).upper()[:4]
@@ -313,20 +316,18 @@ class ResPartner(models.Model):
 
     @api.constrains('customer_code')
     def _check_customer_code_format(self):
-        """Ensure customer code is exactly 4 alphanumeric characters if set."""
+        """
+        Normalize customer code to uppercase alphanumeric.
+        Recommends 4 characters but gracefully handles existing data.
+        """
         import re
         for partner in self:
             if partner.customer_code:
-                clean_code = re.sub(r'[^A-Za-z0-9]', '', partner.customer_code)
-                if len(clean_code) != 4:
-                    raise ValidationError(
-                        _("Customer Code must be exactly 4 alphanumeric characters.\\n"
-                          "Examples: 0915, CITY, PASO, ABC1\\n"
-                          "Current value: '%s' (%d chars)") % (partner.customer_code, len(partner.customer_code))
-                    )
-                # Auto-uppercase and clean
-                if partner.customer_code != clean_code.upper():
-                    partner.customer_code = clean_code.upper()
+                # Remove any non-alphanumeric and uppercase
+                clean_code = re.sub(r'[^A-Za-z0-9]', '', partner.customer_code).upper()
+                # Auto-fix: just clean and uppercase, don't enforce length
+                if clean_code and partner.customer_code != clean_code:
+                    partner.customer_code = clean_code
 
     @api.depends('department_ids')
     def _compute_department_count(self):

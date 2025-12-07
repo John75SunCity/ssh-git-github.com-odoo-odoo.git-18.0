@@ -89,7 +89,7 @@ class RecordsDepartment(models.Model):
         ('name_company_uniq', 'unique(name, company_id)', 'Department name must be unique per company.'),
         ('code_company_uniq', 'unique(code, company_id)', 'Department code must be unique per company.'),
         ('name_partner_uniq', 'UNIQUE(name, partner_id, company_id)', 'The department name must be unique per customer.'),
-        ('code_length_check', 'CHECK(LENGTH(code) = 4)', 'Department code must be exactly 4 characters.'),
+        # NOTE: No length constraint - we recommend 4 chars but gracefully handle existing data
     ]
 
     # ============================================================================
@@ -97,21 +97,19 @@ class RecordsDepartment(models.Model):
     # ============================================================================
     @api.constrains('code')
     def _check_code_format(self):
-        """Ensure department code is exactly 4 alphanumeric characters."""
+        """
+        Normalize department code to uppercase alphanumeric.
+        Recommends 4 characters but gracefully handles existing data by
+        auto-truncating or padding to 4 chars for barcode generation.
+        """
         import re
         for dept in self:
             if dept.code:
-                # Remove any non-alphanumeric and check length
-                clean_code = re.sub(r'[^A-Za-z0-9]', '', dept.code)
-                if len(clean_code) != 4:
-                    raise ValidationError(
-                        _("Department code must be exactly 4 alphanumeric characters.\n"
-                          "Examples: HR01, LGL1, FIN2, ACCT\n"
-                          "Current value: '%s' (%d chars)") % (dept.code, len(dept.code))
-                    )
-                # Auto-uppercase and clean
-                if dept.code != clean_code.upper():
-                    dept.code = clean_code.upper()
+                # Remove any non-alphanumeric and uppercase
+                clean_code = re.sub(r'[^A-Za-z0-9]', '', dept.code).upper()
+                # Auto-fix: just clean and uppercase, don't enforce length
+                if clean_code and dept.code != clean_code:
+                    dept.code = clean_code
 
     # ============================================================================
     # COMPUTE METHODS
