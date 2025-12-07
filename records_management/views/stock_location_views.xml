@@ -14,6 +14,8 @@
             <xpath expr="//field[@name='storage_category_id']" position="after">
                 <field name="max_capacity" optional="show"/>
                 <field name="records_container_count" optional="show"/>
+                <field name="records_file_count" optional="show"/>
+                <field name="records_document_count" optional="hide"/>
             </xpath>
         </field>
     </record>
@@ -39,6 +41,12 @@
                             icon="fa-folder">
                         <field name="records_file_count" widget="statinfo" string="Files"/>
                     </button>
+                    <button name="action_view_documents"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-file-text">
+                        <field name="records_document_count" widget="statinfo" string="Documents"/>
+                    </button>
                 </div>
             </xpath>
 
@@ -46,6 +54,7 @@
             <xpath expr="//field[@name='name']" position="after">
                 <field name="records_container_count" invisible="1"/>
                 <field name="records_file_count" invisible="1"/>
+                <field name="records_document_count" invisible="1"/>
             </xpath>
         </field>
     </record>

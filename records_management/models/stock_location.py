@@ -193,7 +193,15 @@ class StockLocation(models.Model):
         string="File Folders",
         compute='_compute_records_file_count',
         store=False,
-        help="Number of file folders at this location"
+        help="Number of file folders at this location (in containers at this location)"
+    )
+    
+    # Computed field for document count (used in views)
+    records_document_count = fields.Integer(
+        string="Documents",
+        compute='_compute_records_document_count',
+        store=False,
+        help="Number of documents at this location (in files/containers at this location)"
     )
     
     # ============================================================================
@@ -220,14 +228,40 @@ class StockLocation(models.Model):
         for location in self:
             location.records_container_count = len(location.container_ids)
     
-    @api.depends('quant_ids')
     def _compute_records_file_count(self):
-        """Count file folders at this location"""
+        """Count file folders at this location (files in containers at this location).
+        
+        Files get their current_location_id from either:
+        1. Their own location_id (if checked out independently)
+        2. Their container's current_location_id (when inside a container)
+        """
         RecordsFile = self.env['records.file']
         for location in self:
+            # Count files where current_location_id matches this location
             location.records_file_count = RecordsFile.search_count([
-                ('location_id', '=', location.id)
+                ('current_location_id', '=', location.id)
             ])
+    
+    def _compute_records_document_count(self):
+        """Count documents at this location (documents in files/containers at this location).
+        
+        Documents are linked to files, so we count documents where the parent file
+        is at this location.
+        """
+        RecordsDocument = self.env['records.document']
+        RecordsFile = self.env['records.file']
+        for location in self:
+            # Get all file IDs at this location
+            file_ids = RecordsFile.search([
+                ('current_location_id', '=', location.id)
+            ]).ids
+            # Count documents in those files
+            if file_ids:
+                location.records_document_count = RecordsDocument.search_count([
+                    ('file_id', 'in', file_ids)
+                ])
+            else:
+                location.records_document_count = 0
     
     @api.depends('quant_ids', 'quant_ids.quantity')
     def _compute_current_usage(self):
@@ -283,11 +317,26 @@ class StockLocation(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'records.file',
             'view_mode': 'list,form,kanban',
-            'domain': [('location_id', '=', self.id)],
+            'domain': [('current_location_id', '=', self.id)],
             'context': {
-                'default_location_id': self.id,
-                'search_default_location_id': self.id,
+                'search_default_current_location_id': self.id,
             },
+        }
+    
+    def action_view_documents(self):
+        """View all records.document records at this location (documents in files/containers at this location)"""
+        self.ensure_one()
+        # Get all file IDs at this location
+        file_ids = self.env['records.file'].search([
+            ('current_location_id', '=', self.id)
+        ]).ids
+        return {
+            'name': _('Documents at %s') % self.display_name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.document',
+            'view_mode': 'list,form,kanban',
+            'domain': [('file_id', 'in', file_ids)] if file_ids else [('id', '=', False)],
+            'context': {},
         }
     
     def action_view_inventory(self):
