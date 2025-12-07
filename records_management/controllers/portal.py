@@ -2934,11 +2934,16 @@ class RecordsManagementController(http.Controller):
                 except (ValueError, TypeError):
                     preselect_container_id = None
 
+            # Get file categories from the model's Selection field
+            file_categories = request.env['records.file']._fields['file_category'].selection
+
             values = {
                 'containers': containers,
                 'preselect_container_id': preselect_container_id,
                 'permissions': self._get_user_permissions(),
                 'page_name': 'file_create',
+                'file_categories': file_categories,
+                'today': date.today().strftime('%Y-%m-%d'),
                 **dept_context,  # departments, default_department, has_departments, show_department_selector
             }
             return request.render("records_management.portal_file_create", values)
@@ -2991,6 +2996,7 @@ class RecordsManagementController(http.Controller):
                 'partner_id': partner.id,
                 'container_id': int(container_id),
                 'created_via_portal': True,
+                'state': 'in',  # Default state - will be managed by system
             }
 
             # Only set department if we have one
@@ -2999,8 +3005,45 @@ class RecordsManagementController(http.Controller):
 
             if post.get('description'):
                 file_vals['description'] = post.get('description')
-            if post.get('barcode'):
-                file_vals['barcode'] = post.get('barcode')
+            
+            # Set file category if provided
+            if post.get('file_category'):
+                file_vals['file_category'] = post.get('file_category')
+            
+            # Set date_created (defaults to today if not provided)
+            if post.get('date_created'):
+                file_vals['date_created'] = post.get('date_created')
+            else:
+                file_vals['date_created'] = date.today()
+
+            # Generate temp barcode for tracking (similar to container temp barcode)
+            import re
+            
+            # Get 4-char company code
+            if partner.customer_code:
+                company_code = re.sub(r'[^A-Za-z0-9]', '', partner.customer_code).upper()[:4].ljust(4, '0')
+            elif partner.ref:
+                company_code = re.sub(r'[^A-Za-z0-9]', '', partner.ref).upper()[:4].ljust(4, '0')
+            else:
+                company_code = 'CUST'
+            
+            # Build temp barcode prefix
+            temp_prefix = f'TMP-FILE-{company_code}'
+            
+            # Add department code if available
+            if final_department_id:
+                dept = request.env['records.department'].sudo().browse(final_department_id)
+                if dept.code:
+                    dept_code = re.sub(r'[^A-Za-z0-9]', '', dept.code).upper()[:4].ljust(4, '0')
+                    temp_prefix += f'-{dept_code}'
+            
+            # Get next sequence number
+            existing_count = request.env['records.file'].sudo().search_count([
+                ('temp_barcode', 'like', temp_prefix + '-%'),
+                ('partner_id', '=', partner.id)
+            ])
+            seq_num = str(existing_count + 1).zfill(6)
+            file_vals['temp_barcode'] = f'{temp_prefix}-{seq_num}'
 
             file_record = request.env['records.file'].sudo().create(file_vals)
 

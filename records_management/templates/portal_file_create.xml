@@ -29,21 +29,21 @@
                                             </small>
                                         </div>
 
-                                        <div class="form-group">
-                                            <label for="barcode">Barcode</label>
-                                            <input type="text" class="form-control" id="barcode" name="barcode"
-                                                   placeholder="Scan or enter barcode (optional)"/>
-                                        </div>
+                                        <!-- Barcode hidden - system auto-generates temp barcode -->
+                                        <!-- A ZPL template will be used to print temp barcodes like containers -->
 
                                         <div class="form-group">
                                             <label for="container_id">Container *</label>
-                                            <select class="form-control" id="container_id" name="container_id" required="required">
-                                                <option value="">-- Select Container --</option>
+                                            <select class="form-control" id="container_id" name="container_id" required="required"
+                                                    onchange="updateDepartmentFromContainer(this)">
+                                                <option value="" data-department="">-- Select Container --</option>
                                                 <t t-foreach="containers" t-as="container">
                                                     <option t-att-value="container.id"
+                                                            t-att-data-department="container.department_id.name or ''"
+                                                            t-att-data-department-id="container.department_id.id or ''"
                                                             t-att-selected="preselect_container_id and container.id == preselect_container_id">
                                                         <t t-esc="container.name"/>
-                                                        <t t-if="container.location_id"> - <t t-esc="container.location_id.name"/></t>
+                                                        <t t-if="container.barcode"> (<t t-esc="container.barcode"/>)</t>
                                                     </option>
                                                 </t>
                                             </select>
@@ -52,82 +52,50 @@
                                             </small>
                                         </div>
 
-                                        <!-- Smart Department Selection -->
-                                        <t t-if="has_departments">
-                                            <div class="form-group">
-                                                <label for="department_id">Department</label>
-                                                
-                                                <!-- Case 1: User has exactly one department - show read-only -->
-                                                <t t-if="default_department and not show_department_selector">
-                                                    <input type="text" class="form-control" readonly="readonly"
-                                                           t-att-value="default_department.name"/>
-                                                    <input type="hidden" name="department_id" t-att-value="default_department.id"/>
-                                                    <small class="form-text text-muted">Your assigned department</small>
-                                                </t>
-                                                
-                                                <!-- Case 2: User has multiple departments - show dropdown -->
-                                                <t t-elif="show_department_selector">
-                                                    <select class="form-control" id="department_id" name="department_id">
-                                                        <option value="">-- Select Department --</option>
-                                                        <t t-foreach="departments" t-as="dept">
-                                                            <option t-att-value="dept.id"><t t-esc="dept.name"/></option>
-                                                        </t>
-                                                    </select>
-                                                </t>
-                                                
-                                                <!-- Case 3: Company has departments but user has no access -->
-                                                <t t-else="">
-                                                    <input type="text" class="form-control text-muted" readonly="readonly"
-                                                           value="Company Level"/>
-                                                    <input type="hidden" name="department_id" value=""/>
-                                                    <small class="form-text text-muted">File will be at company level</small>
-                                                </t>
-                                            </div>
-                                        </t>
+                                        <!-- Department - Read-only, inherited from container -->
+                                        <div class="form-group">
+                                            <label for="department_display">Department</label>
+                                            <input type="text" class="form-control bg-light" id="department_display" 
+                                                   readonly="readonly" placeholder="Select a container first"/>
+                                            <input type="hidden" name="department_id" id="department_id" value=""/>
+                                            <small class="form-text text-muted">
+                                                Department is inherited from the selected container
+                                            </small>
+                                        </div>
 
                                         <div class="form-group">
                                             <label for="file_category">File Category</label>
                                             <select class="form-control" id="file_category" name="file_category">
                                                 <option value="">-- Select Category --</option>
-                                                <option value="permanent">Permanent</option>
-                                                <option value="temporary">Temporary</option>
-                                                <option value="archived">Archived</option>
-                                                <option value="active" selected="selected">Active</option>
+                                                <t t-foreach="file_categories or []" t-as="cat">
+                                                    <option t-att-value="cat[0]"><t t-esc="cat[1]"/></option>
+                                                </t>
                                             </select>
                                             <small class="form-text text-muted">
                                                 Categorize this file for organizational purposes
                                             </small>
                                         </div>
                                         
+                                        <!-- File State - Read-only, defaults to container state or 'pending' -->
                                         <div class="form-group">
-                                            <label for="state">File State</label>
-                                            <select class="form-control" id="state" name="state">
-                                                <option value="draft">Draft</option>
-                                                <option value="active" selected="selected">Active</option>
-                                                <option value="archived">Archived</option>
-                                            </select>
+                                            <label for="state_display">File State</label>
+                                            <input type="text" class="form-control bg-light" id="state_display" 
+                                                   value="Pending" readonly="readonly"/>
+                                            <small class="form-text text-muted">
+                                                File state is set automatically. It will change to "In Storage" when received at warehouse.
+                                            </small>
                                         </div>
                                         
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="date_created">Date Created</label>
-                                                    <input type="date" class="form-control" id="date_created" name="date_created"/>
-                                                    <small class="form-text text-muted">
-                                                        When this file was originally created
-                                                    </small>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="received_date">Date Received</label>
-                                                    <input type="date" class="form-control" id="received_date" name="received_date"/>
-                                                    <small class="form-text text-muted">
-                                                        When this file was received into custody
-                                                    </small>
-                                                </div>
-                                            </div>
+                                        <!-- Only Date Created - defaults to today, Date Received is set by technician -->
+                                        <div class="form-group">
+                                            <label for="date_created">Date Created</label>
+                                            <input type="date" class="form-control" id="date_created" name="date_created"
+                                                   t-att-value="today"/>
+                                            <small class="form-text text-muted">
+                                                When this file was originally created (defaults to today)
+                                            </small>
                                         </div>
+                                        <!-- Date Received hidden - set when technician scans container to work order -->
 
                                         <div class="form-group">
                                             <label for="description">Description</label>
@@ -135,12 +103,12 @@
                                                       placeholder="Optional: Describe the contents of this file"></textarea>
                                         </div>
                                         
-                                        <!-- Temporary Location Info (Customer fills this - we assign real stock location via scan) -->
+                                        <!-- Temporary Location Info -->
                                         <div class="alert alert-info mt-3">
                                             <h6><i class="fa fa-info-circle"></i> Location Information</h6>
                                             <p class="mb-0 small">
-                                                This file will be assigned a temporary location at your address/department. 
-                                                Our staff will assign the actual warehouse location when the file is scanned into inventory.
+                                                This file will be assigned a temporary barcode for tracking. 
+                                                Our staff will assign the permanent barcode and warehouse location when the file is scanned into inventory.
                                             </p>
                                         </div>
 
@@ -153,6 +121,26 @@
                                             </a>
                                         </div>
                                     </form>
+                                    
+                                    <!-- JavaScript to update department from container -->
+                                    <script>
+                                        function updateDepartmentFromContainer(select) {
+                                            var option = select.options[select.selectedIndex];
+                                            var deptName = option.getAttribute('data-department') || '';
+                                            var deptId = option.getAttribute('data-department-id') || '';
+                                            
+                                            document.getElementById('department_display').value = deptName || 'No department assigned';
+                                            document.getElementById('department_id').value = deptId;
+                                        }
+                                        
+                                        // Initialize on page load if container is pre-selected
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            var containerSelect = document.getElementById('container_id');
+                                            if (containerSelect.value) {
+                                                updateDepartmentFromContainer(containerSelect);
+                                            }
+                                        });
+                                    </script>
 
                                     <!-- Help Section -->
                                     <div class="mt-4 pt-3 border-top">
@@ -161,9 +149,9 @@
                                         </h6>
                                         <ul class="small text-muted">
                                             <li><strong>File Name:</strong> Enter a descriptive name for easy identification</li>
-                                            <li><strong>Barcode:</strong> Scan or manually enter barcode if available</li>
                                             <li><strong>Container:</strong> Select the physical container this file belongs to</li>
-                                            <li><strong>Department:</strong> Assign to appropriate department</li>
+                                            <li><strong>Department:</strong> Automatically set from the container's department</li>
+                                            <li><strong>Category:</strong> Choose the type of records in this file</li>
                                         </ul>
                                     </div>
                                 </div>
