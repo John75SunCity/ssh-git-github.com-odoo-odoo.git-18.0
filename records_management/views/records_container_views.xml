@@ -78,7 +78,7 @@ lbs
                             <div class="row mt-2">
                                 <div class="col-6">
                                     <button class="btn btn-primary btn-sm" type="object" name="action_view_documents">
-<i class="fas fa-file-text-o" title="View Documents" aria-hidden="true"/>
+<i class="fa fa-file-text" title="View Documents" aria-hidden="true"/>
 Documents
                                     </button>
                                 </div>
@@ -103,7 +103,7 @@ QR Code
 <i class="fas fa-edit" title="Edit Container" aria-hidden="true"/>
 Edit Container</a>
 <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">
-<i class="fas fa-file-text-o" title="View Documents" aria-hidden="true"/>
+<i class="fa fa-file-text" title="View Documents" aria-hidden="true"/>
 View Documents</a>
 <a role="menuitem" type="object" name="action_retrieve_container" class="dropdown-item">
 <i class="fas fa-map-marker" title="Retrieve Container" aria-hidden="true"/>
@@ -152,9 +152,9 @@ Destroy Container</a>
         <field name="is_due_for_destruction" string="Due" widget="boolean_toggle"/>
         <field name="security_level" string="Security"/>
         <field name="active" string="Active" widget="boolean_toggle"/>
-            <button name="action_view_documents" type="object" string="View Docs" icon="fas fa-file-text-o" class="btn-link"/>
-            <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fas fa-barcode" class="btn-link"/>
-            <button name="action_generate_qr_code" type="object" string="QR Code" icon="fas fa-qrcode" class="btn-link"/>
+            <button name="action_view_documents" type="object" string="View Docs" icon="fa-file-text" class="btn-link"/>
+            <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fa-barcode" class="btn-link"/>
+            <button name="action_generate_qr_code" type="object" string="QR Code" icon="fa-qrcode" class="btn-link"/>
         </list>
     </field>
     </record>
@@ -191,9 +191,9 @@ Destroy Container</a>
         <!-- Hide company_id - not relevant since all containers belong to service provider "My Company" -->
         <!-- Users care about CUSTOMER (partner_id), not service provider company -->
         <field name="company_id" column_invisible="1"/>
-            <button name="action_view_documents" type="object" string="View Docs" icon="fas fa-file-text-o" class="btn-link"/>
-            <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fas fa-barcode" class="btn-link"/>
-            <button name="action_generate_qr_code" type="object" string="QR Code" icon="fas fa-qrcode" class="btn-link"/>
+            <button name="action_view_documents" type="object" string="View Docs" icon="fa-file-text" class="btn-link"/>
+            <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fa-barcode" class="btn-link"/>
+            <button name="action_generate_qr_code" type="object" string="QR Code" icon="fa-qrcode" class="btn-link"/>
         </list>
     </field>
     </record>
@@ -240,10 +240,10 @@ Destroy Container</a>
                 <widget name="web_ribbon" title="Destroyed" bg_color="text-bg-danger" invisible="state != 'destroyed'"/>
                 
                 <div class="oe_button_box" name="button_box">
-<button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o" title="View Documents">
-        <field name="document_count" string="Documents" widget="statinfo"/>
+                    <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text" title="View Documents">
+                        <field name="document_count" string="Documents" widget="statinfo"/>
                     </button>
-                    <button class="oe_stat_button" type="object" name="action_view_files" icon="fa-folder-o" title="View File Folders">
+                    <button class="oe_stat_button" type="object" name="action_view_files" icon="fa-folder-open" title="View File Folders">
                         <field name="file_count" string="File Folders" widget="statinfo"/>
                     </button>
 

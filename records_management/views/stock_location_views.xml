@@ -38,7 +38,7 @@
                     <button name="action_view_files"
                             type="object"
                             class="oe_stat_button"
-                            icon="fa-folder">
+                            icon="fa-folder-open">
                         <field name="records_file_count" widget="statinfo" string="Files"/>
                     </button>
                     <button name="action_view_documents"

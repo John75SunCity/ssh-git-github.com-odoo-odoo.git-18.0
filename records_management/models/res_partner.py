@@ -630,6 +630,18 @@ class ResPartner(models.Model):
             'context': {'default_partner_id': self.id}
         }
 
+    def action_view_files(self):
+        """Opens the tree view of file folders related to this partner."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('File Folders'),
+            'res_model': 'records.file',
+            'view_mode': 'list,form',
+            'domain': [('partner_id', '=', self.id)],
+            'context': {'default_partner_id': self.id}
+        }
+
     def action_view_documents(self):
         """Opens the tree view of documents related to this partner."""
         self.ensure_one()

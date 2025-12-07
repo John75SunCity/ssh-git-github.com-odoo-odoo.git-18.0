@@ -15,9 +15,9 @@
                     <field name="document_count" string="Documents" widget="integer" />
                     <field name="state" string="Status" widget="badge" />
                     <field name="user_id" string="👨‍ Responsible" />
-                    <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link" />
-                    <button name="action_view_files" type="object" string="View Files" icon="fa-folder-o" class="btn-link" />
-                    <button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link" />
+                    <button name="action_view_containers" type="object" string="View Containers" icon="fa-archive" class="btn-link" />
+                    <button name="action_view_files" type="object" string="View Files" icon="fa-folder-open" class="btn-link" />
+                    <button name="action_view_documents" type="object" string="View Documents" icon="fa-file-text" class="btn-link" />
                 </list>
             </field>
         </record>
@@ -33,13 +33,13 @@
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" type="object" name="action_view_containers" icon="fa-cube">
+                            <button class="oe_stat_button" type="object" name="action_view_containers" icon="fa-archive">
                                 <field name="container_count" string="Containers" widget="statinfo" />
                             </button>
-                            <button class="oe_stat_button" type="object" name="action_view_files" icon="fa-folder-o">
+                            <button class="oe_stat_button" type="object" name="action_view_files" icon="fa-folder-open">
                                 <field name="file_count" string="File Folders" widget="statinfo" />
                             </button>
-                            <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file">
+                            <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text">
                                 <field name="document_count" string="Documents" widget="statinfo" />
                             </button>
                             <!-- Converted deprecated attrs to direct invisible expression (Odoo 19+: use invisible="expression") -->

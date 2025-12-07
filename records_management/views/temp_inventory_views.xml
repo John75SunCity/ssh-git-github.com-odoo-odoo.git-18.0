@@ -34,7 +34,7 @@
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button name="action_view_documents" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <button name="action_view_documents" type="object" class="oe_stat_button" icon="fa-file-text">
                                 <field name="document_count" widget="statinfo" string="Documents" />
                             </button>
                             <button name="action_view_containers" type="object" class="oe_stat_button" icon="fa-archive">
