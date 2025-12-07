@@ -14,21 +14,21 @@
         <record id="demo_department_legal" model="records.department">
             <field name="name">Legal Department</field>
             <field name="partner_id" ref="base.res_partner_1"/>
-            <field name="code">LEGAL</field>
+            <field name="code">LGL1</field>
             <field name="is_active">True</field>
         </record>
 
         <record id="demo_department_hr" model="records.department">
             <field name="name">Human Resources</field>
             <field name="partner_id" ref="base.res_partner_2"/>
-            <field name="code">HR</field>
+            <field name="code">HRS1</field>
             <field name="is_active">True</field>
         </record>
 
         <record id="demo_department_finance" model="records.department">
             <field name="name">Finance Department</field>
             <field name="partner_id" ref="base.res_partner_3"/>
-            <field name="code">FIN</field>
+            <field name="code">FIN1</field>
             <field name="is_active">True</field>
         </record>
 

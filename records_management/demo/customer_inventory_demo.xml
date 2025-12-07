@@ -87,21 +87,21 @@
         <!-- BIG CHAIRS DEPARTMENTS -->
         <record id="dept_big_chairs_general" model="records.department">
             <field name="name">General Business Records</field>
-            <field name="code">BC-GEN</field>
+            <field name="code">BCGN</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
 
         </record>
 
         <record id="dept_big_chairs_payroll" model="records.department">
             <field name="name">Payroll &amp; HR</field>
-            <field name="code">BC-PAY</field>
+            <field name="code">BCPY</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
 
         </record>
 
         <record id="dept_big_chairs_financial" model="records.department">
             <field name="name">Financial Records</field>
-            <field name="code">BC-FIN</field>
+            <field name="code">BCFN</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
 
         </record>
@@ -109,7 +109,7 @@
         <!-- JOHN AND LILI COPE DEPARTMENTS -->
         <record id="dept_john_cope_general" model="records.department">
             <field name="name">Personal Records</field>
-            <field name="code">JC-PER</field>
+            <field name="code">JCPR</field>
             <field name="partner_id" ref="customer_john_lili_cope"/>
 
         </record>
@@ -117,7 +117,7 @@
         <!-- BIO PAPPEL DEPARTMENTS -->
         <record id="dept_bio_pappel_general" model="records.department">
             <field name="name">Bio Pappel General Records</field>
-            <field name="code">BP-GEN</field>
+            <field name="code">BPGN</field>
             <field name="partner_id" ref="customer_bio_pappel"/>
 
         </record>
@@ -125,7 +125,7 @@
         <!-- CITY OF EL PASO DEPARTMENTS -->
         <record id="dept_city_el_paso_general" model="records.department">
             <field name="name">General City Records</field>
-            <field name="code">CEP-GEN</field>
+            <field name="code">CEPR</field>
             <field name="partner_id" ref="customer_city_el_paso"/>
 
         </record>
@@ -133,7 +133,7 @@
         <!-- CHASE BANK DEPARTMENTS -->
         <record id="dept_chase_bank_general" model="records.department">
             <field name="name">General Financial Records</field>
-            <field name="code">CB-GEN</field>
+            <field name="code">CBGN</field>
             <field name="partner_id" ref="customer_chase_bank"/>
 
         </record>
