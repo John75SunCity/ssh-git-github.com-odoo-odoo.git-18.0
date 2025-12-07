@@ -95,6 +95,11 @@ class RecordsDocument(models.Model):
         tracking=True,
         help="System-generated temporary barcode used before physical barcode from pre-printed sheet is assigned."
     )
+    created_via_portal = fields.Boolean(
+        string="Created via Portal",
+        default=False,
+        help="Indicates this document was created by a customer through the portal interface."
+    )
 
     # ============================================================================
     # PHYSICAL BARCODE (Manual Assignment from Pre-Printed Sheets)
