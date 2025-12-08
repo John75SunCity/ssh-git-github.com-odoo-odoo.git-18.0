@@ -245,24 +245,92 @@
                             <strong>Certificate #:</strong> <t t-esc="doc.name"/>
                         </p>
                         
-                        <!-- Signature Section -->
+                        <!-- Signature Section - Shows digital signatures if available -->
                         <div class="signature-section">
-                            <table>
+                            <table style="width: 100%;">
+                                <!-- Row 1: Compliance Officer / Company Representative -->
                                 <tr>
-                                    <td style="width: 50%;">
-                                        <strong>WITNESSED BY 
-                                        <t t-esc="(doc.company_id.name or 'COMPANY')[:20]"/> REPRESENTATIVE:</strong>
+                                    <td style="width: 50%; padding: 10px; vertical-align: top;">
+                                        <strong>COMPLIANCE OFFICER:</strong>
+                                        <div style="margin-top: 5px;">
+                                            <t t-if="doc.compliance_officer_signature">
+                                                <img t-att-src="image_data_uri(doc.compliance_officer_signature)" 
+                                                     style="max-height: 60px; max-width: 200px;"/>
+                                            </t>
+                                            <t t-else="">
+                                                <div class="signature-line" style="height: 50px; border-bottom: 1px solid #000;"></div>
+                                            </t>
+                                        </div>
+                                        <div style="margin-top: 5px; font-size: 11px;">
+                                            <t t-esc="doc.compliance_officer_id.name or ''"/>
+                                        </div>
                                     </td>
-                                    <td style="width: 50%;">
-                                        <t t-esc="doc.witness_id.name or doc.compliance_officer_id.name or ''"/>
+                                    <td style="width: 50%; padding: 10px; vertical-align: top;">
+                                        <strong>CUSTOMER WITNESS:</strong>
+                                        <div style="margin-top: 5px;">
+                                            <t t-if="doc.witness_signature">
+                                                <img t-att-src="image_data_uri(doc.witness_signature)" 
+                                                     style="max-height: 60px; max-width: 200px;"/>
+                                            </t>
+                                            <t t-else="">
+                                                <div class="signature-line" style="height: 50px; border-bottom: 1px solid #000;"></div>
+                                            </t>
+                                        </div>
+                                        <div style="margin-top: 5px; font-size: 11px;">
+                                            <t t-esc="doc.witness_id.name or ''"/>
+                                        </div>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td colspan="2">
-                                        <div class="signature-line"></div>
+                                <!-- Row 2: Operator (if applicable) and Date -->
+                                <tr t-if="doc.operator_certification_id or doc.operator_signature">
+                                    <td style="width: 50%; padding: 10px; vertical-align: top;">
+                                        <strong>EQUIPMENT OPERATOR:</strong>
+                                        <div style="margin-top: 5px;">
+                                            <t t-if="doc.operator_signature">
+                                                <img t-att-src="image_data_uri(doc.operator_signature)" 
+                                                     style="max-height: 60px; max-width: 200px;"/>
+                                            </t>
+                                            <t t-else="">
+                                                <div class="signature-line" style="height: 50px; border-bottom: 1px solid #000;"></div>
+                                            </t>
+                                        </div>
+                                        <div style="margin-top: 5px; font-size: 11px;">
+                                            <t t-if="doc.operator_certification_id">
+                                                <t t-esc="doc.operator_certification_id.operator_id.name or ''"/>
+                                                <br/>
+                                                <small><t t-esc="doc.operator_certification_id.name or ''"/></small>
+                                            </t>
+                                        </div>
+                                    </td>
+                                    <td style="width: 50%; padding: 10px; vertical-align: top;">
+                                        <strong>DATE SIGNED:</strong>
+                                        <div style="margin-top: 15px; font-size: 12px;">
+                                            <t t-if="doc.signature_date">
+                                                <span t-field="doc.signature_date" t-options='{"format": "MM/dd/yyyy"}'/>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-field="doc.certificate_date" t-options='{"format": "MM/dd/yyyy"}'/>
+                                            </t>
+                                        </div>
                                     </td>
                                 </tr>
                             </table>
+                        </div>
+                        
+                        <!-- NAID AAA Certification Seal -->
+                        <div style="margin-top: 20px; text-align: center; page-break-inside: avoid;">
+                            <div style="display: inline-block; border: 3px solid #004080; padding: 15px 30px; border-radius: 5px; background: linear-gradient(to bottom, #f8f9fa, #e9ecef);">
+                                <div style="font-size: 24px; font-weight: bold; color: #004080;">NAID®</div>
+                                <div style="font-size: 14px; font-weight: bold; color: #004080;">AAA CERTIFIED</div>
+                                <div style="font-size: 10px; color: #666; margin-top: 5px;">
+                                    National Association for Information Destruction
+                                </div>
+                                <t t-if="doc.naid_certificate_number">
+                                    <div style="font-size: 11px; color: #333; margin-top: 5px;">
+                                        Cert #: <t t-esc="doc.naid_certificate_number"/>
+                                    </div>
+                                </t>
+                            </div>
                         </div>
                         
                         <!-- Event Details Table (if events exist) -->

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- ================================================================== -->
+        <!-- CERTIFICATE OF DESTRUCTION - SIGN TEMPLATE                         -->
+        <!-- Template for collecting signatures via Odoo Sign module            -->
+        <!-- ================================================================== -->
+        
+        <!-- 
+        NOTE: This creates a basic Sign Template record.
+        The actual template PDF with signature placement must be configured 
+        in Settings > Sign > Templates after module installation.
+        
+        Steps to complete setup:
+        1. Go to Settings > Sign > Templates
+        2. Find "Certificate of Destruction Signature Template"
+        3. Upload your branded PDF certificate template
+        4. Add signature fields at the appropriate positions:
+           - Customer/Witness signature
+           - Compliance Officer signature
+           - Operator signature (optional)
+        5. Save the template
+        
+        The destruction certificate will then use this template when 
+        requesting signatures.
+        -->
+        
+        <record id="sign_template_destruction_certificate" model="sign.template">
+            <field name="name">Certificate of Destruction Signature Template</field>
+            <field name="active" eval="True"/>
+            <field name="favorited_ids" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+        
+        <!-- Default configuration pointing to the Sign template -->
+        <record id="destruction_certificate_default_sign_template" model="ir.default">
+            <field name="field_id" ref="records_management.field_destruction_certificate__sign_template_id"/>
+            <field name="json_value">"sign_template_destruction_certificate"</field>
+        </record>
+
+    </data>
+</odoo>

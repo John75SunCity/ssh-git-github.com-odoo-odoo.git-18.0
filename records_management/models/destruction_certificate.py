@@ -190,6 +190,39 @@ class DestructionCertificate(models.Model):
     operator_certification_id = fields.Many2one("naid.operator.certification", string="Operator Certification")
 
     # ============================================================================
+    # SIGNATURE FIELDS - For Sign Module Integration
+    # ============================================================================
+    sign_template_id = fields.Many2one(
+        comodel_name='sign.template',
+        string='Signature Template',
+        help='Template used for collecting signatures on this certificate'
+    )
+    sign_request_id = fields.Many2one(
+        comodel_name='sign.request',
+        string='Signature Request',
+        readonly=True,
+        help='Current signature request for this certificate'
+    )
+    # Binary signature images captured from Sign module
+    compliance_officer_signature = fields.Binary(
+        string='Compliance Officer Signature',
+        help='Digital signature of the compliance officer'
+    )
+    witness_signature = fields.Binary(
+        string='Witness Signature',
+        help='Digital signature of the customer witness'
+    )
+    operator_signature = fields.Binary(
+        string='Operator Signature',
+        help='Digital signature of the destruction equipment operator'
+    )
+    signature_date = fields.Datetime(
+        string='Signature Date',
+        readonly=True,
+        help='Date when signatures were collected'
+    )
+
+    # ============================================================================
     # STATE MANAGEMENT
     # ============================================================================
     state = fields.Selection(
