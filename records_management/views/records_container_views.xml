@@ -249,14 +249,14 @@ Destroy Container</a>
                 <!-- PROMINENT BARCODE DISPLAY AT TOP -->
                 <div class="row mb-3" invisible="not barcode and not temp_barcode">
                     <div class="col-12 text-center">
-                        <div class="alert alert-light p-2" style="background: #f8f9fa; border: 2px solid #dee2e6;">
+                        <div class="p-2" style="background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 4px;">
                             <field name="barcode" widget="barcode" invisible="not barcode"
                                    options="{'symbology': 'CODE128'}"/>
                             <field name="temp_barcode" widget="barcode" invisible="barcode or not temp_barcode"
                                    options="{'symbology': 'CODE128'}"/>
                             <div class="text-muted small mt-1">
-                                <span invisible="not barcode"><i class="fa fa-barcode"/> <field name="barcode" readonly="1" nolabel="1"/></span>
-                                <span invisible="barcode or not temp_barcode"><i class="fa fa-barcode"/> <field name="temp_barcode" readonly="1" nolabel="1"/> (Temporary)</span>
+                                <span invisible="not barcode"><i class="fa fa-barcode" title="Barcode" aria-hidden="true"/> <field name="barcode" readonly="1" nolabel="1"/></span>
+                                <span invisible="barcode or not temp_barcode"><i class="fa fa-barcode" title="Temporary Barcode" aria-hidden="true"/> <field name="temp_barcode" readonly="1" nolabel="1"/> (Temporary)</span>
                             </div>
                         </div>
                     </div>
