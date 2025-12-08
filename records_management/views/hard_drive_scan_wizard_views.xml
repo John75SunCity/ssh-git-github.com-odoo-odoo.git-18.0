@@ -48,7 +48,11 @@
                     </group>
 
                     <group string="📱 Quick Scan Entry">
-                        <field name="serial_numbers_text" placeholder="Scan barcodes or type serial numbers here (one per line)..."
+                        <div class="o_row">
+                            <button name="action_open_camera_scanner" string="📷 Open Camera Scanner" type="object"
+                                    class="btn-success" icon="fa-camera"/>
+                        </div>
+                        <field name="serial_numbers_text" placeholder="Or type serial numbers here (one per line)..."
                             nolabel="1" widget="text"/>
                         <button name="action_process_scanned_serials" string="➕ Add to List" type="object"
                                 class="btn-primary" invisible="not serial_numbers_text"/>

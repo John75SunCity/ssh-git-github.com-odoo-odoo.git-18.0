@@ -179,6 +179,36 @@ class WorkOrderShredding(models.Model):
     special_instructions = fields.Text(string="Special Instructions")
     completion_notes = fields.Text(string="Completion Notes")
 
+    # ============================================================================
+    # SIGNATURE FIELDS
+    # ============================================================================
+    technician_signature = fields.Binary(
+        string="Technician Signature",
+        help="Digital signature of the technician who performed the service"
+    )
+    technician_signature_date = fields.Datetime(
+        string="Technician Signed Date",
+        readonly=True,
+        help="Date and time when technician signed"
+    )
+    technician_printed_name = fields.Char(
+        string="Technician Printed Name",
+        help="Printed name of the technician"
+    )
+    customer_signature = fields.Binary(
+        string="Customer Signature",
+        help="Digital signature of the customer representative"
+    )
+    customer_signature_date = fields.Datetime(
+        string="Customer Signed Date",
+        readonly=True,
+        help="Date and time when customer signed"
+    )
+    customer_printed_name = fields.Char(
+        string="Customer Printed Name",
+        help="Printed name of the customer representative"
+    )
+
     # Portal visibility
     portal_visible = fields.Boolean(
         string='Visible in Portal',

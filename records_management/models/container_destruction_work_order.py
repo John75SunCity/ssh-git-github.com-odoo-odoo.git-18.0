@@ -170,6 +170,36 @@ class ContainerDestructionWorkOrder(models.Model):
     verification_notes = fields.Text(string='Verification Notes')
 
     # ============================================================================
+    # SIGNATURE FIELDS
+    # ============================================================================
+    technician_signature = fields.Binary(
+        string="Technician Signature",
+        help="Digital signature of the technician who performed the destruction"
+    )
+    technician_signature_date = fields.Datetime(
+        string="Technician Signed Date",
+        readonly=True,
+        help="Date and time when technician signed"
+    )
+    technician_printed_name = fields.Char(
+        string="Technician Printed Name",
+        help="Printed name of the technician"
+    )
+    customer_signature = fields.Binary(
+        string="Customer Signature",
+        help="Digital signature of the customer representative"
+    )
+    customer_signature_date = fields.Datetime(
+        string="Customer Signed Date",
+        readonly=True,
+        help="Date and time when customer signed"
+    )
+    customer_printed_name = fields.Char(
+        string="Customer Printed Name",
+        help="Printed name of the customer representative"
+    )
+
+    # ============================================================================
     # CHAIN OF CUSTODY
     # ============================================================================
     custody_transfer_ids = fields.One2many('custody.transfer.event', 'destruction_work_order_id', string='Chain of Custody')
@@ -538,10 +568,17 @@ class ContainerDestructionWorkOrder(models.Model):
             raise UserError(_("A certificate has already been generated for this work order."))
 
         certificate = self.env['shredding.certificate'].create({
-            'work_order_id': self.id,
+            'destruction_work_order_id': self.id,
             'partner_id': self.partner_id.id,
             'destruction_date': self.actual_destruction_date,
             'destruction_method': self.destruction_method,
+            # Copy signatures from work order to certificate
+            'technician_signature': self.technician_signature,
+            'technician_signature_date': self.technician_signature_date,
+            'technician_printed_name': self.technician_printed_name,
+            'customer_signature': self.customer_signature,
+            'customer_signature_date': self.customer_signature_date,
+            'customer_printed_name': self.customer_printed_name,
         })
         self.write({'certificate_id': certificate.id, 'state': 'certified'})
         self.message_post(body=_("Certificate of Destruction %s generated.", certificate.name))

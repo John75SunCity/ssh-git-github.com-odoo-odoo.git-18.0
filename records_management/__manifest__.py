@@ -801,6 +801,9 @@
             "records_management/static/src/css/rm_camera_scanner.css",
             "records_management/static/src/js/rm_camera_scanner.js",
             "records_management/static/src/xml/rm_camera_scanner.xml",
+            # Hard Drive Barcode Scanner
+            "records_management/static/src/js/hard_drive_scanner.js",
+            "records_management/static/src/xml/hard_drive_scanner.xml",
             # "records_management/static/src/css/system_flowchart.css",  # Temporarily disabled - ::before pseudo-elements affecting PDF DOM structure
             # "records_management/static/src/css/customer_portal_diagram.css",  # Temporarily disabled - ::before pseudo-elements affecting PDF DOM structure
             "records_management/static/src/js/map_widget.js",

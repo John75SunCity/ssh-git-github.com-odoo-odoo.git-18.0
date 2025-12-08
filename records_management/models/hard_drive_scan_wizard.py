@@ -128,6 +128,65 @@ class HardDriveScanWizard(models.TransientModel):
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
+    def action_open_camera_scanner(self):
+        """
+        Opens the camera barcode scanner (ScanbotSDK) for scanning hard drive barcodes.
+        Returns a client action that launches the scanner and calls back to add_scanned_barcode.
+        """
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'records_management.hard_drive_scanner',
+            'name': _('Scan Hard Drive Barcode'),
+            'target': 'new',
+            'context': {
+                'wizard_id': self.id,
+                'operation_mode': 'hard_drive_scan',
+            }
+        }
+
+    def add_scanned_barcode(self, barcode_value):
+        """
+        Called from JavaScript scanner to add a scanned barcode as a line item.
+        
+        Args:
+            barcode_value (str): The scanned barcode/serial number
+            
+        Returns:
+            dict: Result with success status, message, and updated counts
+        """
+        self.ensure_one()
+        if not barcode_value:
+            return {'success': False, 'message': _('Empty barcode value')}
+        
+        barcode_value = barcode_value.strip()
+        
+        # Check for duplicates
+        existing = self.scan_line_ids.filtered(lambda l: l.serial_number == barcode_value)
+        if existing:
+            return {
+                'success': False,
+                'message': _('Serial number %s already scanned') % barcode_value,
+                'warning': True,
+                'total_count': self.total_drives_count,
+            }
+        
+        # Create new line
+        self.env['hard.drive.scan.wizard.line'].create({
+            'wizard_id': self.id,
+            'serial_number': barcode_value,
+        })
+        
+        # Recompute counts
+        self._compute_drive_counts()
+        
+        return {
+            'success': True,
+            'message': _('Added: %s') % barcode_value,
+            'serial_number': barcode_value,
+            'total_count': self.total_drives_count,
+        }
+
     def action_process_scanned_serials(self):
         """Processes the serial numbers entered in the text area."""
         self.ensure_one()
