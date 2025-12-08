@@ -125,6 +125,36 @@ class ShreddingCertificate(models.Model):
     witness_title = fields.Char(string="Witness Title", tracking=True)
 
     # ============================================================================
+    # SIGNATURE FIELDS
+    # ============================================================================
+    technician_signature = fields.Binary(
+        string="Technician Signature",
+        help="Digital signature of the technician who performed the destruction"
+    )
+    technician_signature_date = fields.Datetime(
+        string="Technician Signed Date",
+        readonly=True,
+        help="Date and time when technician signed"
+    )
+    technician_printed_name = fields.Char(
+        string="Technician Printed Name",
+        help="Printed name of the technician"
+    )
+    customer_signature = fields.Binary(
+        string="Customer Signature",
+        help="Digital signature of the customer representative"
+    )
+    customer_signature_date = fields.Datetime(
+        string="Customer Signed Date",
+        readonly=True,
+        help="Date and time when customer signed"
+    )
+    customer_printed_name = fields.Char(
+        string="Customer Printed Name",
+        help="Printed name of the customer representative"
+    )
+
+    # ============================================================================
     # WORK ORDER REFERENCES
     # ============================================================================
     fsm_task_id = fields.Many2one(

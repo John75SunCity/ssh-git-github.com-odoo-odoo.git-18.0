@@ -15,14 +15,105 @@
             <field name="model">shredding.certificate</field>
             <field name="arch" type="xml">
                 <form string="Shredding Certificate">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,issued,delivered"/>
+                    </header>
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_issue" type="object" string="Issue"
+                                    class="oe_stat_button" icon="fa-check"
+                                    invisible="state != 'draft'"/>
+                            <button name="action_deliver" type="object" string="Deliver"
+                                    class="oe_stat_button" icon="fa-send"
+                                    invisible="state != 'issued'"/>
+                        </div>
                         <div class="oe_title">
-                            <label for="name" />
+                            <label for="name"/>
                             <h1>
-                                <field name="name" placeholder="Name..." />
+                                <field name="name" placeholder="Certificate Number..."/>
                             </h1>
                         </div>
+                        <group>
+                            <group string="Customer Information">
+                                <field name="partner_id"/>
+                                <field name="customer_contact_id"/>
+                                <field name="service_location"/>
+                            </group>
+                            <group string="Certificate Details">
+                                <field name="certificate_date"/>
+                                <field name="destruction_date"/>
+                                <field name="destruction_method"/>
+                                <field name="naid_level"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Destruction Equipment">
+                                <field name="destruction_equipment"/>
+                                <field name="equipment_serial_number"/>
+                                <field name="operator_name"/>
+                            </group>
+                            <group string="Totals">
+                                <field name="total_weight"/>
+                                <field name="total_containers"/>
+                                <field name="total_drives_destroyed"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Signatures" name="signatures">
+                                <group>
+                                    <group string="Technician Signature">
+                                        <field name="technician_printed_name"/>
+                                        <field name="technician_signature" widget="image" 
+                                               options="{'size': [200, 100]}"/>
+                                        <field name="technician_signature_date"/>
+                                    </group>
+                                    <group string="Customer Signature">
+                                        <field name="customer_printed_name"/>
+                                        <field name="customer_signature" widget="image" 
+                                               options="{'size': [200, 100]}"/>
+                                        <field name="customer_signature_date"/>
+                                    </group>
+                                </group>
+                                <group string="Witness" invisible="not witness_required">
+                                    <field name="witness_required"/>
+                                    <field name="witness_name"/>
+                                    <field name="witness_title"/>
+                                </group>
+                            </page>
+                            <page string="Work Orders" name="work_orders">
+                                <group>
+                                    <field name="fsm_task_id"/>
+                                    <field name="shredding_work_order_id"/>
+                                    <field name="destruction_work_order_id"/>
+                                </group>
+                            </page>
+                            <page string="Hard Drives" name="hard_drives">
+                                <field name="verification_method"/>
+                                <field name="hard_drive_ids" nolabel="1">
+                                    <list string="Destroyed Hard Drives">
+                                        <field name="serial_number"/>
+                                        <field name="destruction_method"/>
+                                        <field name="destruction_date"/>
+                                        <field name="state"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Compliance" name="compliance">
+                                <group>
+                                    <field name="chain_of_custody_number"/>
+                                    <field name="certification_statement"/>
+                                </group>
+                            </page>
+                            <page string="Notes" name="notes">
+                                <field name="notes"/>
+                            </page>
+                        </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
         </record>

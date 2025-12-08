@@ -34,7 +34,7 @@
                             that can be selected on work orders. They will print on work orders and invoices.
                         </div>
                         <field name="service_location_ids" nolabel="1"
-                               context="{'default_parent_id': active_id, 'default_is_service_location': True, 'default_type': 'other'}">
+                               context="{'default_parent_id': id, 'default_is_service_location': True, 'default_type': 'other'}">
                             <list string="Service Locations" create="true" delete="true" editable="bottom">
                                 <field name="name" string="Location Name"/>
                                 <field name="street" string="Street"/>
