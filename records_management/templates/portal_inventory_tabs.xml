@@ -672,7 +672,7 @@
                                                 </t>
                                             </td>
                                             <td>
-                                                <span class="badge badge-secondary" t-esc="document.temp_barcode or 'No barcode'"/>
+                                                <span class="badge bg-secondary" t-esc="document.temp_barcode or 'No barcode'"/>
                                             </td>
                                             <td>
                                                 <span t-esc="document.file_id.name if document.file_id else 'Not in file'"/>
@@ -681,16 +681,22 @@
                                                 <span t-esc="document.container_id.name if document.container_id else 'Not in container'"/>
                                             </td>
                                             <td>
-                                                <t t-if="document.pdf_scans">
-                                                    <span class="badge badge-success" t-esc="len(document.pdf_scans)"/>
-                                                    <i class="fa fa-file-pdf-o ml-1" title="Has PDF scans"/>
+                                                <t t-set="pdf_scans" t-value="doc_pdf_scans.get(document.id, [])"/>
+                                                <t t-if="pdf_scans">
+                                                    <span class="badge bg-success" t-esc="len(pdf_scans)"/>
+                                                    <i class="fa fa-file-pdf-o ms-1" title="Has PDF scans"/>
                                                 </t>
                                                 <t t-else="">
                                                     <span class="text-muted">No scans</span>
                                                 </t>
                                             </td>
                                             <td>
-                                                <span t-esc="document.create_date.strftime('%Y-%m-%d')" class="text-muted"/>
+                                                <t t-if="document.create_date">
+                                                    <span t-esc="document.create_date.strftime('%Y-%m-%d')" class="text-muted"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="text-muted">-</span>
+                                                </t>
                                             </td>
                                             <td>
                                                 <a t-att-href="'/my/inventory/document/%s' % document.id" 

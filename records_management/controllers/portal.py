@@ -3546,9 +3546,10 @@ class RecordsManagementController(http.Controller):
 
         documents = Document.search(domain, order='create_date desc', limit=20, offset=pager['offset'])
 
-        # Get PDF scan info for each document
+        # Build PDF scan info dictionary for each document
+        doc_pdf_scans = {}
         for doc in documents:
-            doc.pdf_scans = request.env['ir.attachment'].sudo().search([
+            doc_pdf_scans[doc.id] = request.env['ir.attachment'].sudo().search([
                 ('res_model', '=', 'records.document'),
                 ('res_id', '=', doc.id),
                 ('mimetype', 'like', 'pdf')
@@ -3556,6 +3557,7 @@ class RecordsManagementController(http.Controller):
 
         values.update({
             'documents': documents,
+            'doc_pdf_scans': doc_pdf_scans,
             'page_name': 'inventory_documents',
             'pager': pager,
             'search': search or '',

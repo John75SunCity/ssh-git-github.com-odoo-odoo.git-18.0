@@ -1,0 +1,104 @@
+URL,Method,Description,Category
+/my/inventory,GET,Main inventory dashboard with tabs,Inventory Hub
+/my/inventory/counts,GET,AJAX endpoint for inventory counts (JSON),Inventory Hub
+/my/inventory/recent_activity,GET,Recent activity feed,Inventory Hub
+/my/inventory/movements,GET,Inventory movements tracker,Inventory Hub
+/my/inventory/movements/data,POST,Movements data (JSON),Inventory Hub
+/my/inventory/containers,GET,List all containers,Containers
+/my/inventory/container/<id>,GET,View container details,Containers
+/my/inventory/containers/create,GET/POST,Create new container,Containers
+/my/inventory/container/<id>/edit,POST,Edit container,Containers
+/my/inventory/container/<id>/delete,POST,Delete container (JSON),Containers
+/my/inventory/container/<id>/movements,GET,View container movements,Containers
+/my/inventory/container/<id>/request-move,POST,Request container move,Containers
+/my/inventory/container/<id>/update,POST,Update container (JSON),Containers
+/my/containers,GET,Alternative containers list,Containers
+/my/container/<id>,GET,Alternative container detail,Containers
+/my/containers/search,POST,Search containers (JSON),Containers
+/my/containers/bulk_request,POST,Bulk request containers (JSON),Containers
+/my/inventory/files,GET,List all files,Files
+/my/inventory/file/<id>,GET,View file details,Files
+/my/inventory/files/create,GET/POST,Create new file,Files
+/my/inventory/file/<id>/edit,POST,Edit file,Files
+/my/inventory/file/<id>/delete,POST,Delete file (JSON),Files
+/my/inventory/file/<id>/add-document,POST,Add document to file,Files
+/my/inventory/file/<id>/move-container,POST,Move file to container,Files
+/my/inventory/file/<id>/upload,POST,Upload attachment to file,Files
+/my/inventory/files/available,GET,Available files list,Files
+/my/inventory/file/add_to_container,POST,Add file to container (JSON),Files
+/my/files/bulk_request,POST,Bulk request files (JSON),Files
+/my/files/search,POST,Search files (JSON),Files
+/my/inventory/documents,GET,List all documents,Documents
+/my/inventory/document/<id>,GET,View document details,Documents
+/my/inventory/documents/create,GET/POST,Create new document,Documents
+/my/inventory/document/<id>/edit,POST,Edit document,Documents
+/my/inventory/document/<id>/delete,POST,Delete document (JSON),Documents
+/my/inventory/document/<id>/upload,POST,Upload PDF to document,Documents
+/my/inventory/documents/bulk-upload,GET/POST,Bulk upload documents,Documents
+/my/inventory/document/<id>/request-scan,POST,Request document scan,Documents
+/my/documents,GET,Alternative documents list,Documents
+/my/document/<id>,GET,Alternative document detail,Documents
+/my/document/<id>/download,GET,Download document,Documents
+/my/inventory/temp,GET,List temp inventory items,Temp Inventory
+/my/inventory/bulk/retrieve,POST,Bulk retrieve items (JSON),Bulk Operations
+/my/inventory/bulk/destroy,POST,Bulk destroy items (JSON),Bulk Operations
+/my/inventory/bulk/pickup,POST,Bulk pickup items (JSON),Bulk Operations
+/my/inventory/locations,GET,List staging locations,Locations
+/my/inventory/location/create,GET/POST,Create new location,Locations
+/my/inventory/location/<id>,GET,View location details,Locations
+/my/inventory/location/<id>/edit,GET/POST,Edit location,Locations
+/my/inventory/location/<id>/archive,POST,Archive location,Locations
+/my/inventory/location/<id>/delete,POST,Delete location,Locations
+/my/inventory/location/<id>/print-barcode,GET,Print barcode,Locations
+/my/inventory/location/<id>/generate-barcode,POST,Generate barcode (JSON),Locations
+/my/requests,GET,List all requests,Requests
+/my/requests/<id>,GET,View request details,Requests
+/my/request/new/<type>,GET/POST,Create request (retrieval/destruction/pickup),Requests
+/my/requests/<id>/edit,POST,Edit request,Requests
+/my/requests/<id>/cancel,POST,Cancel request (JSON),Requests
+/my/requests/<id>/submit,POST,Submit request (JSON),Requests
+/my/request/search_containers,POST,Search containers for request (JSON),Requests
+/my/retrieval-cart,GET,View cart,Retrieval Cart
+/my/retrieval-cart/add,POST,Add to cart (JSON),Retrieval Cart
+/my/retrieval-cart/remove,POST,Remove from cart (JSON),Retrieval Cart
+/my/retrieval-cart/submit,POST,Submit cart as request,Retrieval Cart
+/my/document-retrieval,GET,Document retrieval form,Document Retrieval
+/my/document-retrieval/calculate-price,GET,Price calculator (JSON),Document Retrieval
+/my/document-retrieval/submit,POST,Submit retrieval request,Document Retrieval
+/my/destruction,GET,Destruction overview,Destruction
+/my/destruction/pending,GET,Pending destruction requests,Destruction
+/my/destruction/<id>/approve,POST,Approve destruction (JSON),Destruction
+/my/custody/chain,GET,Chain of custody viewer,Compliance
+/my/certificates,GET,List certificates,Certificates
+/my/certificate/<id>,GET,View certificate,Certificates
+/my/certificate/<id>/download,GET,Download certificate PDF,Certificates
+/my/service-attachments,GET,Service attachments list,Service Docs
+/my/service-attachment/<id>,GET,View service attachment,Service Docs
+/my/service-attachment/<id>/download,GET,Download attachment,Service Docs
+/my/service-photos,GET,Service photos list,Service Docs
+/my/invoices,GET,Current invoices,Billing
+/my/invoices/history,GET,Invoice history,Billing
+/my/billing/rates,GET,Your negotiated rates,Billing
+/my/billing/statements,GET,Billing statements,Billing
+/my/billing/summary,GET,Billing summary,Billing
+/my/reports,GET,Reports dashboard,Reports
+/my/reports/activity,GET,Activity reports,Reports
+/my/reports/compliance,GET,Compliance reports,Reports
+/my/reports/audit,GET,Audit reports,Reports
+/my/reports/export,GET,Export options,Reports
+/my/users,GET,List portal users,User Management
+/my/users/create,POST,Create new user,User Management
+/my/users/<id>/edit,POST,Edit user,User Management
+/my/users/<id>/deactivate,POST,Deactivate user (JSON),User Management
+/my/organization,GET,Organization diagram,User Management
+/my/organization/add-user,GET/POST,Add team member,User Management
+/my/feedback,GET/POST,Submit feedback,Other
+/my/feedback/history,GET,Feedback history,Other
+/my/notifications,GET,Notifications,Other
+/my/notifications/update,POST,Update notifications,Other
+/my/access,GET,Access level info,Other
+/my/barcode/main,GET,Barcode scanner main,Barcode
+/my/barcode/scan/container,GET/POST,Scan container barcode,Barcode
+/my/barcode/scan/file,GET/POST,Scan file barcode,Barcode
+/my/barcode/scan/<type>,GET,Barcode scanning,Barcode
+/my/barcode/process/<operation>,POST,Process barcode (JSON),Barcode
