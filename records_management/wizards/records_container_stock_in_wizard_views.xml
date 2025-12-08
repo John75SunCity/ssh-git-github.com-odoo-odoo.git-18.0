@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Container Stock In Wizard Form View -->
+        <record id="records_container_stock_in_wizard_view_form" model="ir.ui.view">
+            <field name="name">records.container.stock.in.wizard.form</field>
+            <field name="model">records.container.stock.in.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Stock In Container">
+                    <group>
+                        <field name="container_id" readonly="1"/>
+                        <field name="location_id" options="{'no_create': True}"/>
+                    </group>
+                    <footer>
+                        <button name="action_confirm" type="object" string="Stock In" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

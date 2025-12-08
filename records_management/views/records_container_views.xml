@@ -206,17 +206,27 @@ Destroy Container</a>
         <form>
             <header>
                 <!-- Container state values: pending, in, out, perm_out, destroyed -->
-                <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'pending'"/>
-                <button name="action_store_container" type="object" string="Store Container" class="btn-primary" invisible="state not in ['pending', 'out']"/>
+                <!-- PRIMARY WORKFLOW BUTTONS -->
+                <button name="action_create_pickup_order" type="object" string="+ Pickup Order" class="btn-primary" 
+                        invisible="state == 'destroyed'"
+                        help="Create a pickup order to schedule technicians to pick up this container from the customer"/>
+                <button name="action_stock_in" type="object" string="Add to Inventory" class="btn-success" 
+                        invisible="state not in ['pending', 'out']"
+                        help="Stock in this container - changes state from Pending to In Storage"/>
                 <button name="action_retrieve_container" type="object" string="Retrieve Container" class="btn-secondary" invisible="state != 'in'"/>
-                <button name="action_schedule_destruction" type="object" string="Schedule Destruction" class="btn-warning" invisible="not is_due_for_destruction"/>
                 <button name="action_destroy" type="object" string="Destroy Container" class="btn-danger" 
                         invisible="state == 'destroyed'"
                         groups="records_management.group_records_manager"
                         help="Permanently destroy container - NAID certified destruction"/>
-                <button name="action_print_barcode_label" type="object" string="Print Barcode" class="btn-info"/>
-                <button name="action_generate_qr_code" type="object" string="Generate QR Code" class="btn-success"/>
-                <!-- File Management Buttons - grouped together -->
+                <!-- LABEL/PRINT BUTTONS - grouped together -->
+                <button name="action_print_barcode_label" type="object" string="Field Labels" class="btn-info"
+                        help="Print barcode labels for field use"/>
+                <button name="action_print_movement_slip" type="object" string="Print Movement Slip" class="btn-secondary"
+                        help="Print a movement slip for chain of custody"/>
+                <button name="action_print_pickup_slip" type="object" string="Print Pickup Slip" class="btn-secondary"
+                        invisible="state not in ['pending', 'out']"
+                        help="Print a pickup slip for the customer"/>
+                <!-- FILE MANAGEMENT BUTTONS -->
                 <button name="action_add_files" type="object" string="+ Add File" class="btn-success" 
                         invisible="state in ['destroyed', 'perm_out']"
                         help="Add a single file folder to this container"/>
@@ -224,12 +234,9 @@ Destroy Container</a>
                         class="btn-success"
                         invisible="state in ['destroyed', 'perm_out']"
                         help="Add multiple file folders at once - creates billable indexing charges per file"/>
-                <button name="action_remove_files" type="object" string="Check Out Files" class="btn-warning"
-                        invisible="state in ['destroyed', 'perm_out'] or file_count == 0"
-                        help="Create retrieval order to check out file folders for customer delivery"/>
-                <!-- Modernized visibility: use barcode_assigned compute field instead of deprecated attrs expression -->
+                <!-- BARCODE ASSIGNMENT -->
                 <button name="%(action_records_container_assign_barcode_wizard)d" type="action" string="Assign Physical Barcode" class="btn-secondary" invisible="barcode_assigned"/>
-        <field name="state" widget="statusbar" statusbar_visible="pending,in,out,perm_out,destroyed"/>
+                <field name="state" widget="statusbar" statusbar_visible="pending,in,out,perm_out,destroyed"/>
             </header>
             <sheet>
                 <!-- Color-coded state badge displayed prominently -->
@@ -239,6 +246,22 @@ Destroy Container</a>
                 <widget name="web_ribbon" title="Permanent Out" bg_color="text-bg-secondary" invisible="state != 'perm_out'"/>
                 <widget name="web_ribbon" title="Destroyed" bg_color="text-bg-danger" invisible="state != 'destroyed'"/>
                 
+                <!-- PROMINENT BARCODE DISPLAY AT TOP -->
+                <div class="row mb-3" invisible="not barcode and not temp_barcode">
+                    <div class="col-12 text-center">
+                        <div class="alert alert-light p-2" style="background: #f8f9fa; border: 2px solid #dee2e6;">
+                            <field name="barcode" widget="barcode" invisible="not barcode"
+                                   options="{'symbology': 'CODE128'}"/>
+                            <field name="temp_barcode" widget="barcode" invisible="barcode or not temp_barcode"
+                                   options="{'symbology': 'CODE128'}"/>
+                            <div class="text-muted small mt-1">
+                                <span invisible="not barcode"><i class="fa fa-barcode"/> <field name="barcode" readonly="1" nolabel="1"/></span>
+                                <span invisible="barcode or not temp_barcode"><i class="fa fa-barcode"/> <field name="temp_barcode" readonly="1" nolabel="1"/> (Temporary)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="oe_button_box" name="button_box">
                     <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text" title="View Documents">
                         <field name="document_count" string="Documents" widget="statinfo"/>

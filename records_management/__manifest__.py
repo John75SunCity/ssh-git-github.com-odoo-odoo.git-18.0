@@ -611,6 +611,7 @@
         "wizards/monthly_storage_billing_wizard_views.xml",
         "wizards/reset_billing_wizard_views.xml",
         "wizards/work_order_field_payment_wizard_views.xml",
+        "wizards/records_container_stock_in_wizard_views.xml",
         # DISPATCH CENTER: Unified work order management - load after root menus
         "views/dispatch_center_menus.xml",
         # ============================================================================

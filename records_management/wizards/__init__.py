@@ -39,3 +39,4 @@ from . import work_order_creation_wizard
 from . import work_order_field_payment_wizard
 from . import retrieval_scan_wizard
 from . import monthly_storage_billing_wizard
+from . import records_container_stock_in_wizard

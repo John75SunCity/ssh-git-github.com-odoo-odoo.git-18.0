@@ -1219,6 +1219,106 @@ class RecordsContainer(models.Model):
             return records.name_get()
         return super().name_search(name=name, args=args, operator=operator, limit=limit)
 
+    def action_create_pickup_order(self):
+        """
+        Create a Pickup Order for this container.
+        Opens the pickup.request form with the container pre-linked.
+        This is for scheduling technicians to pick up containers from customer locations.
+        """
+        self.ensure_one()
+
+        # Can create pickup orders for containers that are pending (new) or out with customer
+        if self.state == 'destroyed':
+            raise UserError(_("Cannot create pickup order for destroyed containers."))
+
+        # Create pickup request with this container
+        pickup_request = self.env['pickup.request'].create({
+            'partner_id': self.partner_id.id,
+            'department_id': self.department_id.id if self.department_id else False,
+            'description': _(
+                'Container Pickup Request\n'
+                'Container: %s\n'
+                'Customer: %s\n'
+                'Department: %s\n'
+                'Please pick up this container from the customer location.',
+                self.name,
+                self.partner_id.name,
+                self.department_id.name if self.department_id else 'N/A'
+            ),
+        })
+
+        # Add container as pickup item
+        self.env['pickup.request.item'].create({
+            'request_id': pickup_request.id,
+            'container_id': self.id,
+            'description': self.description or self.name,
+        })
+
+        # Post message on container
+        self.message_post(
+            body=_('Pickup order created: <a href="/web#id=%s&model=pickup.request&view_type=form">%s</a>',
+                   pickup_request.id, pickup_request.name)
+        )
+
+        # Return action to view the created pickup request
+        return {
+            'name': _('Pickup Order'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'pickup.request',
+            'res_id': pickup_request.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
+    def action_stock_in(self):
+        """
+        Stock In - Change container state from 'pending' to 'in'.
+        This emulates scanning a container with STOCK/IN barcode command.
+        Used when a container arrives at the warehouse and is scanned into inventory.
+        """
+        self.ensure_one()
+
+        if self.state not in ['pending', 'out']:
+            raise UserError(_("Only pending or out containers can be stocked in."))
+
+        # If no location set, open a wizard to select location
+        if not self.location_id:
+            return {
+                'name': _('Select Storage Location'),
+                'type': 'ir.actions.act_window',
+                'res_model': 'records.container.stock.in.wizard',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'default_container_id': self.id,
+                },
+            }
+
+        # If location_id is set and no quant exists, create stock quant
+        if self.location_id and not self.quant_id:
+            product = self._get_or_create_container_product()
+            quant_vals = {
+                'product_id': product.id,
+                'location_id': self.location_id.id,
+                'quantity': 1.0,
+                'owner_id': self.stock_owner_id.id or self.partner_id.id,
+                'company_id': self.company_id.id,
+            }
+            quant = self.env['stock.quant'].sudo().create(quant_vals)
+            self.quant_id = quant.id
+
+        # Update state and storage dates
+        vals = {
+            'state': 'in',
+        }
+        if not self.storage_start_date:
+            vals['storage_start_date'] = fields.Date.today()
+
+        self.write(vals)
+        self.message_post(body=_("Container stocked in at location: %s", self.location_id.name or 'N/A'))
+        
+        return True
+
     def action_store_container(self):
         """
         Store Container Workflow:
@@ -2105,6 +2205,58 @@ class RecordsContainer(models.Model):
             'type': 'ir.actions.act_url',
             'url': f'/web/content/{attachment.id}?download=true',
             'target': 'new',
+        }
+
+    def action_print_movement_slip(self):
+        """
+        Print a movement slip for chain of custody tracking.
+        Shows container info, current location, and signature fields.
+        """
+        self.ensure_one()
+        
+        # Use existing movement slip report if available
+        report = self.env.ref('records_management.action_report_container_movement_slip', raise_if_not_found=False)
+        if report:
+            return report.report_action(self)
+        
+        # Fallback: create simple slip
+        self.message_post(body=_("Movement slip requested by %s") % self.env.user.name)
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Movement Slip'),
+                'message': _('Movement slip report not yet configured. Container: %s, Barcode: %s') % (
+                    self.name, self.barcode or self.temp_barcode),
+                'sticky': False,
+                'type': 'info',
+            }
+        }
+
+    def action_print_pickup_slip(self):
+        """
+        Print a pickup slip for customer delivery.
+        Used when scheduling container pickup from customer location.
+        """
+        self.ensure_one()
+        
+        # Use existing pickup slip report if available
+        report = self.env.ref('records_management.action_report_container_pickup_slip', raise_if_not_found=False)
+        if report:
+            return report.report_action(self)
+        
+        # Fallback: create simple slip
+        self.message_post(body=_("Pickup slip requested by %s") % self.env.user.name)
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Pickup Slip'),
+                'message': _('Pickup slip for Container: %s, Customer: %s') % (
+                    self.name, self.partner_id.name),
+                'sticky': False,
+                'type': 'info',
+            }
         }
     
     @api.model
