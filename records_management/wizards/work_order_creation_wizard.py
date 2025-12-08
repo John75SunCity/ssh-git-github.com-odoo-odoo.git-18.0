@@ -187,7 +187,7 @@ class WorkOrderCreationWizard(models.TransientModel):
         ('scheduled', 'Scheduled Shredding Service'),
         ('purge', 'One-Time Purge'),
         ('recurring_bin', 'Recurring Bin Service'),
-    ], string="Work Order Type", default='scheduled',
+    ], string="Shredding Type", default='scheduled',
        help="Scheduled: One-time scheduled service. One-Time Purge: Large volume cleanout. Recurring: Regular scheduled bin exchange.")
     
     material_type = fields.Selection([
