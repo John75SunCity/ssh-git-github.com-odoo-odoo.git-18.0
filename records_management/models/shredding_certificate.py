@@ -172,6 +172,12 @@ class ShreddingCertificate(models.Model):
         string="Destruction Work Order",
         help="Records Management container destruction work order."
     )
+    hard_drive_ids = fields.One2many(
+        comodel_name='shredding.hard_drive',
+        inverse_name='certificate_id',
+        string="Hard Drives",
+        help="Hard drives destroyed and included in this certificate."
+    )
 
     # ============================================================================
     # MATERIALS & TOTALS
