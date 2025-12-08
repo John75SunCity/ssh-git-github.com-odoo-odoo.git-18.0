@@ -2192,7 +2192,7 @@ class RecordsManagementController(http.Controller):
                     'type': 'temp',
                     'id': temp_item.id,
                     'name': temp_item.name,
-                    'barcode': temp_item.temp_barcode or '',
+                    'barcode': temp_item.name or '',  # temp.inventory has no barcode field
                     'description': f"Temp Item - {temp_item.description or 'No description'}",
                     'location': 'Temporary',
                     'date': temp_item.date_created,
@@ -4387,11 +4387,18 @@ class RecordsManagementController(http.Controller):
         # Get or create FSM project
         fsm_project = request.env.ref('records_management_fsm.project_field_service', raise_if_not_found=False)
         if not fsm_project:
-            # Create default FSM project
+            # Try to find existing FSM project
+            fsm_project = request.env['project.project'].sudo().search([
+                ('is_fsm', '=', True),
+                ('company_id', '=', request.env.company.id)
+            ], limit=1)
+        if not fsm_project:
+            # Create default FSM project with required company_id
             fsm_project = request.env['project.project'].sudo().create({
                 'name': 'Field Service',
                 'is_fsm': True,
                 'allow_timesheets': True,
+                'company_id': request.env.company.id,  # Required for FSM projects
             })
 
         # Map service types to worksheet templates
