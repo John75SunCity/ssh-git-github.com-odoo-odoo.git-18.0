@@ -47,6 +47,19 @@ class WorkOrderCreationWizard(models.TransientModel):
         domain="[('customer_rank', '>', 0)]"
     )
     
+    department_id = fields.Many2one(
+        comodel_name='records.department',
+        string="Department",
+        domain="[('partner_id', '=', partner_id)]",
+        help="Optional: Select a department for service address and billing purposes"
+    )
+    
+    @api.onchange('partner_id')
+    def _onchange_partner_id_department(self):
+        """Clear department when customer changes."""
+        self.department_id = False
+        return {'domain': {'department_id': [('partner_id', '=', self.partner_id.id)]}}
+    
     service_category = fields.Selection([
         ('storage', 'Storage Services'),
         ('destruction', 'Destruction Services'),
@@ -164,19 +177,23 @@ class WorkOrderCreationWizard(models.TransientModel):
     # ============================================================================
     # SHREDDING SERVICE-SPECIFIC FIELDS
     # ============================================================================
+    service_location_type = fields.Selection([
+        ('onsite', 'On-Site (At Customer Location)'),
+        ('offsite', 'Off-Site (At Our Facility)'),
+    ], string="Service Location", default='onsite',
+       help="On-Site: Service performed at customer location. Off-Site: Materials picked up and processed at our facility.")
+    
     shredding_service_type = fields.Selection([
-        ('onsite', 'On-Site Shredding'),
-        ('offsite', 'Off-Site Shredding'),
-        ('mobile', 'Mobile Shredding Truck'),
-        ('bin_onetime', 'One-Time Bin Service'),
-        ('bin_recurring', 'Recurring Bin Service'),
-        ('bin_mobile', 'Mobile Bin Service'),
-    ], string="Shredding Service Type", default='onsite')
+        ('scheduled', 'Scheduled Shredding Service'),
+        ('purge', 'One-Time Purge'),
+        ('recurring_bin', 'Recurring Bin Service'),
+    ], string="Work Order Type", default='scheduled',
+       help="Scheduled: One-time scheduled service. One-Time Purge: Large volume cleanout. Recurring: Regular scheduled bin exchange.")
+    
     material_type = fields.Selection([
         ('paper', 'Paper Documents'),
-        ('hard_drives', 'Hard Drives'),
-        ('media', 'Media (Tapes, CDs, etc.)'),
-        ('mixed', 'Mixed Materials'),
+        ('hard_drive', 'Hard Drives'),
+        ('mixed_media', 'Mixed Media (Tapes, CDs, etc.)'),
     ], string="Material Type", default='paper')
     bin_quantity = fields.Integer(string="Number of Bins", default=1, help="Quantity of bins for the service")
 
@@ -400,11 +417,18 @@ class WorkOrderCreationWizard(models.TransientModel):
 
     def _create_shredding_order(self):
         """Create a shredding work order."""
+        # Map wizard service types to model service types
+        service_type_map = {
+            'scheduled': 'onsite' if self.service_location_type == 'onsite' else 'offsite',
+            'purge': 'bin_onetime',
+            'recurring_bin': 'bin_recurring',
+        }
         vals = {
             'partner_id': self.partner_id.id,
+            'department_id': self.department_id.id if self.department_id else False,
             'scheduled_date': self.scheduled_date,
             'priority': self.priority,
-            'shredding_service_type': self.shredding_service_type,
+            'shredding_service_type': service_type_map.get(self.shredding_service_type, 'onsite'),
             'material_type': self.material_type,
             'bin_quantity': self.bin_quantity,
             'special_instructions': self.notes,

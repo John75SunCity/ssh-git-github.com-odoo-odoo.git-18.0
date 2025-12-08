@@ -26,6 +26,13 @@ class WorkOrderShredding(models.Model):
     ], string="Status", default='draft', required=True, tracking=True)
 
     partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", required=True, tracking=True)
+    department_id = fields.Many2one(
+        comodel_name='records.department',
+        string="Department",
+        domain="[('partner_id', '=', partner_id)]",
+        tracking=True,
+        help="Optional department for service address and billing purposes"
+    )
     portal_request_id = fields.Many2one(comodel_name='portal.request', string="Portal Request", ondelete='set null')
 
     # ============================================================================
@@ -152,15 +159,15 @@ class WorkOrderShredding(models.Model):
         ('onsite', 'On-Site Shredding'),
         ('offsite', 'Off-Site Shredding'),
         ('mobile', 'Mobile Shredding Truck'),
-        ('bin_onetime', 'One-Time Bin Service'),
+        ('bin_onetime', 'One-Time Purge'),
         ('bin_recurring', 'Recurring Bin Service'),
         ('bin_mobile', 'Mobile Bin Service'),
     ], string="Service Type", default='onsite', tracking=True)
 
     material_type = fields.Selection([
-        ('paper', 'Paper'),
+        ('paper', 'Paper Documents'),
         ('hard_drive', 'Hard Drives'),
-        ('mixed_media', 'Mixed Media'),
+        ('mixed_media', 'Mixed Media (Tapes, CDs, etc.)'),
     ], string="Material Type", default='paper')
 
     # Quantity-based billing (per unit, not weight)

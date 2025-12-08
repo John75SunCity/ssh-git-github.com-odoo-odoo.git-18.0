@@ -28,6 +28,10 @@
                                        placeholder="Type customer name to search..."
                                        options="{'no_create': True, 'no_quick_create': True}"
                                        autocomplete="off"/>
+                                <field name="department_id" 
+                                       placeholder="Select department (optional)..."
+                                       options="{'no_create': True, 'no_quick_create': True}"
+                                       autocomplete="off"/>
                             </group>
                             <group string="Schedule &amp; Priority">
                                 <field name="scheduled_date"/>
@@ -107,10 +111,19 @@
 
                         <!-- SHREDDING SERVICE DETAILS -->
                         <group invisible="state != 'details' or work_order_type != 'shredding'" string="Shredding Service Details">
-                            <field name="shredding_service_type" widget="radio"/>
-                            <field name="material_type" widget="radio"/>
-                            <field name="bin_quantity" invisible="shredding_service_type not in ('bin_onetime', 'bin_recurring', 'bin_mobile')"/>
-                            <field name="notes" placeholder="Service notes..."/>
+                            <group string="Service Location">
+                                <field name="service_location_type" widget="radio"/>
+                            </group>
+                            <group string="Work Order Type">
+                                <field name="shredding_service_type" widget="radio"/>
+                            </group>
+                            <group string="Materials">
+                                <field name="material_type" widget="radio"/>
+                                <field name="bin_quantity" invisible="shredding_service_type not in ('purge', 'recurring_bin')"/>
+                            </group>
+                            <group string="Instructions">
+                                <field name="notes" placeholder="Service notes..." nolabel="1"/>
+                            </group>
                         </group>
 
                         <!-- ========== RECURRING SCHEDULE OPTIONS ========== -->
