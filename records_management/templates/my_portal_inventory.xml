@@ -55,42 +55,42 @@
 
                 <!-- Main Tabbed Inventory Interface -->
                 <div class="container-fluid mt-4">
-                    <!-- Navigation Tabs -->
+                    <!-- Navigation Tabs (Bootstrap 5 data-bs-* attributes) -->
                     <ul class="nav nav-tabs nav-justified mb-4" id="inventoryTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab">
+                            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
                                 <i class="fa fa-dashboard"></i> Overview
-                            </a>
+                            </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="containers-tab" data-toggle="tab" href="#containers" role="tab">
+                            <button class="nav-link" id="containers-tab" data-bs-toggle="tab" data-bs-target="#containers" type="button" role="tab" aria-controls="containers" aria-selected="false">
                                 <i class="fa fa-archive"></i> Containers/Boxes
-                                <span class="badge badge-primary ml-1" t-esc="inventory_count if inventory_type == 'containers' else 0"/>
-                            </a>
+                                <span class="badge bg-primary ms-1" id="containers-badge">0</span>
+                            </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab">
+                            <button class="nav-link" id="files-tab" data-bs-toggle="tab" data-bs-target="#files" type="button" role="tab" aria-controls="files" aria-selected="false">
                                 <i class="fa fa-folder"></i> File Folders
-                                <span class="badge badge-info ml-1">0</span>
-                            </a>
+                                <span class="badge bg-info ms-1" id="files-badge">0</span>
+                            </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="documents-tab" data-toggle="tab" href="#documents" role="tab">
+                            <button class="nav-link" id="documents-tab" data-bs-toggle="tab" data-bs-target="#documents" type="button" role="tab" aria-controls="documents" aria-selected="false">
                                 <i class="fa fa-file-text"></i> Documents &amp; PDFs
-                                <span class="badge badge-success ml-1">0</span>
-                            </a>
+                                <span class="badge bg-success ms-1" id="documents-badge">0</span>
+                            </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="temp-tab" data-toggle="tab" href="#temp" role="tab">
+                            <button class="nav-link" id="temp-tab" data-bs-toggle="tab" data-bs-target="#temp" type="button" role="tab" aria-controls="temp" aria-selected="false">
                                 <i class="fa fa-clock-o"></i> Temp Inventory
-                                <span class="badge badge-warning ml-1">0</span>
-                            </a>
+                                <span class="badge bg-warning ms-1" id="temp-badge">0</span>
+                            </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="locations-tab" data-toggle="tab" href="#locations" role="tab">
+                            <button class="nav-link" id="locations-tab" data-bs-toggle="tab" data-bs-target="#locations" type="button" role="tab" aria-controls="locations" aria-selected="false">
                                 <i class="fa fa-map-marker"></i> My Locations
-                                <span class="badge badge-secondary ml-1">0</span>
-                            </a>
+                                <span class="badge bg-secondary ms-1" id="locations-badge">0</span>
+                            </button>
                         </li>
                     </ul>
 
@@ -194,46 +194,72 @@
                     </div>
                 </div>
 
-                <!-- JavaScript for Tab Management -->
+                <!-- JavaScript for Tab Management (Bootstrap 5 compatible) -->
                 <script>
                     function switchTab(tabName) {
-                        $('#' + tabName + '-tab').tab('show');
+                        var tabEl = document.querySelector('#' + tabName + '-tab');
+                        if (tabEl) {
+                            var tab = new bootstrap.Tab(tabEl);
+                            tab.show();
+                        }
                     }
 
                     // Load counts on page load
-                    $(document).ready(function() {
+                    document.addEventListener('DOMContentLoaded', function() {
                         loadInventoryCounts();
                         loadRecentActivity();
                     });
 
                     function loadInventoryCounts() {
                         // Load counts for each inventory type
-                        $.ajax({
-                            url: '/my/inventory/counts',
-                            type: 'GET',
-                            success: function(data) {
-                                $('#containers-count').text(data.containers || 0);
-                                $('#files-count').text(data.files || 0);
-                                $('#documents-count').text(data.documents || 0);
-                                $('#temp-count').text(data.temp || 0);
-                                $('#locations-count').text(data.locations || 0);
-                            },
-                            error: function() {
-                                $('#containers-count, #files-count, #documents-count, #temp-count').text('Error');
-                            }
+                        fetch('/my/inventory/counts', {
+                            method: 'GET',
+                            headers: { 'Accept': 'application/json' }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById('containers-count').textContent = data.containers || 0;
+                            document.getElementById('files-count').textContent = data.files || 0;
+                            document.getElementById('documents-count').textContent = data.documents || 0;
+                            document.getElementById('temp-count').textContent = data.temp || 0;
+                            document.getElementById('locations-count').textContent = data.locations || 0;
+                            // Also update tab badges
+                            document.getElementById('containers-badge').textContent = data.containers || 0;
+                            document.getElementById('files-badge').textContent = data.files || 0;
+                            document.getElementById('documents-badge').textContent = data.documents || 0;
+                            document.getElementById('temp-badge').textContent = data.temp || 0;
+                            document.getElementById('locations-badge').textContent = data.locations || 0;
+                        })
+                        .catch(error => {
+                            console.error('Error loading counts:', error);
+                            document.getElementById('containers-count').textContent = 'Error';
+                            document.getElementById('files-count').textContent = 'Error';
+                            document.getElementById('documents-count').textContent = 'Error';
+                            document.getElementById('temp-count').textContent = 'Error';
+                            document.getElementById('locations-count').textContent = 'Error';
                         });
                     }
 
                     function loadRecentActivity() {
-                        $.ajax({
-                            url: '/my/inventory/recent_activity',
-                            type: 'GET',
-                            success: function(data) {
-                                $('#recent-activity').html(data.html || 'No recent activity');
-                            },
-                            error: function() {
-                                $('#recent-activity').html('<div class="alert alert-warning">Unable to load recent activity</div>');
+                        fetch('/my/inventory/recent_activity', {
+                            method: 'GET',
+                            headers: { 'Accept': 'text/html' }
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            // Extract just the activity content from the response
+                            var parser = new DOMParser();
+                            var doc = parser.parseFromString(html, 'text/html');
+                            var activityContent = doc.querySelector('.activity-list, .table, .alert');
+                            if (activityContent) {
+                                document.getElementById('recent-activity').innerHTML = activityContent.outerHTML;
+                            } else {
+                                document.getElementById('recent-activity').innerHTML = '<p class="text-muted">No recent activity found.</p>';
                             }
+                        })
+                        .catch(error => {
+                            console.error('Error loading activity:', error);
+                            document.getElementById('recent-activity').innerHTML = '<div class="alert alert-warning">Unable to load recent activity</div>';
                         });
                     }
                 </script>

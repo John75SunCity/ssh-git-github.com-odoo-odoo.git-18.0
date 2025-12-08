@@ -5548,7 +5548,7 @@ class RecordsManagementController(http.Controller):
         values.update({'page_name': 'reports_export'})
         return request.render('records_management.portal_reports_export', values)
 
-    @http.route(['/my/inventory/counts'], type='json', auth='user', website=True)
+    @http.route(['/my/inventory/counts'], type='http', auth='user', website=True)
     def portal_inventory_counts(self, **kw):
         """Inventory count summary - Returns JSON for AJAX calls."""
         user = request.env.user
@@ -5574,13 +5574,17 @@ class RecordsManagementController(http.Controller):
         locations_domain = [('partner_id', '=', partner.commercial_partner_id.id)]
         locations_count = request.env['customer.staging.location'].sudo().search_count(locations_domain)
 
-        return {
-            'containers': containers_count,
-            'files': files_count,
-            'documents': documents_count,
-            'temp': temp_count,
-            'locations': locations_count,
-        }
+        import json
+        return request.make_response(
+            json.dumps({
+                'containers': containers_count,
+                'files': files_count,
+                'documents': documents_count,
+                'temp': temp_count,
+                'locations': locations_count,
+            }),
+            headers=[('Content-Type', 'application/json')]
+        )
 
     @http.route(['/my/inventory/recent_activity'], type='http', auth='user', website=True)
     def portal_inventory_recent_activity(self, page=1, **kw):
