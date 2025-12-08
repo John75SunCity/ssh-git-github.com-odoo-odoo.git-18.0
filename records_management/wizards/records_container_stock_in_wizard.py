@@ -15,9 +15,10 @@ class RecordsContainerStockInWizard(models.TransientModel):
         readonly=True
     )
     location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string='Storage Location',
         required=True,
+        domain="[('usage', '=', 'internal')]",
         help="Select the warehouse location where this container will be stored"
     )
 
@@ -32,20 +33,8 @@ class RecordsContainerStockInWizard(models.TransientModel):
         # Set the location on the container
         container.location_id = self.location_id
 
-        # Create stock quant if needed
-        if not container.quant_id:
-            product = container._get_or_create_container_product()
-            quant_vals = {
-                'product_id': product.id,
-                'location_id': self.location_id.id,
-                'quantity': 1.0,
-                'owner_id': container.stock_owner_id.id or container.partner_id.id,
-                'company_id': container.company_id.id,
-            }
-            quant = self.env['stock.quant'].sudo().create(quant_vals)
-            container.quant_id = quant.id
-
-        # Update state and storage dates
+        # Update state and storage dates - don't create stock quants here
+        # Stock quants are managed by barcode operations and inventory sync
         vals = {
             'state': 'in',
         }
@@ -53,6 +42,6 @@ class RecordsContainerStockInWizard(models.TransientModel):
             vals['storage_start_date'] = fields.Date.today()
 
         container.write(vals)
-        container.message_post(body=_("Container stocked in at location: %s", self.location_id.name))
+        container.message_post(body=_("Container stocked in at location: %s") % self.location_id.name)
 
         return {'type': 'ir.actions.act_window_close'}

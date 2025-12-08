@@ -1231,33 +1231,41 @@ class RecordsContainer(models.Model):
         if self.state == 'destroyed':
             raise UserError(_("Cannot create pickup order for destroyed containers."))
 
+        # Build description with container info
+        description = (
+            "Container Pickup Request\n"
+            "Container: %s\n"
+            "Customer: %s\n"
+            "Department: %s\n"
+            "Please pick up this container from the customer location."
+        ) % (
+            self.name,
+            self.partner_id.name,
+            self.department_id.name if self.department_id else 'N/A'
+        )
+
         # Create pickup request with this container
         pickup_request = self.env['pickup.request'].create({
             'partner_id': self.partner_id.id,
             'department_id': self.department_id.id if self.department_id else False,
-            'description': _(
-                'Container Pickup Request\n'
-                'Container: %s\n'
-                'Customer: %s\n'
-                'Department: %s\n'
-                'Please pick up this container from the customer location.',
-                self.name,
-                self.partner_id.name,
-                self.department_id.name if self.department_id else 'N/A'
-            ),
+            'description': description,
         })
 
-        # Add container as pickup item
+        # Add container as pickup item (uses name field, not container_id)
         self.env['pickup.request.item'].create({
             'request_id': pickup_request.id,
-            'container_id': self.id,
-            'description': self.description or self.name,
+            'name': _('Container: %s') % self.name,
+            'item_type': 'box',
+            'quantity': 1,
+            'notes': _('Container barcode: %s\nDescription: %s') % (
+                self.barcode or 'N/A',
+                self.description or 'N/A'
+            ),
         })
 
         # Post message on container
         self.message_post(
-            body=_('Pickup order created: <a href="/web#id=%s&model=pickup.request&view_type=form">%s</a>',
-                   pickup_request.id, pickup_request.name)
+            body=_("Pickup order created: %s") % pickup_request.name
         )
 
         # Return action to view the created pickup request
@@ -1294,20 +1302,7 @@ class RecordsContainer(models.Model):
                 },
             }
 
-        # If location_id is set and no quant exists, create stock quant
-        if self.location_id and not self.quant_id:
-            product = self._get_or_create_container_product()
-            quant_vals = {
-                'product_id': product.id,
-                'location_id': self.location_id.id,
-                'quantity': 1.0,
-                'owner_id': self.stock_owner_id.id or self.partner_id.id,
-                'company_id': self.company_id.id,
-            }
-            quant = self.env['stock.quant'].sudo().create(quant_vals)
-            self.quant_id = quant.id
-
-        # Update state and storage dates
+        # Update state and storage dates (no stock.quant creation - handled by container tracking)
         vals = {
             'state': 'in',
         }
@@ -1315,7 +1310,7 @@ class RecordsContainer(models.Model):
             vals['storage_start_date'] = fields.Date.today()
 
         self.write(vals)
-        self.message_post(body=_("Container stocked in at location: %s", self.location_id.name or 'N/A'))
+        self.message_post(body=_("Container stocked in at location: %s") % (self.location_id.name or 'N/A'))
         
         return True
 
