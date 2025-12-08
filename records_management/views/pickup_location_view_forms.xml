@@ -92,13 +92,21 @@
     </field>
     </record>
 
-<!-- Menu Items -->
+<!-- Menu Items - Now points to Service Locations (res.partner with is_service_location=True) -->
 
+    <menuitem id="service_location_menu"
+            name="Service Locations"
+            parent="records_management.menu_records_configuration"
+            action="action_service_location"
+            sequence="40"/>
+
+    <!-- Legacy Pickup Locations menu (hidden, kept for migration/backwards compatibility) -->
     <menuitem id="pickup_location_menu"
-            name="Pickup Locations"
+            name="Pickup Locations (Legacy)"
             parent="records_management.menu_records_configuration"
             action="pickup_location_action"
-            sequence="40"/>
+            sequence="999"
+            groups="base.group_no_one"/>
 
     
     </data>

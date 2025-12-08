@@ -60,6 +60,46 @@ class ResPartner(models.Model):
         help="The billing period for accumulating consolidated invoices"
     )
 
+    # ============================================================================
+    # SERVICE/PICKUP LOCATION FIELDS
+    # ============================================================================
+    is_service_location = fields.Boolean(
+        string="Is Service Location",
+        default=False,
+        help="Check if this address is a pickup/service location for work orders. "
+             "Service locations appear in the dropdown when creating work orders."
+    )
+    service_location_ids = fields.One2many(
+        comodel_name='res.partner',
+        inverse_name='parent_id',
+        string='Service Locations',
+        domain=[('is_service_location', '=', True)],
+        help="Customer pickup/service locations that can be selected on work orders"
+    )
+    service_location_count = fields.Integer(
+        string='Service Location Count',
+        compute='_compute_service_location_count',
+        help="Number of service locations for this customer"
+    )
+    service_location_notes = fields.Text(
+        string='Location Notes',
+        help="Special instructions for this service location (access codes, parking, contact person, etc.)"
+    )
+    service_location_hours = fields.Char(
+        string='Service Hours',
+        help="Available hours for service at this location (e.g., 'Mon-Fri 8am-5pm')"
+    )
+    requires_appointment = fields.Boolean(
+        string='Requires Appointment',
+        default=False,
+        help="Check if this location requires an appointment before service"
+    )
+    loading_dock_available = fields.Boolean(
+        string='Loading Dock Available',
+        default=False,
+        help="Check if this location has a loading dock for large pickups"
+    )
+
     # Portal Access Level - Auto-assigns correct portal groups (Grok 2025 Best Practice)
     portal_access_level = fields.Selection([
         ('none', 'No Portal Access'),
@@ -334,6 +374,14 @@ class ResPartner(models.Model):
         """Computes the number of departments associated with this partner."""
         for partner in self:
             partner.department_count = len(partner.department_ids)
+
+    def _compute_service_location_count(self):
+        """Compute the number of service locations for this customer."""
+        for partner in self:
+            partner.service_location_count = self.env['res.partner'].search_count([
+                ('parent_id', '=', partner.id),
+                ('is_service_location', '=', True)
+            ])
     
     def _compute_department_users(self):
         """
@@ -652,6 +700,39 @@ class ResPartner(models.Model):
             'view_mode': 'list,form',
             'domain': [('partner_id', '=', self.id)],
             'context': {'default_partner_id': self.id}
+        }
+
+    def action_view_service_locations(self):
+        """Opens the list of service/pickup locations for this customer."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Service Locations'),
+            'res_model': 'res.partner',
+            'view_mode': 'list,form',
+            'domain': [('parent_id', '=', self.id), ('is_service_location', '=', True)],
+            'context': {
+                'default_parent_id': self.id,
+                'default_is_service_location': True,
+                'default_type': 'other',
+            }
+        }
+
+    def action_add_service_location(self):
+        """Quick action to add a new service location for this customer."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Add Service Location'),
+            'res_model': 'res.partner',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_parent_id': self.id,
+                'default_is_service_location': True,
+                'default_type': 'other',
+                'default_name': _('New Service Location'),
+            }
         }
 
     # --------------------------------------------------------------

@@ -72,6 +72,16 @@
                                 <field name="bin_quantity" invisible="shredding_service_type not in ('bin_onetime', 'bin_recurring', 'bin_mobile')"/>
                                 <field name="active" />
                             </group>
+                            <group name="service_location" string="Service Location">
+                                <field name="use_service_location" widget="boolean_toggle"/>
+                                <field name="service_location_id" 
+                                       invisible="not use_service_location"
+                                       placeholder="Select or create a service location..."
+                                       options="{'no_quick_create': False}"
+                                       context="{'default_parent_id': partner_id, 'default_is_service_location': True, 'default_type': 'other'}"/>
+                                <field name="effective_service_address" readonly="1" 
+                                       widget="text" string="Service Address"/>
+                            </group>
                             <group name="progress_info" string="Progress &amp; Status">
                                 <field name="start_date" readonly="1" />
                                 <field name="completion_date" readonly="1" />

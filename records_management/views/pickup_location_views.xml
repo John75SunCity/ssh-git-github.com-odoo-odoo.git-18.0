@@ -1,12 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- List View -->
+<!-- ============================================================================
+     SERVICE LOCATIONS (Customer Pickup/Delivery Addresses)
+     
+     Service locations are res.partner records with is_service_location=True
+     linked to a parent customer. They represent physical addresses where
+     pickups, deliveries, and on-site services occur.
+     
+     This replaces the legacy pickup.location model with a more integrated
+     approach using Odoo's standard contact/address hierarchy.
+============================================================================ -->
+
+<!-- List View for Service Locations -->
+    <record id="service_location_view_list" model="ir.ui.view">
+        <field name="name">res.partner.service.location.view.list</field>
+        <field name="model">res.partner</field>
+        <field name="priority">99</field>
+    <field name="arch" type="xml">
+            <list string="Service Locations" editable="bottom">
+                <field name="parent_id" string="Customer" readonly="1"/>
+                <field name="name" string="Location Name"/>
+                <field name="street" string="Address"/>
+                <field name="city"/>
+                <field name="state_id" string="State"/>
+                <field name="zip" string="ZIP"/>
+                <field name="service_location_hours" string="Hours"/>
+                <field name="requires_appointment" string="Appt"/>
+                <field name="loading_dock_available" string="Dock"/>
+                <field name="is_service_location" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View for Service Locations -->
+    <record id="service_location_view_form" model="ir.ui.view">
+        <field name="name">res.partner.service.location.view.form</field>
+        <field name="model">res.partner</field>
+        <field name="priority">99</field>
+    <field name="arch" type="xml">
+            <form string="Service Location">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Location Name (e.g., Main Office, Warehouse B)"/></h1>
+                    </div>
+                    <group>
+                        <group string="Customer">
+                            <field name="parent_id" string="Customer" required="1"
+                                   domain="[('is_company', '=', True)]"
+                                   options="{'no_create': True}"/>
+                            <field name="is_service_location" invisible="1"/>
+                            <field name="type" invisible="1"/>
+                        </group>
+                        <group string="Address">
+                            <field name="street" placeholder="Street address"/>
+                            <field name="street2" placeholder="Suite, Floor, Building"/>
+                            <field name="city"/>
+                            <field name="state_id"/>
+                            <field name="zip"/>
+                            <field name="country_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Service Details">
+                            <field name="service_location_hours" placeholder="e.g., Mon-Fri 8am-5pm"/>
+                            <field name="requires_appointment"/>
+                            <field name="loading_dock_available"/>
+                        </group>
+                        <group string="Contact">
+                            <field name="phone" placeholder="Location phone"/>
+                            <field name="email" placeholder="Location email"/>
+                        </group>
+                    </group>
+                    <group string="Notes &amp; Instructions">
+                        <field name="service_location_notes" placeholder="Access codes, parking instructions, contact person on site, etc." nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View for Service Locations -->
+    <record id="service_location_view_search" model="ir.ui.view">
+        <field name="name">res.partner.service.location.view.search</field>
+        <field name="model">res.partner</field>
+        <field name="priority">99</field>
+    <field name="arch" type="xml">
+            <search string="Search Service Locations">
+                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('street', 'ilike', self)]"/>
+                <field name="parent_id" string="Customer"/>
+                <field name="city"/>
+                <filter string="Requires Appointment" name="requires_appointment" domain="[('requires_appointment', '=', True)]"/>
+                <filter string="Has Loading Dock" name="loading_dock" domain="[('loading_dock_available', '=', True)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Customer" name="customer" context="{'group_by': 'parent_id'}"/>
+                    <filter string="City" name="city" context="{'group_by': 'city'}"/>
+                    <filter string="State" name="state" context="{'group_by': 'state_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Service Locations -->
+    <record id="action_service_location" model="ir.actions.act_window">
+        <field name="name">Service Locations</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_service_location', '=', True)]</field>
+        <field name="context">{
+            'default_is_service_location': True,
+            'default_type': 'other',
+            'search_default_group_by_customer': 1
+        }</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('service_location_view_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('service_location_view_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                <i class="fa fa-map-marker"/> Create your first service location
+            </p>
+            <p><b>What are Service Locations?</b></p>
+            <p>
+                Service locations are customer addresses where pickups, deliveries, 
+                and on-site services occur. They are linked to customer records and can be:
+            </p>
+            <ul>
+                <li><b>Selected on work orders</b> - Choose the address for each service</li>
+                <li><b>Printed on invoices</b> - Shows the service address</li>
+                <li><b>Reused across orders</b> - Once added, available for future use</li>
+            </ul>
+            <p><b>📋 To create a service location:</b></p>
+            <ol>
+                <li>Click <b>New</b> to open the location form</li>
+                <li>Select the <b>Customer</b> this location belongs to</li>
+                <li>Enter a <b>Location Name</b> (e.g., "Smith Corp - Downtown Office")</li>
+                <li>Fill in the complete <b>Address</b></li>
+                <li>Add <b>Service Hours</b> (when pickups can occur)</li>
+                <li>Check if <b>Appointment Required</b> or <b>Loading Dock Available</b></li>
+                <li>Add any <b>Special Instructions</b> (access codes, parking, etc.)</li>
+            </ol>
+            <p><b>💡 Pro Tip:</b> You can also add service locations directly from the 
+            customer's contact form under the "Service Locations" tab.</p>
+        </field>
+    </record>
+
+<!-- ============================================================================
+     LEGACY PICKUP.LOCATION VIEWS (kept for backwards compatibility)
+============================================================================ -->
+
+<!-- Legacy List View -->
     <record id="pickup_location_view_list" model="ir.ui.view">
         <field name="name">pickup.location.view.list</field>
         <field name="model">pickup.location</field>
     <field name="arch" type="xml">
-            <list string="Pickup Location">
+            <list string="Pickup Locations (Legacy)">
                 <field name="name"/>
                 <field name="address"/>
                 <field name="city"/>
@@ -14,18 +163,21 @@
                 <field name="zip"/>
                 <field name="country_id"/>
                 <field name="active"/>
-                <field name="company_id"/>
-                <field name="user_id"/>
             </list>
         </field>
     </record>
 
-    <!-- Form View -->
+    <!-- Legacy Form View -->
     <record id="pickup_location_view_form" model="ir.ui.view">
         <field name="name">pickup.location.view.form</field>
         <field name="model">pickup.location</field>
     <field name="arch" type="xml">
-            <form string="Pickup Location">
+            <form string="Pickup Location (Legacy)">
+                <div class="alert alert-warning" role="alert">
+                    <strong>⚠️ Legacy Model:</strong> This pickup location model is deprecated.
+                    Please use <b>Service Locations</b> instead, which are linked to customer contacts
+                    and can be selected on work orders.
+                </div>
                 <sheet>
                     <group>
                         <field name="name"/>
@@ -44,7 +196,7 @@
         </field>
     </record>
 
-    <!-- Search View -->
+    <!-- Legacy Search View -->
     <record id="pickup_location_view_search" model="ir.ui.view">
         <field name="name">pickup.location.view.search</field>
         <field name="model">pickup.location</field>
@@ -57,51 +209,11 @@
         </field>
     </record>
 
-    <!-- Action -->
+    <!-- Legacy Action (kept for backwards compatibility) -->
     <record id="action_pickup_location" model="ir.actions.act_window">
-        <field name="name">Pickup Location</field>
+        <field name="name">Pickup Locations (Legacy)</field>
         <field name="res_model">pickup.location</field>
         <field name="view_mode">list,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                <i class="fa fa-map-marker"/> Create your first pickup location
-            </p>
-            <p><b>⚠️ Prerequisites:</b></p>
-            <ul>
-                <li>✓ <b>Country/state configured</b> - Go to: <i>Contacts &gt; Configuration &gt; Localization</i></li>
-                <li>✓ <b>Company/user assigned</b> - Set location ownership</li>
-            </ul>
-            <p><b>📋 To create a pickup location:</b></p>
-            <ol>
-                <li>Click <b>New</b> to open the location form</li>
-                <li>Enter a <b>Location Name</b> (e.g., "Smith Corp Main Office")</li>
-                <li>Add complete <b>Address</b> (street, building, suite)</li>
-                <li>Enter <b>City</b> name</li>
-                <li>Select <b>State</b> (province/region)</li>
-                <li>Enter <b>ZIP/Postal Code</b></li>
-                <li>Select <b>Country</b></li>
-                <li>Mark as <b>Active</b> (uncheck to disable location)</li>
-                <li>Assign <b>Company</b> (for multi-company setups)</li>
-                <li>Assign <b>User</b> (location manager/contact)</li>
-                <li>Add <b>Notes</b> (access instructions, parking, contact names)</li>
-                <li>Click <b>Save</b> to create the location</li>
-            </ol>
-            <p><b>🚀 Key Features:</b><br/>
-            • <b>Complete addressing:</b> Full street to country details<br/>
-            • <b>Active/inactive status:</b> Disable old locations<br/>
-            • <b>Company assignment:</b> Multi-organization support<br/>
-            • <b>User linking:</b> Contact person for each location<br/>
-            • <b>Notes system:</b> Access codes, parking, special instructions<br/>
-            • <b>Search filters:</b> Find by name, address, or city<br/>
-            </p>
-            <p><b>💡 Pro Tips:</b><br/>
-            • Add gate codes and parking instructions in notes<br/>
-            • Include contact names and phone numbers<br/>
-            • Use consistent naming: "Customer Name - Building/Location"<br/>
-            • Mark as inactive rather than deleting (history preservation)<br/>
-            • Verify addresses with GPS/Google Maps before saving<br/>
-            </p>
-        </field>
     </record>
     </data>
 </odoo>

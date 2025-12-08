@@ -72,8 +72,63 @@ class PickupRequest(models.Model):
     contact_phone = fields.Char(string='Contact Phone', tracking=True)
     contact_email = fields.Char(string='Contact Email', tracking=True)
 
+    # Service Location (Customer Address Selection)
+    use_service_location = fields.Boolean(
+        string="Use Saved Service Location",
+        default=False,
+        help="Check to select from customer's saved service locations. "
+             "If unchecked, use the Pickup Address field below."
+    )
+    service_location_id = fields.Many2one(
+        comodel_name='res.partner',
+        string="Service Location",
+        domain="[('parent_id', '=', partner_id), ('is_service_location', '=', True)]",
+        help="Select a saved service location, or use the pickup address field for a one-time address"
+    )
+    effective_pickup_address = fields.Text(
+        string="Effective Pickup Address",
+        compute='_compute_effective_pickup_address',
+        store=True,
+        help="The address for this pickup - uses service location if selected, otherwise pickup_address"
+    )
+
+    @api.depends('use_service_location', 'service_location_id', 'pickup_address', 'partner_id')
+    def _compute_effective_pickup_address(self):
+        """Compute effective pickup address based on selection."""
+        for request in self:
+            if request.use_service_location and request.service_location_id:
+                # Use service location address
+                request.effective_pickup_address = request.service_location_id.contact_address or ''
+            elif request.pickup_address:
+                # Use manually entered pickup address
+                request.effective_pickup_address = request.pickup_address
+            elif request.partner_id:
+                # Fall back to customer's default address
+                request.effective_pickup_address = request.partner_id.contact_address or ''
+            else:
+                request.effective_pickup_address = ''
+
+    @api.onchange('use_service_location')
+    def _onchange_use_service_location(self):
+        if not self.use_service_location:
+            self.service_location_id = False
+
+    @api.onchange('service_location_id')
+    def _onchange_service_location_id(self):
+        """When service location is selected, clear manual pickup address."""
+        if self.service_location_id:
+            self.pickup_address = False
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id_service_location(self):
+        self.service_location_id = False
+
     # Address Information
-    pickup_address = fields.Text(string='Pickup Address', tracking=True)
+    pickup_address = fields.Text(
+        string='Pickup Address', 
+        tracking=True,
+        help="Enter a one-time pickup address, or check 'Use Saved Service Location' to select from saved addresses"
+    )
     special_instructions = fields.Text(string='Special Instructions')
 
     # Service Details

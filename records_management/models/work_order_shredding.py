@@ -29,6 +29,71 @@ class WorkOrderShredding(models.Model):
     portal_request_id = fields.Many2one(comodel_name='portal.request', string="Portal Request", ondelete='set null')
 
     # ============================================================================
+    # PICKUP/SERVICE LOCATION (Customer Address Selection)
+    # ============================================================================
+    use_service_location = fields.Boolean(
+        string="Use Service Location",
+        default=False,
+        help="Check to select a specific pickup/service address for this work order. "
+             "The address will print on work orders and invoices. "
+             "If unchecked, the customer's default address is used."
+    )
+    service_location_id = fields.Many2one(
+        comodel_name='res.partner',
+        string="Service Location",
+        domain="[('parent_id', '=', partner_id), ('is_service_location', '=', True)]",
+        help="Select a saved service location, or create a new one. "
+             "New locations are saved for future use."
+    )
+    # Effective address used for invoices/reports - computed based on checkbox
+    effective_service_address = fields.Text(
+        string="Service Address",
+        compute='_compute_effective_service_address',
+        store=True,
+        help="The address where service will be performed. "
+             "Uses service location if selected, otherwise customer's default address."
+    )
+    effective_service_partner_id = fields.Many2one(
+        comodel_name='res.partner',
+        string="Service Address Contact",
+        compute='_compute_effective_service_address',
+        store=True,
+        help="The contact record for the service address (for invoice printing)"
+    )
+
+    @api.depends('use_service_location', 'service_location_id', 'partner_id')
+    def _compute_effective_service_address(self):
+        """Compute the effective service address based on checkbox selection.
+        
+        - If use_service_location is True and service_location_id is set:
+          Use the service location's address
+        - Otherwise: Use the customer's (partner_id) default address
+        """
+        for order in self:
+            if order.use_service_location and order.service_location_id:
+                # Use service location address
+                order.effective_service_partner_id = order.service_location_id
+                order.effective_service_address = order.service_location_id.contact_address or ''
+            elif order.partner_id:
+                # Use customer's default address
+                order.effective_service_partner_id = order.partner_id
+                order.effective_service_address = order.partner_id.contact_address or ''
+            else:
+                order.effective_service_partner_id = False
+                order.effective_service_address = ''
+
+    @api.onchange('use_service_location')
+    def _onchange_use_service_location(self):
+        """Clear service location when checkbox is unchecked."""
+        if not self.use_service_location:
+            self.service_location_id = False
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id_service_location(self):
+        """Clear service location when customer changes."""
+        self.service_location_id = False
+
+    # ============================================================================
     # FSM INTEGRATION - All services are scheduled via FSM tasks
     # ============================================================================
     fsm_task_id = fields.Many2one(

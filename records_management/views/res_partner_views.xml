@@ -1,6 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- Add Service Locations Smart Button to Contact form -->
+        <record id="view_partner_form_service_locations_button" model="ir.ui.view">
+            <field name="name">res.partner.form.service.locations.button</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="priority">99</field>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button class="oe_stat_button" type="object"
+                            name="action_view_service_locations"
+                            icon="fa-map-marker"
+                            invisible="is_company == False or service_location_count == 0">
+                        <field name="service_location_count" string="Service Locations" widget="statinfo"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Add Service Locations Tab to Contact form -->
+        <record id="view_partner_form_service_locations_tab" model="ir.ui.view">
+            <field name="name">res.partner.form.service.locations.tab</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Service Locations" name="service_locations"
+                          invisible="is_company == False">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fa fa-info-circle"/> Service locations are pickup/delivery addresses 
+                            that can be selected on work orders. They will print on work orders and invoices.
+                        </div>
+                        <field name="service_location_ids" nolabel="1"
+                               context="{'default_parent_id': active_id, 'default_is_service_location': True, 'default_type': 'other'}">
+                            <list string="Service Locations" create="true" delete="true" editable="bottom">
+                                <field name="name" string="Location Name"/>
+                                <field name="street" string="Street"/>
+                                <field name="city" string="City"/>
+                                <field name="state_id" string="State"/>
+                                <field name="zip" string="ZIP"/>
+                                <field name="service_location_hours" string="Hours"/>
+                                <field name="requires_appointment" string="Appt Required"/>
+                                <field name="loading_dock_available" string="Loading Dock"/>
+                                <field name="is_service_location" column_invisible="1"/>
+                            </list>
+                        </field>
+                        <group>
+                            <button name="action_add_service_location" type="object"
+                                    string="Add Service Location" class="btn-primary"
+                                    icon="fa-plus"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
         <!-- Add Departments section to Contact form -->
         <record id="view_partner_form_departments" model="ir.ui.view">
             <field name="name">res.partner.form.departments</field>

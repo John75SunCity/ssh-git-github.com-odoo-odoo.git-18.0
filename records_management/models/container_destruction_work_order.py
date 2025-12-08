@@ -68,6 +68,56 @@ class ContainerDestructionWorkOrder(models.Model):
     # ============================================================================
     partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
     portal_request_id = fields.Many2one(comodel_name='portal.request', string='Portal Request', ondelete='set null')
+
+    # Pickup/Service Location
+    use_service_location = fields.Boolean(
+        string="Use Service Location",
+        default=False,
+        help="Check to select a specific pickup/service address for this work order. "
+             "If unchecked, the customer's default address is used."
+    )
+    service_location_id = fields.Many2one(
+        comodel_name='res.partner',
+        string="Service Location",
+        domain="[('parent_id', '=', partner_id), ('is_service_location', '=', True)]",
+        help="Select a saved service location for pickup. New locations are saved for future use."
+    )
+    effective_service_address = fields.Text(
+        string="Service Address",
+        compute='_compute_effective_service_address',
+        store=True,
+        help="The address where pickup will occur."
+    )
+    effective_service_partner_id = fields.Many2one(
+        comodel_name='res.partner',
+        string="Service Address Contact",
+        compute='_compute_effective_service_address',
+        store=True
+    )
+
+    @api.depends('use_service_location', 'service_location_id', 'partner_id')
+    def _compute_effective_service_address(self):
+        """Compute effective address: service location if selected, else customer default."""
+        for order in self:
+            if order.use_service_location and order.service_location_id:
+                order.effective_service_partner_id = order.service_location_id
+                order.effective_service_address = order.service_location_id.contact_address or ''
+            elif order.partner_id:
+                order.effective_service_partner_id = order.partner_id
+                order.effective_service_address = order.partner_id.contact_address or ''
+            else:
+                order.effective_service_partner_id = False
+                order.effective_service_address = ''
+
+    @api.onchange('use_service_location')
+    def _onchange_use_service_location(self):
+        if not self.use_service_location:
+            self.service_location_id = False
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id_service_location(self):
+        self.service_location_id = False
+
     destruction_reason = fields.Text(string='Reason for Destruction')
     customer_authorized = fields.Boolean(string='Customer Authorized', readonly=True)
     customer_authorization_date = fields.Datetime(string='Authorization Date', readonly=True)
