@@ -2610,13 +2610,13 @@ class RecordsManagementController(http.Controller):
                 # Get next sequence number for this exact prefix
                 # This ensures sequence resets when department structure changes
                 existing_count = request.env['records.container'].sudo().search_count([
-                    ('barcode', 'like', barcode_prefix + '-%'),
+                    ('temp_barcode', 'like', barcode_prefix + '-%'),
                     ('partner_id', '=', partner.id)
                 ])
                 seq_num = str(existing_count + 1).zfill(6)  # 000001, 000002, etc.
                 
                 temp_barcode = f'{barcode_prefix}-{seq_num}'
-                container_vals['barcode'] = temp_barcode
+                container_vals['temp_barcode'] = temp_barcode  # Store in temp_barcode, NOT barcode
             elif post.get('generate_barcode'):
                 # Auto-generate barcode using sequence
                 container_vals['barcode'] = request.env['ir.sequence'].sudo().next_by_code('records.container') or f'CNT-{name[:10].upper()}'
@@ -2631,7 +2631,7 @@ class RecordsManagementController(http.Controller):
             audit_description = _('Container %s created via portal by %s') % (container.name, request.env.user.name)
             if staging_location:
                 audit_description += _(' | Staging location: %s | Temp barcode: %s') % (
-                    staging_location.complete_name, container.barcode
+                    staging_location.complete_name, container.temp_barcode or container.barcode
                 )
             request.env['naid.audit.log'].sudo().create({
                 'action_type': 'container_created',

@@ -540,9 +540,10 @@ class RecordsContainer(models.Model):
                 if default_type_id:
                     vals["container_type_id"] = default_type_id
 
-            # ⚠️ REMOVED: Automatic temp_barcode generation
-            # Barcodes are pre-printed on sheets and manually assigned by staff
-            # NO auto-generation - enforces manual workflow from physical barcode sheets
+            # Auto-generate temp_barcode for portal-created containers that don't have one
+            # This ensures all portal containers have a customer-printable barcode
+            if vals.get("created_via_portal") and not vals.get("temp_barcode") and not vals.get("barcode"):
+                vals["temp_barcode"] = self._generate_temp_barcode(vals)
 
             # Billing starts at portal creation → if storage_start_date is empty set today
             if not vals.get("storage_start_date"):
