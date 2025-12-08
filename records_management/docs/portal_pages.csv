@@ -1,0 +1,48 @@
+URL,Page Name
+/my/inventory,My Inventory (Dashboard)
+/my/inventory/containers,Containers List
+/my/inventory/container/<id>,Container Detail
+/my/inventory/containers/create,Create Container
+/my/inventory/files,File Folders List
+/my/inventory/file/<id>,File Detail
+/my/inventory/files/create,Create File
+/my/inventory/documents,Documents & PDFs
+/my/inventory/document/<id>,Document Detail
+/my/inventory/documents/create,Create Document
+/my/inventory/documents/bulk-upload,Bulk Upload Documents
+/my/inventory/temp,Temp Inventory
+/my/inventory/locations,My Locations
+/my/inventory/location/<id>,Location Detail
+/my/inventory/location/create,Create Location
+/my/inventory/movements,Inventory Movements
+/my/requests,Service Requests
+/my/requests/<id>,Request Detail
+/my/request/new/<type>,Create Request
+/my/retrieval-cart,Retrieval Cart
+/my/document-retrieval,Document Retrieval
+/my/destruction,Destruction Overview
+/my/destruction/pending,Pending Destruction
+/my/custody/chain,Chain of Custody
+/my/certificates,Certificates
+/my/certificate/<id>,Certificate Detail
+/my/invoices,Current Invoices
+/my/invoices/history,Invoice History
+/my/billing/rates,Negotiated Rates
+/my/billing/statements,Billing Statements
+/my/billing/summary,Billing Summary
+/my/reports,Reports Dashboard
+/my/reports/activity,Activity Reports
+/my/reports/compliance,Compliance Reports
+/my/reports/audit,Audit Reports
+/my/reports/export,Export Data
+/my/users,User Management
+/my/users/create,Create User
+/my/organization,Organization Diagram
+/my/organization/add-user,Add Team Member
+/my/feedback,Feedback
+/my/feedback/history,Feedback History
+/my/notifications,Notifications
+/my/access,Access Info
+/my/barcode/main,Barcode Scanner
+/my/service-attachments,Service Attachments
+/my/service-photos,Service Photos
