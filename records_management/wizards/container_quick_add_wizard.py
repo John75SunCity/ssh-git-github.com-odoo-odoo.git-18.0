@@ -68,8 +68,8 @@ class ContainerQuickAddWizard(models.TransientModel):
        help="How are files organized in this container?")
 
     # Range Fields (shown based on contents_type)
-    range_start = fields.Char(string='Start', help="Starting value (e.g., 'A', '001', '2020-01-01')")
-    range_end = fields.Char(string='End', help="Ending value (e.g., 'Z', '999', '2020-12-31')")
+    range_start = fields.Char(string='Start', help="Starting value (e.g., 'A', '001', or a date)")
+    range_end = fields.Char(string='End', help="Ending value (e.g., 'Z', '999', or a date)")
 
     # Custom description
     contents_description = fields.Text(

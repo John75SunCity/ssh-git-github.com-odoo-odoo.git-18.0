@@ -211,10 +211,13 @@ Sincerely,
         """Prepare personalized email content for customer"""
         template = self.communication_template
 
-        # Replace placeholders
+        # Replace placeholders - use company email from system parameters
+        support_email = self.env['ir.config_parameter'].sudo().get_param(
+            'records_management.support_email', default=self.env.company.email or 'support@company.com'
+        )
         content = template.replace('[CUSTOMER_NAME]', customer.name)
         content = content.replace('[EFFECTIVE_DATE]', str(self.effective_date))
-        content = content.replace('[CONTACT_INFO]', 'support@company.com')
+        content = content.replace('[CONTACT_INFO]', support_email)
         content = content.replace('[COMPANY_NAME]', self.env.company.name)
 
         return content

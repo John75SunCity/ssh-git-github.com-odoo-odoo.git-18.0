@@ -730,12 +730,15 @@ class PortalInteractiveController(CustomerPortal):
             worksheet.write(1, col, instruction, instruction_format)
             worksheet.set_column(col, col, 25)
         
-        # Add sample data row
-        worksheet.write(2, 0, 'BOX-2024-001')
-        worksheet.write(2, 1, 'HR Personnel Files 2024')
+        # Add sample data row with dynamic dates
+        from datetime import datetime, timedelta
+        current_year = datetime.now().strftime('%Y')
+        retention_year = (datetime.now() + timedelta(days=7*365)).strftime('%Y')
+        worksheet.write(2, 0, f'BOX-{current_year}-001')
+        worksheet.write(2, 1, f'HR Personnel Files {current_year}')
         worksheet.write(2, 2, 'Human Resources')
         worksheet.write(2, 3, '7 Years')
-        worksheet.write(2, 4, '2031-12-31')
+        worksheet.write(2, 4, f'{retention_year}-12-31')
         worksheet.write(2, 5, 'Confidential')
         
         workbook.close()

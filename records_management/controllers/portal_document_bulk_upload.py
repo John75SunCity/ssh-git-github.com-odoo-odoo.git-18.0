@@ -225,10 +225,14 @@ class PortalBulkUpload(http.Controller):
                 'permanent_retention',     # true/false (OPTIONAL)
             ]
             
+            # Use dynamic dates based on current year
+            from datetime import datetime, timedelta
+            current_year = datetime.now().strftime('%Y')
+            retention_year = (datetime.now() + timedelta(days=7*365)).strftime('%Y')  # 7 years retention
             sample_rows = [
-                ['HR Files 2024 Q1', 'HR-2024-001', 'personnel', 'Employee personnel files for Q1 2024', 'A-D', '2024-01-01', '2031-01-01', 'false'],
-                ['Financial Records Q3', 'FIN-2024-Q3', 'financial', 'Quarterly financial documents', '', '2024-07-01', '2031-07-01', 'false'],
-                ['Legal Contracts', 'LEG-2024-CONTRACTS', 'legal', 'Active legal contracts', '', '2024-01-01', '', 'true'],
+                [f'HR Files {current_year} Q1', f'HR-{current_year}-001', 'personnel', f'Employee personnel files for Q1 {current_year}', 'A-D', f'{current_year}-01-01', f'{retention_year}-01-01', 'false'],
+                [f'Financial Records Q3', f'FIN-{current_year}-Q3', 'financial', 'Quarterly financial documents', '', f'{current_year}-07-01', f'{retention_year}-07-01', 'false'],
+                ['Legal Contracts', f'LEG-{current_year}-CONTRACTS', 'legal', 'Active legal contracts', '', f'{current_year}-01-01', '', 'true'],
             ]
             filename_prefix = 'containers'
             
@@ -242,10 +246,11 @@ class PortalBulkUpload(http.Controller):
                 'received_date',           # YYYY-MM-DD format (OPTIONAL)
             ]
             
+            # Use dynamic dates based on current year
             sample_rows = [
-                ['Employee File - John Doe', 'HR-2024-001', 'permanent', 'Complete personnel file including contracts', '2024-01-15', '2024-01-15'],
-                ['Invoice Batch Q3-2024', 'FIN-2024-Q3', 'active', 'Q3 invoices for processing', '2024-10-01', '2024-10-01'],
-                ['Legal Case Files', 'LEG-2024-CONTRACTS', 'permanent', 'Active litigation files', '2024-03-20', '2024-03-20'],
+                [f'Employee File - John Doe', f'HR-{current_year}-001', 'permanent', 'Complete personnel file including contracts', f'{current_year}-01-15', f'{current_year}-01-15'],
+                [f'Invoice Batch Q3-{current_year}', f'FIN-{current_year}-Q3', 'active', 'Q3 invoices for processing', f'{current_year}-10-01', f'{current_year}-10-01'],
+                ['Legal Case Files', f'LEG-{current_year}-CONTRACTS', 'permanent', 'Active litigation files', f'{current_year}-03-20', f'{current_year}-03-20'],
             ]
             filename_prefix = 'files'
             

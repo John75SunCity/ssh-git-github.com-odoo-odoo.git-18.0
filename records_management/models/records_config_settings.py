@@ -81,6 +81,16 @@ class ResConfigSettings(models.TransientModel):
         config_parameter='records_management.portal_ai_sentiment_analysis',
         help="Automatically analyze customer feedback for sentiment (positive, negative, neutral)."
     )
+    portal_support_email = fields.Char(
+        string="Support Email Address",
+        config_parameter='records_management.support_email',
+        help="Email address displayed in portal for customer support. Falls back to company email if not set."
+    )
+    portal_support_phone = fields.Char(
+        string="Support Phone Number",
+        config_parameter='records_management.support_phone',
+        help="Phone number displayed in portal for customer support. Falls back to company phone if not set."
+    )
 
     # ============================================================================
     # FSM Integration

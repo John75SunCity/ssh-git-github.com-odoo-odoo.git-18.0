@@ -162,13 +162,13 @@
                     <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-pdf-o">
                         <field name="document_count" string="Documents" widget="statinfo"/>
                     </button>
-                    <!-- Container stat button -->
+                    <!-- Container stat button - READ ONLY - users cannot change container assignment -->
                     <button class="oe_stat_button" type="object" name="action_view_container"
-                            icon="fa-cube" invisible="not container_id">
+                            icon="fa-archive" invisible="not container_id">
                         <div class="o_field_widget o_stat_info">
                             <span class="o_stat_text">Container</span>
                             <span class="o_stat_value" style="font-size: 11px;">
-                                <field name="container_id" widget="selection"/>
+                                <field name="container_id" readonly="1"/>
                             </span>
                         </div>
                     </button>
@@ -198,9 +198,12 @@
                                placeholder="e.g., HR-Personnel-Records, Finance-Q4-Invoices"
                                help="Unique name for this file folder"/>
                         <field name="file_category" string="Category"/>
-                        <field name="partner_id" string="Customer"/>
-                        <field name="department_id" string="Department"/>
-                        <field name="container_id" string="Container"/>
+                        <field name="partner_id" string="Customer" readonly="1"
+                               help="Customer is inherited from the container and cannot be changed"/>
+                        <field name="department_id" string="Department" readonly="1"
+                               help="Department is inherited from the container and cannot be changed"/>
+                        <field name="container_id" string="Container" readonly="1"
+                               help="Container cannot be changed after file creation for security compliance"/>
                     </group>
                     <group string="Barcode">
                         <field name="temp_barcode"

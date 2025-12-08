@@ -301,12 +301,12 @@
                                 <div class="card-body">
                                     <div class="row g-2">
                                         <div class="col-6">
-                                            <a href="tel:+1-555-0123" class="btn btn-outline-primary btn-sm btn-block">
+                                            <a t-att-href="'tel:' + (request.env.company.phone or '+1-555-0123')" class="btn btn-outline-primary btn-sm btn-block">
                                                 <i class="fa fa-phone"/> Call
                                             </a>
                                         </div>
                                         <div class="col-6">
-                                            <a href="mailto:support@records.com" class="btn btn-outline-secondary btn-sm btn-block">
+                                            <a t-att-href="'mailto:' + (request.env['ir.config_parameter'].sudo().get_param('records_management.support_email') or request.env.company.email or 'support@records.com')" class="btn btn-outline-secondary btn-sm btn-block">
                                                 <i class="fa fa-envelope"/> Email
                                             </a>
                                         </div>
