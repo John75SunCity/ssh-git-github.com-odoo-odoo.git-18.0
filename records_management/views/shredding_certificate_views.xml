@@ -20,10 +20,10 @@
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button name="action_issue" type="object" string="Issue"
+                            <button name="action_issue_certificate" type="object" string="Issue"
                                     class="oe_stat_button" icon="fa-check"
                                     invisible="state != 'draft'"/>
-                            <button name="action_deliver" type="object" string="Deliver"
+                            <button name="action_deliver_certificate" type="object" string="Deliver"
                                     class="oe_stat_button" icon="fa-send"
                                     invisible="state != 'issued'"/>
                         </div>
