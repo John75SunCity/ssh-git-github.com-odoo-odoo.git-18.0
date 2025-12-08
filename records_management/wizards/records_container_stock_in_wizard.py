@@ -28,7 +28,7 @@ class RecordsContainerStockInWizard(models.TransientModel):
             raise UserError(_("Please select a storage location."))
 
         container = self.container_id
-        
+
         # Set the location on the container
         container.location_id = self.location_id
 
