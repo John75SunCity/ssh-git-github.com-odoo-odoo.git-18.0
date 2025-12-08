@@ -103,7 +103,7 @@
         "data/container_types_base_rates.xml",
         "data/legal_citations_data.xml",  # Legal citations, record series, disposition methods
         "data/naid_certificate_data.xml",
-        "data/destruction_certificate_sign_template.xml",
+        # NOTE: Sign templates require PDF attachments - configure manually in Settings > Sign
         "data/paper_products_data.xml",
         "data/retention_policy_data.xml",  # Default retention policies
         "data/website_portal_menus.xml",
