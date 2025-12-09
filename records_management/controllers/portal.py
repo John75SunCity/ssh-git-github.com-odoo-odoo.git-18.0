@@ -8023,3 +8023,235 @@ class RecordsManagementController(http.Controller):
                 'error_title': _('Export Failed'),
                 'error_message': _('Failed to export inventory: %s') % str(e),
             })
+
+    # ========================================================================
+    # SHREDDING DASHBOARD ROUTES
+    # ========================================================================
+
+    @http.route(['/my/shredding', '/my/shredding/dashboard'], type='http', auth="user", website=True)
+    def portal_shredding_dashboard(self, tab='overview', **kw):
+        """
+        Shredding & Destruction Dashboard - Main portal page for shredding services.
+        Provides overview of bins, destruction requests, certificates, and history.
+        """
+        partner = request.env.user.partner_id
+
+        # Get shredding bins for customer
+        ShredBin = request.env['shred.bin'].sudo()
+        bins = ShredBin.search([
+            ('partner_id', '=', partner.id)
+        ])
+
+        # Get destruction requests
+        PortalRequest = request.env['portal.request'].sudo()
+        destruction_requests = PortalRequest.search([
+            ('partner_id', '=', partner.id),
+            ('request_type', 'in', ['destruction', 'shredding'])
+        ], order='create_date desc', limit=10)
+
+        # Get destruction certificates
+        DestructionCert = request.env['destruction.certificate'].sudo()
+        certificates = DestructionCert.search([
+            ('partner_id', '=', partner.id)
+        ], order='certificate_date desc', limit=10)
+
+        # Calculate stats
+        stats = {
+            'active_bins': bins.filtered(lambda b: b.state == 'active').mapped('id').__len__(),
+            'total_bins': len(bins),
+            'pending_requests': len(destruction_requests.filtered(lambda r: r.state == 'draft')),
+            'completed_requests': len(destruction_requests.filtered(lambda r: r.state == 'done')),
+            'total_certificates': len(certificates),
+            'recent_certificates': len(certificates.filtered(
+                lambda c: c.certificate_date and c.certificate_date >= (datetime.now() - timedelta(days=30)).date()
+            )) if certificates else 0,
+        }
+
+        # Get recent history/activity
+        recent_activity = []
+        for req in destruction_requests[:5]:
+            recent_activity.append({
+                'type': 'request',
+                'name': req.name,
+                'date': req.create_date,
+                'state': req.state,
+                'id': req.id,
+            })
+
+        return request.render('records_management.portal_shredding_dashboard', {
+            'bins': bins,
+            'destruction_requests': destruction_requests,
+            'certificates': certificates,
+            'stats': stats,
+            'active_tab': tab,
+            'recent_activity': recent_activity,
+            'page_name': 'shredding',
+        })
+
+    @http.route(['/my/shredding/request/new'], type='http', auth="user", website=True, methods=['GET', 'POST'], csrf=True)
+    def portal_shredding_request_new(self, **kw):
+        """Create a new shredding/destruction request - redirects to standard request form."""
+        return request.redirect('/my/request/new/destruction')
+
+    @http.route(['/my/shredding/bins'], type='http', auth="user", website=True)
+    def portal_shredding_bins(self, **kw):
+        """List all shredding bins for the customer."""
+        partner = request.env.user.partner_id
+
+        ShredBin = request.env['shred.bin'].sudo()
+        bins = ShredBin.search([
+            ('partner_id', '=', partner.id)
+        ])
+
+        return request.render('records_management.portal_my_shredding_bins', {
+            'bins': bins,
+            'page_name': 'shredding_bins',
+        })
+
+    @http.route(['/my/shredding/history'], type='http', auth="user", website=True)
+    def portal_shredding_history(self, filterby='all', **kw):
+        """Show shredding/destruction history."""
+        partner = request.env.user.partner_id
+
+        domain = [
+            ('partner_id', '=', partner.id),
+            ('request_type', 'in', ['destruction', 'shredding'])
+        ]
+
+        if filterby == 'completed':
+            domain.append(('state', '=', 'done'))
+        elif filterby == 'with_certificate':
+            domain.append(('state', '=', 'done'))
+            # Additional filter for requests with certificates would go here
+
+        PortalRequest = request.env['portal.request'].sudo()
+        requests = PortalRequest.search(domain, order='create_date desc')
+
+        return request.render('records_management.portal_shredding_history', {
+            'requests': requests,
+            'filterby': filterby,
+            'page_name': 'shredding_history',
+        })
+
+    @http.route(['/my/shredding/certificates'], type='http', auth="user", website=True)
+    def portal_shredding_certificates(self, **kw):
+        """List destruction certificates - redirects to main certificates page."""
+        return request.redirect('/my/certificates')
+
+    @http.route(['/my/shredding/scheduled'], type='http', auth="user", website=True)
+    def portal_shredding_scheduled(self, **kw):
+        """Show scheduled shredding services - redirects to calendar."""
+        return request.redirect('/my/calendar')
+
+    # ========================================================================
+    # CALENDAR ROUTES
+    # ========================================================================
+
+    @http.route(['/my/calendar'], type='http', auth="user", website=True)
+    def portal_calendar(self, **kw):
+        """
+        Customer Service Calendar - Shows all scheduled services, pickups, retrievals.
+        """
+        partner = request.env.user.partner_id
+
+        # Get scheduled portal requests
+        PortalRequest = request.env['portal.request'].sudo()
+        scheduled_requests = PortalRequest.search([
+            ('partner_id', '=', partner.id),
+            ('state', 'not in', ['done', 'cancelled']),
+            ('scheduled_date', '!=', False),
+        ], order='scheduled_date asc')
+
+        # Get FSM tasks if module is installed
+        fsm_tasks = []
+        try:
+            FsmTask = request.env['project.task'].sudo()
+            fsm_tasks = FsmTask.search([
+                ('partner_id', '=', partner.id),
+                ('is_fsm', '=', True),
+                ('stage_id.is_closed', '=', False),
+            ], order='planned_date_begin asc', limit=50)
+        except Exception:
+            # FSM module may not be installed
+            pass
+
+        # Build events list for calendar
+        events = []
+        for req in scheduled_requests:
+            event_type = req.request_type or 'service'
+            color_map = {
+                'destruction': '#8B0000',  # Dark red for shredding
+                'shredding': '#8B0000',
+                'pickup': '#007bff',       # Blue for pickup
+                'retrieval': '#28a745',    # Green for retrieval
+                'delivery': '#ffc107',     # Yellow for delivery
+                'scan': '#6f42c1',         # Purple for scanning
+            }
+            events.append({
+                'id': req.id,
+                'title': req.name or 'Service Request',
+                'start': req.scheduled_date.isoformat() if req.scheduled_date else None,
+                'color': color_map.get(event_type, '#6c757d'),
+                'type': event_type,
+                'url': '/my/requests/%s' % req.id,
+            })
+
+        for task in fsm_tasks:
+            events.append({
+                'id': 'task_%s' % task.id,
+                'title': task.name,
+                'start': task.planned_date_begin.isoformat() if task.planned_date_begin else None,
+                'color': '#17a2b8',  # Teal for FSM tasks
+                'type': 'fsm_task',
+                'url': '/my/task/%s' % task.id,
+            })
+
+        return request.render('records_management.portal_calendar_view', {
+            'events': events,
+            'scheduled_requests': scheduled_requests,
+            'fsm_tasks': fsm_tasks,
+            'page_name': 'calendar',
+        })
+
+    @http.route(['/my/calendar/events'], type='json', auth="user", methods=['POST'])
+    def portal_calendar_events(self, start=None, end=None, **kw):
+        """
+        AJAX endpoint to fetch calendar events for a date range.
+        Used by FullCalendar or similar JS calendar libraries.
+        """
+        partner = request.env.user.partner_id
+
+        domain = [
+            ('partner_id', '=', partner.id),
+            ('scheduled_date', '!=', False),
+        ]
+
+        if start:
+            domain.append(('scheduled_date', '>=', start))
+        if end:
+            domain.append(('scheduled_date', '<=', end))
+
+        PortalRequest = request.env['portal.request'].sudo()
+        requests = PortalRequest.search(domain)
+
+        events = []
+        for req in requests:
+            event_type = req.request_type or 'service'
+            color_map = {
+                'destruction': '#8B0000',
+                'shredding': '#8B0000',
+                'pickup': '#007bff',
+                'retrieval': '#28a745',
+                'delivery': '#ffc107',
+                'scan': '#6f42c1',
+            }
+            events.append({
+                'id': req.id,
+                'title': req.name or 'Service Request',
+                'start': req.scheduled_date.isoformat() if req.scheduled_date else None,
+                'color': color_map.get(event_type, '#6c757d'),
+                'type': event_type,
+                'url': '/my/requests/%s' % req.id,
+            })
+
+        return {'events': events}
