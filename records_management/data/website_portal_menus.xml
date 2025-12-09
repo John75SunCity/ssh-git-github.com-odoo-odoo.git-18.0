@@ -1,55 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
+    <data noupdate="1">
         <!-- ================================================================== -->
-        <!-- WEBSITE PORTAL MENU CONFIGURATION - FLAT STRUCTURE               -->
-        <!-- All portal menus are direct children of website.main_menu        -->
-        <!-- Odoo only allows 2 levels: main_menu -> portal items             -->
+        <!-- RECORDS MANAGEMENT PORTAL MENU CONFIGURATION                      -->
+        <!-- Clean hierarchical structure for customer portal                  -->
+        <!-- Version: 18.0.1.0.28 - December 2025                             -->
+        <!-- ================================================================== -->
+        <!-- 
+        MENU STRUCTURE:
+        ├── My Inventory (10)
+        │   ├── Containers (10)
+        │   ├── Files (20)
+        │   ├── Documents (30)
+        │   ├── Locations (40)
+        │   ├── Movement History (50)
+        │   └── Chain of Custody (60)
+        ├── Shredding (20)
+        │   ├── Dashboard (10)
+        │   ├── Bins (20)
+        │   ├── History (30)
+        │   └── Certificates (40)
+        ├── Billing (30)
+        │   ├── Invoices (10)
+        │   ├── Statements (20)
+        │   ├── Rates (30)
+        │   └── Summary (40)
+        ├── Reports (40)
+        │   ├── Activity (10)
+        │   ├── Compliance (20)
+        │   ├── Audit (30)
+        │   └── Export (40)
+        ├── My Calendar (50)
+        ├── Organization (60)
+        │   ├── Team Members (10)
+        │   └── Departments (20)
+        ├── Help & Support (70)
+        │   ├── Feedback (10)
+        │   └── History (20)
+        └── Contact Us (80)
+        -->
+
+        <!-- ================================================================== -->
+        <!-- LEVEL 1: MAIN PORTAL MENU ITEMS                                   -->
         <!-- ================================================================== -->
 
-        <!-- Main Portal Menu Items (Direct children of website.main_menu) -->
-        <record id="portal_menu_records_inventory" model="website.menu">
+        <!-- My Inventory - Main storage management hub -->
+        <record id="portal_menu_inventory" model="website.menu">
             <field name="name">My Inventory</field>
-            <field name="url">/my/containers</field>
+            <field name="url">/my/inventory</field>
             <field name="parent_id" ref="website.main_menu"/>
             <field name="sequence">10</field>
         </record>
 
-        <!-- Service Requests menu removed in v18.0.1.0.27
-             REASON: Redundant - My Inventory handles storage requests,
-             Shredding handles destruction requests. Request tracking
-             still available at /my/requests but not prominent in menu.
-             Streamlines portal navigation. -->
-
-        <record id="portal_menu_documents" model="website.menu">
-            <field name="name">My Documents</field>
-            <field name="url">/my/documents</field>
-            <field name="parent_id" ref="website.main_menu"/>
-            <field name="sequence">30</field>
-        </record>
-
-        <record id="portal_menu_invoices" model="website.menu">
-            <field name="name">Billing</field>
-            <field name="url">/my/invoices</field>
-            <field name="parent_id" ref="website.main_menu"/>
-            <field name="sequence">40</field>
-        </record>
-
-        <!-- Shredding & Destruction Dashboard - Comprehensive destruction services hub -->
+        <!-- Shredding & Destruction Services -->
         <record id="portal_menu_shredding" model="website.menu">
             <field name="name">Shredding</field>
             <field name="url">/my/shredding</field>
             <field name="parent_id" ref="website.main_menu"/>
-            <field name="sequence">45</field>
+            <field name="sequence">20</field>
         </record>
 
-        <record id="portal_menu_certificates" model="website.menu">
-            <field name="name">Certificates</field>
-            <field name="url">/my/certificates</field>
+        <!-- Billing & Invoices -->
+        <record id="portal_menu_billing" model="website.menu">
+            <field name="name">Billing</field>
+            <field name="url">/my/invoices</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <!-- Reports & Analytics -->
+        <record id="portal_menu_reports" model="website.menu">
+            <field name="name">Reports</field>
+            <field name="url">/my/reports</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">40</field>
+        </record>
+
+        <!-- Service Calendar -->
+        <record id="portal_menu_calendar" model="website.menu">
+            <field name="name">My Calendar</field>
+            <field name="url">/my/calendar</field>
             <field name="parent_id" ref="website.main_menu"/>
             <field name="sequence">50</field>
         </record>
 
+        <!-- Organization & Team Management -->
         <record id="portal_menu_organization" model="website.menu">
             <field name="name">Organization</field>
             <field name="url">/my/organization</field>
@@ -57,13 +92,7 @@
             <field name="sequence">60</field>
         </record>
 
-        <record id="portal_menu_calendar" model="website.menu">
-            <field name="name">My Calendar</field>
-            <field name="url">/my/calendar</field>
-            <field name="parent_id" ref="website.main_menu"/>
-            <field name="sequence">65</field>
-        </record>
-
+        <!-- Help & Feedback -->
         <record id="portal_menu_help" model="website.menu">
             <field name="name">Help &amp; Support</field>
             <field name="url">/my/feedback</field>
@@ -71,11 +100,218 @@
             <field name="sequence">70</field>
         </record>
 
-        <record id="portal_menu_contactus" model="website.menu">
+        <!-- Contact Us -->
+        <record id="portal_menu_contact" model="website.menu">
             <field name="name">Contact Us</field>
             <field name="url">/contactus</field>
             <field name="parent_id" ref="website.main_menu"/>
             <field name="sequence">80</field>
+        </record>
+
+        <!-- ================================================================== -->
+        <!-- LEVEL 2: INVENTORY SUBMENUS                                       -->
+        <!-- ================================================================== -->
+
+        <record id="portal_menu_inventory_containers" model="website.menu">
+            <field name="name">Containers</field>
+            <field name="url">/my/inventory/containers</field>
+            <field name="parent_id" ref="portal_menu_inventory"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="portal_menu_inventory_files" model="website.menu">
+            <field name="name">Files</field>
+            <field name="url">/my/inventory/files</field>
+            <field name="parent_id" ref="portal_menu_inventory"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="portal_menu_inventory_documents" model="website.menu">
+            <field name="name">Documents</field>
+            <field name="url">/my/inventory/documents</field>
+            <field name="parent_id" ref="portal_menu_inventory"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="portal_menu_inventory_locations" model="website.menu">
+            <field name="name">Staging Locations</field>
+            <field name="url">/my/inventory/locations</field>
+            <field name="parent_id" ref="portal_menu_inventory"/>
+            <field name="sequence">40</field>
+        </record>
+
+        <record id="portal_menu_inventory_movements" model="website.menu">
+            <field name="name">Movement History</field>
+            <field name="url">/my/inventory/movements</field>
+            <field name="parent_id" ref="portal_menu_inventory"/>
+            <field name="sequence">50</field>
+        </record>
+
+        <record id="portal_menu_inventory_custody" model="website.menu">
+            <field name="name">Chain of Custody</field>
+            <field name="url">/my/custody/chain</field>
+            <field name="parent_id" ref="portal_menu_inventory"/>
+            <field name="sequence">60</field>
+        </record>
+
+        <record id="portal_menu_inventory_temp" model="website.menu">
+            <field name="name">Pending Pickup</field>
+            <field name="url">/my/inventory/temp</field>
+            <field name="parent_id" ref="portal_menu_inventory"/>
+            <field name="sequence">70</field>
+        </record>
+
+        <!-- ================================================================== -->
+        <!-- LEVEL 2: SHREDDING SUBMENUS                                       -->
+        <!-- ================================================================== -->
+
+        <record id="portal_menu_shredding_dashboard" model="website.menu">
+            <field name="name">Dashboard</field>
+            <field name="url">/my/shredding/dashboard</field>
+            <field name="parent_id" ref="portal_menu_shredding"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="portal_menu_shredding_bins" model="website.menu">
+            <field name="name">Shredding Bins</field>
+            <field name="url">/my/shredding/bins</field>
+            <field name="parent_id" ref="portal_menu_shredding"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="portal_menu_shredding_history" model="website.menu">
+            <field name="name">Destruction History</field>
+            <field name="url">/my/shredding/history</field>
+            <field name="parent_id" ref="portal_menu_shredding"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="portal_menu_shredding_certificates" model="website.menu">
+            <field name="name">Certificates</field>
+            <field name="url">/my/certificates</field>
+            <field name="parent_id" ref="portal_menu_shredding"/>
+            <field name="sequence">40</field>
+        </record>
+
+        <record id="portal_menu_shredding_scheduled" model="website.menu">
+            <field name="name">Scheduled Services</field>
+            <field name="url">/my/shredding/scheduled</field>
+            <field name="parent_id" ref="portal_menu_shredding"/>
+            <field name="sequence">50</field>
+        </record>
+
+        <!-- ================================================================== -->
+        <!-- LEVEL 2: BILLING SUBMENUS                                         -->
+        <!-- ================================================================== -->
+
+        <record id="portal_menu_billing_invoices" model="website.menu">
+            <field name="name">Current Invoices</field>
+            <field name="url">/my/invoices</field>
+            <field name="parent_id" ref="portal_menu_billing"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="portal_menu_billing_history" model="website.menu">
+            <field name="name">Invoice History</field>
+            <field name="url">/my/invoices/history</field>
+            <field name="parent_id" ref="portal_menu_billing"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="portal_menu_billing_statements" model="website.menu">
+            <field name="name">Statements</field>
+            <field name="url">/my/billing/statements</field>
+            <field name="parent_id" ref="portal_menu_billing"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="portal_menu_billing_rates" model="website.menu">
+            <field name="name">My Rates</field>
+            <field name="url">/my/billing/rates</field>
+            <field name="parent_id" ref="portal_menu_billing"/>
+            <field name="sequence">40</field>
+        </record>
+
+        <record id="portal_menu_billing_summary" model="website.menu">
+            <field name="name">Billing Summary</field>
+            <field name="url">/my/billing/summary</field>
+            <field name="parent_id" ref="portal_menu_billing"/>
+            <field name="sequence">50</field>
+        </record>
+
+        <!-- ================================================================== -->
+        <!-- LEVEL 2: REPORTS SUBMENUS                                         -->
+        <!-- ================================================================== -->
+
+        <record id="portal_menu_reports_activity" model="website.menu">
+            <field name="name">Activity Report</field>
+            <field name="url">/my/reports/activity</field>
+            <field name="parent_id" ref="portal_menu_reports"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="portal_menu_reports_compliance" model="website.menu">
+            <field name="name">Compliance Report</field>
+            <field name="url">/my/reports/compliance</field>
+            <field name="parent_id" ref="portal_menu_reports"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="portal_menu_reports_audit" model="website.menu">
+            <field name="name">Audit Report</field>
+            <field name="url">/my/reports/audit</field>
+            <field name="parent_id" ref="portal_menu_reports"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="portal_menu_reports_export" model="website.menu">
+            <field name="name">Export Data</field>
+            <field name="url">/my/reports/export</field>
+            <field name="parent_id" ref="portal_menu_reports"/>
+            <field name="sequence">40</field>
+        </record>
+
+        <!-- ================================================================== -->
+        <!-- LEVEL 2: ORGANIZATION SUBMENUS                                    -->
+        <!-- ================================================================== -->
+
+        <record id="portal_menu_org_users" model="website.menu">
+            <field name="name">Team Members</field>
+            <field name="url">/my/users</field>
+            <field name="parent_id" ref="portal_menu_organization"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="portal_menu_org_add_user" model="website.menu">
+            <field name="name">Add Team Member</field>
+            <field name="url">/my/organization/add-user</field>
+            <field name="parent_id" ref="portal_menu_organization"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- ================================================================== -->
+        <!-- LEVEL 2: HELP & SUPPORT SUBMENUS                                  -->
+        <!-- ================================================================== -->
+
+        <record id="portal_menu_help_feedback" model="website.menu">
+            <field name="name">Submit Feedback</field>
+            <field name="url">/my/feedback</field>
+            <field name="parent_id" ref="portal_menu_help"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="portal_menu_help_history" model="website.menu">
+            <field name="name">Feedback History</field>
+            <field name="url">/my/feedback/history</field>
+            <field name="parent_id" ref="portal_menu_help"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="portal_menu_help_notifications" model="website.menu">
+            <field name="name">Notifications</field>
+            <field name="url">/my/notifications</field>
+            <field name="parent_id" ref="portal_menu_help"/>
+            <field name="sequence">30</field>
         </record>
 
     </data>
