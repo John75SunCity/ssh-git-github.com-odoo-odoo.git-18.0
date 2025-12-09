@@ -1229,8 +1229,8 @@
                                                 </td>
                                                 <td><t t-esc="user.login"/></td>
                                                 <td>
-                                                    <t t-if="user.partner_id.department_id">
-                                                        <t t-esc="user.partner_id.department_id.name"/>
+                                                    <t t-if="user.accessible_department_ids">
+                                                        <t t-esc="', '.join(user.accessible_department_ids.mapped('name'))"/>
                                                     </t>
                                                     <t t-else="">
                                                         <span class="text-muted">No department</span>
@@ -1294,7 +1294,7 @@
                                                                         <option value="">Select Department</option>
                                                                         <t t-foreach="departments" t-as="dept">
                                                                             <option t-att-value="dept.id" 
-                                                                                    t-att-selected="'selected' if user.partner_id.department_id.id == dept.id else None">
+                                                                                    t-att-selected="'selected' if dept.id in user.accessible_department_ids.ids else None">
                                                                                 <t t-esc="dept.name"/>
                                                                             </option>
                                                                         </t>

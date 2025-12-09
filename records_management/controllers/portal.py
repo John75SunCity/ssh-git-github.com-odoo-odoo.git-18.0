@@ -4063,7 +4063,8 @@ class RecordsManagementController(http.Controller):
         can_cancel = request.env.user.has_group('records_management.group_portal_department_user') and req_record.state not in ['cancelled', 'completed']
 
         values = {
-            'request': req_record,
+            'customer_request': req_record,  # Template expects customer_request
+            'request': req_record,  # Keep for backwards compatibility
             'can_edit': can_edit,
             'can_cancel': can_cancel,
             'page_name': 'request_detail',
@@ -5266,37 +5267,34 @@ class RecordsManagementController(http.Controller):
     def portal_custody_chain(self, page=1, filterby=None, search=None, **kw):
         """
         Chain of custody tracking for compliance
-        Accessible to: All portal users (own department)
-        Security: Department filtering
+        Accessible to: All portal users (own documents)
+        Security: Partner filtering via document relationship
         """
         values = self._prepare_portal_layout_values()
         user = request.env.user
         partner = user.partner_id
 
-        CustodyLog = request.env['naid.custody']
-        domain = [('partner_id', '=', partner.id)]
+        # Use sudo() since portal users have limited access
+        CustodyLog = request.env['naid.custody'].sudo()
+        domain = [('partner_id', '=', partner.commercial_partner_id.id)]
 
-        # Department filtering for non-company admins
-        if not user.has_group('records_management.group_portal_company_admin'):
-            accessible_departments = user.accessible_department_ids.ids
-            if accessible_departments:
-                domain.append(('department_id', 'in', accessible_departments))
+        # Note: naid.custody doesn't have department_id, so we filter by partner only
 
-        # Filter by custody type
+        # Filter by event type
         if filterby == 'transfer':
-            domain.append(('custody_type', '=', 'transfer'))
+            domain.append(('event_type', '=', 'transfer'))
         elif filterby == 'destruction':
-            domain.append(('custody_type', '=', 'destruction'))
+            domain.append(('event_type', '=', 'destruction'))
         elif filterby == 'retrieval':
-            domain.append(('custody_type', '=', 'retrieval'))
+            domain.append(('event_type', '=', 'retrieval'))
 
         # Search
         if search:
             domain += [
                 '|', '|',
-                ('container_id.name', 'ilike', search),
-                ('from_custodian_id.name', 'ilike', search),
-                ('to_custodian_id.name', 'ilike', search)
+                ('document_id.name', 'ilike', search),
+                ('user_id.name', 'ilike', search),
+                ('description', 'ilike', search)
             ]
 
         # Pagination
@@ -5311,7 +5309,7 @@ class RecordsManagementController(http.Controller):
 
         custody_logs = CustodyLog.search(
             domain,
-            order='transfer_date desc',
+            order='event_date desc',
             limit=20,
             offset=pager['offset']
         )
@@ -5427,28 +5425,9 @@ class RecordsManagementController(http.Controller):
 
     @http.route(['/my/invoices/history'], type='http', auth='user', website=True)
     def portal_invoices_history(self, page=1, **kw):
-        """View payment history."""
-        values = self._prepare_portal_layout_values()
-        partner = request.env.user.partner_id
-
-        domain = [('partner_id', '=', partner.commercial_partner_id.id)]
-        payment_count = request.env['account.payment'].search_count(domain)
-
-        pager = request.website.pager(
-            url="/my/invoices/history",
-            total=payment_count,
-            page=page,
-            step=20,
-        )
-
-        payments = request.env['account.payment'].search(domain, order='date desc', limit=20, offset=pager['offset'])
-
-        values.update({
-            'payments': payments,
-            'page_name': 'payment_history',
-            'pager': pager,
-        })
-        return request.render('records_management.portal_billing_details', values)
+        """View payment history - redirects to Odoo's native portal."""
+        # Use Odoo's built-in payment portal which handles access correctly
+        return request.redirect('/my/invoices')
 
     @http.route(['/my/billing/rates'], type='http', auth='user', website=True)
     def portal_billing_rates(self, **kw):
@@ -5471,16 +5450,19 @@ class RecordsManagementController(http.Controller):
 
     @http.route(['/my/billing/statements'], type='http', auth='user', website=True)
     def portal_billing_statements(self, page=1, **kw):
-        """Download billing statements."""
+        """Download billing statements - shows posted invoices as statements."""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
 
-        statements = request.env['records.billing.statement'].search([
-            ('partner_id', '=', partner.commercial_partner_id.id)
-        ], order='date desc', limit=20)
+        # Use account.move (invoices) as statements - portal users can access their own
+        invoices = request.env['account.move'].sudo().search([
+            ('partner_id', '=', partner.commercial_partner_id.id),
+            ('move_type', '=', 'out_invoice'),
+            ('state', '=', 'posted'),
+        ], order='invoice_date desc', limit=20)
 
         values.update({
-            'statements': statements,
+            'statements': invoices,
             'page_name': 'billing_statements',
         })
         return request.render('records_management.portal_billing_statements', values)
@@ -5508,15 +5490,16 @@ class RecordsManagementController(http.Controller):
     def portal_reports_activity(self, page=1, date_begin=None, date_end=None, **kw):
         """Activity reports."""
         values = self._prepare_portal_layout_values()
-        partner = request.env.user.partner_id
+        user = request.env.user
 
-        domain = [('partner_id', '=', partner.commercial_partner_id.id)]
+        # Filter by user_id (naid.audit.log doesn't have partner_id)
+        domain = [('user_id', '=', user.id)]
         if date_begin:
             domain.append(('create_date', '>=', date_begin))
         if date_end:
             domain.append(('create_date', '<=', date_end))
 
-        activities = request.env['naid.audit.log'].search(domain, order='timestamp desc', limit=100)
+        activities = request.env['naid.audit.log'].sudo().search(domain, order='create_date desc', limit=100)
 
         values.update({
             'activities': activities,
@@ -5528,17 +5511,24 @@ class RecordsManagementController(http.Controller):
     def portal_reports_compliance(self, **kw):
         """Compliance reports for NAID."""
         values = self._prepare_portal_layout_values()
-        partner = request.env.user.partner_id
+        user = request.env.user
+        partner = user.partner_id
 
-        # Get compliance status
+        # Get company-level NAID compliance data
+        company = user.company_id or request.env.company
+        naid_compliance = request.env['naid.compliance'].sudo().search([
+            ('company_id', '=', company.id)
+        ], limit=1)
+
         compliance_data = {
-            'naid_certified': partner.naid_certified,
-            'certification_date': partner.naid_certification_date,
-            'audit_logs_count': request.env['naid.audit.log'].search_count([('partner_id', '=', partner.id)]),
+            'naid_certified': bool(naid_compliance and naid_compliance.certification_status == 'certified'),
+            'certification_date': naid_compliance.certification_date if naid_compliance else False,
+            'audit_logs_count': request.env['naid.audit.log'].sudo().search_count([('user_id', '=', user.id)]),
         }
 
         values.update({
             'compliance_data': compliance_data,
+            'naid_compliance': naid_compliance,
             'page_name': 'reports_compliance',
         })
         return request.render('records_management.portal_reports_compliance', values)
@@ -5624,15 +5614,22 @@ class RecordsManagementController(http.Controller):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
 
+        # Use sudo() for financial data access
+        invoices = request.env['account.move'].sudo().search([
+            ('partner_id', '=', partner.commercial_partner_id.id),
+            ('move_type', '=', 'out_invoice'),
+            ('state', '=', 'posted')
+        ])
+        payments = request.env['account.payment'].sudo().search([
+            ('partner_id', '=', partner.commercial_partner_id.id),
+            ('state', '=', 'posted'),
+        ])
+
         summary = {
-            'total_invoiced': sum(request.env['account.move'].search([
-                ('partner_id', '=', partner.commercial_partner_id.id),
-                ('move_type', '=', 'out_invoice'),
-                ('state', '=', 'posted')
-            ]).mapped('amount_total')),
-            'total_paid': sum(request.env['account.payment'].search([
-                ('partner_id', '=', partner.commercial_partner_id.id)
-            ]).mapped('amount')),
+            'total_invoiced': sum(invoices.mapped('amount_total')),
+            'total_paid': sum(payments.mapped('amount')),
+            'outstanding': sum(invoices.mapped('amount_residual')),
+            'invoice_count': len(invoices),
         }
 
         values.update({
@@ -5645,10 +5642,11 @@ class RecordsManagementController(http.Controller):
     def portal_reports_audit(self, page=1, **kw):
         """Audit reports for compliance."""
         values = self._prepare_portal_layout_values()
-        partner = request.env.user.partner_id
+        user = request.env.user
 
-        domain = [('partner_id', '=', partner.commercial_partner_id.id)]
-        audit_count = request.env['naid.audit.log'].search_count(domain)
+        # Filter by user_id (naid.audit.log doesn't have partner_id)
+        domain = [('user_id', '=', user.id)]
+        audit_count = request.env['naid.audit.log'].sudo().search_count(domain)
 
         pager = request.website.pager(
             url="/my/reports/audit",
@@ -5657,9 +5655,9 @@ class RecordsManagementController(http.Controller):
             step=20,
         )
 
-        audits = request.env['naid.audit.log'].search(
+        audits = request.env['naid.audit.log'].sudo().search(
             domain,
-            order='timestamp desc',
+            order='create_date desc',
             limit=20,
             offset=pager['offset']
         )
@@ -5679,7 +5677,22 @@ class RecordsManagementController(http.Controller):
     def portal_barcode_main(self, **kw):
         """Barcode scanning center."""
         values = self._prepare_portal_layout_values()
-        values.update({'page_name': 'barcode_main'})
+        partner = request.env.user.partner_id
+
+        # Get container stats for dashboard
+        containers = request.env['records.container'].sudo().search([
+            ('partner_id', '=', partner.commercial_partner_id.id)
+        ])
+        container_stats = {
+            'total': len(containers),
+            'active': len(containers.filtered(lambda c: c.state == 'active')),
+            'in_storage': len(containers.filtered(lambda c: c.state == 'stored')),
+        }
+
+        values.update({
+            'page_name': 'barcode_main',
+            'container_stats': container_stats,
+        })
         return request.render('records_management.portal_barcode_main_menu', values)
 
     @http.route(['/my/barcode/scan/container'], type='http', auth='user', website=True, methods=['GET', 'POST'], csrf=True)
@@ -5822,9 +5835,9 @@ class RecordsManagementController(http.Controller):
                 'error_message': _('You do not have permission to manage access.'),
             })
 
-        # Get department users
+        # Get department users - use correct model name
         accessible_departments = user.accessible_department_ids
-        department_users = request.env['records.department.user'].search([
+        department_users = request.env['records.storage.department.user'].sudo().search([
             ('department_id', 'in', accessible_departments.ids)
         ])
 

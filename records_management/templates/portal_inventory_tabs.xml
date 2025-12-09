@@ -763,7 +763,7 @@
                                                 <span t-esc="temp_item.description or 'No description'"/>
                                             </td>
                                             <td>
-                                                <span class="badge badge-warning" t-esc="temp_item.temp_barcode or 'No barcode'"/>
+                                                <span class="badge badge-warning" t-esc="temp_item.name or 'No ID'"/>
                                             </td>
                                             <td>
                                                 <span class="badge" 
