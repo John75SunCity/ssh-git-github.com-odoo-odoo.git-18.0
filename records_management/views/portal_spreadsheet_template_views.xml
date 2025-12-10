@@ -80,7 +80,7 @@
                                     </list>
                                 </field>
                                 <div class="alert alert-info" role="alert">
-                                    <i class="fa fa-info-circle"/> 
+                                    <i class="fa fa-info-circle" title="Information"/> 
                                     <strong>Tip:</strong> If no columns are defined, default columns 
                                     based on the template type will be used.
                                 </div>

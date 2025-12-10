@@ -460,9 +460,11 @@
         <menuitem id="menu_workflow_visualizations" name="Workflow Visualizations" parent="records_management.menu_records_operations" action="action_workflow_visualization_manager" sequence="65" groups="records_management.group_records_manager,records_management.group_records_admin" />
 
         <!-- Customer Portal Integration -->
+        <!-- customer.feedback model -->
         <menuitem id="menu_customer_feedback" name="Customer Feedback" parent="records_management.menu_records_operations" action="customer_feedback_action" sequence="75" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
+        <!-- portal.feedback model - different from Customer Feedback above -->
         <record id="action_feedback_responses" model="ir.actions.act_window">
-            <field name="name">Portal Feedback</field>
+            <field name="name">Portal Feedback Responses</field>
             <field name="res_model">portal.feedback</field>
             <field name="view_mode">list,form</field>
             <field name="context">{'search_default_needs_response': 1}</field>
@@ -473,7 +475,7 @@
                 <p>Customer feedback submitted through the portal will appear here.</p>
             </field>
         </record>
-        <menuitem id="menu_portal_feedback" name="Portal Feedback" parent="records_management.menu_records_operations" action="action_feedback_responses" sequence="78" groups="records_management.group_records_manager,records_management.group_records_admin" />
+        <menuitem id="menu_portal_feedback" name="Portal Feedback Responses" parent="records_management.menu_records_operations" action="action_feedback_responses" sequence="78" groups="records_management.group_records_manager,records_management.group_records_admin" />
         <!-- menu_feedback_analytics removed - defined in portal_feedback_menus.xml -->
 
         <!-- ========================================== -->
@@ -565,8 +567,8 @@
         <!-- Retention Policies -->
         <menuitem id="menu_retention_policy" name="Retention Policies" parent="records_management.menu_records_configuration" action="records_retention_policy_action" sequence="10" groups="records_management.group_records_manager,records_management.group_records_admin" />
 
-        <!-- Service Items -->
-        <menuitem id="menu_product_template" name="Service Items" parent="menu_products_services" action="action_product_template_records" sequence="10" groups="records_management.group_records_manager,records_management.group_records_admin" />
+        <!-- Service Products (product.template) - different from Service Items menu section -->
+        <menuitem id="menu_product_template" name="Service Products" parent="menu_products_services" action="action_product_template_records" sequence="10" groups="records_management.group_records_manager,records_management.group_records_admin" />
 
         <!-- Security Access Items will be populated from separate views -->
 

@@ -47,8 +47,10 @@
         <menuitem id="menu_payment_management" name="Payment Management" parent="menu_records_billing" sequence="50" />
         <menuitem id="menu_reports" name="Reporting Hub" parent="menu_records_compliance_reports" sequence="5" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
         <menuitem id="menu_performance_analytics" name="Performance Analytics" parent="menu_records_compliance_reports" sequence="25" />
-        <menuitem id="menu_naid_audit_root" name="NAID Audits" parent="menu_records_compliance_reports" sequence="50" />
-        <menuitem id="menu_naid_certification_root" name="NAID Certification" parent="menu_records_compliance_reports" sequence="55" />
+        <!-- DUPLICATE: naid_audit_menu in naid_audit_requirement_views.xml has children -->
+        <menuitem id="menu_naid_audit_root" name="NAID Audits_R (Empty)" parent="menu_records_compliance_reports" sequence="950" />
+        <!-- DUPLICATE: naid_certification_menu in naid_certification_views.xml has children -->
+        <menuitem id="menu_naid_certification_root" name="NAID Certification_R (Empty)" parent="menu_records_compliance_reports" sequence="951" />
         <menuitem id="menu_chain_custody" name="Chain of Custody" parent="menu_records_compliance_reports" action="action_chain_of_custody" sequence="60" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
         <menuitem id="menu_container_access" name="Container Access" parent="menu_records_compliance_reports" sequence="65" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
         <menuitem id="menu_master_data" name="Master Data" parent="menu_records_configuration" sequence="5" groups="records_management.group_records_manager,records_management.group_records_admin" />
@@ -59,7 +61,8 @@
         <!-- Legacy menu aliases for backward compatibility -->
         <menuitem id="menu_records_compliance" name="NAID Compliance" parent="menu_records_compliance_reports" sequence="10" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin"/>
         <menuitem id="menu_records_reporting" name="Reports" parent="menu_records_compliance_reports" sequence="20" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin"/>
-        <menuitem id="menu_records_portal" name="Portal Feedback" parent="menu_records_compliance_reports" sequence="30" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin"/>
+        <!-- DUPLICATE: menu_portal_feedback_root in portal_feedback_menus.xml has children -->
+        <menuitem id="menu_records_portal" name="Portal Feedback_R (Empty)" parent="menu_records_compliance_reports" sequence="952" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin"/>
 
 
     </data>

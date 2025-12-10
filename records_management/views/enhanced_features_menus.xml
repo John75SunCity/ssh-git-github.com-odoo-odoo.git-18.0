@@ -2,20 +2,22 @@
 <odoo>
     <data>
 <!-- Enhanced Features Menu Structure -->
+<!-- NOTE: Most of these menus are placeholders for future features -->
+<!-- Items marked _R are empty folders pending implementation -->
 
     <!-- Main Enhanced Features Menu -->
 
-    <menuitem id="menu_enhanced_features" name="Enhanced Features" parent="records_management.menu_records_configuration" sequence="100" groups="records_management.group_records_manager,records_management.group_records_admin"/>
+    <menuitem id="menu_enhanced_features" name="Enhanced Features_R" parent="records_management.menu_records_configuration" sequence="900" groups="records_management.group_records_manager,records_management.group_records_admin"/>
 
 
-    <!-- Workflow Visualization Submenu -->
+    <!-- Workflow Visualization Submenu - HAS ACTION -->
 
     <menuitem id="menu_workflow_visualization" name="Workflow Visualization" parent="menu_enhanced_features" sequence="10" action="action_workflow_visualization_manager" groups="records_management.group_records_manager,records_management.group_records_admin"/>
 
 
-    <!-- FSM Integration Submenu -->
+    <!-- FSM Integration Submenu - Empty folder -->
 
-    <menuitem id="menu_fsm_integration" name="FSM Integration" parent="menu_enhanced_features" sequence="20" groups="records_management.group_records_manager,records_management.group_records_admin"/>
+    <menuitem id="menu_fsm_integration" name="FSM Integration_R (Empty)" parent="menu_enhanced_features" sequence="920" groups="records_management.group_records_manager,records_management.group_records_admin"/>
 
 
     <!-- Enhanced FSM Integration -->
@@ -30,39 +32,39 @@
     <!-- <menuitem id="menu_mobile_fsm_integration" name="Mobile FSM Integration" parent="menu_fsm_integration" sequence="20" action="records_management_fsm.action_mobile_fsm_integration" groups="records_management.group_records_manager"/> -->
 
 
-    <!-- Mobile Features Submenu -->
+    <!-- Mobile Features Submenu - Empty folder -->
 
-    <menuitem id="menu_mobile_features" name="Mobile Features" parent="menu_enhanced_features" sequence="30" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin"/>
-
-
-    <!-- Mobile Dashboard -->
-
-    <menuitem id="menu_mobile_dashboard" name="Mobile Dashboard" parent="menu_mobile_features" sequence="10" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin"/>
+    <menuitem id="menu_mobile_features" name="Mobile Features_R (Placeholder)" parent="menu_enhanced_features" sequence="930" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin"/>
 
 
-    <!-- Mobile Settings -->
+    <!-- Mobile Dashboard - No action -->
 
-    <menuitem id="menu_mobile_settings" name="Mobile Settings" parent="menu_mobile_features" sequence="20" groups="records_management.group_records_manager,records_management.group_records_admin"/>
-
-
-    <!-- Analytics & Reporting Submenu -->
-
-    <menuitem id="menu_analytics_reporting" name="Analytics &amp; Reporting" parent="menu_enhanced_features" sequence="40" groups="records_management.group_records_manager,records_management.group_records_admin"/>
+    <menuitem id="menu_mobile_dashboard" name="Mobile Dashboard_R (No Action)" parent="menu_mobile_features" sequence="10" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin"/>
 
 
-    <!-- Workflow Analytics -->
+    <!-- Mobile Settings - No action -->
 
-    <menuitem id="menu_workflow_analytics" name="Workflow Analytics" parent="menu_analytics_reporting" sequence="10" groups="records_management.group_records_manager,records_management.group_records_admin"/>
-
-
-    <!-- Mobile Analytics -->
-
-    <menuitem id="menu_mobile_analytics" name="Mobile Analytics" parent="menu_analytics_reporting" sequence="20" groups="records_management.group_records_manager,records_management.group_records_admin"/>
+    <menuitem id="menu_mobile_settings" name="Mobile Settings_R (No Action)" parent="menu_mobile_features" sequence="20" groups="records_management.group_records_manager,records_management.group_records_admin"/>
 
 
-    <!-- FSM Analytics -->
+    <!-- Analytics & Reporting Submenu - Empty folder -->
 
-    <menuitem id="menu_fsm_analytics" name="FSM Analytics" parent="menu_analytics_reporting" sequence="30" groups="records_management.group_records_manager,records_management.group_records_admin"/>
+    <menuitem id="menu_analytics_reporting" name="Analytics &amp; Reporting_R (Empty)" parent="menu_enhanced_features" sequence="940" groups="records_management.group_records_manager,records_management.group_records_admin"/>
+
+
+    <!-- Workflow Analytics - No action -->
+
+    <menuitem id="menu_workflow_analytics" name="Workflow Analytics_R (No Action)" parent="menu_analytics_reporting" sequence="10" groups="records_management.group_records_manager,records_management.group_records_admin"/>
+
+
+    <!-- Mobile Analytics - No action -->
+
+    <menuitem id="menu_mobile_analytics" name="Mobile Analytics_R (No Action)" parent="menu_analytics_reporting" sequence="20" groups="records_management.group_records_manager,records_management.group_records_admin"/>
+
+
+    <!-- FSM Analytics - No action -->
+
+    <menuitem id="menu_fsm_analytics" name="FSM Analytics_R (No Action)" parent="menu_analytics_reporting" sequence="30" groups="records_management.group_records_manager,records_management.group_records_admin"/>
 
     
     </data>

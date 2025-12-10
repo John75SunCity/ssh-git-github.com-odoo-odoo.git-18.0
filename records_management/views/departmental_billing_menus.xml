@@ -5,9 +5,9 @@
 
 <!-- List view for Menu -->
 
-    <!-- Departmental Billing Contacts Menu -->
+    <!-- Departmental Billing Contacts Menu - uses records.department.billing.contact model -->
     <menuitem id="menu_records_department_billing_contact"
-              name="Billing Contacts"
+              name="Department Billing Contacts"
               parent="records_management.menu_records_billing"
               action="records_management.action_department_billing"
               sequence="10"/>

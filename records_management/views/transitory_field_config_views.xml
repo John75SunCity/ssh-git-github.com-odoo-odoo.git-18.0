@@ -332,7 +332,8 @@
 
         <menuitem id="menu_field_label_customization" name="Field Label Customization" parent="records_management.menu_records_configuration" action="action_field_label_customization" sequence="15" />
         <menuitem id="menu_intelligent_search_config" name="Search Configuration" parent="records_management.menu_records_configuration" sequence="50" groups="records_management.group_records_admin" />
-        <menuitem id="menu_field_label_customization_sub" name="Field Label Customization" parent="menu_intelligent_search_config" action="action_field_label_customization" sequence="10" groups="records_management.group_records_admin" />
+        <!-- Same action as above, nested under Search Config for admin convenience -->
+        <menuitem id="menu_field_label_customization_sub" name="Field Labels (Shortcut)" parent="menu_intelligent_search_config" action="action_field_label_customization" sequence="10" groups="records_management.group_records_admin" />
 
         <record id="action_search_performance_monitor" model="ir.actions.server">
             <field name="name">Search Performance Monitor</field>

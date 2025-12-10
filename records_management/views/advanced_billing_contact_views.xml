@@ -116,9 +116,9 @@
     </record>
 
     <!-- Menu item for advanced.billing.contact -->
-
+    <!-- NOTE: Different from "Departmental Billing Contacts" which uses records.department.billing.contact -->
     <menuitem id="advanced_billing_contact_menu"
-            name="Billing Contacts"
+            name="Advanced Billing Contacts"
             parent="records_management.menu_records_billing"
             action="advanced_billing_contact_action"
             sequence="25"/>
