@@ -133,7 +133,7 @@
             <field name="res_model">records.retrieval.order</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
-            <field name="context">{'default_state': 'draft'}</field>
+            <field name="context">{'default_state': 'scheduled'}</field>
         </record>
         <record id="action_quick_create_container_access" model="ir.actions.act_window">
             <!-- OPTIMIZATION: Model container.access.work.order has state field - consider using default search filters -->
@@ -141,7 +141,7 @@
             <field name="res_model">container.access.work.order</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
-            <field name="context">{'default_state': 'draft'}</field>
+            <field name="context">{'default_state': 'scheduled'}</field>
         </record>
         <record id="action_quick_create_container_destruction" model="ir.actions.act_window">
             <!-- OPTIMIZATION: Model container.destruction.work.order has state field - consider using default search filters -->
@@ -149,7 +149,7 @@
             <field name="res_model">container.destruction.work.order</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
-            <field name="context">{'default_state': 'draft'}</field>
+            <field name="context">{'default_state': 'scheduled'}</field>
         </record>
         <record id="action_work_order_performance" model="ir.actions.act_window">
             <field name="name">All Work Orders</field>

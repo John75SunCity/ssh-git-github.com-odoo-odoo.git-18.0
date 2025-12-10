@@ -5,7 +5,7 @@
             <field name="name">work.order.retrieval.view.tree</field>
             <field name="model">work.order.retrieval</field>
             <field name="arch" type="xml">
-                <list string="Work Order Retrievals" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
+                <list string="Work Order Retrievals" decoration-info="state=='scheduled'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
                     <field name="name"/>
                     <field name="partner_id"/>
                     <field name="scheduled_date"/>
@@ -22,11 +22,11 @@
             <field name="arch" type="xml">
                 <form string="Work Order Retrieval">
                     <header>
-                        <button name="action_start_retrieval" type="object" string="Start Retrieval" class="oe_highlight" invisible="state != 'draft'"/>
-                        <button name="action_open_camera_scanner" type="object" string="📷 Camera Scan" class="btn-info" invisible="state not in ('in_progress', 'assigned')" title="Scan containers using phone camera"/>
-                        <button name="action_open_picklist_scanner" type="object" string="⌨️ Keyboard Scan" class="btn-secondary" invisible="state not in ('in_progress', 'assigned')" title="Type barcodes manually or use USB scanner"/>
-                        <button name="action_complete_retrieval" type="object" string="Complete Retrieval" class="oe_highlight" invisible="state != 'in_progress'"/>
-                        <button name="action_create_invoice" type="object" string="Create Invoice" 
+                        <button name="action_start_retrieval" type="object" string="▶️ Start Retrieval" class="oe_highlight" invisible="state != 'scheduled'"/>
+                        <button name="action_open_camera_scanner" type="object" string="📷 Camera Scan" class="btn-info" invisible="state not in ('scheduled', 'in_progress')" title="Scan containers using phone camera"/>
+                        <button name="action_open_picklist_scanner" type="object" string="⌨️ Keyboard Scan" class="btn-secondary" invisible="state not in ('scheduled', 'in_progress')" title="Type barcodes manually or use USB scanner"/>
+                        <button name="action_complete_retrieval" type="object" string="✅ Complete Retrieval" class="oe_highlight" invisible="state != 'in_progress'"/>
+                        <button name="action_create_invoice" type="object" string="💰 Create Invoice" 
                                 class="btn-primary" invisible="state != 'completed' or invoice_id"
                                 groups="records_management.group_records_manager"/>
                         <button name="action_view_invoice" type="object" string="View Invoice" 
@@ -36,7 +36,7 @@
                                 groups="records_management.group_records_manager"
                                 confirm="This will unlink the invoice from this work order, allowing it to be billed again. Continue?"/>
                         <button name="action_cancel_retrieval" type="object" string="Cancel" invisible="state in ('completed', 'cancelled')"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed"/>
+                        <field name="state" widget="statusbar" statusbar_visible="scheduled,in_progress,completed"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -225,7 +225,7 @@
                     <field name="partner_id"/>
                     <field name="user_id"/>
                     <separator/>
-                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="Scheduled" name="scheduled" domain="[('state', '=', 'scheduled')]"/>
                     <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
                     <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
                     <separator/>

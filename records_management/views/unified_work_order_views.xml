@@ -12,7 +12,7 @@
                 <list decoration-danger="priority == '2'" 
                       decoration-warning="state == 'in_progress'"
                       decoration-muted="state == 'cancelled'"
-                      decoration-success="state in ('completed', 'certified', 'invoiced')">
+                      decoration-success="state in ('completed', 'invoiced')">
                     <field name="scheduled_date" widget="datetime"/>
                     <field name="name"/>
                     <field name="partner_id"/>
@@ -20,10 +20,9 @@
                            decoration-info="work_order_type in ('retrieval', 'delivery', 'pickup', 'container_access')"
                            decoration-danger="work_order_type in ('container_destruction', 'shredding')"/>
                     <field name="state" widget="badge"
-                           decoration-info="state == 'draft'"
-                           decoration-primary="state in ('confirmed', 'authorized', 'assigned', 'scheduled')"
+                           decoration-info="state == 'scheduled'"
                            decoration-warning="state == 'in_progress'"
-                           decoration-success="state in ('completed', 'verified', 'certified', 'invoiced')"
+                           decoration-success="state in ('completed', 'invoiced')"
                            decoration-danger="state == 'cancelled'"/>
                     <field name="priority" widget="priority"/>
                     <field name="user_id" widget="many2one_avatar_user"/>
@@ -137,16 +136,15 @@
                     <field name="partner_id"/>
                     <field name="user_id"/>
                     <separator/>
-                    <!-- Status Filters -->
-                    <filter name="filter_draft" string="Draft" domain="[('state', '=', 'draft')]"/>
-                    <filter name="filter_confirmed" string="Confirmed" domain="[('state', 'in', ['confirmed', 'authorized', 'assigned', 'scheduled'])]"/>
+                    <!-- Status Filters - Simplified workflow -->
+                    <filter name="filter_scheduled" string="Scheduled" domain="[('state', '=', 'scheduled')]"/>
                     <filter name="filter_in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]"/>
-                    <filter name="filter_completed" string="Completed" domain="[('state', 'in', ['completed', 'verified', 'certified', 'invoiced'])]"/>
+                    <filter name="filter_completed" string="Completed" domain="[('state', 'in', ['completed', 'invoiced'])]"/>
                     <filter name="filter_cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]"/>
                     <separator/>
                     <!-- Open Orders (not completed/cancelled) -->
                     <filter name="filter_open" string="Open Orders" 
-                            domain="[('state', 'not in', ['completed', 'verified', 'certified', 'invoiced', 'cancelled'])]"/>
+                            domain="[('state', 'not in', ['completed', 'invoiced', 'cancelled'])]"/>
                     <separator/>
                     <!-- Category Filters -->
                     <filter name="filter_storage" string="Storage Services" domain="[('service_category', '=', 'storage')]"/>

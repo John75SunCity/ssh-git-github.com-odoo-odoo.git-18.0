@@ -58,16 +58,11 @@ class UnifiedWorkOrder(models.Model):
     # ============================================================================
     # STATUS & PRIORITY
     # ============================================================================
+    # Simplified workflow: Scheduled → In Progress → Completed → Invoiced
     state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('authorized', 'Authorized'),
-        ('assigned', 'Assigned'),
         ('scheduled', 'Scheduled'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
-        ('verified', 'Verified'),
-        ('certified', 'Certified'),
         ('invoiced', 'Invoiced'),
         ('cancelled', 'Cancelled'),
     ], string="Status", readonly=True)

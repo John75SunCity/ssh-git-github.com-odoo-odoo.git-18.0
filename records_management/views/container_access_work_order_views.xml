@@ -17,12 +17,8 @@
             <field name="arch" type="xml">
                 <form string="Container Access Work Order">
                     <header>
-                        <button name="action_submit" string="Submit" type="object"
-                                invisible="state != 'draft'" class="oe_highlight"/>
-                        <button name="action_approve" string="Approve" type="object"
-                                invisible="state != 'submitted'" class="oe_highlight"/>
-                        <button name="action_schedule" string="Schedule" type="object"
-                                invisible="state != 'approved'" class="oe_highlight"/>
+                        <button name="action_start_access" string="▶️ Start Access" type="object"
+                                invisible="state != 'scheduled'" class="oe_highlight"/>
                         <button name="action_open_camera_scanner" string="📷 Camera Scan" type="object"
                                 class="btn-info"
                                 invisible="state not in ['scheduled','in_progress']"
@@ -32,14 +28,12 @@
                                 invisible="state not in ['scheduled','in_progress']"
                                 icon="fa-barcode"
                                 help="Open barcode scanner to verify containers and files"/>
-                        <button name="action_start_access" string="Start Access" type="object"
-                                invisible="state != 'scheduled'" class="oe_highlight"/>
-                        <button name="action_complete_access" string="Complete" type="object"
+                        <button name="action_complete_access" string="✅ Complete" type="object"
                                 invisible="state != 'in_progress'" class="btn-success"/>
                         <button name="action_cancel" string="Cancel" type="object"
-                                invisible="state in ['completed', 'documented', 'closed', 'cancelled']"/>
+                                invisible="state in ['completed', 'cancelled']"/>
                         <field name="state" widget="statusbar"
-                               statusbar_visible="draft,submitted,approved,scheduled,in_progress,completed"/>
+                               statusbar_visible="scheduled,in_progress,completed"/>
                     </header>
                     <sheet>
                         <div class="oe_title">

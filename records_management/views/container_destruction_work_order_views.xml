@@ -96,12 +96,8 @@
             <field name="arch" type="xml">
                 <form string="Container Destruction Work Order">
                     <header>
-                        <button name="action_confirm" string="Confirm" type="object" 
-                                invisible="state != 'draft'" class="oe_highlight"/>
-                        <button name="action_authorize" string="Authorize" type="object" 
-                                invisible="state != 'confirmed'" class="oe_highlight"/>
-                        <button name="action_schedule" string="Schedule" type="object" 
-                                invisible="state != 'authorized'" class="oe_highlight"/>
+                        <button name="action_start_destruction" string="▶️ Start Destruction" type="object" 
+                                invisible="state != 'scheduled'" class="oe_highlight"/>
                         <button name="action_open_camera_scanner" string="📷 Camera Scan" type="object" 
                                 class="btn-info" 
                                 invisible="state not in ['scheduled','in_progress']" 
@@ -111,22 +107,19 @@
                                 invisible="state not in ['scheduled','in_progress']" 
                                 icon="fa-barcode"
                                 help="Open barcode scanner to verify containers, files, and shred bins"/>
-                        <button name="action_start_destruction" string="Start Destruction" type="object" 
-                                invisible="state not in ['scheduled']" class="oe_highlight"/>
-                        <button name="action_verify_and_destroy" string="✅ Verified and Destroyed" type="object" 
-                                invisible="state not in ['in_progress', 'scheduled']" 
+                        <button name="action_verify_and_destroy" string="✅ Complete &amp; Destroy" type="object" 
+                                invisible="state != 'in_progress'" 
                                 class="btn-danger"
                                 confirm="This will destroy ALL containers, create destruction charges (removal + shredding), and close the work order. Continue?"/>
-                        <button name="action_mark_all_destroyed" string="📦 Mark All as Destroyed" type="object" 
-                                invisible="state not in ['in_progress', 'scheduled']" 
-                                class="btn-danger"
-                                confirm="This will mark ALL containers as destroyed and make them billable. Continue?"/>
-                        <button name="action_generate_certificate" string="Generate Certificate" type="object" 
-                                invisible="state != 'destroyed'" class="oe_highlight"/>
+                        <button name="action_create_invoice" string="💰 Invoice &amp; Certificate" type="object" 
+                                invisible="state != 'completed' or invoice_id" class="btn-primary"
+                                groups="records_management.group_records_manager"/>
+                        <button name="action_view_invoice" type="object" string="View Invoice" 
+                                class="btn-secondary" invisible="not invoice_id"/>
                         <button name="action_cancel" string="Cancel" type="object" 
-                                invisible="state in ['completed', 'cancelled']"/>
+                                invisible="state in ['completed', 'invoiced', 'cancelled']"/>
                         <field name="state" widget="statusbar" 
-                               statusbar_visible="draft,confirmed,authorized,scheduled,in_progress,destroyed,certified,completed"/>
+                               statusbar_visible="scheduled,in_progress,completed,invoiced"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">

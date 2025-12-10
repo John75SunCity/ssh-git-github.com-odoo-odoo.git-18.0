@@ -21,13 +21,13 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="action_start_progress" string="Start" type="object" class="btn-primary" invisible="state != 'draft'"/>
-                        <button name="action_open_camera_scanner" string="📷 Camera Scan" type="object" class="btn-info" invisible="state not in ['draft','in_progress']" title="Scan containers using phone camera"/>
-                        <button name="action_open_scanner" string="⌨️ Keyboard Scan" type="object" class="btn-secondary" invisible="state not in ['draft','in_progress']" icon="fa-barcode" title="Type barcodes manually or use USB scanner"/>
-                        <button name="action_verify_and_return" string="✅ Verified and Returned" type="object" class="btn-warning" invisible="state not in ['draft','in_progress']" confirm="This will permanently remove ALL scanned containers, create removal charges ($15/container, no shredding), and close the work order. Continue?"/>
-                        <button name="action_complete" string="Complete" type="object" class="btn-success" invisible="state != 'in_progress'"/>
+                        <button name="action_start_progress" string="▶️ Start" type="object" class="oe_highlight" invisible="state != 'scheduled'"/>
+                        <button name="action_open_camera_scanner" string="📷 Camera Scan" type="object" class="btn-info" invisible="state not in ['scheduled','in_progress']" title="Scan containers using phone camera"/>
+                        <button name="action_open_scanner" string="⌨️ Keyboard Scan" type="object" class="btn-secondary" invisible="state not in ['scheduled','in_progress']" icon="fa-barcode" title="Type barcodes manually or use USB scanner"/>
+                        <button name="action_verify_and_return" string="✅ Verified and Returned" type="object" class="btn-warning" invisible="state not in ['scheduled','in_progress']" confirm="This will permanently remove ALL scanned containers, create removal charges ($15/container, no shredding), and close the work order. Continue?"/>
+                        <button name="action_complete" string="✅ Complete" type="object" class="btn-success" invisible="state != 'in_progress'"/>
                         <button name="action_cancel" string="Cancel" type="object" class="btn-secondary" invisible="state == 'completed'"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed"/>
+                        <field name="state" widget="statusbar" statusbar_visible="scheduled,in_progress,completed"/>
                     </header>
                     <sheet>
                         <group>
@@ -208,7 +208,7 @@
                     <field name="user_id" string="Assigned To" />
                     <field name="retrieval_team_id" string="Team" />
                     <separator />
-                    <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]" />
+                    <filter name="scheduled" string="Scheduled" domain="[('state', '=', 'scheduled')]" />
                     <filter name="in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]" />
                     <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]" />
                     <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]" />
@@ -264,7 +264,7 @@
             <field name="res_model">records.retrieval.work.order</field>
             <field name="view_mode">list,form</field>
             <field name="domain">[('user_id', '=', False), ('state', 'in', ['draft', 'in_progress'])]</field>
-            <field name="context">{'default_state': 'draft'}</field>
+            <field name="context">{'default_state': 'scheduled'}</field>
         </record>
     </data>
 </odoo>

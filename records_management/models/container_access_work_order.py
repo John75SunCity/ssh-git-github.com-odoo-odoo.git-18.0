@@ -61,18 +61,13 @@ class ContainerAccessWorkOrder(models.Model):
         help="User responsible for coordinating this work order."
     )
     active = fields.Boolean(string='Active', default=True)
+    # Simplified workflow: Scheduled → In Progress → Completed
     state = fields.Selection([
-        ('draft', 'Draft'),
-        ('submitted', 'Submitted'),
-        ('approved', 'Approved'),
         ('scheduled', 'Scheduled'),
         ('in_progress', 'In Progress'),
-        ('suspended', 'Suspended'),
         ('completed', 'Completed'),
-        ('documented', 'Documented'),
-        ('closed', 'Closed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', required=True, tracking=True)
+    ], string='Status', default='scheduled', required=True, tracking=True)
     priority = fields.Selection([
         ('0', 'Low'),
         ('1', 'Normal'),

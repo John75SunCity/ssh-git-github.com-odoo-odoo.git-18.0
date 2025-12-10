@@ -52,14 +52,13 @@ class WorkOrderRetrieval(models.Model):
     actual_duration = fields.Float(string='Actual Duration (Hours)', help='Actual time spent in hours')
 
     # Status and Priority
+    # Simplified workflow: Scheduled → In Progress → Completed
     state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('assigned', 'Assigned'),
+        ('scheduled', 'Scheduled'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
+    ], string='Status', default='scheduled', tracking=True)
 
     priority = fields.Selection([
         ('0', 'Normal'),

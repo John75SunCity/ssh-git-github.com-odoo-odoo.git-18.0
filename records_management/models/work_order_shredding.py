@@ -14,16 +14,14 @@ class WorkOrderShredding(models.Model):
     name = fields.Char(string="Work Order #", required=True, copy=False, readonly=True, default=lambda self: "New")
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
 
+    # Simplified workflow: Scheduled → In Progress → Completed → Invoiced
     state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('assigned', 'Assigned'),
+        ('scheduled', 'Scheduled'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
-        ('verified', 'Verified'),
         ('invoiced', 'Invoiced'),
         ('cancelled', 'Cancelled'),
-    ], string="Status", default='draft', required=True, tracking=True)
+    ], string="Status", default='scheduled', required=True, tracking=True)
 
     partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", required=True, tracking=True)
     department_id = fields.Many2one(

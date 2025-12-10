@@ -20,12 +20,13 @@ class RecordsRetrievalWorkOrder(models.Model):
         tracking=True,
         help='Original portal request that initiated this retrieval work order'
     )
+    # Simplified workflow: Scheduled → In Progress → Completed
     state = fields.Selection([
-        ('draft', 'Draft'),
+        ('scheduled', 'Scheduled'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
-    ], string='Status', default='draft', tracking=True)
+    ], string='Status', default='scheduled', tracking=True)
     partner_id = fields.Many2one(comodel_name='res.partner', string='Customer')
     department_id = fields.Many2one(
         comodel_name='records.department',

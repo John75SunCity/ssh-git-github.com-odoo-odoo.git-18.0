@@ -36,17 +36,15 @@ class ContainerDestructionWorkOrder(models.Model):
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
     user_id = fields.Many2one(comodel_name='res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(string='Active', default=True)
+    # Simplified workflow: Scheduled → In Progress → Completed → Invoiced
+    # Certificate of destruction is generated automatically with invoice
     state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('authorized', 'Authorized'),
         ('scheduled', 'Scheduled'),
         ('in_progress', 'In Progress'),
-        ('destroyed', 'Destroyed'),
-        ('certified', 'Certified'),
         ('completed', 'Completed'),
+        ('invoiced', 'Invoiced'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', required=True, tracking=True)
+    ], string='Status', default='scheduled', required=True, tracking=True)
     priority = fields.Selection([
         ('0', 'Normal'),
         ('1', 'High'),
