@@ -18,26 +18,22 @@
                 <t t-call="web.external_layout">
                     <div class="page">
                         <h2>Container Access Work Order Report</h2>
-                        <table class="table table-condensed">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-if="False"><!-- Placeholder disabled -->
-                                <tr t-foreach="doc.field_ids" t-as="field">
-                                    <td>
-                                        <span t-esc="field.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="field.description"/>
-                                    </td>
-                                </tr>
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <p><strong>Work Order:</strong> <t t-esc="doc.name or 'N/A'"/></p>
+                                <p><strong>Customer:</strong> <t t-esc="doc.partner_id.name or 'N/A'"/></p>
+                            </div>
+                            <div class="col-6">
+                                <p><strong>State:</strong> <t t-esc="doc.state or 'N/A'"/></p>
+                            </div>
+                        </div>
+
+                        <!-- Customer Staging Location -->
+                        <t t-if="doc.customer_staging_location_id">
+                            <t t-call="records_management.staging_location_block">
+                                <t t-set="location" t-value="doc.customer_staging_location_id"/>
                             </t>
-                            </tbody>
-                        </table>
+                        </t>
                     </div>
                 </t>
             </t>

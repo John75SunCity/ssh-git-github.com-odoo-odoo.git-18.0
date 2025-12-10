@@ -83,6 +83,13 @@
                                 </div>
                             </div>
 
+                            <!-- Customer Staging Location -->
+                            <t t-if="doc.customer_staging_location_id">
+                                <t t-call="records_management.staging_location_block">
+                                    <t t-set="location" t-value="doc.customer_staging_location_id"/>
+                                </t>
+                            </t>
+
                             <!-- Items to Retrieve (Pick List) -->
                             <div class="mb-4" t-if="doc.retrieval_item_ids">
                                 <h5>Items to Retrieve (Pick List)</h5>

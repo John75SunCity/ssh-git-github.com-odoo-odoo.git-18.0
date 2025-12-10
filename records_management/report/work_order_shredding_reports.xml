@@ -4,6 +4,14 @@
         <t t-call="web.external_layout">
             <div class="page">
                 <h2>Work Order Shredding Report</h2>
+                <t t-foreach="docs" t-as="shred">
+                    <!-- Customer Staging Location -->
+                    <t t-if="shred.customer_staging_location_id">
+                        <t t-call="records_management.staging_location_block">
+                            <t t-set="location" t-value="shred.customer_staging_location_id"/>
+                        </t>
+                    </t>
+                </t>
                 <table class="table table-condensed">
                     <thead>
                         <tr>

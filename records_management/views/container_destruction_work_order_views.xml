@@ -149,6 +149,14 @@
                                        placeholder="Type customer name..."
                                        options="{'no_create': True, 'no_quick_create': True}"
                                        autocomplete="off"/>
+                                <field name="department_id"
+                                       placeholder="Select department..."
+                                       domain="[('partner_id', '=', partner_id)]"
+                                       options="{'no_create': True, 'no_quick_create': True}"/>
+                                <field name="customer_staging_location_id"
+                                       placeholder="Select staging location..."
+                                       domain="[('partner_id', '=', partner_id), '|', ('department_id', '=', department_id), ('department_id', '=', False)]"
+                                       options="{'no_create': True, 'no_quick_create': True}"/>
                                 <field name="portal_request_id"
                                        domain="[('partner_id', '=', partner_id), ('state', 'not in', ['completed', 'rejected', 'cancelled']), ('request_type', 'in', ['destruction', 'shredding', 'pickup', 'other'])]"
                                        options="{'no_create': True}"

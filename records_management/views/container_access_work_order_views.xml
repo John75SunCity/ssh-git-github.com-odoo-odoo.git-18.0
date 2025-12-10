@@ -51,6 +51,14 @@
                         <group>
                             <group string="Customer Information">
                                 <field name="partner_id"/>
+                                <field name="department_id"
+                                       placeholder="Select department..."
+                                       domain="[('partner_id', '=', partner_id)]"
+                                       options="{'no_create': True, 'no_quick_create': True}"/>
+                                <field name="customer_staging_location_id"
+                                       placeholder="Select staging location..."
+                                       domain="[('partner_id', '=', partner_id), '|', ('department_id', '=', department_id), ('department_id', '=', False)]"
+                                       options="{'no_create': True, 'no_quick_create': True}"/>
                                 <field name="access_type"/>
                                 <field name="access_purpose"/>
                             </group>

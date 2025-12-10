@@ -52,6 +52,13 @@
                             </div>
                         </div>
 
+                        <!-- Customer Staging Location -->
+                        <t t-if="doc.customer_staging_location_id">
+                            <t t-call="records_management.staging_location_block">
+                                <t t-set="location" t-value="doc.customer_staging_location_id"/>
+                            </t>
+                        </t>
+
                         <!-- Destruction Details -->
                         <div class="row mb-4">
                             <div class="col-12">

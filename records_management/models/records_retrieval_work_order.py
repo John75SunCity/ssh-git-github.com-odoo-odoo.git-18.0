@@ -27,6 +27,20 @@ class RecordsRetrievalWorkOrder(models.Model):
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', tracking=True)
     partner_id = fields.Many2one(comodel_name='res.partner', string='Customer')
+    department_id = fields.Many2one(
+        comodel_name='records.department',
+        string="Department",
+        domain="[('partner_id', '=', partner_id)]",
+        tracking=True,
+        help="Optional department for service address and billing purposes"
+    )
+    customer_staging_location_id = fields.Many2one(
+        comodel_name='customer.staging.location',
+        string="Staging Location",
+        domain="[('partner_id', '=', partner_id), '|', ('department_id', '=', department_id), ('department_id', '=', False)]",
+        tracking=True,
+        help="Customer's staging location from portal. Helps technicians find containers on-site."
+    )
     company_id = fields.Many2one(comodel_name='res.company', string='Company')
     user_id = fields.Many2one(comodel_name='res.users', string='Assigned To')
     completion_date = fields.Datetime(string='Completion Date', help="Date and time when the retrieval was completed")
