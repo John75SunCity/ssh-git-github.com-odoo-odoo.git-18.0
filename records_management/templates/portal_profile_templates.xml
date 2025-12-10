@@ -58,23 +58,7 @@
             </t>
         </template>
 
-        <!-- Notifications -->
-        <template id="portal_notifications" name="Portal Notifications">
-            <t t-call="portal.portal_layout">
-                <div class="container mt-4">
-                    <h3>Notifications</h3>
-                    <div class="list-group">
-                        <t t-foreach="notifications" t-as="notif">
-                            <div class="list-group-item">
-                                <h5><t t-esc="notif.subject"/></h5>
-                                <p><t t-esc="notif.body"/></p>
-                                <small class="text-muted"><t t-esc="notif.date"/></small>
-                            </div>
-                        </t>
-                    </div>
-                </div>
-            </t>
-        </template>
+        <!-- NOTE: portal_notifications template moved to portal_missing_templates.xml with notification preferences form -->
 
         <!-- Search Results -->
         <template id="portal_search_results" name="Portal Search Results">

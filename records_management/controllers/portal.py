@@ -5491,17 +5491,27 @@ class RecordsManagementController(http.Controller):
         """Activity reports."""
         values = self._prepare_portal_layout_values()
         user = request.env.user
+        partner = user.partner_id
 
-        # Filter by user_id (naid.audit.log doesn't have partner_id)
-        domain = [('user_id', '=', user.id)]
+        # Get recent portal requests (template expects 'requests' variable)
+        requests_domain = [('partner_id', '=', partner.commercial_partner_id.id)]
         if date_begin:
-            domain.append(('create_date', '>=', date_begin))
+            requests_domain.append(('create_date', '>=', date_begin))
         if date_end:
-            domain.append(('create_date', '<=', date_end))
+            requests_domain.append(('create_date', '<=', date_end))
 
-        activities = request.env['naid.audit.log'].sudo().search(domain, order='create_date desc', limit=100)
+        requests = request.env['portal.request'].sudo().search(requests_domain, order='create_date desc', limit=100)
+
+        # Also get audit logs
+        audit_domain = [('user_id', '=', user.id)]
+        if date_begin:
+            audit_domain.append(('create_date', '>=', date_begin))
+        if date_end:
+            audit_domain.append(('create_date', '<=', date_end))
+        activities = request.env['naid.audit.log'].sudo().search(audit_domain, order='create_date desc', limit=100)
 
         values.update({
+            'requests': requests,  # Template expects this
             'activities': activities,
             'page_name': 'reports_activity',
         })
@@ -5514,6 +5524,16 @@ class RecordsManagementController(http.Controller):
         user = request.env.user
         partner = user.partner_id
 
+        # Get destruction certificates (template expects 'certificates')
+        certificates = request.env['destruction.certificate'].sudo().search([
+            ('partner_id', '=', partner.commercial_partner_id.id)
+        ], order='create_date desc', limit=50)
+
+        # Get audit logs (template expects 'audit_logs')
+        audit_logs = request.env['naid.audit.log'].sudo().search([
+            ('user_id', '=', user.id)
+        ], order='create_date desc', limit=50)
+
         # Get company-level NAID compliance data
         company = user.company_id or request.env.company
         naid_compliance = request.env['naid.compliance'].sudo().search([
@@ -5521,14 +5541,16 @@ class RecordsManagementController(http.Controller):
         ], limit=1)
 
         compliance_data = {
-            'naid_certified': bool(naid_compliance and naid_compliance.certification_status == 'certified'),
+            'naid_certified': bool(naid_compliance and naid_compliance.compliance_status == 'certified'),
             'certification_date': naid_compliance.certification_date if naid_compliance else False,
-            'audit_logs_count': request.env['naid.audit.log'].sudo().search_count([('user_id', '=', user.id)]),
+            'audit_logs_count': len(audit_logs),
         }
 
         values.update({
             'compliance_data': compliance_data,
             'naid_compliance': naid_compliance,
+            'certificates': certificates,  # Template expects this
+            'audit_logs': audit_logs,  # Template expects this
             'page_name': 'reports_compliance',
         })
         return request.render('records_management.portal_reports_compliance', values)
@@ -5537,7 +5559,21 @@ class RecordsManagementController(http.Controller):
     def portal_reports_export(self, **kw):
         """Export data options."""
         values = self._prepare_portal_layout_values()
-        values.update({'page_name': 'reports_export'})
+        
+        # Define export options (template expects 'export_options')
+        export_options = [
+            {'label': 'Containers (CSV)', 'icon': 'fa-box', 'type': 'containers'},
+            {'label': 'Documents (CSV)', 'icon': 'fa-file', 'type': 'documents'},
+            {'label': 'Inventory Report (PDF)', 'icon': 'fa-file-pdf', 'type': 'inventory_pdf'},
+            {'label': 'Activity Log (CSV)', 'icon': 'fa-list', 'type': 'activity'},
+            {'label': 'Billing Summary (PDF)', 'icon': 'fa-dollar-sign', 'type': 'billing_pdf'},
+            {'label': 'Compliance Report (PDF)', 'icon': 'fa-shield-alt', 'type': 'compliance_pdf'},
+        ]
+        
+        values.update({
+            'export_options': export_options,
+            'page_name': 'reports_export',
+        })
         return request.render('records_management.portal_reports_export', values)
 
     @http.route(['/my/inventory/counts'], type='http', auth='user', website=True)
@@ -5804,8 +5840,16 @@ class RecordsManagementController(http.Controller):
         values = self._prepare_portal_layout_values()
         user = request.env.user
 
+        # Define notification channels (template expects 'notification_channels')
+        notification_channels = [
+            {'type': 'email', 'label': 'Email Notifications', 'enabled': user.notification_type == 'email'},
+            {'type': 'sms', 'label': 'SMS Notifications', 'enabled': getattr(user, 'sms_notifications', False)},
+            {'type': 'inbox', 'label': 'Inbox Notifications', 'enabled': user.notification_type == 'inbox'},
+        ]
+
         values.update({
             'user': user,
+            'notification_channels': notification_channels,
             'page_name': 'notifications',
         })
         return request.render('records_management.portal_notifications', values)
@@ -7445,15 +7489,15 @@ class RecordsManagementController(http.Controller):
 
         partner = request.env.user.partner_id.commercial_partner_id
 
-        # Get all portal users for this company
-        users = request.env['res.users'].search([
+        # Get all portal users for this company (sudo required for res.users)
+        users = request.env['res.users'].sudo().search([
             ('partner_id.parent_id', '=', partner.id),
             ('groups_id', 'in', [request.env.ref('base.group_portal').id])
         ])
 
         # Get departments for the dropdown
         departments = request.env['records.department'].sudo().search([
-            ('company_id', '=', partner.id)
+            ('partner_id', '=', partner.id)
         ])
 
         values = {
