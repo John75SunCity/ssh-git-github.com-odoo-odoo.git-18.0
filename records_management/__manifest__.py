@@ -130,6 +130,7 @@
         "data/naid_training_demo_data.xml",
         "data/portal_configurator_data.xml",
         "data/portal_mail_templates_data.xml",
+        "data/portal_spreadsheet_templates_data.xml",  # Default import/export templates
         "data/records_retrieval_order_cron_data.xml",
         "data/records_retrieval_order_cron.xml",
         "data/records_retrieval_order_sequences.xml",
@@ -660,6 +661,7 @@
         "views/pickup_location_view_forms.xml",
         "views/portal_access_views.xml",
         "views/portal_feedback_menus.xml",
+        "views/portal_spreadsheet_template_views.xml",  # Spreadsheet import/export templates
         "views/records_billing_views.xml",
         "views/records_bulk_user_import_views.xml",
         "views/records_category_views.xml",
@@ -775,6 +777,8 @@
         "templates/portal_feedback_template.xml",
         # Missing Portal Routes Templates (added for menu consolidation)
         "templates/portal_missing_templates.xml",
+        # Spreadsheet Import/Export Templates
+        "templates/portal_spreadsheet_templates.xml",
         # Mobile Templates
         "templates/portal_mobile_template.xml",
         "templates/portal_mobile_inventory_template.xml",

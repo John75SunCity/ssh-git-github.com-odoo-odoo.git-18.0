@@ -153,6 +153,7 @@ from . import portal_feedback_resolution
 from . import portal_request
 from . import portal_request_line
 from . import portal_barcode
+from . import portal_spreadsheet_template  # Portal import/export templates
 from . import portal_wizard
 from . import pos_config
 from . import prod_ext

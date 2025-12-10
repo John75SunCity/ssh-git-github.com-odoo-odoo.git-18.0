@@ -1372,3 +1372,116 @@ class PortalInteractiveController(CustomerPortal):
             
         except Exception as e:
             return {'error': str(e)}
+
+    # ================================================================
+    # SPREADSHEET TEMPLATES PORTAL ROUTES
+    # ================================================================
+
+    @http.route(['/my/spreadsheet/templates'], type='http', auth="user", website=True)
+    def portal_spreadsheet_templates(self, **kw):
+        """Display available spreadsheet templates for portal users"""
+        partner = request.env.user.partner_id
+        
+        # Get templates available to this user
+        Template = request.env['portal.spreadsheet.template'].sudo()
+        
+        # Base domain: active and portal visible
+        domain = [
+            ('active', '=', True),
+            ('portal_visible', '=', True),
+        ]
+        
+        # Filter by partner (global or specific to this customer)
+        domain += ['|', ('partner_id', '=', False), ('partner_id', '=', partner.commercial_partner_id.id)]
+        
+        # Check admin-only templates
+        is_company_admin = request.env.user.has_group('records_management.group_portal_company_admin')
+        if not is_company_admin:
+            domain.append(('requires_admin', '=', False))
+        
+        templates = Template.search(domain, order='template_type, sequence, name')
+        
+        # Group templates by type
+        templates_by_type = {}
+        for template in templates:
+            template_type = template.template_type
+            if template_type not in templates_by_type:
+                templates_by_type[template_type] = []
+            templates_by_type[template_type].append(template)
+        
+        values = {
+            'templates': templates,
+            'templates_by_type': templates_by_type,
+            'is_company_admin': is_company_admin,
+            'page_name': 'spreadsheet_templates',
+        }
+        
+        return request.render('records_management.portal_spreadsheet_templates', values)
+
+    @http.route(['/my/spreadsheet/template/<int:template_id>'], type='http', auth="user", website=True)
+    def portal_spreadsheet_template_detail(self, template_id, **kw):
+        """Display template detail with instructions"""
+        partner = request.env.user.partner_id
+        Template = request.env['portal.spreadsheet.template'].sudo()
+        
+        template = Template.browse(template_id)
+        if not template.exists():
+            return request.redirect('/my/spreadsheet/templates')
+        
+        # Security check
+        if template.partner_id and template.partner_id != partner.commercial_partner_id:
+            return request.redirect('/my/spreadsheet/templates')
+        
+        if template.requires_admin and not request.env.user.has_group('records_management.group_portal_company_admin'):
+            return request.redirect('/my/spreadsheet/templates')
+        
+        values = {
+            'template': template,
+            'page_name': 'spreadsheet_template_detail',
+        }
+        
+        return request.render('records_management.portal_spreadsheet_template_detail', values)
+
+    @http.route(['/my/spreadsheet/template/<int:template_id>/download'], type='http', auth="user", website=True)
+    def portal_spreadsheet_template_download(self, template_id, **kw):
+        """Download a spreadsheet template"""
+        partner = request.env.user.partner_id
+        Template = request.env['portal.spreadsheet.template'].sudo()
+        
+        template = Template.browse(template_id)
+        if not template.exists():
+            return request.redirect('/my/spreadsheet/templates')
+        
+        # Security check
+        if template.partner_id and template.partner_id != partner.commercial_partner_id:
+            return request.redirect('/my/spreadsheet/templates')
+        
+        if template.requires_admin and not request.env.user.has_group('records_management.group_portal_company_admin'):
+            return request.redirect('/my/spreadsheet/templates')
+        
+        # Generate template if not already generated
+        if not template.template_file:
+            template.action_generate_template()
+        
+        # Track download
+        template.write({
+            'download_count': template.download_count + 1,
+            'last_download_date': fields.Datetime.now(),
+        })
+        
+        # Return file download
+        import base64
+        file_content = base64.b64decode(template.template_file)
+        filename = template.template_filename or '%s_template.xlsx' % template.template_type
+        
+        content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        if template.format == 'csv':
+            content_type = 'text/csv'
+        
+        return request.make_response(
+            file_content,
+            headers=[
+                ('Content-Type', content_type),
+                ('Content-Disposition', 'attachment; filename="%s"' % filename)
+            ]
+        )

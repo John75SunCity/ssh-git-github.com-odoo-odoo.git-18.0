@@ -53,6 +53,7 @@
                                 <li><a class="dropdown-item" href="#" onclick="exportContainers('csv')"><i class="fa fa-file-text-o text-primary"></i> CSV</a></li>
                                 <li><hr class="dropdown-divider"/></li>
                                 <li><a class="dropdown-item" href="/my/import/template/containers"><i class="fa fa-download text-info"></i> Download Import Template</a></li>
+                                <li><a class="dropdown-item" href="/my/spreadsheet/templates"><i class="fa fa-file-excel-o text-success"></i> All Spreadsheet Templates</a></li>
                             </ul>
                         </div>
                         <!-- Import Button -->
@@ -81,6 +82,7 @@
                                         <strong>Required columns:</strong> Container Number<br/>
                                         <strong>Optional columns:</strong> Description, Department, Retention Policy, Destruction Due Date<br/>
                                         <a href="/my/import/template/containers">Download the import template</a> to see the required format.
+                                        <br/><small><a href="/my/spreadsheet/templates">Browse all spreadsheet templates</a></small>
                                     </div>
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                 </div>

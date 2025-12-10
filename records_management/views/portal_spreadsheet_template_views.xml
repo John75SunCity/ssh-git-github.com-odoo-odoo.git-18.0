@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ============================================================
+             PORTAL SPREADSHEET TEMPLATES - BACKEND VIEWS
+             ============================================================
+             
+             Allows administrators to create and manage import/export
+             templates that are available in the customer portal.
+        -->
+
+        <!-- Form View -->
+        <record id="portal_spreadsheet_template_view_form" model="ir.ui.view">
+            <field name="name">portal.spreadsheet.template.view.form</field>
+            <field name="model">portal.spreadsheet.template</field>
+            <field name="arch" type="xml">
+                <form string="Spreadsheet Template">
+                    <header>
+                        <button name="action_generate_template" type="object" 
+                                string="Generate Template" class="oe_highlight"
+                                icon="fa-file-excel-o"/>
+                        <button name="action_download" type="object" 
+                                string="Download" icon="fa-download"
+                                invisible="not template_file"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" icon="fa-download"
+                                    type="object" name="action_download"
+                                    invisible="not template_file">
+                                <div class="o_stat_info">
+                                    <field name="download_count" class="o_stat_value"/>
+                                    <span class="o_stat_text">Downloads</span>
+                                </div>
+                            </button>
+                            <button class="oe_stat_button" icon="fa-upload">
+                                <div class="o_stat_info">
+                                    <field name="import_count" class="o_stat_value"/>
+                                    <span class="o_stat_text">Imports</span>
+                                </div>
+                            </button>
+                        </div>
+                        <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" placeholder="e.g., Container Import Template"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Template Configuration">
+                                <field name="template_type"/>
+                                <field name="format"/>
+                                <field name="sequence"/>
+                                <field name="active"/>
+                            </group>
+                            <group string="Portal Access">
+                                <field name="portal_visible"/>
+                                <field name="requires_admin"/>
+                                <field name="partner_id" 
+                                       placeholder="Leave empty for all customers"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description" placeholder="Describe what this template is for..."/>
+                        </group>
+                        <notebook>
+                            <page string="Columns" name="columns">
+                                <field name="column_ids">
+                                    <tree editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name"/>
+                                        <field name="field_name"/>
+                                        <field name="required"/>
+                                        <field name="data_type"/>
+                                        <field name="width"/>
+                                        <field name="instruction"/>
+                                        <field name="sample_value"/>
+                                    </tree>
+                                </field>
+                                <div class="alert alert-info" role="alert">
+                                    <i class="fa fa-info-circle"/> 
+                                    <strong>Tip:</strong> If no columns are defined, default columns 
+                                    based on the template type will be used.
+                                </div>
+                            </page>
+                            <page string="Template File" name="file">
+                                <group>
+                                    <field name="template_file" filename="template_filename"/>
+                                    <field name="template_filename" invisible="1"/>
+                                </group>
+                                <div class="alert alert-warning" role="alert" invisible="template_file">
+                                    <i class="fa fa-exclamation-triangle"/> 
+                                    Click <strong>Generate Template</strong> to create the template file.
+                                </div>
+                            </page>
+                            <page string="Instructions" name="instructions">
+                                <field name="instructions" widget="html" 
+                                       placeholder="Add instructions for users here..."/>
+                            </page>
+                            <page string="Statistics" name="stats">
+                                <group>
+                                    <group string="Downloads">
+                                        <field name="download_count"/>
+                                        <field name="last_download_date"/>
+                                    </group>
+                                    <group string="Imports">
+                                        <field name="import_count"/>
+                                        <field name="last_import_date"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree View -->
+        <record id="portal_spreadsheet_template_view_tree" model="ir.ui.view">
+            <field name="name">portal.spreadsheet.template.view.tree</field>
+            <field name="model">portal.spreadsheet.template</field>
+            <field name="arch" type="xml">
+                <tree string="Spreadsheet Templates">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="template_type"/>
+                    <field name="format"/>
+                    <field name="portal_visible"/>
+                    <field name="requires_admin"/>
+                    <field name="download_count"/>
+                    <field name="import_count"/>
+                    <field name="active" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="portal_spreadsheet_template_view_search" model="ir.ui.view">
+            <field name="name">portal.spreadsheet.template.view.search</field>
+            <field name="model">portal.spreadsheet.template</field>
+            <field name="arch" type="xml">
+                <search string="Search Templates">
+                    <field name="name"/>
+                    <field name="template_type"/>
+                    <field name="partner_id"/>
+                    <filter string="Portal Visible" name="portal_visible" 
+                            domain="[('portal_visible', '=', True)]"/>
+                    <filter string="Admin Only" name="admin_only" 
+                            domain="[('requires_admin', '=', True)]"/>
+                    <filter string="Archived" name="inactive" 
+                            domain="[('active', '=', False)]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Type" name="group_type" 
+                                context="{'group_by': 'template_type'}"/>
+                        <filter string="Format" name="group_format" 
+                                context="{'group_by': 'format'}"/>
+                        <filter string="Customer" name="group_partner" 
+                                context="{'group_by': 'partner_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Column Form View (for popup) -->
+        <record id="portal_spreadsheet_template_column_view_form" model="ir.ui.view">
+            <field name="name">portal.spreadsheet.template.column.view.form</field>
+            <field name="model">portal.spreadsheet.template.column</field>
+            <field name="arch" type="xml">
+                <form string="Template Column">
+                    <group>
+                        <group string="Column Definition">
+                            <field name="name"/>
+                            <field name="field_name"/>
+                            <field name="sequence"/>
+                            <field name="required"/>
+                        </group>
+                        <group string="Data Type">
+                            <field name="data_type"/>
+                            <field name="selection_values" 
+                                   invisible="data_type != 'selection'"
+                                   placeholder="value1, value2, value3"/>
+                            <field name="relation_model" 
+                                   invisible="data_type != 'relation'"/>
+                            <field name="relation_field" 
+                                   invisible="data_type != 'relation'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="instruction" placeholder="Help text for this column..."/>
+                        <field name="sample_value" placeholder="Example value"/>
+                        <field name="width"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="portal_spreadsheet_template_action" model="ir.actions.act_window">
+            <field name="name">Spreadsheet Templates</field>
+            <field name="res_model">portal.spreadsheet.template</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="portal_spreadsheet_template_view_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first spreadsheet template
+                </p>
+                <p>
+                    Spreadsheet templates help customers import and export data 
+                    in the portal. Define columns, add instructions, and make 
+                    them available for download.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Items -->
+        <menuitem id="menu_portal_spreadsheet_templates"
+                  name="Spreadsheet Templates"
+                  parent="records_management.menu_records_configuration"
+                  action="portal_spreadsheet_template_action"
+                  sequence="85"/>
+
+    </data>
+</odoo>

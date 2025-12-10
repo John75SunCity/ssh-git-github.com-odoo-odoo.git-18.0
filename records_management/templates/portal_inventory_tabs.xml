@@ -335,6 +335,7 @@
                                 <li><a class="dropdown-item" href="#" onclick="exportFiles('csv')"><i class="fa fa-file-text-o text-primary"></i> CSV</a></li>
                                 <li><hr class="dropdown-divider"/></li>
                                 <li><a class="dropdown-item" href="/my/import/template/files"><i class="fa fa-download text-info"></i> Download Import Template</a></li>
+                                <li><a class="dropdown-item" href="/my/spreadsheet/templates"><i class="fa fa-file-excel-o text-success"></i> All Spreadsheet Templates</a></li>
                             </ul>
                         </div>
                         <!-- Import Button -->
@@ -364,6 +365,7 @@
                                     </div>
                                     <div class="alert alert-info">
                                         <strong>Tip:</strong> <a href="/my/import/template/files">Download the import template</a> to see the required format.
+                                        <br/><small><a href="/my/spreadsheet/templates">Browse all spreadsheet templates</a></small>
                                     </div>
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                 </div>

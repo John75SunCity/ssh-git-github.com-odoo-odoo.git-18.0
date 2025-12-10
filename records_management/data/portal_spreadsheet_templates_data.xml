@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- ============================================================
+             DEFAULT SPREADSHEET TEMPLATES
+             ============================================================
+             
+             Predefined templates for common import/export operations.
+             These are created on module installation.
+        -->
+
+        <!-- Container Templates -->
+        <record id="spreadsheet_template_containers_import" model="portal.spreadsheet.template">
+            <field name="name">Container Import Template</field>
+            <field name="sequence">10</field>
+            <field name="template_type">containers</field>
+            <field name="format">xlsx</field>
+            <field name="portal_visible">True</field>
+            <field name="requires_admin">False</field>
+            <field name="description">Standard template for bulk importing container/box records. Includes columns for container number, description, department, retention policy, and destruction date.</field>
+            <field name="instructions"><![CDATA[
+                <h5>How to Import Containers</h5>
+                <ol>
+                    <li>Download this template</li>
+                    <li>Fill in your container data starting from row 3</li>
+                    <li>Container Number is required and must be unique</li>
+                    <li>Department and Retention Policy must match existing records</li>
+                    <li>Use format YYYY-MM-DD for dates</li>
+                    <li>Save the file and upload via the Import button on the Containers page</li>
+                </ol>
+                <div class="alert alert-warning">
+                    <strong>Important:</strong> Do not modify the header row or instruction row.
+                </div>
+            ]]></field>
+        </record>
+
+        <record id="spreadsheet_template_containers_export" model="portal.spreadsheet.template">
+            <field name="name">Container Export Template</field>
+            <field name="sequence">15</field>
+            <field name="template_type">containers</field>
+            <field name="format">xlsx</field>
+            <field name="portal_visible">True</field>
+            <field name="requires_admin">False</field>
+            <field name="description">Template showing all container fields available for export. Use as reference when exporting your container data.</field>
+        </record>
+
+        <!-- File Folder Templates -->
+        <record id="spreadsheet_template_files_import" model="portal.spreadsheet.template">
+            <field name="name">File Folder Import Template</field>
+            <field name="sequence">20</field>
+            <field name="template_type">files</field>
+            <field name="format">xlsx</field>
+            <field name="portal_visible">True</field>
+            <field name="requires_admin">False</field>
+            <field name="description">Standard template for bulk importing file folder records. Files can be associated with containers and departments.</field>
+            <field name="instructions"><![CDATA[
+                <h5>How to Import File Folders</h5>
+                <ol>
+                    <li>Download this template</li>
+                    <li>Fill in your file data starting from row 3</li>
+                    <li>File Name is required</li>
+                    <li>Container Number must match an existing container</li>
+                    <li>Department must match an existing department</li>
+                    <li>Save and upload via the Import button on the Files page</li>
+                </ol>
+            ]]></field>
+        </record>
+
+        <!-- Document Templates -->
+        <record id="spreadsheet_template_documents_import" model="portal.spreadsheet.template">
+            <field name="name">Document Import Template</field>
+            <field name="sequence">30</field>
+            <field name="template_type">documents</field>
+            <field name="format">xlsx</field>
+            <field name="portal_visible">True</field>
+            <field name="requires_admin">False</field>
+            <field name="description">Template for bulk importing document metadata. Documents can be linked to files and containers.</field>
+            <field name="instructions"><![CDATA[
+                <h5>How to Import Documents</h5>
+                <ol>
+                    <li>Download this template</li>
+                    <li>Enter document information starting from row 3</li>
+                    <li>Document Name is required</li>
+                    <li>Document Type should match existing types</li>
+                    <li>File and Container references must match existing records</li>
+                </ol>
+                <p class="text-muted">Note: This template imports document metadata only. To upload actual files, use the bulk upload feature.</p>
+            ]]></field>
+        </record>
+
+        <!-- Portal Users Template (Admin Only) -->
+        <record id="spreadsheet_template_users_import" model="portal.spreadsheet.template">
+            <field name="name">Portal Users Import Template</field>
+            <field name="sequence">40</field>
+            <field name="template_type">users</field>
+            <field name="format">xlsx</field>
+            <field name="portal_visible">True</field>
+            <field name="requires_admin">True</field>
+            <field name="description">Template for bulk creating portal user accounts. Requires Company Admin permissions.</field>
+            <field name="instructions"><![CDATA[
+                <h5>How to Import Portal Users</h5>
+                <ol>
+                    <li>Download this template</li>
+                    <li>Enter user information starting from row 3</li>
+                    <li>Name, Email, and Department are required</li>
+                    <li>Email must be unique (not already registered)</li>
+                    <li>Department must match an existing department</li>
+                    <li>New users will receive an invitation email to set their password</li>
+                </ol>
+                <div class="alert alert-info">
+                    <strong>Security:</strong> Only Company Administrators can import users.
+                </div>
+            ]]></field>
+        </record>
+
+        <!-- Service Request Templates -->
+        <record id="spreadsheet_template_requests_bulk" model="portal.spreadsheet.template">
+            <field name="name">Bulk Service Requests Template</field>
+            <field name="sequence">50</field>
+            <field name="template_type">requests</field>
+            <field name="format">xlsx</field>
+            <field name="portal_visible">True</field>
+            <field name="requires_admin">False</field>
+            <field name="description">Template for submitting multiple service requests at once. Supports retrieval, destruction, pickup, and general service requests.</field>
+            <field name="instructions"><![CDATA[
+                <h5>How to Submit Bulk Requests</h5>
+                <ol>
+                    <li>Download this template</li>
+                    <li>Enter request information starting from row 3</li>
+                    <li>Request Type must be: retrieval, destruction, pickup, or service</li>
+                    <li>Container/File reference must match existing records</li>
+                    <li>Priority options: low, normal, high, urgent</li>
+                    <li>Requested Date format: YYYY-MM-DD</li>
+                </ol>
+                <p class="text-muted">Each row will create a separate service request.</p>
+            ]]></field>
+        </record>
+
+        <!-- Inventory Item Templates -->
+        <record id="spreadsheet_template_inventory_import" model="portal.spreadsheet.template">
+            <field name="name">Inventory Items Import Template</field>
+            <field name="sequence">60</field>
+            <field name="template_type">inventory</field>
+            <field name="format">xlsx</field>
+            <field name="portal_visible">True</field>
+            <field name="requires_admin">False</field>
+            <field name="description">Template for bulk importing inventory items with barcodes, locations, and descriptions.</field>
+            <field name="instructions"><![CDATA[
+                <h5>How to Import Inventory Items</h5>
+                <ol>
+                    <li>Download this template</li>
+                    <li>Enter item information starting from row 3</li>
+                    <li>Item Name is required</li>
+                    <li>Barcode is optional but must be unique if provided</li>
+                    <li>Location must match an existing storage location name</li>
+                    <li>Quantity defaults to 1 if not specified</li>
+                </ol>
+            ]]></field>
+        </record>
+
+        <!-- CSV Format Alternatives -->
+        <record id="spreadsheet_template_containers_csv" model="portal.spreadsheet.template">
+            <field name="name">Container Import Template (CSV)</field>
+            <field name="sequence">11</field>
+            <field name="template_type">containers</field>
+            <field name="format">csv</field>
+            <field name="portal_visible">True</field>
+            <field name="requires_admin">False</field>
+            <field name="description">CSV format container import template. Use if you prefer CSV over Excel.</field>
+        </record>
+
+        <record id="spreadsheet_template_files_csv" model="portal.spreadsheet.template">
+            <field name="name">File Folder Import Template (CSV)</field>
+            <field name="sequence">21</field>
+            <field name="template_type">files</field>
+            <field name="format">csv</field>
+            <field name="portal_visible">True</field>
+            <field name="requires_admin">False</field>
+            <field name="description">CSV format file folder import template.</field>
+        </record>
+
+    </data>
+</odoo>
