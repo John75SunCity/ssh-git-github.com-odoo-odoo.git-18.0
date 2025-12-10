@@ -65,7 +65,10 @@
                                        placeholder="Type customer name..."
                                        options="{'no_create': True, 'no_quick_create': True}"
                                        autocomplete="off"/>
-                                <field name="portal_request_id" />
+                                <field name="portal_request_id" 
+                                       domain="[('partner_id', '=', partner_id), ('state', 'not in', ['completed', 'rejected', 'cancelled']), ('request_type', 'in', ['shredding', 'destruction', 'pickup', 'other'])]"
+                                       options="{'no_create': True}"
+                                       placeholder="Link to pending portal request..."/>
                                 <field name="scheduled_date" />
                                 <field name="shredding_service_type" widget="radio"/>
                                 <field name="material_type" widget="radio"/>

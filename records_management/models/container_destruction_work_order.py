@@ -679,4 +679,38 @@ class ContainerDestructionWorkOrder(models.Model):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('container.destruction.work.order') or _('New')
-        return super().create(vals_list)
+        
+        records = super().create(vals_list)
+        
+        # Approve portal requests when linked during creation
+        for record in records:
+            if record.portal_request_id and record.portal_request_id.state in ['draft', 'submitted', 'pending']:
+                record.portal_request_id.write({
+                    'state': 'approved',
+                    'work_order_id': record.id,
+                })
+                record.portal_request_id.message_post(
+                    body=_("Request approved and linked to Destruction Work Order: %s") % record.name
+                )
+        
+        return records
+
+    def write(self, vals):
+        # Track if portal_request_id is being set
+        portal_request_to_approve = False
+        if 'portal_request_id' in vals and vals['portal_request_id']:
+            portal_request_to_approve = self.env['portal.request'].browse(vals['portal_request_id'])
+        
+        result = super().write(vals)
+        
+        # Approve portal request when linked to work order
+        if portal_request_to_approve and portal_request_to_approve.state in ['draft', 'submitted', 'pending']:
+            portal_request_to_approve.write({
+                'state': 'approved',
+                'work_order_id': self.id if len(self) == 1 else False,
+            })
+            portal_request_to_approve.message_post(
+                body=_("Request approved and linked to Destruction Work Order: %s") % self.name
+            )
+        
+        return result

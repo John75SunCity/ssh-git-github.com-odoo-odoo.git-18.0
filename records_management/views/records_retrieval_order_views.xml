@@ -57,7 +57,10 @@
                         <group>
                             <group string="Customer">
                                 <field name="partner_id" options="{'no_create': True}" />
-                                <field name="portal_request_id" optional="show" />
+                                <field name="portal_request_id" optional="show"
+                                       domain="[('partner_id', '=', partner_id), ('state', 'not in', ['completed', 'rejected', 'cancelled']), ('request_type', 'in', ['retrieval', 'file_search', 'scanning', 'audit', 'other'])]"
+                                       options="{'no_create': True}"
+                                       placeholder="Link to pending portal request..."/>
                                 <field name="security_level" />
                                 <field name="portal_visible"/>
                             </group>

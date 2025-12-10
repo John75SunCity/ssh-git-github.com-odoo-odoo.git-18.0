@@ -224,7 +224,9 @@
                         <group string="Source">
                             <field name="source_model"/>
                             <field name="source_id"/>
-                            <field name="portal_request_id" invisible="not is_portal_order"/>
+                            <field name="portal_request_id" invisible="not is_portal_order"
+                                   domain="[('partner_id', '=', partner_id), ('state', 'not in', ['completed', 'rejected', 'cancelled'])]"
+                                   options="{'no_create': True}"/>
                         </group>
                     </sheet>
                 </form>
