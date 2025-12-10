@@ -34,6 +34,7 @@
                         <group>
                             <group string="Customer &amp; Service">
                                 <field name="partner_id"/>
+                                <field name="department_id"/>
                                 <field name="service_category" widget="radio" options="{'horizontal': true}"/>
                                 <field name="work_order_type"/>
                                 <field name="priority" widget="priority"/>
@@ -107,6 +108,7 @@
                 <list decoration-muted="not active">
                     <field name="name"/>
                     <field name="partner_id"/>
+                    <field name="department_id" optional="show"/>
                     <field name="work_order_type" widget="badge"/>
                     <field name="interval_type"/>
                     <field name="next_occurrence_date"/>

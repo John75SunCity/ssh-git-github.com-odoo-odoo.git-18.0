@@ -54,6 +54,13 @@ class RecurringWorkOrderSchedule(models.Model):
         tracking=True,
         domain="[('customer_rank', '>', 0)]"
     )
+    department_id = fields.Many2one(
+        comodel_name='records.department',
+        string="Department",
+        domain="[('partner_id', '=', partner_id)]",
+        tracking=True,
+        help="Optional department for service address and billing purposes"
+    )
     
     service_category = fields.Selection([
         ('storage', 'Storage Services'),
@@ -273,6 +280,28 @@ class RecurringWorkOrderSchedule(models.Model):
         """Count generated work orders."""
         for schedule in self:
             schedule.generated_order_count = len(schedule.generated_order_ids)
+
+    # ============================================================================
+    # ONCHANGE METHODS
+    # ============================================================================
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        """Clear department when customer changes."""
+        if self.partner_id:
+            self.department_id = False
+            # Reset bins when customer changes
+            self.bin_ids = False
+    
+    @api.onchange('service_category')
+    def _onchange_service_category(self):
+        """Clear work order type when category changes to ensure valid selection."""
+        storage_types = ['retrieval', 'delivery', 'pickup', 'container_access']
+        destruction_types = ['container_destruction', 'shredding']
+        
+        if self.service_category == 'storage' and self.work_order_type in destruction_types:
+            self.work_order_type = False
+        elif self.service_category == 'destruction' and self.work_order_type in storage_types:
+            self.work_order_type = False
 
     # ============================================================================
     # CONSTRAINTS
