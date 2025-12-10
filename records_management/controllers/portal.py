@@ -5898,6 +5898,71 @@ class RecordsManagementController(http.Controller):
         })
         return request.render('records_management.portal_access_management', values)
 
+    @http.route(['/my/access/user/<int:user_id>/edit'], type='http', auth='user', website=True)
+    def portal_access_user_edit(self, user_id, **kw):
+        """Edit department user permissions."""
+        values = self._prepare_portal_layout_values()
+        user = request.env.user
+
+        # Require department admin+ permissions
+        if not user.has_group('records_management.group_portal_department_admin'):
+            return request.render('records_management.portal_error', {
+                'error_title': _('Access Denied'),
+                'error_message': _('You do not have permission to manage access.'),
+            })
+
+        # Get the department user record
+        department_user = request.env['records.storage.department.user'].sudo().browse(user_id)
+        if not department_user.exists():
+            return request.redirect('/my/access')
+
+        # Verify current user has access to this department
+        accessible_departments = user.accessible_department_ids
+        if department_user.department_id.id not in accessible_departments.ids:
+            return request.render('records_management.portal_error', {
+                'error_title': _('Access Denied'),
+                'error_message': _('You do not have permission to manage this user.'),
+            })
+
+        values.update({
+            'department_user': department_user,
+            'page_name': 'access_management',
+        })
+        return request.render('records_management.portal_access_user_edit', values)
+
+    @http.route(['/my/access/user/<int:user_id>/save'], type='http', auth='user', website=True, methods=['POST'])
+    def portal_access_user_save(self, user_id, **post):
+        """Save department user permission changes."""
+        user = request.env.user
+
+        # Require department admin+ permissions
+        if not user.has_group('records_management.group_portal_department_admin'):
+            return request.redirect('/my/access')
+
+        # Get the department user record
+        department_user = request.env['records.storage.department.user'].sudo().browse(user_id)
+        if not department_user.exists():
+            return request.redirect('/my/access')
+
+        # Verify current user has access to this department
+        accessible_departments = user.accessible_department_ids
+        if department_user.department_id.id not in accessible_departments.ids:
+            return request.redirect('/my/access')
+
+        # Update the user permissions
+        department_user.write({
+            'role': post.get('role', 'viewer'),
+            'state': post.get('state', 'active'),
+            'can_view_records': bool(post.get('can_view_records')),
+            'can_create_records': bool(post.get('can_create_records')),
+            'can_edit_records': bool(post.get('can_edit_records')),
+            'can_delete_records': bool(post.get('can_delete_records')),
+            'can_export_records': bool(post.get('can_export_records')),
+            'can_approve_requests': bool(post.get('can_approve_requests')),
+        })
+
+        return request.redirect('/my/access')
+
     # ============================================================================
     # TEMPORARY INVENTORY & OTHER ROUTES
     # ============================================================================

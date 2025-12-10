@@ -1459,14 +1459,274 @@
                     
                     <div class="alert alert-info">
                         <i class="fa fa-info-circle me-2"/>
-                        Manage which users have access to specific containers and features.
+                        Manage user access and permissions for your departments.
                     </div>
                     
-                    <div class="card">
-                        <div class="card-body">
-                            <p>Access management interface - Configure user permissions and container access rights.</p>
+                    <!-- Department Users Table -->
+                    <t t-if="department_users">
+                        <div class="card mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fa fa-users me-2"/>Department Users</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>User</th>
+                                                <th>Department</th>
+                                                <th>Role</th>
+                                                <th>Status</th>
+                                                <th class="text-center">View</th>
+                                                <th class="text-center">Create</th>
+                                                <th class="text-center">Edit</th>
+                                                <th class="text-center">Delete</th>
+                                                <th class="text-center">Export</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="department_users" t-as="du">
+                                                <tr>
+                                                    <td>
+                                                        <strong t-esc="du.user_id.name"/>
+                                                        <br/>
+                                                        <small class="text-muted" t-esc="du.user_id.email"/>
+                                                    </td>
+                                                    <td t-esc="du.department_id.name"/>
+                                                    <td>
+                                                        <span t-attf-class="badge bg-#{du.role == 'manager' and 'danger' or du.role == 'editor' and 'warning' or 'secondary'}">
+                                                            <t t-esc="du.role.capitalize() if du.role else 'Viewer'"/>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span t-attf-class="badge bg-#{du.state == 'active' and 'success' or 'secondary'}">
+                                                            <t t-esc="du.state.capitalize() if du.state else 'Active'"/>
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <i t-attf-class="fa fa-#{du.can_view_records and 'check text-success' or 'times text-muted'}"/>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <i t-attf-class="fa fa-#{du.can_create_records and 'check text-success' or 'times text-muted'}"/>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <i t-attf-class="fa fa-#{du.can_edit_records and 'check text-success' or 'times text-muted'}"/>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <i t-attf-class="fa fa-#{du.can_delete_records and 'check text-success' or 'times text-muted'}"/>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <i t-attf-class="fa fa-#{du.can_export_records and 'check text-success' or 'times text-muted'}"/>
+                                                    </td>
+                                                    <td>
+                                                        <a t-attf-href="/my/access/user/#{du.id}/edit" 
+                                                           class="btn btn-sm btn-outline-primary" title="Edit Permissions">
+                                                            <i class="fa fa-pencil"/>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                        
+                        <!-- Permission Legend -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="fa fa-info-circle me-2"/>Permission Legend</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <h6>Roles</h6>
+                                        <ul class="list-unstyled">
+                                            <li><span class="badge bg-secondary">Viewer</span> - Can only view records</li>
+                                            <li><span class="badge bg-warning">Editor</span> - Can view and edit records</li>
+                                            <li><span class="badge bg-danger">Manager</span> - Full access including delete</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <h6>Permissions</h6>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-check text-success"/> <strong>View</strong> - Can see containers, files, and documents</li>
+                                            <li><i class="fa fa-check text-success"/> <strong>Create</strong> - Can add new containers and documents</li>
+                                            <li><i class="fa fa-check text-success"/> <strong>Edit</strong> - Can modify existing records</li>
+                                            <li><i class="fa fa-check text-success"/> <strong>Delete</strong> - Can request deletion of records</li>
+                                            <li><i class="fa fa-check text-success"/> <strong>Export</strong> - Can download/export data</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                    
+                    <!-- No Users Message -->
+                    <t t-else="">
+                        <div class="card">
+                            <div class="card-body text-center py-5">
+                                <i class="fa fa-users fa-3x text-muted mb-3"/>
+                                <h5>No Department Users Found</h5>
+                                <p class="text-muted">
+                                    No users are assigned to your departments yet.
+                                    Contact your administrator to add users.
+                                </p>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </template>
+        
+        <!-- Access User Edit Form -->
+        <template id="portal_access_user_edit" name="Edit User Access">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'settings'"/>
+                
+                <div class="container my-4">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/my/access">Access Management</a></li>
+                            <li class="breadcrumb-item active" t-esc="department_user.user_id.name"/>
+                        </ol>
+                    </nav>
+                    
+                    <h2 class="mb-4">
+                        <i class="fa fa-user-cog me-2"/>
+                        Edit Permissions: <t t-esc="department_user.user_id.name"/>
+                    </h2>
+                    
+                    <form method="POST" t-attf-action="/my/access/user/#{department_user.id}/save">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">User Information</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <dl class="row mb-0">
+                                            <dt class="col-sm-4">User</dt>
+                                            <dd class="col-sm-8" t-esc="department_user.user_id.name"/>
+                                            
+                                            <dt class="col-sm-4">Email</dt>
+                                            <dd class="col-sm-8" t-esc="department_user.user_id.email"/>
+                                            
+                                            <dt class="col-sm-4">Department</dt>
+                                            <dd class="col-sm-8" t-esc="department_user.department_id.name"/>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Role &amp; Status</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">Role</label>
+                                            <select name="role" class="form-select">
+                                                <option value="viewer" t-att-selected="department_user.role == 'viewer'">Viewer</option>
+                                                <option value="editor" t-att-selected="department_user.role == 'editor'">Editor</option>
+                                                <option value="manager" t-att-selected="department_user.role == 'manager'">Manager</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Status</label>
+                                            <select name="state" class="form-select">
+                                                <option value="active" t-att-selected="department_user.state == 'active'">Active</option>
+                                                <option value="inactive" t-att-selected="department_user.state == 'inactive'">Inactive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Granular Permissions</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="can_view_records" 
+                                                   id="can_view_records" value="1"
+                                                   t-att-checked="department_user.can_view_records"/>
+                                            <label class="form-check-label" for="can_view_records">
+                                                <i class="fa fa-eye me-1"/> Can View Records
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="can_create_records" 
+                                                   id="can_create_records" value="1"
+                                                   t-att-checked="department_user.can_create_records"/>
+                                            <label class="form-check-label" for="can_create_records">
+                                                <i class="fa fa-plus me-1"/> Can Create Records
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="can_edit_records" 
+                                                   id="can_edit_records" value="1"
+                                                   t-att-checked="department_user.can_edit_records"/>
+                                            <label class="form-check-label" for="can_edit_records">
+                                                <i class="fa fa-pencil me-1"/> Can Edit Records
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="can_delete_records" 
+                                                   id="can_delete_records" value="1"
+                                                   t-att-checked="department_user.can_delete_records"/>
+                                            <label class="form-check-label" for="can_delete_records">
+                                                <i class="fa fa-trash me-1"/> Can Delete Records
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="can_export_records" 
+                                                   id="can_export_records" value="1"
+                                                   t-att-checked="department_user.can_export_records"/>
+                                            <label class="form-check-label" for="can_export_records">
+                                                <i class="fa fa-download me-1"/> Can Export Records
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="can_approve_requests" 
+                                                   id="can_approve_requests" value="1"
+                                                   t-att-checked="department_user.can_approve_requests"/>
+                                            <label class="form-check-label" for="can_approve_requests">
+                                                <i class="fa fa-check-circle me-1"/> Can Approve Requests
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-save me-2"/>Save Changes
+                            </button>
+                            <a href="/my/access" class="btn btn-secondary">
+                                <i class="fa fa-times me-2"/>Cancel
+                            </a>
+                        </div>
+                    </form>
                 </div>
             </t>
         </template>
