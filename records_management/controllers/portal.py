@@ -5435,11 +5435,12 @@ class RecordsManagementController(http.Controller):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
 
-        # Get rate information for this partner (sudo for portal access)
+        # Get rate information for this partner via billing config (sudo for portal access)
+        # records.billing.rate links to config_id, which has partner_id
         rates = request.env['records.billing.rate'].sudo().search([
             '|',
-            ('partner_id', '=', partner.commercial_partner_id.id),
-            ('partner_id', '=', False)  # General rates
+            ('config_id.partner_id', '=', partner.commercial_partner_id.id),
+            ('config_id.partner_id', '=', False)  # General rates (no specific partner)
         ])
 
         # Also get customer-negotiated rates
