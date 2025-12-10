@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Bin Service Scanner Wizard View -->
+        <record id="work_order_bin_service_wizard_view_form" model="ir.ui.view">
+            <field name="name">work.order.bin.service.wizard.view.form</field>
+            <field name="model">work.order.bin.service.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Bin Service Scanner">
+                    <sheet>
+                        <!-- Header Info -->
+                        <div class="alert alert-info" role="status">
+                            <h4>
+                                <i class="fa fa-barcode"/> Work Order: 
+                                <field name="work_order_id" readonly="1" class="oe_inline"/>
+                            </h4>
+                            <p class="mb-0">
+                                <strong>Customer:</strong> 
+                                <field name="partner_id" readonly="1" class="oe_inline"/>
+                            </p>
+                        </div>
+
+                        <group>
+                            <!-- Service Mode Selection -->
+                            <group string="Service Mode" col="1">
+                                <field name="service_mode" widget="radio" 
+                                       options="{'horizontal': True}"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <!-- TIP Tab -->
+                            <page string="TIP Service" name="tip" 
+                                  invisible="service_mode != 'tip'">
+                                <div class="alert alert-success" role="status">
+                                    <h5><i class="fa fa-recycle"/> TIP = Empty &amp; Return Same Bin</h5>
+                                    <p class="mb-0">
+                                        Empty the bin contents into your truck and leave the same 
+                                        bin at the customer location. 
+                                        <strong>Creates 1 billable charge.</strong>
+                                    </p>
+                                </div>
+                                <group>
+                                    <field name="bin_barcode" 
+                                           placeholder="Scan bin barcode..."
+                                           class="o_field_highlight"/>
+                                </group>
+                                <footer>
+                                    <button name="action_record_tip" string="Record TIP" 
+                                            type="object" class="btn-success"
+                                            icon="fa-check"/>
+                                </footer>
+                            </page>
+
+                            <!-- SWAP Tab -->
+                            <page string="SWAP Service" name="swap" 
+                                  invisible="service_mode != 'swap'">
+                                <div class="alert alert-primary" role="status">
+                                    <h5><i class="fa fa-exchange"/> SWAP = Take Full, Leave Empty</h5>
+                                    <p class="mb-0">
+                                        Pick up the customer's full bin and leave an empty replacement bin.
+                                        <strong>Creates 1 billable charge</strong> (for the full bin picked up).
+                                    </p>
+                                </div>
+                                <group>
+                                    <group string="Step 1: Scan FULL bin (Picking Up)">
+                                        <field name="old_bin_barcode" 
+                                               placeholder="Scan full bin..."
+                                               class="o_field_highlight"/>
+                                    </group>
+                                    <group string="Step 2: Scan EMPTY bin (Leaving)">
+                                        <field name="new_bin_barcode" 
+                                               placeholder="Scan empty bin..."
+                                               class="o_field_highlight"/>
+                                    </group>
+                                </group>
+                                <footer>
+                                    <button name="action_record_swap" string="Record SWAP" 
+                                            type="object" class="btn-primary"
+                                            icon="fa-exchange"/>
+                                </footer>
+                            </page>
+
+                            <!-- Session Log Tab -->
+                            <page string="Session Log" name="log">
+                                <group>
+                                    <group>
+                                        <field name="session_tip_count" class="oe_inline"/>
+                                        <field name="session_swap_count" class="oe_inline"/>
+                                    </group>
+                                    <group>
+                                        <field name="session_total_billable" class="oe_inline"/>
+                                        <field name="currency_id" invisible="1"/>
+                                    </group>
+                                </group>
+                                <separator string="Services Recorded"/>
+                                <field name="service_log" class="oe_read_only" 
+                                       widget="html" nolabel="1"/>
+                                <field name="session_event_ids" invisible="1"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <footer>
+                        <button name="action_complete_work_order" string="Complete Work Order" 
+                                type="object" class="btn-success" 
+                                icon="fa-check-circle"
+                                confirm="Mark work order as complete?"/>
+                        <button name="action_done" string="Close" type="object" class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

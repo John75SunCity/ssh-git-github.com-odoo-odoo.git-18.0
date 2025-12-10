@@ -694,6 +694,189 @@ class WorkOrderShredding(models.Model):
         }
 
     # ============================================================================
+    # BIN SERVICE SCANNING ACTIONS (TIP/SWAP WORKFLOW)
+    # ============================================================================
+    def action_open_bin_service_scanner(self):
+        """
+        Open the bin service scanner wizard for TIP/SWAP operations.
+        
+        This is the main entry point for technicians servicing bins.
+        They can choose TIP or SWAP mode, then scan bins to record service.
+        
+        Returns:
+            dict: Action to open bin service wizard
+        """
+        self.ensure_one()
+        if self.state not in ['confirmed', 'assigned', 'in_progress']:
+            raise UserError(_("Work order must be confirmed or in progress to scan bins."))
+        
+        return {
+            'name': _('Bin Service Scanner'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'work.order.bin.service.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_work_order_id': self.id,
+                'default_partner_id': self.partner_id.id,
+            }
+        }
+
+    def action_tip_bin(self, bin_barcode):
+        """
+        Record a TIP service for a bin.
+        
+        TIP = Empty the bin's contents into the shredding truck and return 
+        the same bin to the customer. Creates 1 billable service event.
+        
+        Args:
+            bin_barcode (str): Barcode of the bin being tipped
+            
+        Returns:
+            dict: Result with success status, message, and event details
+        """
+        self.ensure_one()
+        
+        if self.state not in ['confirmed', 'assigned', 'in_progress']:
+            return {
+                'success': False,
+                'message': _('Work order must be active to record bin service')
+            }
+        
+        # Auto-start work if confirmed
+        if self.state == 'confirmed':
+            self.write({'state': 'in_progress', 'start_date': fields.Datetime.now()})
+        
+        # Find bin by barcode
+        ShredBin = self.env['shredding.service.bin']
+        bin_record = ShredBin.search([('barcode', '=', bin_barcode)], limit=1)
+        
+        if not bin_record:
+            return {
+                'success': False,
+                'message': _('No bin found with barcode: %s') % bin_barcode
+            }
+        
+        # Create TIP service event (billable)
+        event = self.env['shredding.service.event'].create_tip_event(
+            bin_id=bin_record.id,
+            customer_id=self.partner_id.id,
+            shredding_work_order_id=self.id,
+            notes=_("Tipped during work order %s") % self.name
+        )
+        
+        # Update scan time
+        self.write({'last_scan_time': fields.Datetime.now()})
+        
+        # Log in chatter
+        self.message_post(
+            body=_('TIP: Bin %s (Size: %s) - Billable: %s') % (
+                bin_record.barcode, 
+                bin_record.bin_size_id.name if bin_record.bin_size_id else 'N/A',
+                event.billable_amount
+            ),
+            subtype_xmlid='mail.mt_note'
+        )
+        
+        return {
+            'success': True,
+            'message': _('TIP recorded: %s') % bin_record.barcode,
+            'event_id': event.id,
+            'bin_name': bin_record.name,
+            'bin_barcode': bin_record.barcode,
+            'billable_amount': event.billable_amount,
+            'service_type': 'tip',
+            'total_billable': self.total_billable_amount,
+        }
+
+    def action_swap_bin(self, old_bin_barcode, new_bin_barcode):
+        """
+        Record a SWAP service for bins.
+        
+        SWAP = Take away a full bin (swap_out) and leave an empty bin (swap_in).
+        Only the swap_out is billable - the swap_in is just inventory tracking.
+        Creates 2 service events but only 1 is billable.
+        
+        Args:
+            old_bin_barcode (str): Barcode of the full bin being picked up (BILLABLE)
+            new_bin_barcode (str): Barcode of the empty bin being left (NOT billable)
+            
+        Returns:
+            dict: Result with success status and swap details
+        """
+        self.ensure_one()
+        
+        if self.state not in ['confirmed', 'assigned', 'in_progress']:
+            return {
+                'success': False,
+                'message': _('Work order must be active to record bin service')
+            }
+        
+        # Auto-start work if confirmed
+        if self.state == 'confirmed':
+            self.write({'state': 'in_progress', 'start_date': fields.Datetime.now()})
+        
+        # Find both bins
+        ShredBin = self.env['shredding.service.bin']
+        old_bin = ShredBin.search([('barcode', '=', old_bin_barcode)], limit=1)
+        new_bin = ShredBin.search([('barcode', '=', new_bin_barcode)], limit=1)
+        
+        if not old_bin:
+            return {
+                'success': False,
+                'message': _('Old bin not found with barcode: %s') % old_bin_barcode
+            }
+        
+        if not new_bin:
+            return {
+                'success': False,
+                'message': _('New bin not found with barcode: %s') % new_bin_barcode
+            }
+        
+        if old_bin_barcode == new_bin_barcode:
+            return {
+                'success': False,
+                'message': _('Swap requires two different bins. Use TIP for same bin.')
+            }
+        
+        # Create SWAP service events (only swap_out is billable)
+        events = self.env['shredding.service.event'].create_swap_events(
+            old_bin_id=old_bin.id,
+            new_bin_id=new_bin.id,
+            customer_id=self.partner_id.id,
+            shredding_work_order_id=self.id,
+            notes=_("Swapped during work order %s") % self.name
+        )
+        
+        # Get the billable event (swap_out)
+        billable_event = events.filtered(lambda e: e.is_billable)[:1]
+        
+        # Update scan time
+        self.write({'last_scan_time': fields.Datetime.now()})
+        
+        # Log in chatter
+        self.message_post(
+            body=_('SWAP: Picked up %s (Size: %s), Left %s - Billable: %s') % (
+                old_bin.barcode,
+                old_bin.bin_size_id.name if old_bin.bin_size_id else 'N/A',
+                new_bin.barcode,
+                billable_event.billable_amount if billable_event else 0
+            ),
+            subtype_xmlid='mail.mt_note'
+        )
+        
+        return {
+            'success': True,
+            'message': _('SWAP recorded: %s → %s') % (old_bin.barcode, new_bin.barcode),
+            'event_ids': events.ids,
+            'old_bin_barcode': old_bin.barcode,
+            'new_bin_barcode': new_bin.barcode,
+            'billable_amount': billable_event.billable_amount if billable_event else 0,
+            'service_type': 'swap',
+            'total_billable': self.total_billable_amount,
+        }
+
+    # ============================================================================
     # CONSTRAINTS
     # ============================================================================
     @api.constrains('scheduled_date')

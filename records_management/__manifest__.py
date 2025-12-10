@@ -376,6 +376,7 @@
         "views/visitor_pos_wizard_views.xml",
         "views/work_order_bin_assignment_wizard_views.xml",
         "wizards/add_to_work_order_wizard_views.xml",
+        "wizards/work_order_bin_service_wizard_views.xml",
         # ============================================================================
         # CRITICAL EARLY VIEWS: Actions that must be defined before menus reference them
         # ============================================================================

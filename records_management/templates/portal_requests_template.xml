@@ -31,32 +31,32 @@
 
                             <!-- Request Statistics -->
                             <div class="row mb-4">
-                                <div class="col-md-3 col-6 mb-3">
-                                    <div class="card border-info">
-                                        <div class="card-body text-center">
-                                            <h5 class="text-info mb-2">
+                                <div class="col-lg-2 col-md-4 col-6 mb-3">
+                                    <div class="card border-info h-100">
+                                        <div class="card-body text-center py-2">
+                                            <h5 class="text-info mb-1">
                                                 <i class="fa fa-file-text"></i>
                                             </h5>
                                             <h4 class="mb-0" t-esc="total_count or request_count or len(requests)"/>
-                                            <small class="text-muted">Total Requests</small>
+                                            <small class="text-muted">Total</small>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-6 mb-3">
-                                    <div class="card border-warning">
-                                        <div class="card-body text-center">
-                                            <h5 class="text-warning mb-2">
-                                                <i class="fa fa-clock-o"></i>
+                                <div class="col-lg-2 col-md-4 col-6 mb-3">
+                                    <div class="card border-info h-100">
+                                        <div class="card-body text-center py-2">
+                                            <h5 class="text-info mb-1">
+                                                <i class="fa fa-paper-plane"></i>
                                             </h5>
-                                            <h4 class="mb-0" t-esc="len(requests.filtered(lambda r: r.state == 'pending'))"/>
-                                            <small class="text-muted">Pending</small>
+                                            <h4 class="mb-0" t-esc="len(requests.filtered(lambda r: r.state == 'submitted'))"/>
+                                            <small class="text-muted">Submitted</small>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-6 mb-3">
-                                    <div class="card border-success">
-                                        <div class="card-body text-center">
-                                            <h5 class="text-success mb-2">
+                                <div class="col-lg-2 col-md-4 col-6 mb-3">
+                                    <div class="card border-success h-100">
+                                        <div class="card-body text-center py-2">
+                                            <h5 class="text-success mb-1">
                                                 <i class="fa fa-check-circle"></i>
                                             </h5>
                                             <h4 class="mb-0" t-esc="len(requests.filtered(lambda r: r.state == 'approved'))"/>
@@ -64,14 +64,36 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-6 mb-3">
-                                    <div class="card border-danger">
-                                        <div class="card-body text-center">
-                                            <h5 class="text-danger mb-2">
+                                <div class="col-lg-2 col-md-4 col-6 mb-3">
+                                    <div class="card border-primary h-100">
+                                        <div class="card-body text-center py-2">
+                                            <h5 class="text-primary mb-1">
+                                                <i class="fa fa-cog"></i>
+                                            </h5>
+                                            <h4 class="mb-0" t-esc="len(requests.filtered(lambda r: r.state == 'in_progress'))"/>
+                                            <small class="text-muted">In Progress</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-4 col-6 mb-3">
+                                    <div class="card border-success h-100">
+                                        <div class="card-body text-center py-2">
+                                            <h5 class="text-success mb-1">
+                                                <i class="fa fa-check"></i>
+                                            </h5>
+                                            <h4 class="mb-0" t-esc="len(requests.filtered(lambda r: r.state == 'completed'))"/>
+                                            <small class="text-muted">Completed</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-4 col-6 mb-3">
+                                    <div class="card border-danger h-100">
+                                        <div class="card-body text-center py-2">
+                                            <h5 class="text-danger mb-1">
                                                 <i class="fa fa-times-circle"></i>
                                             </h5>
                                             <h4 class="mb-0" t-esc="len(requests.filtered(lambda r: r.state in ['rejected', 'cancelled']))"/>
-                                            <small class="text-muted">Rejected/Cancelled</small>
+                                            <small class="text-muted">Closed</small>
                                         </div>
                                     </div>
                                 </div>
@@ -135,6 +157,11 @@
                                                                 <i class="fa fa-edit"></i> Draft
                                                             </span>
                                                         </t>
+                                                        <t t-if="req.state == 'submitted'">
+                                                            <span class="badge badge-info">
+                                                                <i class="fa fa-paper-plane"></i> Submitted
+                                                            </span>
+                                                        </t>
                                                         <t t-if="req.state == 'pending'">
                                                             <span class="badge badge-warning">
                                                                 <i class="fa fa-clock-o"></i> Pending
@@ -143,6 +170,11 @@
                                                         <t t-if="req.state == 'approved'">
                                                             <span class="badge badge-success">
                                                                 <i class="fa fa-check"></i> Approved
+                                                            </span>
+                                                        </t>
+                                                        <t t-if="req.state == 'in_progress'">
+                                                            <span class="badge badge-primary">
+                                                                <i class="fa fa-cog fa-spin"></i> In Progress
                                                             </span>
                                                         </t>
                                                         <t t-if="req.state == 'rejected'">
@@ -156,7 +188,7 @@
                                                             </span>
                                                         </t>
                                                         <t t-if="req.state == 'completed'">
-                                                            <span class="badge badge-primary">
+                                                            <span class="badge badge-success">
                                                                 <i class="fa fa-check-circle"></i> Completed
                                                             </span>
                                                         </t>
