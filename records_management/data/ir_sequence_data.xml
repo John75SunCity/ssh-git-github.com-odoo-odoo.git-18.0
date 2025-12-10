@@ -59,8 +59,8 @@
         <record id="seq_work_order_shredding" model="ir.sequence">
             <field name="name">Shredding Work Order Sequence</field>
             <field name="code">work.order.shredding</field>
-            <field name="prefix">WRK</field>
-            <field name="padding">4</field>
+            <field name="prefix">WO-SH</field>
+            <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
 

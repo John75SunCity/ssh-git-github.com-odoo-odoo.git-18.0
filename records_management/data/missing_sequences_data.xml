@@ -36,7 +36,7 @@
         <record id="seq_container_access_work_order" model="ir.sequence">
             <field name="name">Container Access Work Order</field>
             <field name="code">container.access.work.order</field>
-            <field name="prefix">CAWO</field>
+            <field name="prefix">WO-CA</field>
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
@@ -120,7 +120,7 @@
         <record id="seq_work_order_retrieval" model="ir.sequence">
             <field name="name">Work Order Retrieval</field>
             <field name="code">work.order.retrieval</field>
-            <field name="prefix">WOR</field>
+            <field name="prefix">WO-RT</field>
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
@@ -233,8 +233,8 @@
         <record id="seq_records_retrieval_work_order" model="ir.sequence">
             <field name="name">Records Retrieval Work Order</field>
             <field name="code">records.retrieval.work.order</field>
-            <field name="prefix">RRWO</field>
-            <field name="padding">4</field>
+            <field name="prefix">WO-RR</field>
+            <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
         <record id="seq_shredding_inventory_batch" model="ir.sequence">
@@ -283,8 +283,8 @@
         <record id="seq_container_destruction_work_order" model="ir.sequence">
             <field name="name">Container Destruction Work Order</field>
             <field name="code">container.destruction.work.order</field>
-            <field name="prefix">CDWO</field>
-            <field name="padding">4</field>
+            <field name="prefix">WO-CD</field>
+            <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
         <record id="seq_barcode_generation_history" model="ir.sequence">
