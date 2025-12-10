@@ -22,6 +22,20 @@ class WorkOrderRetrieval(models.Model):
     # Partner and Customer Information
     partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
     customer_id = fields.Many2one(comodel_name='res.partner', string='Related Customer', related='partner_id', store=True)
+    department_id = fields.Many2one(
+        comodel_name='records.department',
+        string="Department",
+        domain="[('partner_id', '=', partner_id)]",
+        tracking=True,
+        help="Optional department for service address and billing purposes"
+    )
+    customer_staging_location_id = fields.Many2one(
+        comodel_name='customer.staging.location',
+        string="Staging Location",
+        domain="[('partner_id', '=', partner_id), '|', ('department_id', '=', department_id), ('department_id', '=', False)]",
+        tracking=True,
+        help="Customer's staging location from portal. Helps technicians find containers on-site."
+    )
     portal_request_id = fields.Many2one(comodel_name='portal.request', string='Portal Request', ondelete='set null')
 
     # Assignment and Team

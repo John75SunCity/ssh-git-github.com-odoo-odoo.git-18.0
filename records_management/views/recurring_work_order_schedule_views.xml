@@ -35,6 +35,10 @@
                             <group string="Customer &amp; Service">
                                 <field name="partner_id"/>
                                 <field name="department_id"/>
+                                <field name="staging_location_id" 
+                                       options="{'no_create': true}"
+                                       domain="[('partner_id', '=', partner_id), '|', ('department_id', '=', department_id), ('department_id', '=', False)]"
+                                       context="{'default_partner_id': partner_id, 'default_department_id': department_id}"/>
                                 <field name="service_category" widget="radio" options="{'horizontal': true}"/>
                                 <field name="work_order_type"/>
                                 <field name="priority" widget="priority"/>

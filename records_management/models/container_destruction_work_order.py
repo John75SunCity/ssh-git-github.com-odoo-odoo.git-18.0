@@ -67,9 +67,23 @@ class ContainerDestructionWorkOrder(models.Model):
     # CUSTOMER & AUTHORIZATION
     # ============================================================================
     partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
+    department_id = fields.Many2one(
+        comodel_name='records.department',
+        string="Department",
+        domain="[('partner_id', '=', partner_id)]",
+        tracking=True,
+        help="Optional department for service address and billing purposes"
+    )
     portal_request_id = fields.Many2one(comodel_name='portal.request', string='Portal Request', ondelete='set null')
 
     # Pickup/Service Location
+    customer_staging_location_id = fields.Many2one(
+        comodel_name='customer.staging.location',
+        string="Staging Location",
+        domain="[('partner_id', '=', partner_id), '|', ('department_id', '=', department_id), ('department_id', '=', False)]",
+        tracking=True,
+        help="Customer's staging location from portal. Helps technicians find containers on-site."
+    )
     use_service_location = fields.Boolean(
         string="Use Service Location",
         default=False,

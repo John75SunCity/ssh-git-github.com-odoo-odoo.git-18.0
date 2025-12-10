@@ -61,6 +61,17 @@ class RecurringWorkOrderSchedule(models.Model):
         tracking=True,
         help="Optional department for service address and billing purposes"
     )
+    staging_location_id = fields.Many2one(
+        comodel_name='customer.staging.location',
+        string="Service Location",
+        tracking=True,
+        help="Optional customer staging location. Technicians will use this to find containers."
+    )
+    # Computed domain for staging location based on customer/department
+    staging_location_domain = fields.Char(
+        compute='_compute_staging_location_domain',
+        help="Dynamic domain for staging location field"
+    )
     
     service_category = fields.Selection([
         ('storage', 'Storage Services'),
@@ -281,16 +292,46 @@ class RecurringWorkOrderSchedule(models.Model):
         for schedule in self:
             schedule.generated_order_count = len(schedule.generated_order_ids)
 
+    @api.depends('partner_id', 'department_id')
+    def _compute_staging_location_domain(self):
+        """Compute dynamic domain for staging location based on customer and department."""
+        for schedule in self:
+            if schedule.department_id:
+                # Filter by department (most specific)
+                domain = [
+                    ('partner_id', '=', schedule.partner_id.id),
+                    ('department_id', '=', schedule.department_id.id)
+                ]
+            elif schedule.partner_id:
+                # Filter by customer only (includes all departments and no-department locations)
+                domain = [('partner_id', '=', schedule.partner_id.id)]
+            else:
+                # No filter
+                domain = []
+            schedule.staging_location_domain = str(domain)
+
     # ============================================================================
     # ONCHANGE METHODS
     # ============================================================================
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
-        """Clear department when customer changes."""
+        """Clear department and staging location when customer changes."""
         if self.partner_id:
             self.department_id = False
+            self.staging_location_id = False
             # Reset bins when customer changes
             self.bin_ids = False
+    
+    @api.onchange('department_id')
+    def _onchange_department_id(self):
+        """Clear staging location when department changes (if location doesn't match)."""
+        if self.staging_location_id:
+            # Check if current staging location matches the new department
+            if self.department_id and self.staging_location_id.department_id != self.department_id:
+                self.staging_location_id = False
+            elif not self.department_id:
+                # If department cleared but location has a department, keep it
+                pass
     
     @api.onchange('service_category')
     def _onchange_service_category(self):
@@ -384,6 +425,14 @@ class RecurringWorkOrderSchedule(models.Model):
             'partner_id': self.partner_id.id,
             'priority': self.priority,
         }
+        
+        # Add department if set
+        if self.department_id:
+            base_vals['department_id'] = self.department_id.id
+        
+        # Add staging location if set
+        if self.staging_location_id:
+            base_vals['customer_staging_location_id'] = self.staging_location_id.id
         
         if self.work_order_type == 'shredding':
             vals = {

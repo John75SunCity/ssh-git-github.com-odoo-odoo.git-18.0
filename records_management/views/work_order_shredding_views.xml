@@ -77,6 +77,10 @@
                                 <field name="active" />
                             </group>
                             <group name="service_location" string="Service Location">
+                                <field name="customer_staging_location_id"
+                                       placeholder="Select staging location..."
+                                       options="{'no_create': true}"
+                                       domain="[('partner_id', '=', partner_id)]"/>
                                 <field name="use_service_location" widget="boolean_toggle"/>
                                 <field name="service_location_id" 
                                        invisible="not use_service_location"
