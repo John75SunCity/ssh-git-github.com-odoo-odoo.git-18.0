@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- 
+        <!--
         ============================================================================
         STAGING LOCATION BLOCK TEMPLATE
-        
+
         Reusable template block for printing customer staging locations on work orders
         and invoices. Shows location hierarchy, barcode, and QR code (if available).
-        
+
         Usage in reports:
             <t t-call="records_management.staging_location_block">
                 <t t-set="staging_location" t-value="doc.customer_staging_location_id"/>
             </t>
         ============================================================================
         -->
-        
+
         <!-- Compact inline display for tables -->
         <template id="staging_location_inline">
             <t t-if="staging_location">
@@ -57,7 +57,7 @@
                                 <div class="barcode-container">
                                     <!-- Barcode display -->
                                     <p class="mb-1"><small class="text-muted">Scan to verify location:</small></p>
-                                    <img t-att-src="'/report/barcode/Code128/%s' % staging_location.barcode" 
+                                    <img t-att-src="'/report/barcode/Code128/%s' % staging_location.barcode"
                                          style="max-width: 150px; height: 40px;"
                                          alt="Staging Location Barcode"/>
                                     <p class="mt-1 mb-0">
@@ -82,7 +82,7 @@
                 <div class="staging-location-minimal mb-2">
                     <p class="mb-0">
                         <i class="fa fa-map-marker text-danger me-1" title="Service Location"/>
-                        <strong>Service Location:</strong> 
+                        <strong>Service Location:</strong>
                         <t t-esc="staging_location.complete_name"/>
                         <t t-if="staging_location.barcode">
                             <span class="text-muted"> [<t t-esc="staging_location.barcode"/>]</span>
