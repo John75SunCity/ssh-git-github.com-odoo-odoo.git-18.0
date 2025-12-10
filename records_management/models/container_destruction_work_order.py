@@ -174,9 +174,24 @@ class ContainerDestructionWorkOrder(models.Model):
     # ============================================================================
     # WITNESS & VERIFICATION
     # ============================================================================
-    witness_required = fields.Boolean(string='Witness Required')
-    customer_witness_name = fields.Char(string='Customer Witness')
-    internal_witness_id = fields.Many2one(comodel_name='res.users', string='Internal Witness')
+    witness_required = fields.Boolean(
+        string='Witness Required',
+        help="Check if a witness is required for this destruction"
+    )
+    witness_name = fields.Char(
+        string='Witness Name',
+        tracking=True,
+        help="Name of the witness present during destruction"
+    )
+    witness_signature = fields.Binary(
+        string="Witness Signature",
+        help="Digital signature of the witness"
+    )
+    witness_signature_date = fields.Datetime(
+        string="Witness Signed Date",
+        readonly=True,
+        help="Date and time when witness signed"
+    )
     destruction_verified = fields.Boolean(string='Destruction Verified', readonly=True)
     verification_date = fields.Datetime(string='Verification Date', readonly=True)
     verification_notes = fields.Text(string='Verification Notes')
@@ -333,42 +348,16 @@ class ContainerDestructionWorkOrder(models.Model):
     @api.depends('scanned_barcode_ids')
     def _compute_scanned_count(self):
         for record in self:
-            record.scanned_count = len(record.scanned_barcode_ids)    # ============================================================================
-    # ACTION METHODS
+            record.scanned_count = len(record.scanned_barcode_ids)
+
     # ============================================================================
-    def action_confirm(self):
-        self.ensure_one()
-        if self.state != 'draft':
-            raise UserError(_("Only draft work orders can be confirmed."))
-        if not self.container_ids:
-            raise UserError(_("Please select containers for destruction."))
-        self.write({'state': 'confirmed'})
-        self.message_post(body=_("Work order confirmed."))
-
-    def action_authorize(self):
-        self.ensure_one()
-        if self.state != 'confirmed':
-            raise UserError(_("Can only authorize confirmed work orders."))
-        self.write({
-            'state': 'authorized',
-            'customer_authorized': True,
-            'customer_authorization_date': fields.Datetime.now()
-        })
-        self.message_post(body=_("Customer authorization received."))
-
-    def action_schedule(self):
-        self.ensure_one()
-        if self.state != 'authorized':
-            raise UserError(_("Can only schedule authorized work orders."))
-        if not self.scheduled_destruction_date:
-            raise UserError(_("Please set a scheduled destruction date."))
-        self.write({'state': 'scheduled'})
-        self.message_post(body=_("Destruction scheduled for %s", self.scheduled_destruction_date.strftime('%Y-%m-%d')))
-
+    # ACTION METHODS (Simplified Workflow)
+    # ============================================================================
     def action_start_destruction(self):
+        """Start destruction from scheduled state."""
         self.ensure_one()
-        if self.state not in ['scheduled', 'in_progress']:
-            raise UserError(_("Can only start destruction from a scheduled or in-progress state."))
+        if self.state != 'scheduled':
+            raise UserError(_("Only scheduled work orders can be started."))
         self.write({
             'state': 'in_progress',
             'destruction_start_time': fields.Datetime.now()
@@ -402,8 +391,8 @@ class ContainerDestructionWorkOrder(models.Model):
             dict: Client action to launch rm_camera_scanner
         """
         self.ensure_one()
-        if self.state not in ['draft', 'authorized', 'scheduled', 'in_progress']:
-            raise UserError(_("Can only scan barcodes for active work orders."))
+        if self.state not in ['scheduled', 'in_progress']:
+            raise UserError(_("Can only scan barcodes for scheduled or in-progress work orders."))
         return {
             'type': 'ir.actions.client',
             'tag': 'rm_camera_scanner',
@@ -416,26 +405,26 @@ class ContainerDestructionWorkOrder(models.Model):
         }
 
     def action_complete_destruction(self):
+        """Complete destruction and generate certificate."""
         self.ensure_one()
         if self.state != 'in_progress':
-            raise UserError(_("Can only complete destruction from an in-progress state."))
+            raise UserError(_("Only in-progress work orders can be completed."))
         self.write({
-            'state': 'destroyed',
+            'state': 'completed',
             'destruction_end_time': fields.Datetime.now(),
             'actual_destruction_date': fields.Datetime.now().date()
         })
         self.container_ids.write({'state': 'destroyed'})
-        self.message_post(body=_("Destruction process completed."))
+        self.message_post(body=_("Destruction completed."))
 
     def action_mark_all_destroyed(self):
         """
-        Mark all containers as destroyed by simulating barcode scan to destruction location.
+        Mark all containers as destroyed.
         
         This action:
-        1. Changes container state from 'in_storage' to 'destroyed'
-        2. Updates destruction date for billing purposes
+        1. Changes container state to 'destroyed'
+        2. Updates destruction date
         3. Creates audit trail entries
-        4. Marks containers for billing (destruction charges apply)
         
         Returns:
             bool: True on success
@@ -443,7 +432,7 @@ class ContainerDestructionWorkOrder(models.Model):
         self.ensure_one()
         
         if self.state not in ['in_progress', 'scheduled']:
-            raise UserError(_("Can only mark containers as destroyed when work order is scheduled or in progress."))
+            raise UserError(_("Work order must be scheduled or in progress."))
         
         if not self.container_ids:
             raise UserError(_("No containers selected for destruction."))
@@ -462,58 +451,36 @@ class ContainerDestructionWorkOrder(models.Model):
                 'destruction_date': destruction_date.date(),
             })
             
-            # Create audit log entry (simulates barcode scan)
+            # Create audit log entry
             self.env['naid.audit.log'].sudo().create({
                 'action_type': 'destruction',
                 'container_id': container.id,
                 'user_id': self.env.user.id,
-                'description': _('Container %s marked as destroyed via work order %s (simulated destruction location scan)') % (
-                    container.name, self.name
-                ),
+                'description': _('Container %s destroyed via work order %s') % (container.name, self.name),
                 'timestamp': destruction_date,
             })
             
             destroyed_count += 1
         
-        # Update work order state
         if destroyed_count > 0:
             self.write({
-                'state': 'destroyed',
+                'state': 'completed',
                 'actual_destruction_date': destruction_date.date(),
                 'destruction_end_time': destruction_date,
             })
             
-            self.message_post(
-                body=_("✅ Marked %d container(s) as destroyed. Containers are now billable for destruction charges.") % destroyed_count
-            )
+            self.message_post(body=_("✅ Marked %d container(s) as destroyed.") % destroyed_count)
         else:
-            raise UserError(_("All selected containers are already destroyed."))
+            raise UserError(_("All containers are already destroyed."))
         
         return True
 
     def action_verify_and_destroy(self):
-        """
-        Verify all containers scanned and execute destruction workflow.
-        
-        This is the new recommended method that uses the barcode workflow
-        automation with automatic billing and work order closure.
-        
-        Workflow:
-        1. Validates all containers are ready for destruction
-        2. Calls action_barcode_destroy() on each container
-        3. Each container automatically:
-           - Sets state='destroyed', active=False
-           - Creates invoice charges (removal + shredding)
-           - Logs to NAID audit trail
-        4. Auto-closes work order when all complete
-        
-        Returns:
-            dict: Notification action
-        """
+        """Verify and destroy all containers in the work order."""
         self.ensure_one()
         
         if self.state not in ['in_progress', 'scheduled']:
-            raise UserError(_("Can only verify and destroy when work order is scheduled or in progress."))
+            raise UserError(_("Work order must be scheduled or in progress."))
         
         if not self.container_ids:
             raise UserError(_("No containers selected for destruction."))
@@ -522,78 +489,75 @@ class ContainerDestructionWorkOrder(models.Model):
         failed_containers = []
         
         for container in self.container_ids:
-            # Skip already destroyed containers
             if container.state == 'destroyed':
                 continue
             
             try:
-                # Use new barcode workflow - handles billing, audit logs, state changes
                 container.action_barcode_destroy()
                 destroyed_count += 1
             except UserError as e:
                 failed_containers.append((container.name, str(e)))
         
-        # Update work order state
         if destroyed_count > 0:
-            # Check if all containers now destroyed
             all_destroyed = all(c.state == 'destroyed' for c in self.container_ids)
             
             if all_destroyed:
                 self.write({
-                    'state': 'destroyed',
+                    'state': 'completed',
                     'actual_destruction_date': fields.Date.today(),
                     'destruction_end_time': fields.Datetime.now(),
                 })
-                
-                message = _("✅ All %d container(s) verified and destroyed.<br/>• Destruction charges created<br/>• Work order completed") % destroyed_count
+                message = _("✅ All %d container(s) destroyed.") % destroyed_count
             else:
-                message = _("✅ %d container(s) verified and destroyed.<br/>• Destruction charges created<br/>• %d remaining") % (
-                    destroyed_count, 
-                    len(self.container_ids.filtered(lambda c: c.state != 'destroyed'))
-                )
+                remaining = len(self.container_ids.filtered(lambda c: c.state != 'destroyed'))
+                message = _("✅ %d destroyed, %d remaining") % (destroyed_count, remaining)
             
             if failed_containers:
-                message += "<br/><br/>⚠️ Failed containers:<br/>"
+                message += "<br/><br/>⚠️ Failed:"
                 for name, error in failed_containers:
-                    message += "• %s: %s<br/>" % (name, error)
+                    message += "<br/>• %s: %s" % (name, error)
             
-            self.message_post(body=message, subject=_("Destruction Verified"))
+            self.message_post(body=message)
         else:
-            raise UserError(_("All selected containers are already destroyed or failed validation."))
+            raise UserError(_("All containers already destroyed or failed."))
         
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': _('Destruction Complete'),
-                'message': _('%d container(s) destroyed and billed') % destroyed_count,
+                'message': _('%d container(s) destroyed') % destroyed_count,
                 'type': 'success',
                 'sticky': False,
             }
         }
 
     def action_generate_certificate(self):
+        """Generate certificate of destruction."""
         self.ensure_one()
-        if self.state != 'destroyed':
-            raise UserError(_("Can only generate a certificate after destruction is complete."))
+        if self.state != 'completed':
+            raise UserError(_("Complete the work order first."))
         if self.certificate_id:
-            raise UserError(_("A certificate has already been generated for this work order."))
+            raise UserError(_("Certificate already exists."))
 
         certificate = self.env['shredding.certificate'].create({
             'destruction_work_order_id': self.id,
             'partner_id': self.partner_id.id,
             'destruction_date': self.actual_destruction_date,
             'destruction_method': self.destruction_method,
-            # Copy signatures from work order to certificate
             'technician_signature': self.technician_signature,
             'technician_signature_date': self.technician_signature_date,
             'technician_printed_name': self.technician_printed_name,
             'customer_signature': self.customer_signature,
             'customer_signature_date': self.customer_signature_date,
             'customer_printed_name': self.customer_printed_name,
+            # Add witness information
+            'witness_name': self.witness_name if self.witness_required else False,
+            'witness_signature': self.witness_signature if self.witness_required else False,
+            'witness_signature_date': self.witness_signature_date if self.witness_required else False,
         })
-        self.write({'certificate_id': certificate.id, 'state': 'certified'})
-        self.message_post(body=_("Certificate of Destruction %s generated.", certificate.name))
+        self.write({'certificate_id': certificate.id})
+        self.message_post(body=_("Certificate of Destruction %s generated.") % certificate.name)
         return {
             'type': 'ir.actions.act_window',
             'name': _('Certificate of Destruction'),

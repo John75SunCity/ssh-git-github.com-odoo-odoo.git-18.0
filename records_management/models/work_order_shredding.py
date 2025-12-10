@@ -221,6 +221,30 @@ class WorkOrderShredding(models.Model):
         help="Printed name of the customer representative"
     )
 
+    # ============================================================================
+    # WITNESS FIELDS (for NAID compliance)
+    # ============================================================================
+    witness_required = fields.Boolean(
+        string="Witness Required",
+        default=False,
+        tracking=True,
+        help="Check if a witness is required for this destruction service"
+    )
+    witness_name = fields.Char(
+        string="Witness Name",
+        tracking=True,
+        help="Name of the witness present during destruction"
+    )
+    witness_signature = fields.Binary(
+        string="Witness Signature",
+        help="Digital signature of the witness"
+    )
+    witness_signature_date = fields.Datetime(
+        string="Witness Signed Date",
+        readonly=True,
+        help="Date and time when witness signed"
+    )
+
     # Portal visibility
     portal_visible = fields.Boolean(
         string='Visible in Portal',
@@ -415,18 +439,16 @@ class WorkOrderShredding(models.Model):
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-    def action_confirm(self):
-        """Confirm the work order and optionally create linked FSM task."""
+    def action_start_work_from_scheduled(self):
+        """Start work directly from scheduled state."""
         self.ensure_one()
-        if self.state != 'draft':
-            raise UserError(_("Only draft work orders can be confirmed."))
-        
+        if self.state != 'scheduled':
+            raise UserError(_("Only scheduled work orders can be started."))
         # Create FSM task if not already linked
         if not self.fsm_task_id:
             self._create_fsm_task()
-        
-        self.write({'state': 'confirmed'})
-        self.message_post(body=_("Work order confirmed."))
+        self.write({'state': 'in_progress', 'start_date': fields.Datetime.now()})
+        self.message_post(body=_("Work order started."))
 
     def _create_fsm_task(self):
         """
@@ -495,46 +517,35 @@ class WorkOrderShredding(models.Model):
             'target': 'current',
         }
 
-    def action_start_work(self):
-        self.ensure_one()
-        if self.state not in ['confirmed', 'assigned']:
-            raise UserError(_("Work order must be confirmed or assigned before starting."))
-        self.write({'state': 'in_progress'})
-        self.message_post(body=_("Work order started."))
-
     def action_complete_work(self):
+        """Complete the work order and generate certificate if required."""
         self.ensure_one()
         if self.state != 'in_progress':
             raise UserError(_("Only in-progress work orders can be completed."))
-        self.write({'state': 'completed'})
+        self.write({'state': 'completed', 'completion_date': fields.Datetime.now()})
         if self.certificate_required and not self.certificate_id:
             self._generate_destruction_certificate()
         self.message_post(body=_("Work order completed."))
 
-    def action_verify(self):
-        self.ensure_one()
-        if self.state != 'completed':
-            raise UserError(_("Only completed work orders can be verified."))
-        self.write({'state': 'verified'})
-        self.message_post(body=_("Work order verified by %s.", self.env.user.name))
-
     def action_cancel(self):
+        """Cancel the work order."""
         self.ensure_one()
-        if self.state in ['completed', 'verified', 'invoiced', 'cancelled']:
-            raise UserError(_("Cannot cancel a work order that is already completed, verified, invoiced, or cancelled."))
+        if self.state in ['completed', 'invoiced', 'cancelled']:
+            raise UserError(_("Cannot cancel a work order that is already completed, invoiced, or cancelled."))
         self.write({'state': 'cancelled'})
         self.message_post(body=_("Work order cancelled."))
 
-    def action_reset_to_draft(self):
+    def action_reset_to_scheduled(self):
+        """Reset work order back to scheduled state."""
         self.ensure_one()
-        self.write({'state': 'draft'})
-        self.message_post(body=_("Work order reset to draft."))
+        self.write({'state': 'scheduled'})
+        self.message_post(body=_("Work order reset to scheduled."))
 
     def action_invoice(self):
-        """Mark work order as invoiced"""
+        """Mark work order as invoiced."""
         self.ensure_one()
-        if self.state not in ['completed', 'verified']:
-            raise UserError(_("Only completed or verified work orders can be invoiced."))
+        if self.state != 'completed':
+            raise UserError(_("Only completed work orders can be invoiced."))
         self.write({'state': 'invoiced'})
         self.message_post(body=_("Work order marked as invoiced."))
 

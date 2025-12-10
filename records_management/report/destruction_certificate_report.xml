@@ -277,7 +277,7 @@
                                             </t>
                                         </div>
                                         <div style="margin-top: 5px; font-size: 11px;">
-                                            <t t-esc="doc.witness_id.name or ''"/>
+                                            <t t-esc="doc.witness_name or ''"/>
                                         </div>
                                     </td>
                                 </tr>

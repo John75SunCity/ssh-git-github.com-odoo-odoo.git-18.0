@@ -145,10 +145,14 @@
                                     <h4 class="border-bottom pb-2">Witness Information</h4>
                                 </div>
                                 <div class="col-6">
-                                    <p><strong>Customer Witness:</strong> <t t-esc="doc.customer_witness_name or 'Not specified'"/></p>
+                                    <p><strong>Witness Name:</strong> <t t-esc="doc.witness_name or 'Not specified'"/></p>
                                 </div>
                                 <div class="col-6">
-                                    <p><strong>Internal Witness:</strong> <t t-esc="doc.internal_witness_id.name or 'Not assigned'"/></p>
+                                    <t t-if="doc.witness_signature">
+                                        <p><strong>Witness Signature:</strong></p>
+                                        <img t-att-src="image_data_uri(doc.witness_signature)" 
+                                             style="max-height: 60px; max-width: 200px;"/>
+                                    </t>
                                 </div>
                             </div>
                         </t>

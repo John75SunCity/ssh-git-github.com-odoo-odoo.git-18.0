@@ -144,6 +144,28 @@
                                     <field name="completion_notes" />
                                 </group>
                             </page>
+                            <page name="signatures" string="Signatures &amp; Witness">
+                                <group>
+                                    <group string="Witness Information">
+                                        <field name="witness_required" widget="boolean_toggle"/>
+                                        <field name="witness_name" invisible="not witness_required" required="witness_required"/>
+                                        <field name="witness_signature" widget="signature" invisible="not witness_required"/>
+                                        <field name="witness_signature_date" readonly="1" invisible="not witness_required"/>
+                                    </group>
+                                    <group string="Technician Signature">
+                                        <field name="technician_printed_name"/>
+                                        <field name="technician_signature" widget="signature"/>
+                                        <field name="technician_signature_date" readonly="1"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Customer Signature">
+                                        <field name="customer_printed_name"/>
+                                        <field name="customer_signature" widget="signature"/>
+                                        <field name="customer_signature_date" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
                             <page name="certificate" string="Certificate &amp; Invoice">
                                 <group>
                                     <group>

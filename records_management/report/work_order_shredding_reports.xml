@@ -11,6 +11,13 @@
                             <t t-set="location" t-value="shred.customer_staging_location_id"/>
                         </t>
                     </t>
+                    <!-- Witness Information -->
+                    <t t-if="shred.witness_required and shred.witness_name">
+                        <div class="witness-info border rounded p-2 mb-3" style="background-color: #fff3cd;">
+                            <strong><i class="fa fa-eye me-1"/> Witness:</strong>
+                            <span t-esc="shred.witness_name"/>
+                        </div>
+                    </t>
                 </t>
                 <table class="table table-condensed">
                     <thead>

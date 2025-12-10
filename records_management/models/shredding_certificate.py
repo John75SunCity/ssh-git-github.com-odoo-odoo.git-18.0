@@ -123,6 +123,15 @@ class ShreddingCertificate(models.Model):
     witness_required = fields.Boolean(string="Witness Required", default=False)
     witness_name = fields.Char(string="Witness Name", tracking=True)
     witness_title = fields.Char(string="Witness Title", tracking=True)
+    witness_signature = fields.Binary(
+        string="Witness Signature",
+        help="Digital signature of the witness"
+    )
+    witness_signature_date = fields.Datetime(
+        string="Witness Signed Date",
+        readonly=True,
+        help="Date and time when witness signed"
+    )
 
     # ============================================================================
     # SIGNATURE FIELDS
