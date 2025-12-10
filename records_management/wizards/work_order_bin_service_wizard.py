@@ -56,7 +56,7 @@ class WorkOrderBinServiceWizard(models.TransientModel):
         string="Bin Barcode",
         help="Scan or enter the bin barcode"
     )
-    
+
     # For SWAP mode - need to scan two bins
     old_bin_barcode = fields.Char(
         string="Full Bin (Picking Up)",
@@ -75,7 +75,7 @@ class WorkOrderBinServiceWizard(models.TransientModel):
         compute='_compute_service_log',
         readonly=True
     )
-    
+
     session_event_ids = fields.Many2many(
         comodel_name='shredding.service.event',
         string="Services This Session",
@@ -120,23 +120,23 @@ class WorkOrderBinServiceWizard(models.TransientModel):
             if not wizard.session_event_ids:
                 wizard.service_log = '<p class="text-muted">No services recorded yet. Scan a bin to begin.</p>'
                 continue
-            
+
             log_html = '<table class="table table-sm">'
             log_html += '<thead><tr><th>Time</th><th>Type</th><th>Bin</th><th>Amount</th></tr></thead>'
             log_html += '<tbody>'
-            
+
             for event in wizard.session_event_ids.sorted('service_date', reverse=True):
                 type_badge = 'success' if event.service_type == 'tip' else 'primary' if event.service_type == 'swap_out' else 'secondary'
                 type_label = dict(event._fields['service_type'].selection).get(event.service_type, event.service_type)
                 amount = '${:.2f}'.format(event.billable_amount) if event.is_billable else '-'
-                
+
                 log_html += '<tr>'
                 log_html += '<td>{}</td>'.format(event.service_date.strftime('%H:%M:%S') if event.service_date else '-')
                 log_html += '<td><span class="badge badge-{}">{}</span></td>'.format(type_badge, type_label)
                 log_html += '<td>{}</td>'.format(event.bin_id.barcode)
                 log_html += '<td>{}</td>'.format(amount)
                 log_html += '</tr>'
-            
+
             log_html += '</tbody></table>'
             wizard.service_log = log_html
 
@@ -149,7 +149,7 @@ class WorkOrderBinServiceWizard(models.TransientModel):
         if self.bin_barcode and self.service_mode == 'tip':
             result = self._process_tip(self.bin_barcode)
             self.bin_barcode = False  # Clear for next scan
-            
+
             if not result.get('success'):
                 return {
                     'warning': {
@@ -165,7 +165,7 @@ class WorkOrderBinServiceWizard(models.TransientModel):
             result = self._process_swap(self.old_bin_barcode, self.new_bin_barcode)
             self.old_bin_barcode = False  # Clear for next scan
             self.new_bin_barcode = False
-            
+
             if not result.get('success'):
                 return {
                     'warning': {
@@ -178,22 +178,22 @@ class WorkOrderBinServiceWizard(models.TransientModel):
         """Process a TIP scan."""
         self.ensure_one()
         result = self.work_order_id.action_tip_bin(barcode)
-        
+
         if result.get('success') and result.get('event_id'):
             event = self.env['shredding.service.event'].browse(result['event_id'])
             self.session_event_ids = [(4, event.id)]
-        
+
         return result
 
     def _process_swap(self, old_barcode, new_barcode):
         """Process a SWAP scan."""
         self.ensure_one()
         result = self.work_order_id.action_swap_bin(old_barcode, new_barcode)
-        
+
         if result.get('success') and result.get('event_ids'):
             for event_id in result['event_ids']:
                 self.session_event_ids = [(4, event_id)]
-        
+
         return result
 
     # ============================================================================
@@ -204,13 +204,13 @@ class WorkOrderBinServiceWizard(models.TransientModel):
         self.ensure_one()
         if not self.bin_barcode:
             raise UserError(_("Please scan or enter a bin barcode."))
-        
+
         result = self._process_tip(self.bin_barcode)
         self.bin_barcode = False
-        
+
         if not result.get('success'):
             raise UserError(result.get('message', _('Failed to record TIP')))
-        
+
         # Reopen wizard to continue scanning
         return {
             'type': 'ir.actions.act_window',
@@ -225,14 +225,14 @@ class WorkOrderBinServiceWizard(models.TransientModel):
         self.ensure_one()
         if not self.old_bin_barcode or not self.new_bin_barcode:
             raise UserError(_("Please scan both the full bin (picking up) and empty bin (leaving)."))
-        
+
         result = self._process_swap(self.old_bin_barcode, self.new_bin_barcode)
         self.old_bin_barcode = False
         self.new_bin_barcode = False
-        
+
         if not result.get('success'):
             raise UserError(result.get('message', _('Failed to record SWAP')))
-        
+
         # Reopen wizard to continue scanning
         return {
             'type': 'ir.actions.act_window',
