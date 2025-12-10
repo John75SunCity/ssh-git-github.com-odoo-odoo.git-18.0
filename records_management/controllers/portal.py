@@ -2373,10 +2373,10 @@ class RecordsManagementController(http.Controller):
         dept_context = self._get_smart_department_context(user, user.partner_id)
 
         # Get container types
-        container_types = request.env['records.container.type'].search([])
+        container_types = request.env['records.container.type'].sudo().search([])
 
         # Get movement history
-        movements = request.env['chain.of.custody'].search([
+        movements = request.env['chain.of.custody'].sudo().search([
             ('container_ids', 'in', [container_id])
         ], order='transfer_date desc', limit=20)
 
@@ -2745,7 +2745,7 @@ class RecordsManagementController(http.Controller):
             return request.redirect('/my/home?error=unauthorized')
 
         # Get movement history
-        movements = request.env['chain.of.custody'].search([
+        movements = request.env['chain.of.custody'].sudo().search([
             ('container_ids', 'in', [container_id])
         ], order='transfer_date desc')
 
@@ -5404,7 +5404,7 @@ class RecordsManagementController(http.Controller):
         domain = [('partner_id', 'child_of', partner.commercial_partner_id.id), ('move_type', 'in', ('out_invoice', 'out_refund'))]
 
         # Pagination
-        invoice_count = request.env['account.move'].search_count(domain)
+        invoice_count = request.env['account.move'].sudo().search_count(domain)
         pager = request.website.pager(
             url="/my/invoices",
             url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby},
@@ -5413,7 +5413,7 @@ class RecordsManagementController(http.Controller):
             step=20,
         )
 
-        invoices = request.env['account.move'].search(domain, order='invoice_date desc', limit=20, offset=pager['offset'])
+        invoices = request.env['account.move'].sudo().search(domain, order='invoice_date desc', limit=20, offset=pager['offset'])
 
         values.update({
             'invoices': invoices,
@@ -5435,15 +5435,21 @@ class RecordsManagementController(http.Controller):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
 
-        # Get rate information for this partner
-        rates = request.env['records.billing.rate'].search([
+        # Get rate information for this partner (sudo for portal access)
+        rates = request.env['records.billing.rate'].sudo().search([
             '|',
             ('partner_id', '=', partner.commercial_partner_id.id),
             ('partner_id', '=', False)  # General rates
         ])
 
+        # Also get customer-negotiated rates
+        negotiated_rates = request.env['customer.negotiated.rate'].sudo().search([
+            ('partner_id', '=', partner.commercial_partner_id.id)
+        ])
+
         values.update({
             'rates': rates,
+            'negotiated_rates': negotiated_rates,
             'page_name': 'billing_rates',
         })
         return request.render('records_management.portal_billing_rates', values)
@@ -5621,7 +5627,7 @@ class RecordsManagementController(http.Controller):
         partner = request.env.user.partner_id
 
         domain = [('partner_id', '=', partner.commercial_partner_id.id)]
-        activity_count = request.env['naid.audit.log'].search_count(domain)
+        activity_count = request.env['naid.audit.log'].sudo().search_count(domain)
 
         pager = request.website.pager(
             url="/my/inventory/recent_activity",
@@ -5630,7 +5636,7 @@ class RecordsManagementController(http.Controller):
             step=20,
         )
 
-        activities = request.env['naid.audit.log'].search(
+        activities = request.env['naid.audit.log'].sudo().search(
             domain,
             order='timestamp desc',
             limit=20,
@@ -5811,7 +5817,7 @@ class RecordsManagementController(http.Controller):
         partner = request.env.user.partner_id
 
         domain = [('partner_id', '=', partner.id)]
-        feedback_count = request.env['customer.feedback'].search_count(domain)
+        feedback_count = request.env['customer.feedback'].sudo().search_count(domain)
 
         pager = request.website.pager(
             url="/my/feedback/history",
@@ -5820,7 +5826,7 @@ class RecordsManagementController(http.Controller):
             step=20,
         )
 
-        feedbacks = request.env['customer.feedback'].search(
+        feedbacks = request.env['customer.feedback'].sudo().search(
             domain,
             order='create_date desc',
             limit=20,
@@ -6177,7 +6183,7 @@ class RecordsManagementController(http.Controller):
         ], order='create_date desc', limit=5)
 
         # Get recent requests
-        recent_requests = request.env['portal.request'].search([
+        recent_requests = request.env['portal.request'].sudo().search([
             ('partner_id', '=', partner.id)
         ], order='create_date desc', limit=5)
 
@@ -6866,7 +6872,7 @@ class RecordsManagementController(http.Controller):
         parent_locations = all_locations - child_locations
 
         # Get departments
-        departments = request.env['records.department'].search([('partner_id', '=', partner.id)])
+        departments = request.env['records.department'].sudo().search([('partner_id', '=', partner.id)])
 
         values.update({
             'location': location,
@@ -6987,11 +6993,11 @@ class RecordsManagementController(http.Controller):
             return request.not_found()
 
         # Get containers at this location and child locations
-        child_locations = request.env['customer.staging.location'].search([
+        child_locations = request.env['customer.staging.location'].sudo().search([
             ('id', 'child_of', location.id)
         ])
 
-        Container = request.env['records.container']
+        Container = request.env['records.container'].sudo()
         containers = Container.search([
             ('customer_staging_location_id', 'in', child_locations.ids)
         ], order='name asc')
@@ -8155,9 +8161,10 @@ class RecordsManagementController(http.Controller):
         """List all shredding bins for the customer."""
         partner = request.env.user.partner_id
 
-        ShredBin = request.env['shred.bin'].sudo()
+        # Use correct model name: shredding.service.bin
+        ShredBin = request.env['shredding.service.bin'].sudo()
         bins = ShredBin.search([
-            ('partner_id', '=', partner.id)
+            ('current_customer_id', '=', partner.commercial_partner_id.id)
         ])
 
         return request.render('records_management.portal_my_shredding_bins', {

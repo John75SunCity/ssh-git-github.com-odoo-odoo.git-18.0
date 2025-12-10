@@ -488,31 +488,24 @@
                         <h1><i class="fa fa-dollar-sign"></i> Service Rates &amp; Pricing</h1>
                     </div>
                     
-                    <div class="row">
-                        <t t-if="rate_cards">
-                            <t t-foreach="rate_cards" t-as="rate">
-                                <div class="col-md-6 mb-4">
+                    <!-- Standard Rates Section -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h4><i class="fa fa-list me-2"/>Standard Rates</h4>
+                        </div>
+                        <t t-if="rates">
+                            <t t-foreach="rates" t-as="rate">
+                                <div class="col-md-4 mb-3">
                                     <div class="card h-100">
                                         <div class="card-header bg-primary text-white">
-                                            <h5 class="mb-0" t-esc="rate.service_name"/>
+                                            <h5 class="mb-0" t-esc="rate.name"/>
                                         </div>
                                         <div class="card-body">
                                             <h3 class="text-primary mb-3">
-                                                $<t t-esc="rate.price"/> <small class="text-muted">/ <t t-esc="rate.unit"/></small>
+                                                <t t-esc="rate.rate" t-options="{'widget': 'monetary', 'display_currency': rate.currency_id}"/>
+                                                <small class="text-muted">/ <t t-esc="rate.billing_unit or 'unit'"/></small>
                                             </h3>
-                                            <p t-esc="rate.description or 'Standard service rate'"/>
-                                            <ul class="list-unstyled">
-                                                <t t-if="rate.features">
-                                                    <t t-foreach="rate.features" t-as="feature">
-                                                        <li><i class="fa fa-check text-success"></i> <t t-esc="feature"/></li>
-                                                    </t>
-                                                </t>
-                                            </ul>
-                                        </div>
-                                        <div class="card-footer">
-                                            <a href="/my/request/new/service" class="btn btn-primary w-100">
-                                                <i class="fa fa-shopping-cart"></i> Request Service
-                                            </a>
+                                            <p t-if="rate.description" t-esc="rate.description"/>
                                         </div>
                                     </div>
                                 </div>
@@ -520,12 +513,55 @@
                         </t>
                         <t t-else="">
                             <div class="col-12">
-                                <div class="alert alert-info text-center">
-                                    <p>Contact us for current service rates</p>
+                                <div class="alert alert-info">
+                                    <i class="fa fa-info-circle me-2"/>Contact us for current service rates.
                                 </div>
                             </div>
                         </t>
                     </div>
+
+                    <!-- Customer Negotiated Rates Section -->
+                    <t t-if="negotiated_rates">
+                        <div class="row">
+                            <div class="col-12">
+                                <h4><i class="fa fa-handshake me-2"/>Your Negotiated Rates</h4>
+                            </div>
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Service Type</th>
+                                                    <th>Rate</th>
+                                                    <th>Effective Date</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="negotiated_rates" t-as="neg_rate">
+                                                    <tr>
+                                                        <td><t t-esc="neg_rate.name"/></td>
+                                                        <td>
+                                                            <t t-esc="neg_rate.rate" t-options="{'widget': 'monetary', 'display_currency': neg_rate.currency_id}"/>
+                                                        </td>
+                                                        <td>
+                                                            <t t-if="neg_rate.date_start" t-esc="neg_rate.date_start" t-options="{'widget': 'date'}"/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-att-class="'badge ' + ('bg-success' if neg_rate.active else 'bg-secondary')">
+                                                                <t t-esc="'Active' if neg_rate.active else 'Inactive'"/>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
                 </div>
             </t>
         </template>
@@ -834,43 +870,7 @@
             </t>
         </template>
         
-        <template id="portal_billing_rates" name="Billing Rates">
-            <t t-call="portal.portal_layout">
-                <t t-set="page_name" t-value="'billing'"/>
-                
-                <div class="container my-4">
-                    <h2 class="mb-4"><i class="fa fa-tags me-2"/>Current Billing Rates</h2>
-                    
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="card">
-                                <div class="card-header bg-info text-white">
-                                    <h4 class="mb-0">Your Pricing Plan</h4>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table">
-                                        <tbody>
-                                            <tr>
-                                                <td><strong>Storage Rate (per box/month)</strong></td>
-                                                <td class="text-end">$<t t-esc="'0.75' if not billing_info else billing_info.storage_rate"/></td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Retrieval Fee (per box)</strong></td>
-                                                <td class="text-end">$<t t-esc="'25.00'"/></td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Destruction Fee (per box)</strong></td>
-                                                <td class="text-end">$<t t-esc="'15.00'"/></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </t>
-        </template>
+        <!-- NOTE: portal_billing_rates template moved above (consolidated) -->
         
         <template id="portal_billing_statements" name="Billing Statements">
             <t t-call="portal.portal_layout">
