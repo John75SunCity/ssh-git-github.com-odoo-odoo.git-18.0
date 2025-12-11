@@ -105,7 +105,7 @@
                                             <i class="fa fa-archive fa-2x mb-2"></i>
                                             <h4 id="containers-count">Loading...</h4>
                                             <p>Containers</p>
-                                            <button class="btn btn-light btn-sm" onclick="switchTab('containers')">View All</button>
+                                            <button class="btn btn-light btn-sm" data-bs-toggle="tab" data-bs-target="#containers">View All</button>
                                         </div>
                                     </div>
                                 </div>
@@ -115,7 +115,7 @@
                                             <i class="fa fa-folder fa-2x mb-2"></i>
                                             <h4 id="files-count">Loading...</h4>
                                             <p>File Folders</p>
-                                            <button class="btn btn-light btn-sm" onclick="switchTab('files')">View All</button>
+                                            <button class="btn btn-light btn-sm" data-bs-toggle="tab" data-bs-target="#files">View All</button>
                                         </div>
                                     </div>
                                 </div>
@@ -125,7 +125,7 @@
                                             <i class="fa fa-file-text fa-2x mb-2"></i>
                                             <h4 id="documents-count">Loading...</h4>
                                             <p>Documents</p>
-                                            <button class="btn btn-light btn-sm" onclick="switchTab('documents')">View All</button>
+                                            <button class="btn btn-light btn-sm" data-bs-toggle="tab" data-bs-target="#documents">View All</button>
                                         </div>
                                     </div>
                                 </div>
@@ -135,7 +135,7 @@
                                             <i class="fa fa-clock-o fa-2x mb-2"></i>
                                             <h4 id="temp-count">Loading...</h4>
                                             <p>Temp Items</p>
-                                            <button class="btn btn-light btn-sm" onclick="switchTab('temp')">View All</button>
+                                            <button class="btn btn-light btn-sm" data-bs-toggle="tab" data-bs-target="#temp">View All</button>
                                         </div>
                                     </div>
                                 </div>
@@ -150,7 +150,7 @@
                                             <h4 id="locations-count">Loading...</h4>
                                             <p>My Locations</p>
                                             <small class="d-block mb-2">Organize by floor, room, department</small>
-                                            <button class="btn btn-light btn-sm" onclick="switchTab('locations')">Manage Locations</button>
+                                            <button class="btn btn-light btn-sm" data-bs-toggle="tab" data-bs-target="#locations">Manage Locations</button>
                                         </div>
                                     </div>
                                 </div>
@@ -196,14 +196,6 @@
 
                 <!-- JavaScript for Tab Management (Bootstrap 5 compatible) -->
                 <script>
-                    function switchTab(tabName) {
-                        var tabEl = document.querySelector('#' + tabName + '-tab');
-                        if (tabEl) {
-                            var tab = new bootstrap.Tab(tabEl);
-                            tab.show();
-                        }
-                    }
-
                     // Load counts on page load
                     document.addEventListener('DOMContentLoaded', function() {
                         loadInventoryCounts();

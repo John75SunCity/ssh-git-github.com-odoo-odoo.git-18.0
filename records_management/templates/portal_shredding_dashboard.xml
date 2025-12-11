@@ -848,7 +848,7 @@
                                             <dl class="mb-0">
                                                 <dt>Status</dt>
                                                 <dd>
-                                                    <span t-attf-class="badge bg-#{task.stage_id.is_closed and 'success' or 'primary'}">
+                                                    <span t-attf-class="badge bg-#{task.stage_id.fold and 'success' or 'primary'}">
                                                         <t t-out="task.stage_id.name"/>
                                                     </span>
                                                 </dd>
