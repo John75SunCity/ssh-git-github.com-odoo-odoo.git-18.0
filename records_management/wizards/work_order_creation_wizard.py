@@ -94,12 +94,6 @@ class WorkOrderCreationWizard(models.TransientModel):
         ('2', 'Urgent'),
     ], string="Priority", default='0', required=True)
     
-    scheduled_date = fields.Datetime(
-        string="Scheduled Date/Time",
-        required=True,
-        default=fields.Datetime.now
-    )
-    
     notes = fields.Text(string="Notes / Instructions")
 
     # ============================================================================
@@ -178,17 +172,16 @@ class WorkOrderCreationWizard(models.TransientModel):
     # SHREDDING SERVICE-SPECIFIC FIELDS
     # ============================================================================
     service_location_type = fields.Selection([
-        ('onsite', 'On-Site (At Customer Location)'),
         ('offsite', 'Off-Site (At Our Facility)'),
-    ], string="Service Location", default='onsite',
-       help="On-Site: Service performed at customer location. Off-Site: Materials picked up and processed at our facility.")
+        ('mobile', 'Mobile (On-Site)'),
+    ], string="Service Location", default='mobile',
+       help="Off-Site: Materials picked up and processed at our facility. Mobile: Service performed at customer location with shredding truck.")
     
     shredding_service_type = fields.Selection([
-        ('scheduled', 'Scheduled Shredding Service'),
-        ('purge', 'One-Time Purge'),
-        ('recurring_bin', 'Recurring Bin Service'),
-    ], string="Shredding Type", default='scheduled',
-       help="Scheduled: One-time scheduled service. One-Time Purge: Large volume cleanout. Recurring: Regular scheduled bin exchange.")
+        ('boxes', 'Boxes of Shredding'),
+        ('bin', 'Bin Service'),
+    ], string="Shredding Type", default='boxes',
+       help="Boxes: One-time shredding of loose materials. Bin: Console/bin exchange service.")
     
     material_type = fields.Selection([
         ('paper', 'Paper Documents'),
@@ -419,9 +412,8 @@ class WorkOrderCreationWizard(models.TransientModel):
         """Create a shredding work order."""
         # Map wizard service types to model service types
         service_type_map = {
-            'scheduled': 'onsite' if self.service_location_type == 'onsite' else 'offsite',
-            'purge': 'bin_onetime',
-            'recurring_bin': 'bin_recurring',
+            'boxes': 'purge' if self.service_location_type == 'offsite' else 'onsite',
+            'bin': 'recurring_bin' if self.make_recurring else 'onsite',
         }
         vals = {
             'partner_id': self.partner_id.id,
@@ -434,3 +426,10 @@ class WorkOrderCreationWizard(models.TransientModel):
             'special_instructions': self.notes,
         }
         return self.env['work.order.shredding'].create(vals)
+
+    @api.onchange('shredding_service_type')
+    def _onchange_shredding_service_type(self):
+        if self.shredding_service_type == 'boxes':
+            self.make_recurring = False
+        elif self.shredding_service_type == 'bin':
+            self.make_recurring = True  # Default to recurring for bin service, but allow toggle

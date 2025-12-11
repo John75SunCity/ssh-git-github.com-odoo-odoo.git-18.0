@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- Action for Single Conversion Button -->
+        <record id="action_convert_to_work_order" model="ir.actions.server">
+            <field name="name">Convert to Work Order</field>
+            <field name="model_id" ref="records_management.model_portal_request"/>
+            <field name="binding_model_id" ref="records_management.model_portal_request"/>
+            <field name="state">code</field>
+            <field name="code">record.action_convert_to_work_order()</field>
+        </record>
+
+        <!-- Action for Batch Conversion (Individual) -->
+        <record id="action_batch_convert_to_work_orders" model="ir.actions.server">
+            <field name="name">Convert to Individual Work Orders</field>
+            <field name="model_id" ref="records_management.model_portal_request"/>
+            <field name="binding_model_id" ref="records_management.model_portal_request"/>
+            <field name="state">code</field>
+            <field name="code">env['portal.request'].action_batch_convert_to_work_orders()</field>
+        </record>
+
+        <!-- Action for Merge and Convert -->
+        <record id="action_merge_convert_to_work_orders" model="ir.actions.server">
+            <field name="name">Merge and Convert to Work Orders</field>
+            <field name="model_id" ref="records_management.model_portal_request"/>
+            <field name="binding_model_id" ref="records_management.model_portal_request"/>
+            <field name="state">code</field>
+            <field name="code">env['portal.request'].action_merge_convert_to_work_orders()</field>
+        </record>
+
         <record id="portal_request_view_kanban" model="ir.ui.view">
             <field name="name">portal.request.view.kanban</field>
             <field name="model">portal.request</field>
@@ -106,6 +133,7 @@
                         <button name="action_start_progress" string="Start Progress" type="object" invisible="state != 'approved'" groups="records_management.group_records_manager" />
                         <button name="action_complete" string="Mark Complete" type="object" invisible="state != 'in_progress'" groups="records_management.group_records_manager" />
                         <button name="action_cancel" string="Cancel" type="object" invisible="state in ['completed', 'cancelled']" groups="records_management.group_records_manager" />
+                        <button name="%(action_convert_to_work_order)d" string="Convert to Work Order" type="action" class="btn-primary" attrs="{'invisible': [('state', 'not in', ['submitted', 'approved'])]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,in_progress,completed" />
                     </header>
                     <sheet>

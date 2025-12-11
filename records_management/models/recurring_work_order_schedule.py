@@ -185,6 +185,8 @@ class RecurringWorkOrderSchedule(models.Model):
         ('onsite', 'On-Site Shredding'),
         ('offsite', 'Off-Site Shredding'),
         ('mobile', 'Mobile Shredding Truck'),
+        ('recurring_bin', 'Recurring Bin Service'),
+        ('purge', 'One-Time Purge'),
     ], string="Shredding Type", default='onsite')
     
     material_type = fields.Selection([

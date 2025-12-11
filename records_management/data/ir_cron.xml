@@ -35,5 +35,17 @@
             <field name="numbercall">-1</field>
             <field name="active">True</field>
         </record>
+
+        <!-- Monthly Work Order Billing Cron -->
+        <record id="cron_monthly_work_order_billing" model="ir.cron">
+            <field name="name">Records Management: Monthly Work Order Billing</field>
+            <field name="model_id" ref="records_management.model_work_order_shredding"/>
+            <field name="state">code</field>
+            <field name="code">model._monthly_bill_pending()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+        </record>
     </data>
 </odoo>

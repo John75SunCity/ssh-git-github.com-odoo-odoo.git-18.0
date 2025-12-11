@@ -19,6 +19,7 @@ class WorkOrderShredding(models.Model):
         ('scheduled', 'Scheduled'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
+        ('pending_billing', 'Pending Billing'),
         ('invoiced', 'Invoiced'),
         ('cancelled', 'Cancelled'),
     ], string="Status", default='scheduled', required=True, tracking=True)
@@ -518,7 +519,7 @@ class WorkOrderShredding(models.Model):
         }
 
     def action_complete_work(self):
-        """Complete the work order and generate certificate if required."""
+        """Complete the work order and handle billing based on customer preference."""
         self.ensure_one()
         if self.state != 'in_progress':
             raise UserError(_("Only in-progress work orders can be completed."))
@@ -526,6 +527,15 @@ class WorkOrderShredding(models.Model):
         if self.certificate_required and not self.certificate_id:
             self._generate_destruction_certificate()
         self.message_post(body=_("Work order completed."))
+
+        # Handle billing preference
+        if self.partner_id.consolidated_billing:
+            self.state = 'pending_billing'
+            self.message_post(body=_("Marked as pending monthly billing."))
+        else:
+            self.action_create_invoice()
+            self.state = 'invoiced'
+            self.message_post(body=_("Immediate invoice created."))
 
     def action_cancel(self):
         """Cancel the work order."""
@@ -1016,3 +1026,41 @@ class WorkOrderShredding(models.Model):
             'res_id': invoice.id,
             'view_mode': 'form',
         }
+
+    @api.model
+    def _monthly_bill_pending(self):
+        """Cron method to batch invoice pending_billing work orders at month end."""
+        pending_orders = self.search([('state', '=', 'pending_billing')])
+        
+        # Group by customer
+        orders_by_partner = {}
+        for order in pending_orders:
+            if order.partner_id.id not in orders_by_partner:
+                orders_by_partner[order.partner_id.id] = []
+            orders_by_partner[order.partner_id.id].append(order)
+        
+        for partner_id, orders in orders_by_partner.items():
+            partner = self.env['res.partner'].browse(partner_id)
+            invoice_vals = {
+                'partner_id': partner_id,
+                'move_type': 'out_invoice',
+                'invoice_date': fields.Date.today(),
+                'ref': _("Monthly Shredding Services"),
+                'invoice_line_ids': [],
+            }
+            
+            for order in orders:
+                line_vals = order._prepare_invoice_line_values()
+                line_vals['name'] = _("Shredding Work Order %s") % order.name
+                invoice_vals['invoice_line_ids'].append((0, 0, line_vals))
+            
+            invoice = self.env['account.move'].create(invoice_vals)
+            invoice.action_post()
+            
+            # Update orders
+            for order in orders:
+                order.write({
+                    'invoice_id': invoice.id,
+                    'state': 'invoiced'
+                })
+                order.message_post(body=_("Invoiced in monthly batch: %s") % invoice.name)

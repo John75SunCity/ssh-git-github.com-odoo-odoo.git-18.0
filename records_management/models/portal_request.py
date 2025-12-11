@@ -386,334 +386,129 @@ class PortalRequest(models.Model):
             'context': {'default_res_model': self._name, 'default_res_id': self.id},
         }
 
-    # ============================================================================
-    # BUSINESS LOGIC
-    # ============================================================================
-    
-    def notify_file_located(self, file_name, location):
-        """Send notification when file is physically located and scanned."""
+    def action_convert_to_work_order(self):
+        """Convert this single request to a work order."""
         self.ensure_one()
-        
-        if not self.notify_on_file_located or self.notification_method == 'none':
-            return
-        
-        # Update tracking fields
-        self.write({
-            'file_located_date': fields.Datetime.now(),
-            'file_located_by': self.env.user.id,
-        })
-        
-        subject = _('File Located: %s') % file_name
-        message = _(
-            "Good news! We've located your file.\n\n"
-            "File: %s\n"
-            "Location: %s\n"
-            "Request: %s\n"
-            "Located by: %s on %s\n\n"
-            "Your request is being processed and will be ready for delivery soon."
-        ) % (
-            file_name,
-            location,
-            self.name,
-            self.env.user.name,
-            fields.Datetime.now().strftime('%m/%d/%Y %I:%M %p')
-        )
-        
-        # Send email notification
-        if self.notification_method in ['email', 'both']:
-            self.message_post(
-                body=message,
-                subject=subject,
-                message_type='notification',
-                subtype_xmlid='mail.mt_comment',
-                partner_ids=self.partner_id.ids,
-            )
-            # Send email to partner
-            mail_values = {
-                'subject': subject,
-                'body_html': message.replace('\n', '<br/>'),
-                'email_to': self.partner_id.email,
-                'auto_delete': False,
-            }
-            self.env['mail.mail'].sudo().create(mail_values).send()
-        
-        # Send SMS notification
-        if self.notification_method in ['sms', 'both'] and self.partner_id.mobile:
-            sms_message = _(
-                "File Located: %s at %s. Request %s is being processed. - Records Management"
-            ) % (file_name, location, self.name)
-            self.env['sms.sms'].sudo().create({
-                'number': self.partner_id.mobile,
-                'body': sms_message,
-            }).send()
-    
-    def notify_ready_for_delivery(self):
-        """Send notification when order is prepped and ready for transit."""
-        self.ensure_one()
-        
-        if not self.notify_on_ready_for_delivery or self.notification_method == 'none':
-            return
-        
-        # Update tracking fields
-        self.write({
-            'ready_for_delivery_date': fields.Datetime.now(),
-            'ready_for_delivery_by': self.env.user.id,
-        })
-        
-        # Count items ready
-        container_count = len(self.container_ids)
-        file_count = len(self.file_ids)
-        
-        subject = _('Order Ready for Delivery: %s') % self.name
-        message = _(
-            "Your order has been prepared and is ready for delivery!\n\n"
-            "Request: %s\n"
-            "Items Ready:\n"
-            "  - Containers: %d\n"
-            "  - Files: %d\n"
-            "Prepared by: %s on %s\n\n"
-            "Estimated delivery: [See delivery schedule]\n\n"
-            "Track your order at: /my/requests/%s"
-        ) % (
-            self.name,
-            container_count,
-            file_count,
-            self.env.user.name,
-            fields.Datetime.now().strftime('%m/%d/%Y %I:%M %p'),
-            self.id
-        )
-        
-        # Send email notification
-        if self.notification_method in ['email', 'both']:
-            self.message_post(
-                body=message,
-                subject=subject,
-                message_type='notification',
-                subtype_xmlid='mail.mt_comment',
-                partner_ids=self.partner_id.ids,
-            )
-            mail_values = {
-                'subject': subject,
-                'body_html': message.replace('\n', '<br/>'),
-                'email_to': self.partner_id.email,
-                'auto_delete': False,
-            }
-            self.env['mail.mail'].sudo().create(mail_values).send()
-        
-        # Send SMS notification
-        if self.notification_method in ['sms', 'both'] and self.partner_id.mobile:
-            sms_message = _(
-                "Order %s ready for delivery! %d containers, %d files. Track at: [portal link] - Records Management"
-            ) % (self.name, container_count, file_count)
-            self.env['sms.sms'].sudo().create({
-                'number': self.partner_id.mobile,
-                'body': sms_message,
-            }).send()
-    
-    @api.model
-    def search_matching_containers(self, file_name, date_from=None, date_to=None, alpha_range=None, partner_id=None):
-        """
-        Intelligent container matching for file search requests.
-        Returns containers likely to contain the searched file.
-        
-        Args:
-            file_name: Name of file being searched
-            date_from: Earliest possible file date
-            date_to: Latest possible file date
-            alpha_range: Alphabetical range (e.g., 'A-D' or 'Jane-Mary')
-            partner_id: Customer partner ID
-        
-        Returns:
-            recordset of records.container
-        """
-        domain = [('partner_id', '=', partner_id)] if partner_id else []
-        
-        # Start with all customer's containers
-        Container = self.env['records.container'].sudo()
-        matching_containers = Container.search(domain)
-        scored_containers = []
-        
-        for container in matching_containers:
-            score = 0
-            reasons = []
-            
-            # 1. Date range matching (highest priority)
-            if date_from or date_to:
-                container_date_from = container.date_range_start
-                container_date_to = container.date_range_end
-                
-                if container_date_from and container_date_to:
-                    # Check if date ranges overlap
-                    if date_from and date_to:
-                        if (container_date_from <= date_to and container_date_to >= date_from):
-                            score += 50
-                            reasons.append(_('Date range matches: %s to %s') % (
-                                container_date_from.strftime('%m/%d/%Y'),
-                                container_date_to.strftime('%m/%d/%Y')
-                            ))
-                    elif date_from and container_date_from <= date_from <= container_date_to:
-                        score += 40
-                        reasons.append(_('Contains date %s') % date_from.strftime('%m/%d/%Y'))
-                    elif date_to and container_date_from <= date_to <= container_date_to:
-                        score += 40
-                        reasons.append(_('Contains date %s') % date_to.strftime('%m/%d/%Y'))
-            
-            # 2. Alphabetical range matching
-            if alpha_range and container.alpha_range:
-                # Simple contains check (can be enhanced)
-                if alpha_range.upper() in container.alpha_range.upper():
-                    score += 30
-                    reasons.append(_('Alpha range matches: %s') % container.alpha_range)
-                # Check if file name falls within alpha range
-                elif file_name:
-                    file_first_letter = file_name[0].upper()
-                    container_range = container.alpha_range.upper()
-                    # Example: container has "A-D", file is "Jane" (J)
-                    if '-' in container_range:
-                        range_parts = container_range.split('-')
-                        if len(range_parts) == 2:
-                            start_letter = range_parts[0].strip()[0] if range_parts[0].strip() else 'A'
-                            end_letter = range_parts[1].strip()[0] if range_parts[1].strip() else 'Z'
-                            if start_letter <= file_first_letter <= end_letter:
-                                score += 25
-                                reasons.append(_('File name falls in alpha range %s') % container.alpha_range)
-            
-            # 3. Content type/description keyword matching
-            if file_name and container.content_description:
-                # Extract key terms from file name
-                file_terms = file_name.lower().split()
-                description_lower = container.content_description.lower()
-                
-                for term in file_terms:
-                    if len(term) > 3 and term in description_lower:
-                        score += 10
-                        reasons.append(_('Contains keyword: %s') % term)
-            
-            # 4. Container name/number matching
-            if file_name:
-                container_name_lower = (container.name or '').lower()
-                container_number_lower = (container.container_number or '').lower()
-                file_name_lower = file_name.lower()
-                
-                # Check for term files, HR files, etc.
-                if 'term' in file_name_lower and 'term' in container_name_lower:
-                    score += 20
-                    reasons.append(_('Container name suggests term files'))
-                
-                # Extract department/category from file name (e.g., "HR-1000")
-                if container.container_number and any(dept in file_name_lower for dept in ['hr', 'finance', 'legal', 'admin']):
-                    if any(dept in container_number_lower for dept in ['hr', 'finance', 'legal', 'admin']):
-                        score += 15
-                        reasons.append(_('Department/category match'))
-            
-            # 5. Contents type matching
-            if container.contents_type:
-                contents_lower = container.contents_type.lower()
-                if file_name:
-                    # Check if file name suggests same contents type
-                    if any(keyword in file_name.lower() for keyword in ['personnel', 'employee', 'hr']) and 'personnel' in contents_lower:
-                        score += 15
-                        reasons.append(_('Contents type match: %s') % container.contents_type)
-            
-            if score > 0:
-                scored_containers.append({
-                    'container': container,
-                    'score': score,
-                    'reasons': reasons
-                })
-        
-        # Sort by score descending
-        scored_containers.sort(key=lambda x: x['score'], reverse=True)
-        
-        # Return containers with scores > 0, attach matching info
-        result = Container.browse([c['container'].id for c in scored_containers])
-        
-        # Store matching reasons for display
-        for idx, container_data in enumerate(scored_containers):
-            container_data['container'].matching_score = container_data['score']
-            container_data['container'].matching_reasons = ', '.join(container_data['reasons'])
-        
-        return result
-
-    def _create_work_order(self):
-        """Create an FSM task for service-type requests."""
-        self.ensure_one()
-        if self.request_type in ['destruction', 'pickup', 'retrieval', 'shredding', 'scanning', 'audit'] and not self.work_order_id:
-            fsm_project = self.env.ref('industry_fsm.fsm_project', raise_if_not_found=False)
-            if not fsm_project:
-                raise UserError(_("FSM Project not found. Please ensure the Field Service module is installed correctly."))
-
-            # Map request type to task name prefix
-            type_labels = {
-                'destruction': _("Destruction Service"),
-                'pickup': _("Pickup Service"),
-                'retrieval': _("File Retrieval"),
-                'shredding': _("Shredding Service"),
-                'scanning': _("Document Scanning"),
-                'audit': _("Compliance Audit"),
-            }
-            task_name = "%s: %s" % (type_labels.get(self.request_type, _("Service")), self.name)
-            
-            task_vals = {
-                "name": task_name,
-                "project_id": fsm_project.id,
-                "partner_id": self.partner_id.id,
-                "user_ids": [(6, 0, [self.user_id.id])] if self.user_id else [],
-                "date_deadline": self.deadline.date() if self.deadline else fields.Date.today(),
-                "description": self.description,
-            }
-            task = self.env['project.task'].create(task_vals)
-            self.work_order_id = task.id
-            self.message_post(body=_("Work Order %s created.", task.name))
-            return task
-        return False
-
-    def action_create_work_order(self):
-        """
-        Manual action to create work order from customer request.
-        Allows internal staff to convert any portal request into a work order
-        as if they took the order directly from the customer.
-        """
-        self.ensure_one()
+        if self.state not in ['submitted', 'approved']:
+            raise UserError(_("Only submitted or approved requests can be converted to work orders."))
         if self.work_order_id:
-            raise UserError(_("A work order already exists for this request: %s", self.work_order_id.name))
+            raise UserError(_("This request already has a linked work order."))
         
-        # If request is in draft, auto-approve it first
-        if self.state == 'draft':
-            self.write({'state': 'submitted', 'requested_date': fields.Datetime.now()})
-            self.message_post(body=_("Request auto-submitted by staff for work order creation."))
-        
-        if self.state == 'submitted':
-            self.write({'state': 'approved'})
-            self.message_post(body=_("Request approved by %s for work order creation.", self.env.user.name))
-        
-        # Create the work order
-        task = self._create_work_order()
-        
-        if task:
-            # Automatically start progress
+        work_order = self._create_work_order()
+        if work_order:
             self.write({'state': 'in_progress'})
+            self.message_post(body=_("Converted to work order."))
             return {
                 'type': 'ir.actions.act_window',
                 'name': _('Work Order'),
-                'res_model': 'project.task',
+                'res_model': work_order._name,
                 'view_mode': 'form',
-                'res_id': task.id,
+                'res_id': work_order.id,
                 'target': 'current',
             }
-        else:
-            raise UserError(_("Could not create work order. Request type may not support work orders."))
+        return False
 
-    def action_view_work_order(self):
-        """Open the linked work order."""
-        self.ensure_one()
-        if not self.work_order_id:
-            raise UserError(_("No work order linked to this request."))
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Work Order'),
-            'res_model': 'project.task',
-            'view_mode': 'form',
-            'res_id': self.work_order_id.id,
-            'target': 'current',
-        }
+    @api.model
+    def action_batch_convert_to_work_orders(self):
+        """Convert selected requests to individual work orders."""
+        requests = self.env['portal.request'].browse(self.env.context.get('active_ids', []))
+        if not requests:
+            raise UserError(_("No requests selected."))
+        
+        created_orders = self.env[self._name]
+        for request in requests:
+            if request.state not in ['submitted', 'approved']:
+                continue
+            if request.work_order_id:
+                continue
+            work_order = request._create_work_order()
+            if work_order:
+                request.write({'state': 'in_progress'})
+                request.message_post(body=_("Converted to individual work order %s.") % work_order.name)
+                created_orders |= work_order
+        
+        if created_orders:
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Created Work Orders'),
+                'res_model': created_orders._name,
+                'view_mode': 'list,form',
+                'domain': [('id', 'in', created_orders.ids)],
+                'target': 'current',
+            }
+        return {'type': 'ir.actions.act_window_close'}
+
+    @api.model
+    def action_merge_convert_to_work_orders(self):
+        """Merge selected requests by customer/department and convert to consolidated work orders."""
+        requests = self.env['portal.request'].browse(self.env.context.get('active_ids', []))
+        if not requests:
+            raise UserError(_("No requests selected."))
+        
+        # Group by (partner_id, department_id)
+        groups = {}
+        for request in requests:
+            if request.state not in ['submitted', 'approved'] or request.work_order_id:
+                continue
+            key = (request.partner_id.id, request.department_id.id if request.department_id else 0)
+            if key not in groups:
+                groups[key] = []
+            groups[key].append(request)
+        
+        created_orders = self.env[self._name]
+        for key, group_requests in groups.items():
+            if not group_requests:
+                continue
+            
+            lead_request = group_requests[0]
+            # Create consolidated work order
+            work_order_vals = {
+                'partner_id': lead_request.partner_id.id,
+                'department_id': lead_request.department_id.id,
+                'portal_request_id': lead_request.id,  # Link to lead request
+                'description': _("Merged from requests: %s") % ', '.join(r.name for r in group_requests),
+                # Add other mapped fields, summing quantities if applicable
+            }
+            
+            # Handle different types
+            if lead_request.request_type == 'shredding':
+                work_order_vals.update({
+                    'name': self.env['ir.sequence'].next_by_code('work.order.shredding') or _('New'),
+                    'shredding_service_type': lead_request.shredding_service_id.service_type if lead_request.shredding_service_id else 'onsite',
+                    'scheduled_date': min(r.pickup_date for r in group_requests if r.pickup_date) or fields.Datetime.now(),
+                    'priority': max(r.priority for r in group_requests),
+                    'special_instructions': '\n'.join(r.notes for r in group_requests if r.notes),
+                })
+                work_order = self.env['work.order.shredding'].create(work_order_vals)
+            else:
+                # For FSM-based
+                fsm_project = self.env.ref('industry_fsm.fsm_project')
+                task_vals = {
+                    'name': _("Merged %s: %s") % (lead_request.request_type, ', '.join(r.name for r in group_requests)),
+                    'project_id': fsm_project.id,
+                    'partner_id': lead_request.partner_id.id,
+                    'description': work_order_vals['description'],
+                }
+                work_order = self.env['project.task'].create(task_vals)
+            
+            # Link all requests to this work order
+            for request in group_requests:
+                request.write({
+                    'work_order_id': work_order.id,
+                    'state': 'in_progress'
+                })
+                request.message_post(body=_("Merged into consolidated work order %s.") % work_order.name)
+            
+            created_orders |= work_order
+        
+        if created_orders:
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Created Consolidated Work Orders'),
+                'res_model': created_orders._name,
+                'view_mode': 'list,form',
+                'domain': [('id', 'in', created_orders.ids)],
+                'target': 'current',
+            }
+        return {'type': 'ir.actions.act_window_close'}
+    # ...existing code...

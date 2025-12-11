@@ -1,0 +1,12 @@
+<odoo>
+    <record id="view_order_form_inherit_records" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.records</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_create_work_order" string="Create Work Order" type="object" class="btn-primary" groups="records_management.group_records_manager" attrs="{'invisible': [('state', '!=', 'sale')]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

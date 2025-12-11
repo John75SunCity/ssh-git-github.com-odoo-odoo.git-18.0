@@ -5967,6 +5967,69 @@ class RecordsManagementController(http.Controller):
     # TEMPORARY INVENTORY & OTHER ROUTES
     # ============================================================================
 
+    @http.route(['/my/quotes'], type='http', auth='user', website=True)
+    def portal_quotes(self, **kw):
+        """Render the quote generator page with recent quotes."""
+        values = self._prepare_portal_layout_values()
+        values['recent_quotes'] = request.env['sale.order'].sudo().search([
+            ('partner_id', 'child_of', request.env.user.partner_id.commercial_partner_id.id),
+            ('state', 'in', ['draft', 'sent'])
+        ], order='date_order desc', limit=10)
+        return request.render('records_management.portal_quotes', values)
+
+    @http.route(['/my/quotes/generate'], type='http', auth='user', methods=['POST'], website=True, csrf=True)
+    def generate_quote(self, **post):
+        """Handle quote generation from portal form."""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Create sale order (quote)
+        order_vals = {
+            'partner_id': partner.id,
+            'date_order': fields.Datetime.now(),
+        }
+        order = request.env['sale.order'].sudo().create(order_vals)
+        
+        # Get products (assume they exist; create if needed in data)
+        shred_product = request.env['product.product'].sudo().search([('name', 'ilike', 'Shredding Box')], limit=1)
+        pickup_product = request.env['product.product'].sudo().search([('name', 'ilike', 'Pickup Fee')], limit=1)
+        
+        # Get rates from negotiated or fallback
+        negotiated = request.env['customer.negotiated.rate'].sudo().search([
+            ('partner_id', '=', partner.id), ('state', '=', 'active')
+        ], limit=1)
+        shred_rate = negotiated.destruction_rate if negotiated and hasattr(negotiated, 'destruction_rate') else 10.0
+        pickup_rate = negotiated.pickup_rate if negotiated and hasattr(negotiated, 'pickup_rate') else 50.0
+        
+        # Add lines
+        i = 1
+        while f'line_type_{i}' in post:
+            line_type = post[f'line_type_{i}']
+            qty = float(post.get(f'line_qty_{i}', 0))
+            if qty > 0:
+                if line_type == 'shredding' and shred_product:
+                    request.env['sale.order.line'].sudo().create({
+                        'order_id': order.id,
+                        'product_id': shred_product.id,
+                        'product_uom_qty': qty,
+                        'price_unit': shred_rate,
+                    })
+                elif line_type == 'pickup' and pickup_product:
+                    request.env['sale.order.line'].sudo().create({
+                        'order_id': order.id,
+                        'product_id': pickup_product.id,
+                        'product_uom_qty': 1,
+                        'price_unit': pickup_rate,
+                    })
+            i += 1
+        
+        # Generate PDF
+        report = request.env.ref('sale.action_report_saleorder')
+        pdf_content, _ = report._render_qweb_pdf([order.id])
+        return request.make_response(pdf_content, headers=[
+            ('Content-Type', 'application/pdf'),
+            ('Content-Disposition', f'attachment; filename="Quote_{order.name}.pdf"')
+        ])
+
     @http.route(['/my/inventory/temp'], type='http', auth="user", website=True)
     def portal_inventory_temp(self, page=1, sortby=None, filterby=None, search=None, **kw):
         """Temp inventory tab - backend-style list view"""
