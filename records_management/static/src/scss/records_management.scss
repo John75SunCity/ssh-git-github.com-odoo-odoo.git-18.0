@@ -1,4 +1,31 @@
-/* Records Management SCSS Styles */
+/* Records Management SCSS Styles - Optimized and Cleaned */
+
+/* Sass Color Variables (for compile-time functions) with !default */
+$primary-color: #875A7B !default;
+$secondary-color: #f8f9fa !default;
+$text-color: #343a40 !default;
+$accent-color: #3498db !default;
+$warning-color: #e74c3c !default;
+$success-color: #2ecc71 !default;
+$primary-purple: $primary-color !default; // Alias for compatibility
+$light-gray: $secondary-color !default;
+$dark-gray: $text-color !default;
+
+/* CSS Root Variables (for runtime) */
+:root {
+    --primary-color: #{$primary-color};
+    --secondary-color: #{$secondary-color};
+    --text-color: #{$text-color};
+    --accent-color: #{$accent-color};
+    --warning-color: #{$warning-color};
+    --success-color: #{$success-color};
+}
+
+/* Base Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    color: var(--text-color);
+}
 
 /* Truck Widget Styling */
 .truck-widget {
@@ -95,11 +122,6 @@
 // PORTAL CUSTOM STYLES (Grok-Enhanced UI/UX)
 // ============================================================================
 
-// Color Variables
-$primary-purple: #875A7B;
-$light-gray: #f8f9fa;
-$dark-gray: #343a40;
-
 // Purple branding button
 .btn-purple {
   background-color: $primary-purple;
@@ -117,6 +139,23 @@ $dark-gray: #343a40;
     color: white;
     box-shadow: 0 0 0 0.2rem rgba($primary-purple, 0.25);
   }
+}
+
+// Uniform Button Styles
+.btn {
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+
+    &-primary {
+        background-color: $primary-color;
+        border-color: $primary-color;
+
+        &:hover {
+            background-color: darken($primary-color, 10%);
+            border-color: darken($primary-color, 10%);
+        }
+    }
 }
 
 // Page headers with purple accent
@@ -242,119 +281,6 @@ $dark-gray: #343a40;
   }
 }
 
-// Mobile-responsive navigation
-@media (max-width: 768px) {
-  .o_portal_sidebar {
-    display: none;
-  }
-
-  .o_portal_content {
-    padding: 1rem;
-  }
-
-  // Touch-friendly targets
-  .btn,
-  .form-control,
-  .form-select,
-  a.btn {
-    min-height: 44px;
-    padding: 0.75rem 1rem;
-  }
-
-  // Card layouts (replacing tables)
-  .mobile-card-view {
-    .card {
-      margin-bottom: 1rem;
-
-      .card-header {
-        background-color: lighten($primary-purple, 40%);
-        font-weight: 600;
-      }
-
-      .card-body {
-        padding: 1rem;
-
-        .row {
-          margin-bottom: 0.5rem;
-
-          &:last-child {
-            margin-bottom: 0;
-          }
-
-          strong {
-            color: $dark-gray;
-            display: block;
-            font-size: 0.85rem;
-            margin-bottom: 0.25rem;
-          }
-        }
-      }
-    }
-  }
-}
-
-/* Optimized Styles: Added more variables and media queries for uniformity */
-
-/* Sass Color Variables (for compile-time functions) */
-$primary-color: #875A7B;
-$secondary-color: #f8f9fa;
-$text-color: #343a40;
-$accent-color: #3498db;
-$warning-color: #e74c3c;
-$success-color: #2ecc71;
-
-/* CSS Root Variables (for runtime) */
-:root {
-    --primary-color: #{$primary-color};
-    --secondary-color: #{$secondary-color};
-    --text-color: #{$text-color};
-    --accent-color: #{$accent-color};
-    --warning-color: #{$warning-color};
-    --success-color: #{$success-color};
-}
-
-/* Base Styles */
-body {
-    font-family: 'Roboto', sans-serif;
-    color: var(--text-color);
-}
-
-/* Uniform Button Styles */
-.btn {
-    border-radius: 4px;
-    padding: 0.5rem 1rem;
-    font-weight: 500;
-
-    &-primary {
-        background-color: $primary-color;
-        border-color: $primary-color;
-
-        &:hover {
-            background-color: darken($primary-color, 10%);
-            border-color: darken($primary-color, 10%);
-        }
-    }
-}
-
-/* Responsive Layouts */
-@media (max-width: 768px) {
-    .container {
-        padding: 1rem;
-    }
-
-    .card {
-        margin-bottom: 1rem;
-    }
-}
-
-/* Enhanced Responsiveness */
-.dashboard-widget .card {
-    min-height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 /* Portal-Specific Styles */
 .portal-card {
     background-color: var(--secondary-color);
@@ -377,7 +303,81 @@ p {
     line-height: 1.6;
 }
 
-/* Media Queries for Mobile Optimization */
+/* Responsive Layouts and Media Queries */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    .table {
+        font-size: 0.85rem;
+
+        th, td {
+            padding: 0.5rem;
+        }
+    }
+
+    .filter-bar .row {
+        flex-direction: column;
+
+        > div {
+            margin-bottom: 0.75rem;
+        }
+    }
+
+    .o_portal_sidebar {
+        display: none;
+    }
+
+    .o_portal_content {
+        padding: 1rem;
+    }
+
+    // Touch-friendly targets
+    .btn,
+    .form-control,
+    .form-select,
+    a.btn {
+        min-height: 44px;
+        padding: 0.75rem 1rem;
+    }
+
+    // Card layouts (replacing tables)
+    .mobile-card-view {
+        .card {
+            margin-bottom: 1rem;
+
+            .card-header {
+                background-color: lighten($primary-purple, 40%);
+                font-weight: 600;
+            }
+
+            .card-body {
+                padding: 1rem;
+
+                .row {
+                    margin-bottom: 0.5rem;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+
+                    strong {
+                        color: $dark-gray;
+                        display: block;
+                        font-size: 0.85rem;
+                        margin-bottom: 0.25rem;
+                    }
+                }
+            }
+        }
+    }
+}
+
 @media (max-width: 576px) {
     .btn {
         width: 100%;
@@ -387,4 +387,12 @@ p {
     .form-group {
         margin-bottom: 1.5rem;
     }
+}
+
+/* Enhanced Responsiveness */
+.dashboard-widget .card {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
