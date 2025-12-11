@@ -283,8 +283,8 @@ body {
 
 /* Portal-Specific Styles */
 .portal-card {
-    background-color: var(--secondary-color);
-    border: 1px solid darken(var(--secondary-color), 5%);
+    background-color: $secondary-color;
+    border: 1px solid darken($secondary-color, 5%);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: box-shadow 0.3s ease;
 
@@ -295,7 +295,7 @@ body {
 
 /* Uniform Typography */
 h1, h2, h3 {
-    color: var(--primary-color);
+    color: $primary-color;
     font-weight: 600;
 }
 
