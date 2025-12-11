@@ -617,11 +617,11 @@
                                         <div class="row mb-3">
                                             <div class="col-md-6">
                                                 <label for="company">Company</label>
-                                                <input type="text" id="company" name="company" class="form-control" value="<t t-esc="request.env.user.partner_id.name"/>" readonly="readonly"/>
+                                                <input type="text" id="company" name="company" class="form-control" t-att-value="request.env.user.partner_id.name" readonly="readonly"/>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="department">Department</label>
-                                                <input type="text" id="department" name="department" class="form-control" value="<t t-esc="request.env.user.partner_id.department_id.name if hasattr(request.env.user.partner_id, 'department_id') and request.env.user.partner_id.department_id else ''"/>"/>
+                                                <input type="text" id="department" name="department" class="form-control" t-att-value="request.env.user.partner_id.department_id.name if hasattr(request.env.user.partner_id, 'department_id') and request.env.user.partner_id.department_id else ''"/>
                                             </div>
                                         </div>
 
