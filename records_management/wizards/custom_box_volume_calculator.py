@@ -197,7 +197,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         help='Total volume for all boxes (custom_volume_cf × quantity)'
     )
     equivalent_type01_boxes = fields.Integer(
-        string='Equivalent Standard Boxes',
+        string='Equivalent Type 01 Boxes',
         compute='_compute_equivalent_type01',
         store=True,
         help='Number of Type 01 standard boxes equivalent (rounded up)'

@@ -133,7 +133,7 @@
                         <button name="action_start_progress" string="Start Progress" type="object" invisible="state != 'approved'" groups="records_management.group_records_manager" />
                         <button name="action_complete" string="Mark Complete" type="object" invisible="state != 'in_progress'" groups="records_management.group_records_manager" />
                         <button name="action_cancel" string="Cancel" type="object" invisible="state in ['completed', 'cancelled']" groups="records_management.group_records_manager" />
-                        <button name="%(action_convert_to_work_order)d" string="Convert to Work Order" type="action" class="btn-primary" attrs="{'invisible': [('state', 'not in', ['submitted', 'approved'])]}"/>
+                        <button name="%(action_convert_to_work_order)d" string="Convert to Work Order" type="action" class="btn-primary" invisible="state not in ('submitted', 'approved')"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,in_progress,completed" />
                     </header>
                     <sheet>

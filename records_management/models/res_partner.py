@@ -1241,3 +1241,5 @@ class ResPartner(models.Model):
         if 'portal_access_level' in vals:
             self._apply_portal_groups()
         return res
+
+    po_number = fields.Char(string='Default PO Number', help='Default Purchase Order number for this contact. Will be used to prefill work orders.')
