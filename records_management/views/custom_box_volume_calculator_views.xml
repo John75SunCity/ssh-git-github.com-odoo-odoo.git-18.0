@@ -57,7 +57,7 @@
                 </page>
 
                 <page name="work_order_billing" string="Work Order Billing" invisible="not shredding_work_order_id">
-                    <div class="alert alert-info mb-3">
+                    <div class="alert alert-info mb-3" role="alert">
                         <strong>📦 Box Conversion Summary</strong><br/>
                         Enter the dimensions and quantity above. The system will calculate how many
                         standard Type 01 boxes (1.2 CF each) this is equivalent to, and add them
@@ -74,9 +74,9 @@
                         </group>
                     </group>
                     <group>
-                        <button name="action_add_boxes_to_work_order" 
-                                string="➕ Add Boxes to Work Order" 
-                                type="object" 
+                        <button name="action_add_boxes_to_work_order"
+                                string="➕ Add Boxes to Work Order"
+                                type="object"
                                 class="btn-primary btn-lg"
                                 invisible="equivalent_type01_boxes == 0"/>
                     </group>
@@ -243,6 +243,6 @@
         <field name="binding_view_types">form</field>
     </record>
 
-    
+
     </data>
 </odoo>
