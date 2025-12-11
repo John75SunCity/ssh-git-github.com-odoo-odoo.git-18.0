@@ -259,6 +259,14 @@ class DestructionPortalController(CustomerPortal):
                                           s['date'] > datetime.now() - timedelta(days=30)]),
         }
 
+        # Add pending quotes count
+        pending_quotes = request.env['sale.order'].sudo().search_count([
+            ('partner_id', '=', partner.commercial_partner_id.id),
+            ('state', '=', 'draft'),
+            ('invoice_line_ids.records_service_type', 'in', ('shredding', 'destruction'))
+        ])
+        stats['pending_quotes'] = pending_quotes
+
         return {
             'bins': bins_data,
             'bins_records': bins,
@@ -655,3 +663,89 @@ class DestructionPortalController(CustomerPortal):
         })
 
         return request.render("records_management.portal_shredding_history", values)
+
+    # =========================================================================
+    # QUOTES ROUTES
+    # =========================================================================
+    @http.route(['/my/quotes'], type='http', auth='user', website=True)
+    def portal_quotes(self, page=1, sortby=None, search=None, **kw):
+        """List all quotes related to shredding/destruction services"""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id.commercial_partner_id
+
+        SaleOrder = request.env['sale.order'].sudo()
+        domain = [
+            ('partner_id', '=', partner.id),
+            ('state', '=', 'draft'),
+            ('invoice_line_ids.records_service_type', 'in', ('shredding', 'destruction'))
+        ]
+
+        # Search
+        if search:
+            domain += [('name', 'ilike', search)]
+
+        # Sorting
+        sortby = sortby or 'date_order desc'
+
+        # Pager
+        count = SaleOrder.search_count(domain)
+        pager = request.website.pager(
+            url='/my/quotes',
+            total=count,
+            page=page,
+            step=10
+        )
+
+        quotes = SaleOrder.search(domain, order=sortby, limit=10, offset=pager['offset'])
+
+        values.update({
+            'page_name': 'quotes',
+            'quotes': quotes,
+            'pager': pager,
+            'search': search,
+        })
+
+        return request.render("records_management.portal_quotes", values)
+
+    @http.route(['/my/quotes/generate'], type='http', auth='user', website=True)
+    def portal_quote_generate(self, **kw):
+        """Form to generate new quote"""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id.commercial_partner_id
+
+        # Get available products/services
+        Product = request.env['product.product'].sudo()
+        shredding_products = Product.search([('records_service_type', 'in', ('shredding', 'destruction'))])
+
+        values.update({
+            'page_name': 'quote_generate',
+            'products': shredding_products,
+            'partner': partner,
+        })
+
+        return request.render("records_management.portal_quote_generate", values)
+
+    @http.route(['/my/quotes/generate'], type='http', auth='user', methods=['POST'], csrf=True, website=True)
+    def portal_quote_generate_submit(self, **post):
+        """Create new quote from form"""
+        partner = request.env.user.partner_id.commercial_partner_id
+        SaleOrder = request.env['sale.order'].sudo()
+
+        order_vals = {
+            'partner_id': partner.id,
+            'date_order': fields.Datetime.now(),
+        }
+        order = SaleOrder.create(order_vals)
+
+        # Add lines from post (simplified)
+        # Assume post has product_id and quantity
+        if 'product_id' in post and 'quantity' in post:
+            product = request.env['product.product'].sudo().browse(int(post['product_id']))
+            line_vals = {
+                'order_id': order.id,
+                'product_id': product.id,
+                'product_uom_qty': float(post['quantity']),
+            }
+            request.env['sale.order.line'].sudo().create(line_vals)
+
+        return request.redirect('/my/quotes')
