@@ -48,24 +48,21 @@
                             </t>
 
                             <!-- Destruction Request Form -->
-                            <form action="/my/request/new/destruction/submit" method="post" class="card">
+                            <form action="/my/request/new/destruction" method="post" class="card">
                                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                 
                                 <div class="card-body">
-                                    <!-- Destruction Method -->
+                                    <!-- Destruction Method - Hardcoded to strip cut -->
                                     <div class="form-group">
-                                        <label for="destruction_method" class="font-weight-bold">
+                                        <label class="font-weight-bold">
                                             <i class="fa fa-cog"></i> Destruction Method
-                                            <span class="text-danger">*</span>
                                         </label>
-                                        <select name="destruction_method" id="destruction_method" class="form-control" required="required">
-                                            <option value="shredding">Cross-Cut Shredding (Most Common)</option>
-                                            <option value="pulverization">Pulverization (Complete Destruction)</option>
-                                            <option value="incineration">Incineration (Complete Disposal)</option>
-                                            <option value="degaussing">Degaussing (Electronic Media Only)</option>
-                                        </select>
+                                        <input type="hidden" name="destruction_method" value="shredding"/>
+                                        <p class="form-control-plaintext">
+                                            Strip Cut Shredding
+                                        </p>
                                         <small class="form-text text-muted">
-                                            Select the appropriate destruction method for your materials
+                                            We offer secure strip cut shredding for all destruction requests.
                                         </small>
                                     </div>
 
@@ -178,37 +175,19 @@
                                 </div>
                             </form>
 
-                            <!-- Destruction Method Info -->
+                            <!-- Destruction Method Info - Updated for single method -->
                             <div class="card mt-4">
                                 <div class="card-header bg-info text-white">
                                     <h5 class="mb-0">
-                                        <i class="fa fa-question-circle"></i> Destruction Methods Explained
+                                        <i class="fa fa-question-circle"></i> About Our Destruction Service
                                     </h5>
                                 </div>
                                 <div class="card-body">
                                     <dl class="row mb-0">
-                                        <dt class="col-sm-3">Cross-Cut Shredding</dt>
+                                        <dt class="col-sm-3">Strip Cut Shredding</dt>
                                         <dd class="col-sm-9">
-                                            Paper documents are shredded into small cross-cut pieces. 
-                                            Most common method for paper records. NAID AAA certified.
-                                        </dd>
-
-                                        <dt class="col-sm-3">Pulverization</dt>
-                                        <dd class="col-sm-9">
-                                            Complete destruction reducing materials to unrecognizable particles.
-                                            Used for highly sensitive documents or hard drives.
-                                        </dd>
-
-                                        <dt class="col-sm-3">Incineration</dt>
-                                        <dd class="col-sm-9">
-                                            Thermal destruction completely incinerating materials.
-                                            Used for materials requiring complete disposal.
-                                        </dd>
-
-                                        <dt class="col-sm-3">Degaussing</dt>
-                                        <dd class="col-sm-9">
-                                            Magnetic erasure for electronic media (hard drives, tapes).
-                                            Renders data completely unrecoverable.
+                                            Documents are shredded into long strips using industrial shredders. 
+                                            Secure and efficient method for paper records. Fully NAID AAA certified process.
                                         </dd>
                                     </dl>
                                 </div>
