@@ -308,7 +308,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
                 partner = record.shredding_work_order_id.partner_id
                 customer_rate = self.env['customer.negotiated.rate'].search([
                     ('partner_id', '=', partner.id),
-                    ('is_active', '=', True),
+                    ('active', '=', True),
                 ], limit=1)
                 if customer_rate and customer_rate.destruction_rate:
                     rate = customer_rate.destruction_rate
