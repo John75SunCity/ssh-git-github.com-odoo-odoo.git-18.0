@@ -46,16 +46,16 @@
                     </group>
 
                     <group name="calculated_volume" string="Calculated Volume">
-        <field name="custom_volume_cf" widget="float_time"/>
-        <field name="custom_volume_liters" widget="float_time"/>
+        <field name="custom_volume_cf"/>
+        <field name="custom_volume_liters"/>
                     </group>
                 </page>
 
                 <page name="standard_conversion" string="Standard Container Conversion">
                     <group name="recommendation" string="Recommendation">
         <field name="recommended_container_type"/>
-        <field name="equivalent_standard_boxes" widget="float_time"/>
-        <field name="volume_difference_cf" widget="float_time"/>
+        <field name="equivalent_standard_boxes"/>
+        <field name="volume_difference_cf"/>
                     </group>
 
                     <group name="comparison" string="Volume Comparison">
