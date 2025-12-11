@@ -263,7 +263,7 @@ class DestructionPortalController(CustomerPortal):
         pending_quotes = request.env['sale.order'].sudo().search_count([
             ('partner_id', '=', partner.commercial_partner_id.id),
             ('state', '=', 'draft'),
-            ('invoice_line_ids.records_service_type', 'in', ('shredding', 'destruction'))
+            ('order_line.records_service_type', 'in', ('shredding', 'destruction'))
         ])
         stats['pending_quotes'] = pending_quotes
 
