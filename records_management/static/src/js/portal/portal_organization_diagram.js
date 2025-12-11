@@ -341,7 +341,9 @@
         }
 
         _onNodeClick(params) {
+            console.log('Node clicked:', params);
             if (params.nodes && params.nodes.length > 0) {
+                console.log('Selected node ID:', params.nodes[0]);
                 const nodeId = params.nodes[0];
                 const node = this.diagramData.nodes.find(n => n.id === nodeId);
                 if (node) {
@@ -366,7 +368,7 @@
             
             let html = '<div class="row">';
             html += '<div class="col-md-4 text-center">';
-            if (node.image) {
+            if (node.image && node.image.trim() !== '') {
                 html += `<img src="${node.image}" class="img-fluid rounded mb-3" alt="${node.name}" style="max-width: 150px;" onerror="this.style.display='none'">`;
             }
             // Show node type icon
@@ -434,6 +436,7 @@
         }
         
         _showModal(modal) {
+            console.log('Showing modal using ' + (window.bootstrap ? 'Bootstrap' : 'fallback'));
             // Clean up any existing backdrop first
             this._cleanupModal();
             
@@ -450,9 +453,13 @@
                 });
                 this.modalInstance.show();
             } else {
-                // Manual fallback for non-Bootstrap environments
+                // Fallback: Open modal manually
+                this._cleanupModal();
+                modal.classList.remove('fade');
                 modal.classList.add('show');
                 modal.style.display = 'block';
+                modal.style.opacity = '1';
+                modal.style.zIndex = '1050';
                 modal.setAttribute('aria-modal', 'true');
                 modal.removeAttribute('aria-hidden');
                 document.body.classList.add('modal-open');
@@ -461,6 +468,7 @@
                 const backdrop = document.createElement('div');
                 backdrop.className = 'modal-backdrop fade show';
                 backdrop.id = 'org-diagram-backdrop';
+                backdrop.style.zIndex = '1040';
                 document.body.appendChild(backdrop);
                 
                 // Close handlers
