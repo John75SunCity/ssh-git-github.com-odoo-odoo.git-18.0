@@ -1,52 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- ===================================================================
-             PORTAL HOME MENU TEMPLATE - DISABLED IN v18.0.1.0.25
-             ===================================================================
-             
-             REASON FOR DISABLING:
-             This template previously added 10 static hardcoded cards to the portal home:
-             - Physical Inventory
-             - Service Requests
-             - Destruction & Compliance
-             - Billing & Invoices
-             - Reports & Analytics
-             - Tools & Utilities
-             - Advanced Inventory
-             - Barcode Operations (SECURITY VIOLATION)
-             - User Management
-             - Feedback & Communication
-             
-             PROBLEMS IDENTIFIED:
-             1. DUPLICATE CARDS: portal_home_preconfigured.xml already renders
-                dynamic cards built by the controller (PORTAL_CARD_METADATA in main.py)
-             
-             2. SECURITY VIOLATIONS:
-                - Barcode Scanner link in "Tools & Utilities" card
-                - Entire "Barcode Operations" card with 4 barcode scanner links
-                - Both were accessible to ALL portal users (should be internal only)
-                - Contradicts security policy from v18.0.1.0.18
-             
-             3. MAINTENANCE ISSUES:
-                - Static hardcoded cards cannot be configured dynamically
-                - No integration with RM Module Configurator
-                - No real-time counts or data
-                - Changes require template editing instead of controller config
-             
-             REPLACEMENT:
-             Use portal_home_preconfigured.xml which renders dynamic cards from
-             controller.PORTAL_CARD_METADATA. These dynamic cards:
-             - Are configured centrally in the controller
-             - Can be extended without editing templates
-             - Respect RM Module Configurator settings
-             - Provide real-time counts and data
-             - Have proper security group restrictions
-             
-             TEMPLATE STATUS: Completely removed
-             ALTERNATIVE: portal_home_preconfigured.xml + PORTAL_CARD_METADATA
-             VERSION: Disabled in v18.0.1.0.25
-             AUTHOR: GitHub Copilot / John75SunCity
-             =================================================================== -->
+        <!-- Optimized: Consolidated dynamic card rendering -->
+        <template id="portal_home_preconfigured" name="Portal Home Preconfigured">
+            <t t-call="portal.portal_layout">
+                <div class="container">
+                    <div class="row g-4">
+                        <t t-foreach="cards" t-as="card">
+                            <div class="col-md-4">
+                                <div class="card h-100 shadow-sm border-0">
+                                    <div class="card-body text-center">
+                                        <i t-attf-class="fa #{card.icon} fa-3x mb-3 text-primary"/>
+                                        <h5 class="card-title"><t t-esc="card.title"/></h5>
+                                        <p class="card-text"><t t-esc="card.description"/></p>
+                                        <a t-att-href="card.url" class="btn btn-primary">Go to <t t-esc="card.title"/></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
     </data>
 </odoo>

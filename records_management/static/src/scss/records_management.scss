@@ -292,3 +292,57 @@ $dark-gray: #343a40;
     }
   }
 }
+
+/* Optimized Styles: Added more variables and media queries for uniformity */
+
+/* Global Variables */
+:root {
+    --primary-color: #875A7B;
+    --secondary-color: #f8f9fa;
+    --text-color: #343a40;
+    --accent-color: #3498db;
+    --warning-color: #e74c3c;
+    --success-color: #2ecc71;
+}
+
+/* Base Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    color: var(--text-color);
+}
+
+/* Uniform Button Styles */
+.btn {
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    
+    &-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        
+        &:hover {
+            background-color: darken(var(--primary-color), 10%);
+            border-color: darken(var(--primary-color), 10%);
+        }
+    }
+}
+
+/* Responsive Layouts */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Enhanced Responsiveness */
+.dashboard-widget .card {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

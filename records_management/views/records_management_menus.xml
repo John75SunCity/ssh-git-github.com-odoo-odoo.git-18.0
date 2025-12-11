@@ -489,7 +489,7 @@
               parent="records_management.menu_records_inventory"
               action="action_customer_inventory"
               sequence="5"/>
-              
+
         <!-- Inventory Snapshots - Periodic inventory audits and snapshots -->
     <menuitem id="menu_inventory_snapshots"
               name="Inventory Snapshots"
