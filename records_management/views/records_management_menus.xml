@@ -452,7 +452,7 @@
         <menuitem id="menu_customer_feedback" name="Customer Feedback" parent="menu_portal_operations" action="customer_feedback_action" sequence="20" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
 
         <!-- portal.feedback model -->
-        <menuitem id="menu_portal_feedback" name="Portal Feedback Responses" parent="menu_portal_operations" action="action_feedback_responses" sequence="30" groups="records_management.group_records_manager,records_management.group_records_admin" />
+        <menuitem id="menu_portal_feedback" name="Portal Feedback Responses" parent="menu_portal_operations" action="action_portal_feedback_resolution" sequence="30" groups="records_management.group_records_manager,records_management.group_records_admin" />
 
         <!-- Shredding Operations (folder) -->
     <menuitem id="menu_shredding_service"
