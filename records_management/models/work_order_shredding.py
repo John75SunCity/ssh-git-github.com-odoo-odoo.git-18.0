@@ -622,10 +622,10 @@ class WorkOrderShredding(models.Model):
         """
         self.ensure_one()
         
-        if self.state not in ['confirmed', 'assigned', 'in_progress']:
+        if self.state not in ['scheduled', 'in_progress']:
             return {
                 'success': False,
-                'message': _('Work order must be confirmed/in progress to scan barcodes')
+                'message': _('Work order must be scheduled or in progress to scan barcodes')
             }
         
         # Find container by barcode
@@ -696,8 +696,8 @@ class WorkOrderShredding(models.Model):
             dict: Client action to launch rm_camera_scanner
         """
         self.ensure_one()
-        if self.state not in ['draft', 'confirmed', 'assigned', 'in_progress']:
-            raise UserError(_("Can only scan barcodes for active work orders."))
+        if self.state not in ['scheduled', 'in_progress']:
+            raise UserError(_("Can only scan barcodes for scheduled or in-progress work orders."))
         return {
             'type': 'ir.actions.client',
             'tag': 'rm_camera_scanner',
@@ -723,8 +723,8 @@ class WorkOrderShredding(models.Model):
             dict: Action to open bin service wizard
         """
         self.ensure_one()
-        if self.state not in ['confirmed', 'assigned', 'in_progress']:
-            raise UserError(_("Work order must be confirmed or in progress to scan bins."))
+        if self.state not in ['scheduled', 'in_progress']:
+            raise UserError(_("Work order must be scheduled or in progress to scan bins."))
         
         return {
             'name': _('Bin Service Scanner'),
@@ -753,14 +753,14 @@ class WorkOrderShredding(models.Model):
         """
         self.ensure_one()
         
-        if self.state not in ['confirmed', 'assigned', 'in_progress']:
+        if self.state not in ['scheduled', 'in_progress']:
             return {
                 'success': False,
-                'message': _('Work order must be active to record bin service')
+                'message': _('Work order must be scheduled or in progress to record bin service')
             }
         
-        # Auto-start work if confirmed
-        if self.state == 'confirmed':
+        # Auto-start work if scheduled
+        if self.state == 'scheduled':
             self.write({'state': 'in_progress', 'start_date': fields.Datetime.now()})
         
         # Find bin by barcode
@@ -822,14 +822,14 @@ class WorkOrderShredding(models.Model):
         """
         self.ensure_one()
         
-        if self.state not in ['confirmed', 'assigned', 'in_progress']:
+        if self.state not in ['scheduled', 'in_progress']:
             return {
                 'success': False,
-                'message': _('Work order must be active to record bin service')
+                'message': _('Work order must be scheduled or in progress to record bin service')
             }
         
-        # Auto-start work if confirmed
-        if self.state == 'confirmed':
+        # Auto-start work if scheduled
+        if self.state == 'scheduled':
             self.write({'state': 'in_progress', 'start_date': fields.Datetime.now()})
         
         # Find both bins
@@ -898,7 +898,7 @@ class WorkOrderShredding(models.Model):
     @api.constrains('scheduled_date')
     def _check_scheduled_date(self):
         for order in self:
-            if order.state == 'draft' and order.scheduled_date and order.scheduled_date < fields.Datetime.now():
+            if order.state == 'scheduled' and order.scheduled_date and order.scheduled_date < fields.Datetime.now():
                 raise ValidationError(_("Scheduled date cannot be in the past."))
 
     @api.constrains('start_date', 'completion_date')
