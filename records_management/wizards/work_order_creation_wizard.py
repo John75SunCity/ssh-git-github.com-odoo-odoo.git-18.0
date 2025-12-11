@@ -190,6 +190,12 @@ class WorkOrderCreationWizard(models.TransientModel):
     ], string="Material Type", default='paper')
     bin_quantity = fields.Integer(string="Number of Bins", default=1, help="Quantity of bins for the service")
 
+    scheduled_date = fields.Datetime(
+        string="Scheduled Date",
+        default=fields.Datetime.now,
+        required=True
+    )
+
     # ============================================================================
     # WIZARD ACTIONS
     # ============================================================================
