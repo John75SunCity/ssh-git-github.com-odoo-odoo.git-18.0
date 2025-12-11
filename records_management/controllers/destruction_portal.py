@@ -73,7 +73,7 @@ class DestructionPortalController(CustomerPortal):
         # All services are scheduled through FSM - this is the source of truth
         # =====================================================================
         FsmTask = request.env['project.task'].sudo()
-        
+
         # Get all shredding/destruction FSM tasks for this customer
         fsm_domain = [
             ('partner_id', '=', partner.commercial_partner_id.id),
@@ -85,7 +85,7 @@ class DestructionPortalController(CustomerPortal):
             ('shredding_work_order_id', '!=', False),
             ('destruction_work_order_id', '!=', False)
         ]
-        
+
         # Check if service_type field exists
         if 'service_type' not in FsmTask._fields:
             fsm_domain = [
@@ -96,12 +96,12 @@ class DestructionPortalController(CustomerPortal):
                 ('name', 'ilike', 'destruction'),
                 ('shredding_work_order_id', '!=', False),
             ]
-        
+
         fsm_tasks = FsmTask.search(fsm_domain, order='date_deadline desc', limit=50)
-        
+
         # Split into scheduled vs completed
-        scheduled_fsm_tasks = fsm_tasks.filtered(lambda t: not t.stage_id.is_closed)
-        completed_fsm_tasks = fsm_tasks.filtered(lambda t: t.stage_id.is_closed)
+        scheduled_fsm_tasks = fsm_tasks.filtered(lambda t: not t.stage_id.fold)
+        completed_fsm_tasks = fsm_tasks.filtered(lambda t: t.stage_id.fold)
 
         # =====================================================================
         # 3b. SHREDDING WORK ORDERS (Supplemental data linked to FSM)
@@ -176,7 +176,7 @@ class DestructionPortalController(CustomerPortal):
             else:
                 # Try to find via reverse lookup
                 wo = work_orders.filtered(lambda w: w.fsm_task_id.id == task.id)[:1]
-            
+
             # Find linked invoice via sale order or work order
             invoice = None
             invoice_name = None
@@ -188,14 +188,14 @@ class DestructionPortalController(CustomerPortal):
             elif wo and wo.invoice_id:
                 invoice = wo.invoice_id
                 invoice_name = invoice.name
-            
+
             # Get certificate
             certificate = None
             if wo and wo.certificate_id:
                 certificate = wo.certificate_id
             elif hasattr(task, 'destruction_certificate_id') and task.destruction_certificate_id:
                 certificate = task.destruction_certificate_id
-            
+
             service_history.append({
                 'id': task.id,
                 'type': 'fsm_task',
@@ -219,7 +219,7 @@ class DestructionPortalController(CustomerPortal):
         for wo in completed_work_orders:
             if wo.fsm_task_id and wo.fsm_task_id.id in processed_task_ids:
                 continue  # Already added via FSM task
-            
+
             service_history.append({
                 'id': wo.id,
                 'type': 'work_order',

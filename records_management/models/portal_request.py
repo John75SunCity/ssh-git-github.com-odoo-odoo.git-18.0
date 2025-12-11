@@ -349,6 +349,24 @@ class PortalRequest(models.Model):
         self.ensure_one()
         self.write({'state': 'completed', 'completion_date': fields.Datetime.now()})
         self.message_post(body=_("Request has been completed."))
+        self._create_billing_and_invoice()
+
+    def _create_billing_and_invoice(self):
+        if self.request_type != 'destruction':
+            return  # Only for destruction requests; expand as needed
+        
+        billing = self.env['records.billing'].create({
+            'partner_id': self.partner_id.id,
+            'date': fields.Date.today(),
+            'billing_config_id': self.partner_id.billing_config_id.id if hasattr(self.partner_id, 'billing_config_id') else False,
+            'billing_line_ids': [(0, 0, {
+                'description': 'Destruction Service for Request %s' % self.name,
+                'quantity': 1,  # Adjust based on actual items
+                'price_unit': 100.0,  # Replace with rate from config or profile
+            })],
+            'state': 'confirmed',
+        })
+        billing.action_create_invoice()
 
     def action_cancel(self):
         self.ensure_one()

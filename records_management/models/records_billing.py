@@ -115,5 +115,37 @@ class RecordsBilling(models.Model):
     def action_create_invoice(self):
         """Create invoice from billing record"""
         self.ensure_one()
-        # Implementation for invoice creation
-        pass
+        if self.state != 'confirmed':
+            raise UserError(_("Only confirmed billing records can be invoiced."))
+        
+        # Create invoice
+        invoice_vals = {
+            'move_type': 'out_invoice',
+            'partner_id': self.partner_id.id,
+            'invoice_date': self.date,
+            'currency_id': self.currency_id.id,
+            'company_id': self.company_id.id,
+            'invoice_line_ids': [],
+        }
+        
+        # Add lines from billing
+        for line in self.billing_line_ids:
+            invoice_vals['invoice_line_ids'].append((0, 0, {
+                'name': line.description,
+                'quantity': line.quantity,
+                'price_unit': line.price_unit,
+                'tax_ids': [(6, 0, line.tax_ids.ids)],
+            }))
+        
+        invoice = self.env['account.move'].create(invoice_vals)
+        invoice.action_post()
+        
+        self.invoice_id = invoice.id
+        self.state = 'billed'
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'account.move',
+            'res_id': invoice.id,
+        }
