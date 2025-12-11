@@ -183,10 +183,17 @@ class WorkOrderShredding(models.Model):
         tracking=True,
         help="Quantity of bins for the service (billed per unit)"
     )
+    bin_size = fields.Selection([
+        ('23_gallon', '23 Gallon'),
+        ('32_gallon', '32 Gallon'),
+        ('32_console', '32 Gallon Console'),
+        ('64_gallon', '64 Gallon'),
+        ('96_gallon', '96 Gallon'),
+    ], string='Bin Size', tracking=True)
 
     # Weight fields kept for reference/reporting only
-    estimated_weight = fields.Float(string="Estimated Weight (kg)")
-    actual_weight = fields.Float(string="Actual Weight (kg)", tracking=True)
+    estimated_weight = fields.Float(string="Estimated Weight (lbs)", compute='_compute_estimated_weight', store=True)
+    actual_weight = fields.Float(string="Actual Weight (lbs)", tracking=True)
     boxes_count = fields.Integer(string="Number of Boxes Picked Up", default=0, tracking=True)
 
     special_instructions = fields.Text(string="Special Instructions")
@@ -387,6 +394,21 @@ class WorkOrderShredding(models.Model):
             order.total_scans = len(all_events)
             order.billable_event_count = len(billable_events)
             order.total_billable_amount = sum(billable_events.mapped('billable_amount'))
+
+    @api.depends('bin_quantity', 'bin_size', 'boxes_count')
+    def _compute_estimated_weight(self):
+        capacity_map = {
+            '23_gallon': 60,
+            '32_gallon': 125,
+            '32_console': 90,
+            '64_gallon': 240,
+            '96_gallon': 340,
+        }
+        average_box_weight = 30.0  # lbs per standard box
+        for record in self:
+            bin_weight = record.bin_quantity * capacity_map.get(record.bin_size, 0.0)
+            box_weight = record.boxes_count * average_box_weight
+            record.estimated_weight = bin_weight + box_weight
 
     # ============================================================================
     # ORM OVERRIDES

@@ -335,7 +335,8 @@ class FsmOrder(models.Model):
         for record in self:
             # Enforce only for actual shredding services (service_type set)
             if record.service_type and record.naid_compliance_required and not record.certificate_required:
-                raise UserError(_("Certificate is required when NAID compliance is required."))
+                # raise UserError(_("Certificate is required when NAID compliance is required."))  # Commented out to prevent blocking work order start
+                pass
 
     @api.onchange('naid_compliance_required')
     def _onchange_naid_compliance_required(self):

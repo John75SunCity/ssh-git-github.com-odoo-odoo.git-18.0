@@ -11,7 +11,7 @@
                     <field name="partner_id" />
                     <field name="scheduled_date" />
                     <field name="boxes_count" string="Boxes" />
-                    <field name="actual_weight" string="Weight (kg)" sum="Total Weight" />
+                    <field name="actual_weight" string="Weight (lbs)" sum="Total Weight" />
                     <field name="state" widget="badge" decoration-info="state=='scheduled'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" />
                     <field name="completion_percentage" widget="progressbar" />
                     <field name="company_id" groups="base.group_multi_company" />
@@ -72,6 +72,7 @@
                                 <field name="shredding_service_type" widget="radio"/>
                                 <field name="material_type" widget="radio"/>
                                 <field name="bin_quantity" invisible="shredding_service_type not in ('bin_onetime', 'bin_recurring', 'bin_mobile')"/>
+                                <field name="bin_size" invisible="shredding_service_type not in ('bin_onetime', 'bin_recurring', 'bin_mobile')"/>
                                 <!-- active field hidden from UI - use Archive button from action menu instead -->
                                 <field name="active" invisible="1" />
                             </group>
