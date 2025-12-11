@@ -45,9 +45,40 @@
         <field name="height_cm" required="1"/>
                     </group>
 
+                    <group name="quantity" string="Quantity">
+        <field name="box_quantity"/>
+                    </group>
+
                     <group name="calculated_volume" string="Calculated Volume">
-        <field name="custom_volume_cf"/>
-        <field name="custom_volume_liters"/>
+        <field name="custom_volume_cf" string="Volume per Box (CF)"/>
+        <field name="total_volume_cf" string="Total Volume (CF)"/>
+        <field name="custom_volume_liters" string="Total Volume (Liters)"/>
+                    </group>
+                </page>
+
+                <page name="work_order_billing" string="Work Order Billing" invisible="not shredding_work_order_id">
+                    <div class="alert alert-info mb-3">
+                        <strong>📦 Box Conversion Summary</strong><br/>
+                        Enter the dimensions and quantity above. The system will calculate how many
+                        standard Type 01 boxes (1.2 CF each) this is equivalent to, and add them
+                        to the work order at the current shredding rate.
+                    </div>
+                    <group>
+                        <group string="Equivalent Standard Boxes">
+        <field name="total_volume_cf" readonly="1"/>
+        <field name="equivalent_type01_boxes" readonly="1"/>
+                        </group>
+                        <group string="Billing">
+        <field name="type01_rate" readonly="1"/>
+        <field name="total_charge" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <button name="action_add_boxes_to_work_order" 
+                                string="➕ Add Boxes to Work Order" 
+                                type="object" 
+                                class="btn-primary btn-lg"
+                                invisible="equivalent_type01_boxes == 0"/>
                     </group>
                 </page>
 
@@ -92,6 +123,7 @@
 
                 <page name="integration" string="FSM Integration">
                     <group name="fsm_links" string="Related Records">
+        <field name="shredding_work_order_id"/>
         <field name="fsm_task_id"/>
         <field name="pickup_request_id"/>
         <field name="shredding_service_id"/>
@@ -183,6 +215,33 @@
 
     <!-- Volume Calculator Menu Item -->
     <menuitem id="custom_box_volume_calculator_menu" name="Volume Calculator" parent="records_management.menu_records_configuration" action="custom_box_volume_calculator_action" sequence="25" groups="records_management.group_records_user"/>
+
+    <!-- Server Action: Open Volume Calculator from Shredding Work Order (Gear Icon) -->
+    <record id="action_open_volume_calculator_from_work_order" model="ir.actions.act_window">
+        <field name="name">📐 Volume Calculator</field>
+        <field name="res_model">custom.box.volume.calculator</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{
+            'default_shredding_work_order_id': active_id,
+            'default_calculation_purpose': 'fsm_quote',
+        }</field>
+        <field name="binding_model_id" ref="records_management.model_work_order_shredding"/>
+        <field name="binding_view_types">form</field>
+    </record>
+
+    <!-- Also add to Container Destruction Work Order -->
+    <record id="action_open_volume_calculator_from_destruction_order" model="ir.actions.act_window">
+        <field name="name">📐 Volume Calculator</field>
+        <field name="res_model">custom.box.volume.calculator</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{
+            'default_calculation_purpose': 'fsm_quote',
+        }</field>
+        <field name="binding_model_id" ref="records_management.model_container_destruction_work_order"/>
+        <field name="binding_view_types">form</field>
+    </record>
 
     
     </data>

@@ -175,6 +175,48 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         help='Shredding service this calculation is for'
     )
 
+    shredding_work_order_id = fields.Many2one(
+        'work.order.shredding',
+        string='Shredding Work Order',
+        help='Work order to add calculated boxes to'
+    )
+
+    # ============================================================================
+    # QUANTITY AND BOX CALCULATION FOR WORK ORDERS
+    # ============================================================================
+    box_quantity = fields.Integer(
+        string='Quantity of Boxes',
+        default=1,
+        help='Number of boxes with these dimensions'
+    )
+    total_volume_cf = fields.Float(
+        string='Total Volume (CF)',
+        digits=(12, 2),
+        compute='_compute_total_volume',
+        store=True,
+        help='Total volume for all boxes (custom_volume_cf × quantity)'
+    )
+    equivalent_type01_boxes = fields.Integer(
+        string='Equivalent Standard Boxes',
+        compute='_compute_equivalent_type01',
+        store=True,
+        help='Number of Type 01 standard boxes equivalent (rounded up)'
+    )
+    type01_rate = fields.Monetary(
+        string='Rate per Box',
+        currency_field='currency_id',
+        compute='_compute_type01_rate',
+        store=True,
+        help='Current standard box shredding rate'
+    )
+    total_charge = fields.Monetary(
+        string='Total Charge',
+        currency_field='currency_id',
+        compute='_compute_total_charge',
+        store=True,
+        help='Total charge for equivalent standard boxes'
+    )
+
     # ============================================================================
     # BUSINESS PROCESS FIELDS
     # ============================================================================
@@ -238,6 +280,53 @@ class CustomBoxVolumeCalculator(models.TransientModel):
                 else:
                     record.custom_volume_cf = 0.0
                     record.custom_volume_liters = 0.0
+
+    @api.depends('custom_volume_cf', 'box_quantity')
+    def _compute_total_volume(self):
+        """Calculate total volume for all boxes"""
+        for record in self:
+            record.total_volume_cf = record.custom_volume_cf * (record.box_quantity or 1)
+
+    @api.depends('total_volume_cf')
+    def _compute_equivalent_type01(self):
+        """Calculate equivalent Type 01 boxes (1.2 CF each), rounded up"""
+        TYPE_01_VOLUME = 1.2  # Standard box is 1.2 cubic feet
+        for record in self:
+            if record.total_volume_cf:
+                # Round up to next whole number
+                record.equivalent_type01_boxes = math.ceil(record.total_volume_cf / TYPE_01_VOLUME)
+            else:
+                record.equivalent_type01_boxes = 0
+
+    @api.depends('shredding_work_order_id', 'shredding_work_order_id.partner_id')
+    def _compute_type01_rate(self):
+        """Get the standard box rate for the customer"""
+        for record in self:
+            rate = 0.0
+            if record.shredding_work_order_id and record.shredding_work_order_id.partner_id:
+                # Try to get customer-specific rate first
+                partner = record.shredding_work_order_id.partner_id
+                customer_rate = self.env['customer.negotiated.rate'].search([
+                    ('partner_id', '=', partner.id),
+                    ('is_active', '=', True),
+                ], limit=1)
+                if customer_rate and customer_rate.destruction_rate:
+                    rate = customer_rate.destruction_rate
+                else:
+                    # Fall back to base rate
+                    base_rate = self.env['base.rate'].search([
+                        ('company_id', '=', record.company_id.id),
+                        ('state', '=', 'active'),
+                    ], limit=1)
+                    if base_rate:
+                        rate = base_rate.destruction_rate or base_rate.standard_box_rate or 0.0
+            record.type01_rate = rate
+
+    @api.depends('equivalent_type01_boxes', 'type01_rate')
+    def _compute_total_charge(self):
+        """Calculate total charge for equivalent boxes"""
+        for record in self:
+            record.total_charge = record.equivalent_type01_boxes * record.type01_rate
 
     @api.depends('custom_volume_cf')
     def _compute_recommended_container(self):
@@ -555,5 +644,72 @@ class CustomBoxVolumeCalculator(models.TransientModel):
             'params': {
                 'message': _('General quote line created successfully'),
                 'type': 'success',
+            }
+        }
+
+    def action_add_boxes_to_work_order(self):
+        """
+        Add calculated boxes to the shredding work order.
+        
+        This action:
+        1. Calculates equivalent Type 01 boxes (rounded up)
+        2. Updates the work order's boxes_count field
+        3. Shows confirmation with calculation details
+        """
+        self.ensure_one()
+        
+        if not self.shredding_work_order_id:
+            raise UserError(_("No work order linked. Please open this calculator from a work order."))
+        
+        if not self.equivalent_type01_boxes:
+            raise UserError(_("Please enter box dimensions first to calculate equivalent boxes."))
+        
+        work_order = self.shredding_work_order_id
+        
+        # Add to existing boxes count
+        new_boxes_count = work_order.boxes_count + self.equivalent_type01_boxes
+        
+        # Build description of what was added
+        dimensions = f"{self.length_inches}\" x {self.width_inches}\" x {self.height_inches}\""
+        if self.measurement_unit == 'centimeters':
+            dimensions = f"{self.length_cm}cm x {self.width_cm}cm x {self.height_cm}cm"
+        
+        # Update work order
+        work_order.write({
+            'boxes_count': new_boxes_count,
+        })
+        
+        # Post message to work order chatter
+        work_order.message_post(
+            body=_(
+                "📦 <b>Boxes Added via Volume Calculator</b><br/>"
+                "• Dimensions: %(dimensions)s<br/>"
+                "• Quantity: %(qty)d box(es)<br/>"
+                "• Volume per box: %(vol_per_box).2f CF<br/>"
+                "• Total Volume: %(total_vol).2f CF<br/>"
+                "• Equivalent Standard Boxes: %(equiv_boxes)d<br/>"
+                "• Rate per box: %(rate)s<br/>"
+                "• Total Charge: %(total)s"
+            ) % {
+                'dimensions': dimensions,
+                'qty': self.box_quantity,
+                'vol_per_box': self.custom_volume_cf,
+                'total_vol': self.total_volume_cf,
+                'equiv_boxes': self.equivalent_type01_boxes,
+                'rate': self.env['ir.qweb.field.monetary'].value_to_html(self.type01_rate, {'display_currency': self.currency_id}),
+                'total': self.env['ir.qweb.field.monetary'].value_to_html(self.total_charge, {'display_currency': self.currency_id}),
+            }
+        )
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Boxes Added'),
+                'message': _('Added %d equivalent standard box(es) to work order. Total boxes: %d') % (
+                    self.equivalent_type01_boxes, new_boxes_count
+                ),
+                'type': 'success',
+                'sticky': False,
             }
         }
