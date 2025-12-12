@@ -5627,7 +5627,8 @@ class RecordsManagementController(http.Controller):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
 
-        domain = [('partner_id', '=', partner.commercial_partner_id.id)]
+        # naid.audit.log doesn't have partner_id directly - filter via container_id.partner_id
+        domain = [('container_id.partner_id', '=', partner.commercial_partner_id.id)]
         activity_count = request.env['naid.audit.log'].sudo().search_count(domain)
 
         pager = request.website.pager(

@@ -1005,3 +1005,5 @@ access_add_to_work_order_wizard_user,add.to.work.order.wizard.user,model_add_to_
 access_add_to_work_order_wizard_manager,add.to.work.order.wizard.manager,model_add_to_work_order_wizard,records_management.group_records_manager,1,1,1,1
 access_barcode_sheet_wizard_user,barcode.sheet.wizard.user,model_barcode_sheet_wizard,records_management.group_records_user,1,1,1,0
 access_barcode_sheet_wizard_manager,barcode.sheet.wizard.manager,model_barcode_sheet_wizard,records_management.group_records_manager,1,1,1,1
+access_shredding_bin_scan_wizard_user,shredding.bin.scan.wizard.user,model_shredding_bin_scan_wizard,records_management.group_records_user,1,1,1,0
+access_shredding_bin_scan_wizard_manager,shredding.bin.scan.wizard.manager,model_shredding_bin_scan_wizard,records_management.group_records_manager,1,1,1,1
