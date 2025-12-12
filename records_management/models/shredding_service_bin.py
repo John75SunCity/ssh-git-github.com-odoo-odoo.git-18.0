@@ -506,34 +506,37 @@ class ShreddingServiceBin(models.Model):
 
     @api.depends('bin_size')
     def _compute_product_from_size(self):
-        """Auto-select product based on bin size for invoicing."""
-        # Build mapping of bin size to product (search once per bin size)
-        size_products = {}
+        """Auto-select product based on bin size for invoicing using XML refs."""
+        # Map bin sizes to XML IDs for reliable lookup
+        size_to_xmlid = {
+            '23': 'records_management.product_shredding_bin_23',
+            '32g': 'records_management.product_shredding_bin_32g',
+            '32c': 'records_management.product_shredding_bin_32c',
+            '64': 'records_management.product_shredding_bin_64',
+            '96': 'records_management.product_shredding_bin_96',
+        }
+        fallback_xmlid = 'records_management.product_shredding_service'
+        
+        # Cache products to avoid repeated lookups
+        product_cache = {}
+        
         for record in self:
             if not record.bin_size:
                 record.product_id = False
                 continue
             
-            if record.bin_size not in size_products:
-                # Search for product matching bin size
-                # Convention: Product name contains bin size like "32 Gallon" or internal ref
-                size_name_map = {
-                    '23': '23 Gallon',
-                    '32g': '32 Gallon Bin',
-                    '32c': '32 Gallon Console',
-                    '64': '64 Gallon',
-                    '96': '96 Gallon',
-                }
-                size_name = size_name_map.get(record.bin_size, '')
-                product = self.env['product.product'].search([
-                    ('is_records_management_product', '=', True),
-                    '|',
-                    ('name', 'ilike', size_name),
-                    ('default_code', '=', record.bin_size),
-                ], limit=1)
-                size_products[record.bin_size] = product
+            if record.bin_size not in product_cache:
+                xmlid = size_to_xmlid.get(record.bin_size, fallback_xmlid)
+                try:
+                    product = self.env.ref(xmlid, raise_if_not_found=False)
+                    if not product:
+                        # Fallback to generic shredding service
+                        product = self.env.ref(fallback_xmlid, raise_if_not_found=False)
+                    product_cache[record.bin_size] = product
+                except Exception:
+                    product_cache[record.bin_size] = False
             
-            record.product_id = size_products.get(record.bin_size, False)
+            record.product_id = product_cache.get(record.bin_size, False)
 
     @api.depends('bin_size', 'current_customer_id')
     def _compute_price_per_service(self):

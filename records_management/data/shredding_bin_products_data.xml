@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- 
+        ============================================================================
+        SHREDDING BIN SERVICE PRODUCTS
+        ============================================================================
+        Default products for each bin size used in shredding service billing.
+        These products are auto-linked to shredding.service.bin records via bin_size.
+        
+        Pricing is base/list price - customers may have negotiated rates that override.
+        ============================================================================
+        -->
+        
+        <!-- Product Category for Shredding Services -->
+        <record id="product_category_shredding_services" model="product.category">
+            <field name="name">Shredding Bin Services</field>
+            <field name="parent_id" ref="product.product_category_all"/>
+        </record>
+
+        <!-- 23 Gallon Shredinator Service -->
+        <record id="product_shredding_bin_23" model="product.product">
+            <field name="name">23 Gallon Shredinator Service</field>
+            <field name="default_code">SHRED-23</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_shredding_services"/>
+            <field name="list_price">20.00</field>
+            <field name="is_records_management_product">True</field>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="description_sale">Shredding service for 23 Gallon Shredinator bin. Includes secure pickup and NAID-compliant destruction.</field>
+            <field name="invoice_policy">order</field>
+        </record>
+
+        <!-- 32 Gallon Bin Service -->
+        <record id="product_shredding_bin_32g" model="product.product">
+            <field name="name">32 Gallon Bin Service</field>
+            <field name="default_code">SHRED-32G</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_shredding_services"/>
+            <field name="list_price">35.00</field>
+            <field name="is_records_management_product">True</field>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="description_sale">Shredding service for 32 Gallon standard bin. Includes secure pickup and NAID-compliant destruction.</field>
+            <field name="invoice_policy">order</field>
+        </record>
+
+        <!-- 32 Gallon Console Service -->
+        <record id="product_shredding_bin_32c" model="product.product">
+            <field name="name">32 Gallon Console Service</field>
+            <field name="default_code">SHRED-32C</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_shredding_services"/>
+            <field name="list_price">30.00</field>
+            <field name="is_records_management_product">True</field>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="description_sale">Shredding service for 32 Gallon console-style bin. Includes secure pickup and NAID-compliant destruction.</field>
+            <field name="invoice_policy">order</field>
+        </record>
+
+        <!-- 64 Gallon Bin Service -->
+        <record id="product_shredding_bin_64" model="product.product">
+            <field name="name">64 Gallon Bin Service</field>
+            <field name="default_code">SHRED-64</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_shredding_services"/>
+            <field name="list_price">65.00</field>
+            <field name="is_records_management_product">True</field>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="description_sale">Shredding service for 64 Gallon bin. Includes secure pickup and NAID-compliant destruction.</field>
+            <field name="invoice_policy">order</field>
+        </record>
+
+        <!-- 96 Gallon Bin Service -->
+        <record id="product_shredding_bin_96" model="product.product">
+            <field name="name">96 Gallon Bin Service</field>
+            <field name="default_code">SHRED-96</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_shredding_services"/>
+            <field name="list_price">95.00</field>
+            <field name="is_records_management_product">True</field>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="description_sale">Shredding service for 96 Gallon bin. Includes secure pickup and NAID-compliant destruction.</field>
+            <field name="invoice_policy">order</field>
+        </record>
+
+        <!-- Generic/Default Shredding Service (fallback) -->
+        <record id="product_shredding_service" model="product.product">
+            <field name="name">Shredding Service</field>
+            <field name="default_code">SHRED-GEN</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_shredding_services"/>
+            <field name="list_price">35.00</field>
+            <field name="is_records_management_product">True</field>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="description_sale">General shredding service. Used as fallback when specific bin size product is not available.</field>
+            <field name="invoice_policy">order</field>
+        </record>
+
+    </data>
+</odoo>

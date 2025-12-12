@@ -113,6 +113,7 @@
         "data/naid_configurator_data.xml",
         "data/document_retrieval_rates_data.xml",
         "data/products_data.xml",
+        "data/shredding_bin_products_data.xml",  # Default products for each bin size
         "data/storage_fee_data.xml",
         "data/container_bulk_actions.xml",  # Bulk actions for container management
 
