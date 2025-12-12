@@ -1485,3 +1485,296 @@ class PortalInteractiveController(CustomerPortal):
                 ('Content-Disposition', 'attachment; filename="%s"' % filename)
             ]
         )
+
+    # ========================================================================
+    # PORTAL DASHBOARD WIDGET APIs
+    # Count endpoints for dashboard stat cards
+    # ========================================================================
+
+    @http.route(['/my/containers/count'], type='json', auth='user')
+    def portal_containers_count(self, **kw):
+        """Return count of containers for dashboard widget"""
+        partner = request.env.user.partner_id
+        commercial = partner.commercial_partner_id or partner
+        
+        count = request.env['records.container'].sudo().search_count([
+            '|',
+            ('partner_id', '=', partner.id),
+            ('partner_id', '=', commercial.id)
+        ])
+        return {'count': count}
+
+    @http.route(['/my/documents/count'], type='json', auth='user')
+    def portal_documents_count(self, **kw):
+        """Return count of documents for dashboard widget"""
+        partner = request.env.user.partner_id
+        commercial = partner.commercial_partner_id or partner
+        
+        # Try records.document first
+        Document = request.env.get('records.document')
+        if Document:
+            count = Document.sudo().search_count([
+                '|',
+                ('partner_id', '=', partner.id),
+                ('partner_id', '=', commercial.id)
+            ])
+        else:
+            # Fall back to customer.inventory.document
+            Document = request.env.get('customer.inventory.document')
+            if Document:
+                count = Document.sudo().search_count([
+                    '|',
+                    ('partner_id', '=', partner.id),
+                    ('partner_id', '=', commercial.id)
+                ])
+            else:
+                count = 0
+        return {'count': count}
+
+    @http.route(['/my/requests/count'], type='json', auth='user')
+    def portal_requests_count(self, **kw):
+        """Return count of service requests for dashboard widget"""
+        partner = request.env.user.partner_id
+        commercial = partner.commercial_partner_id or partner
+        
+        count = request.env['portal.request'].sudo().search_count([
+            '|',
+            ('partner_id', '=', partner.id),
+            ('partner_id', '=', commercial.id),
+            ('state', 'not in', ['cancelled', 'done'])
+        ])
+        return {'count': count}
+
+    @http.route(['/my/certificates/count'], type='json', auth='user')
+    def portal_certificates_count(self, **kw):
+        """Return count of destruction certificates for dashboard widget"""
+        partner = request.env.user.partner_id
+        commercial = partner.commercial_partner_id or partner
+        
+        Certificate = request.env.get('destruction.certificate')
+        if Certificate:
+            count = Certificate.sudo().search_count([
+                '|',
+                ('partner_id', '=', partner.id),
+                ('partner_id', '=', commercial.id)
+            ])
+        else:
+            count = 0
+        return {'count': count}
+
+    @http.route(['/my/invoices/count'], type='json', auth='user')
+    def portal_invoices_count(self, **kw):
+        """Return count of invoices for dashboard widget"""
+        partner = request.env.user.partner_id
+        commercial = partner.commercial_partner_id or partner
+        
+        count = request.env['account.move'].sudo().search_count([
+            ('move_type', '=', 'out_invoice'),
+            '|',
+            ('partner_id', '=', partner.id),
+            ('partner_id', '=', commercial.id)
+        ])
+        return {'count': count}
+
+    # ========================================================================
+    # QUOTE GENERATOR WIDGET APIs
+    # Service catalog and quote submission
+    # ========================================================================
+
+    @http.route(['/my/quote/services'], type='json', auth='user')
+    def portal_quote_services(self, **kw):
+        """Return available services for quote generator"""
+        # Get base rates for pricing
+        base_rate = request.env['base.rate'].sudo().search([
+            ('company_id', '=', request.env.company.id),
+            ('state', '=', 'active'),
+        ], limit=1)
+        
+        services = [
+            {
+                'id': 'storage',
+                'name': _('Monthly Storage'),
+                'category': _('Storage'),
+                'unit': 'container/month',
+                'basePrice': base_rate.storage_rate if base_rate else 3.50,
+                'description': _('Secure climate-controlled storage')
+            },
+            {
+                'id': 'retrieval_standard',
+                'name': _('Standard Retrieval'),
+                'category': _('Retrieval'),
+                'unit': 'per request',
+                'basePrice': base_rate.document_retrieval_rate if base_rate else 15.00,
+                'description': _('3-5 business days delivery')
+            },
+            {
+                'id': 'retrieval_rush',
+                'name': _('Rush Retrieval'),
+                'category': _('Retrieval'),
+                'unit': 'per request',
+                'basePrice': (base_rate.document_retrieval_rate * 2.5) if base_rate else 35.00,
+                'description': _('24-hour delivery')
+            },
+            {
+                'id': 'destruction',
+                'name': _('Secure Destruction'),
+                'category': _('Destruction'),
+                'unit': 'per container',
+                'basePrice': base_rate.destruction_rate if base_rate else 8.00,
+                'description': _('NAID AAA certified destruction with certificate')
+            },
+            {
+                'id': 'scanning',
+                'name': _('Document Scanning'),
+                'category': _('Digitization'),
+                'unit': 'per page',
+                'basePrice': base_rate.scanning_rate if base_rate else 0.08,
+                'description': _('High-resolution scanning with OCR')
+            },
+            {
+                'id': 'pickup',
+                'name': _('Scheduled Pickup'),
+                'category': _('Logistics'),
+                'unit': 'per trip',
+                'basePrice': base_rate.pickup_rate if base_rate else 45.00,
+                'description': _('On-site pickup service')
+            }
+        ]
+        return services
+
+    @http.route(['/my/quote/rates'], type='json', auth='user')
+    def portal_quote_rates(self, **kw):
+        """Return customer-specific rates for quote generator"""
+        partner = request.env.user.partner_id
+        rates = {}
+        
+        # Check for negotiated rates
+        negotiated = request.env['customer.negotiated.rate'].sudo().search([
+            ('partner_id', '=', partner.commercial_partner_id.id or partner.id),
+            ('state', '=', 'active'),
+        ], limit=1)
+        
+        if negotiated:
+            # Map negotiated rates to service IDs
+            if negotiated.storage_rate:
+                rates['storage'] = negotiated.storage_rate
+            if negotiated.per_service_rate:
+                rates['retrieval_standard'] = negotiated.per_service_rate
+                rates['retrieval_rush'] = negotiated.per_service_rate * 2.5
+            if negotiated.destruction_rate:
+                rates['destruction'] = negotiated.destruction_rate
+            if negotiated.per_document_rate:
+                rates['scanning'] = negotiated.per_document_rate
+            if negotiated.pickup_rate:
+                rates['pickup'] = negotiated.pickup_rate
+        
+        return rates
+
+    @http.route(['/my/quote/submit'], type='json', auth='user')
+    def portal_quote_submit(self, services=None, **kw):
+        """Submit a quote request from the quote generator"""
+        if not services:
+            return {'success': False, 'message': _('No services selected')}
+        
+        partner = request.env.user.partner_id
+        
+        try:
+            # Build quote description
+            lines = []
+            for service_id, qty in services.items():
+                if qty > 0:
+                    lines.append('%s: %d' % (service_id.replace('_', ' ').title(), qty))
+            
+            description = _('Quote Request from Portal:\n') + '\n'.join(lines)
+            
+            # Create a portal request for the quote
+            vals = {
+                'partner_id': partner.id,
+                'request_type': 'quote',
+                'name': _('Quote Request - %s') % partner.name,
+                'description': description,
+                'priority': 'normal',
+                'source': 'portal',
+            }
+            
+            portal_request = request.env['portal.request'].sudo().create(vals)
+            
+            return {
+                'success': True,
+                'message': _('Quote request submitted successfully! Reference: %s') % portal_request.name,
+                'request_id': portal_request.id
+            }
+        except Exception as e:
+            return {'success': False, 'message': str(e)}
+
+    # ========================================================================
+    # USER/CONTACT IMPORT WIDGET APIs
+    # Bulk CSV import for portal contacts
+    # ========================================================================
+
+    @http.route(['/my/contacts/import/batch'], type='json', auth='user')
+    def portal_contacts_import_batch(self, records=None, **kw):
+        """Process a batch of contact records from CSV import"""
+        if not records:
+            return {'success': 0, 'errors': [{'row': 0, 'message': _('No records provided')}]}
+        
+        partner = request.env.user.partner_id
+        commercial = partner.commercial_partner_id or partner
+        
+        # Check if user has permission to add contacts
+        if not request.env.user.has_group('records_management.group_portal_company_admin'):
+            return {'success': 0, 'errors': [{'row': 0, 'message': _('You do not have permission to import contacts')}]}
+        
+        success_count = 0
+        errors = []
+        Partner = request.env['res.partner'].sudo()
+        
+        for idx, record in enumerate(records):
+            try:
+                # Validate required fields
+                if not record.get('name'):
+                    errors.append({'row': idx + 2, 'message': _('Missing required field: name')})
+                    continue
+                
+                # Check for duplicate email
+                email = record.get('email', '').strip()
+                if email:
+                    existing = Partner.search([
+                        ('email', '=', email),
+                        ('parent_id', '=', commercial.id)
+                    ], limit=1)
+                    if existing:
+                        errors.append({'row': idx + 2, 'message': _('Contact with this email already exists: %s') % email})
+                        continue
+                
+                # Create the contact as a child of the commercial partner
+                vals = {
+                    'name': record.get('name', '').strip(),
+                    'email': email,
+                    'phone': record.get('phone', '').strip(),
+                    'street': record.get('street', '').strip(),
+                    'city': record.get('city', '').strip(),
+                    'zip': record.get('zip', '').strip(),
+                    'parent_id': commercial.id,
+                    'type': 'contact',
+                    'is_company': False,
+                }
+                
+                # Handle country if provided
+                country_code = record.get('country', '').strip().upper()
+                if country_code:
+                    country = request.env['res.country'].sudo().search([
+                        '|',
+                        ('code', '=', country_code),
+                        ('name', 'ilike', country_code)
+                    ], limit=1)
+                    if country:
+                        vals['country_id'] = country.id
+                
+                Partner.create(vals)
+                success_count += 1
+                
+            except Exception as e:
+                errors.append({'row': idx + 2, 'message': str(e)})
+        
+        return {'success': success_count, 'errors': errors}
