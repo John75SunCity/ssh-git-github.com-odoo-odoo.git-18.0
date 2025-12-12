@@ -612,7 +612,7 @@ class WorkOrderShredding(models.Model):
     # BUSINESS METHODS
     # ============================================================================
     def _generate_destruction_certificate(self):
-        """Generate destruction certificate with box count details"""
+        """Generate destruction certificate with box/bin/service details, even for untracked shred."""
         self.ensure_one()
         if self.certificate_id:
             return self.certificate_id
@@ -623,19 +623,27 @@ class WorkOrderShredding(models.Model):
             'destruction_date': self.completion_date or fields.Datetime.now(),
             'issue_date': fields.Datetime.now(),
             'state': 'issued',
+            'certificate_type': 'shredding',  # Explicit for new field
         }
         certificate = self.env['naid.certificate'].create(certificate_vals)
         
-        # Create destruction item line for the boxes/bins
+        # Always create at least one item (services/scanned/untracked)
+        qty = (self.boxes_count or self.bin_quantity or 0)
+        scanned_list = ', '.join(self.scanned_barcode_ids.mapped('name')) if self.scanned_barcode_ids else ''
+        desc_parts = []
+        if qty > 0:
+            desc_parts.append(_("%d %s") % (qty, 'boxes' if self.boxes_count else 'bins'))
+        if scanned_list:
+            desc_parts.append(_("Scanned: %s") % scanned_list)
+        if self.actual_weight:
+            desc_parts.append(_("Weight: %.1f lbs") % self.actual_weight)
+        if not desc_parts:
+            desc_parts.append(_("Untracked shredding service performed"))
+        
         item_vals = {
             'certificate_id': certificate.id,
-            'description': _("%d %s of %s (Weight: %.1f lbs)") % (
-                self.boxes_count or self.bin_quantity or 0,
-                'boxes' if self.boxes_count else 'bins',
-                self.material_type or 'Mixed Media',
-                self.actual_weight or 0
-            ),
-            'quantity': self.boxes_count or self.bin_quantity or 0,
+            'description': '; '.join(desc_parts),
+            'quantity': max(qty, 1),
             'weight': self.actual_weight or 0,
         }
         self.env['naid.certificate.item'].create(item_vals)
