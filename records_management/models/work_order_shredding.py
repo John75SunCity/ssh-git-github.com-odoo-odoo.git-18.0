@@ -683,7 +683,26 @@ class WorkOrderShredding(models.Model):
                 'success': False,
                 'message': _('No container found with barcode: %s') % barcode_value
             }
-        
+        # Find bin by barcode
+        bin = self.env['shredding.service.bin'].search([('barcode', '=', barcode_value)], limit=1)
+        if bin:
+            # Create movement record
+            self.env['shredding.bin.movement'].create({
+                'bin_id': bin.id,
+                'movement_date': fields.Datetime.now(),
+                'from_location_id': bin.location_id.id,
+                'to_location_id': self.partner_id.property_stock_customer.id,  # Customer location
+                'from_status': bin.status,
+                'to_status': 'in_service',
+                'performed_by_id': self.env.user.id,
+                'reason': _('Scanned to work order %s') % self.name
+            })
+            # Update bin location/customer
+            bin.write({
+                'location_id': self.partner_id.property_stock_customer.id,
+                'current_customer_id': self.partner_id.id,
+                'status': 'in_service'
+            })
         # Check if already scanned
         if container in self.scanned_barcode_ids:
             return {

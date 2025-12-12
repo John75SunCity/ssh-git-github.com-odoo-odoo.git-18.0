@@ -210,6 +210,14 @@ class ShreddingServiceBin(models.Model):
         help="Base rate charged per service event from base rates"
     )
 
+    price_per_service = fields.Monetary(
+        string="Price per Service",
+        currency_field='currency_id',
+        compute='_compute_price_per_service',
+        store=True,
+        help="Calculated price based on bin size and negotiated rates."
+    )
+
     currency_id = fields.Many2one(
         comodel_name='res.currency',
         string="Currency",
@@ -473,6 +481,19 @@ class ShreddingServiceBin(models.Model):
                     '96': 95.00,   # 96 gallon bin
                 }
                 record.base_rate_per_service = fallback_rates.get(record.bin_size, 35.00)
+
+    @api.depends('bin_size', 'current_customer_id')
+    def _compute_price_per_service(self):
+        for bin in self:
+            if bin.bin_size and bin.current_customer_id:
+                # Lookup negotiated rate for customer/bin size
+                rate = self.env['customer.negotiated.rate'].search([
+                    ('partner_id', '=', bin.current_customer_id.id),
+                    ('bin_size', '=', bin.bin_size)
+                ], limit=1)
+                bin.price_per_service = rate.price if rate else 0.0
+            else:
+                bin.price_per_service = 0.0
 
     @api.depends('service_event_ids')
     def _compute_service_statistics(self):

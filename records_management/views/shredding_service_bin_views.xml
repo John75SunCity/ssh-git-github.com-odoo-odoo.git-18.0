@@ -160,6 +160,20 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
                             </group>
                         </group>
                     </page>
+
+                    <page string="Movement History" name="movement_history">
+        <field name="movement_ids" readonly="1">
+            <list>
+                <field name="movement_date"/>
+                <field name="from_status"/>
+                <field name="to_status"/>
+                <field name="from_location_id"/>
+                <field name="to_location_id"/>
+                <field name="performed_by_id"/>
+                <field name="reason"/>
+            </list>
+        </field>
+    </page>
                 </notebook>
             </sheet>
 
