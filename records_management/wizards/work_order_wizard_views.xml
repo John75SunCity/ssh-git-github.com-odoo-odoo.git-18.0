@@ -57,14 +57,8 @@
                                 Select the containers for this work order:
                             </p>
                             <field name="container_ids" nolabel="1" 
-                                   options="{'no_create': True}">
-                                <tree>
-                                    <field name="name"/>
-                                    <field name="barcode"/>
-                                    <field name="container_type_id"/>
-                                    <field name="state" widget="badge"/>
-                                </tree>
-                            </field>
+                                   widget="many2many_tags"
+                                   options="{'no_create': True, 'no_create_edit': True}"/>
                         </group>
 
                         <!-- Shredding Bin Selection -->
@@ -74,13 +68,8 @@
                                 Select the bins to service:
                             </p>
                             <field name="shredding_bin_ids" nolabel="1" 
-                                   options="{'no_create': True}">
-                                <tree>
-                                    <field name="name" optional="show"/>
-                                    <field name="barcode" optional="show"/>
-                                    <field name="bin_size" optional="show"/>
-                                </tree>
-                            </field>
+                                   widget="many2many_tags"
+                                   options="{'no_create': True, 'no_create_edit': True}"/>
                         </group>
 
                         <!-- File Selection (access) -->
@@ -90,13 +79,8 @@
                                 Select the files to access:
                             </p>
                             <field name="file_ids" nolabel="1" 
-                                   options="{'no_create': True}">
-                                <tree>
-                                    <field name="name"/>
-                                    <field name="barcode" optional="show"/>
-                                    <field name="container_id" optional="show"/>
-                                </tree>
-                            </field>
+                                   widget="many2many_tags"
+                                   options="{'no_create': True, 'no_create_edit': True}"/>
                         </group>
                     </group>
 
