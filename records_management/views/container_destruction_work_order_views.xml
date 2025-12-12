@@ -258,6 +258,29 @@
                                     </p>
                                 </group>
                             </page>
+                            <page string="Billing" name="billing">
+                                <group>
+                                    <group string="Service Details">
+                                        <field name="billable"/>
+                                        <field name="service_product_id"/>
+                                        <field name="quantity"/>
+                                        <field name="unit_price"/>
+                                    </group>
+                                    <group string="Discount (Optional)">
+                                        <field name="discount_amount" widget="monetary"/>
+                                        <field name="discount_reason" placeholder="Reason for discount..."
+                                               invisible="not discount_amount"/>
+                                        <field name="subtotal" widget="monetary" string="Total to Invoice"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Invoice Status">
+                                        <field name="invoice_status"/>
+                                        <field name="invoiced_amount" widget="monetary"/>
+                                        <field name="invoice_id"/>
+                                    </group>
+                                </group>
+                            </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">

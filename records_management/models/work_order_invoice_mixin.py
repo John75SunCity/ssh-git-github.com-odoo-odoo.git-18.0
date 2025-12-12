@@ -99,11 +99,23 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
         help='Quantity of service units'
     )
 
+    discount_amount = fields.Monetary(
+        string='Discount',
+        currency_field='currency_id',
+        help='Discount amount to subtract from total (e.g., courtesy discount, service credit)'
+    )
+    
+    discount_reason = fields.Char(
+        string='Discount Reason',
+        help='Reason for the discount (required if discount is applied)'
+    )
+
     subtotal = fields.Monetary(
         string='Subtotal',
         compute='_compute_subtotal',
         store=True,
-        currency_field='currency_id'
+        currency_field='currency_id',
+        help='Total after discount: (Unit Price × Quantity) - Discount'
     )
 
     # ============================================================================
@@ -161,11 +173,12 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
                 record.invoice_status = 'invoiced'
                 record.invoiced_amount = record.invoice_id.amount_total
 
-    @api.depends('unit_price', 'quantity')
+    @api.depends('unit_price', 'quantity', 'discount_amount')
     def _compute_subtotal(self):
-        """Compute subtotal from price and quantity"""
+        """Compute subtotal from price, quantity, minus discount"""
         for record in self:
-            record.subtotal = record.unit_price * record.quantity
+            gross = record.unit_price * record.quantity
+            record.subtotal = max(0, gross - (record.discount_amount or 0.0))
 
     def _compute_customer_balances(self):
         """
@@ -494,6 +507,7 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
         """
         Prepare invoice line values.
         Override in specific work order models to customize.
+        Returns a list of line values (main line + optional discount line).
         """
         self.ensure_one()
 
@@ -511,7 +525,10 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
         # Get quantity
         qty = self.quantity or 1.0
 
-        values = {
+        lines = []
+        
+        # Main service line
+        main_line = {
             'move_id': invoice.id,
             'product_id': product.id if product else False,
             'name': name,
@@ -526,9 +543,28 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
         # Add service type based on model
         service_type = self._get_service_type()
         if service_type:
-            values['records_service_type'] = service_type
+            main_line['records_service_type'] = service_type
 
-        return values
+        lines.append(main_line)
+        
+        # Add discount line if discount is applied
+        if self.discount_amount and self.discount_amount > 0:
+            discount_name = _('Discount')
+            if self.discount_reason:
+                discount_name = _('Discount: %s') % self.discount_reason
+            
+            discount_line = {
+                'move_id': invoice.id,
+                'product_id': False,
+                'name': discount_name,
+                'quantity': 1,
+                'price_unit': -self.discount_amount,  # Negative to subtract
+                'records_related': True,
+                'work_order_reference': self.name,
+            }
+            lines.append(discount_line)
+
+        return lines
 
     def _get_default_service_product(self):
         """Get or create default service product for this work order type"""
@@ -624,9 +660,10 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
         invoice_vals = self._prepare_invoice_values()
         invoice = self.env['account.move'].create(invoice_vals)
 
-        # Create invoice line
-        line_vals = self._prepare_invoice_line_values(invoice)
-        self.env['account.move.line'].create(line_vals)
+        # Create invoice lines (returns list now - may include discount line)
+        line_vals_list = self._prepare_invoice_line_values(invoice)
+        for line_vals in line_vals_list:
+            self.env['account.move.line'].create(line_vals)
 
         # Link invoice to work order
         self.invoice_id = invoice.id
@@ -636,7 +673,10 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
             self.write({'state': 'invoiced'})
 
         # Log message
-        self.message_post(body=_('Invoice %s created') % invoice.name)
+        discount_msg = ''
+        if self.discount_amount:
+            discount_msg = _(' (Discount: %s%s)') % (self.currency_id.symbol, self.discount_amount)
+        self.message_post(body=_('Invoice %s created%s') % (invoice.name, discount_msg))
 
         # Return action to view invoice
         return self.action_view_invoice()
