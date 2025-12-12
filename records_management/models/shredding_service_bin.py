@@ -40,11 +40,23 @@ class ShreddingServiceBin(models.Model):
     # ============================================================================
     # CORE FIELDS
     # ============================================================================
+    name = fields.Char(
+        string="Bin Name",
+        help="Optional friendly name for this bin (e.g., 'Break Room Bin', 'HR Office')"
+    )
+    
     active = fields.Boolean(
         string="Active",
         default=True,
         tracking=True,
         help="Uncheck to archive/deactivate this bin. Inactive bins are excluded from normal searches."
+    )
+    
+    is_customer_owned = fields.Boolean(
+        string="Customer Owned",
+        default=False,
+        tracking=True,
+        help="Check if this bin belongs to the customer rather than our company fleet"
     )
 
     # ============================================================================

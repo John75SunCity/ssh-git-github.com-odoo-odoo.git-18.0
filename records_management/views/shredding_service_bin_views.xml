@@ -10,16 +10,19 @@
         <field name="name">shredding.service.bin.view.list</field>
         <field name="model">shredding.service.bin</field>
         <field name="arch" type="xml">
-        <list string="Shredding Service Bins" decoration-success="status == 'active'"
-                decoration-warning="status == 'maintenance'" decoration-danger="status == 'retired'">
+        <list string="Shredding Service Bins" decoration-success="status == 'available'"
+                decoration-warning="status == 'maintenance'" decoration-danger="status == 'retired'"
+                editable="bottom">
         <field name="barcode"/>
+        <field name="name" optional="show"/>
         <field name="bin_size" widget="badge"/>
         <field name="status" widget="badge"/>
+        <field name="is_customer_owned" widget="boolean_toggle" optional="hide"/>
         <field name="current_customer_id"/>
-        <field name="location_id"/>
+        <field name="location_id" optional="hide"/>
         <field name="last_service_date" widget="date"/>
         <field name="total_services_count"/>
-        <field name="current_period_services"/>
+        <field name="current_period_services" optional="hide"/>
         <field name="base_rate_per_service" widget="monetary"/>
 </list>
     </field>
@@ -65,18 +68,19 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
 
                 <div class="oe_title">
                     <h1>
-        <field name="barcode" readonly="1"/>
+        <field name="barcode" placeholder="Enter barcode..."/>
                     </h1>
                     <h2>
-        <field name="bin_size" widget="selection_badge" readonly="1"/>
+        <field name="bin_size" widget="selection_badge"/>
                     </h2>
                 </div>
 
                 <group>
                     <group name="basic_info" string="Bin Information">
-        <field name="display_name"/>
-        <field name="bin_size" readonly="1"/>
+        <field name="name" placeholder="Optional friendly name..."/>
+        <field name="bin_size"/>
         <field name="barcode"/>
+        <field name="is_customer_owned"/>
         <field name="weight_capacity_lbs" widget="float"/>
         <field name="volume_capacity_cf" widget="float"/>
                     </group>
