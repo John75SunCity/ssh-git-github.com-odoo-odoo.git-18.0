@@ -599,6 +599,7 @@
         "views/unified_work_order_views.xml",
         "views/rm_sale_order_views.xml",  # Sale order extension for work order integration
         "wizards/work_order_wizard_views.xml",  # Multi-step work order creation wizard
+        "wizards/bin_migration_wizard_views.xml",  # Migrate bins from redundant models
         "views/visitor_views.xml",
         "views/wizard_template_views.xml",
         "views/work_order_creation_wizard_views.xml",

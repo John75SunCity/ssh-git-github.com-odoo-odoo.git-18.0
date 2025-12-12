@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Bin Migration Wizard Form View -->
+        <record id="bin_migration_wizard_view_form" model="ir.ui.view">
+            <field name="name">bin.migration.wizard.form</field>
+            <field name="model">bin.migration.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Migrate Bins to Shredding Service Bins">
+                    <sheet>
+                        <div class="alert alert-info" role="alert">
+                            <h4><i class="fa fa-info-circle"/> Bin Migration Wizard</h4>
+                            <p>This wizard migrates bin records from redundant models to the primary 
+                               <strong>Shredding Service Bins</strong> model, which integrates with 
+                               work order scanning and billing.</p>
+                        </div>
+                        
+                        <group>
+                            <group string="Source Selection">
+                                <field name="source_model" widget="radio"/>
+                                <field name="source_count" readonly="1"/>
+                            </group>
+                            <group string="Current Service Bins">
+                                <field name="existing_count" readonly="1"/>
+                            </group>
+                        </group>
+                        
+                        <group string="Migration Options">
+                            <field name="default_bin_size"/>
+                            <field name="skip_duplicates"/>
+                            <field name="archive_source"/>
+                        </group>
+                        
+                        <group string="Results" invisible="migrated_count == 0 and skipped_count == 0 and error_count == 0">
+                            <group>
+                                <field name="migrated_count"/>
+                                <field name="skipped_count"/>
+                                <field name="error_count"/>
+                            </group>
+                        </group>
+                        
+                        <group string="Migration Log" invisible="not migration_log">
+                            <field name="migration_log" nolabel="1" readonly="1"/>
+                        </group>
+                    </sheet>
+                    
+                    <footer>
+                        <button name="action_migrate" string="Migrate Bins" type="object" 
+                                class="btn-primary" icon="fa-exchange"
+                                confirm="This will migrate bins to Shredding Service Bins. Continue?"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Wizard Action -->
+        <record id="bin_migration_wizard_action" model="ir.actions.act_window">
+            <field name="name">Migrate Bins</field>
+            <field name="res_model">bin.migration.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+        <!-- Menu Item in Configuration -->
+        <menuitem id="menu_bin_migration_wizard"
+                  name="Migrate Bins to Service Bins"
+                  parent="records_management.menu_records_configuration"
+                  action="bin_migration_wizard_action"
+                  sequence="99"/>
+    </data>
+</odoo>

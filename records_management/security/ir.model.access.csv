@@ -1009,3 +1009,4 @@ access_shredding_bin_scan_wizard_user,shredding.bin.scan.wizard.user,model_shred
 access_shredding_bin_scan_wizard_manager,shredding.bin.scan.wizard.manager,model_shredding_bin_scan_wizard,records_management.group_records_manager,1,1,1,1
 access_rm_work_order_wizard_user,rm.work.order.wizard.user,model_rm_work_order_wizard,records_management.group_records_user,1,1,1,0
 access_rm_work_order_wizard_manager,rm.work.order.wizard.manager,model_rm_work_order_wizard,records_management.group_records_manager,1,1,1,1
+access_bin_migration_wizard_manager,bin.migration.wizard.manager,model_bin_migration_wizard,records_management.group_records_manager,1,1,1,1
