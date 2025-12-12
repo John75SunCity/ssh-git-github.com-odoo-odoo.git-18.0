@@ -30,23 +30,23 @@
             <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
                 <button name="action_view_shredding_work_orders" type="object"
                         class="oe_stat_button" icon="fa-recycle"
-                        invisible="shredding_count == 0">
-                    <field name="shredding_count" widget="statinfo" string="Shredding"/>
+                        invisible="shredding_wo_count == 0">
+                    <field name="shredding_wo_count" widget="statinfo" string="Shredding"/>
                 </button>
                 <button name="action_view_retrieval_work_orders" type="object"
                         class="oe_stat_button" icon="fa-truck"
-                        invisible="retrieval_count == 0">
-                    <field name="retrieval_count" widget="statinfo" string="Retrieval"/>
+                        invisible="retrieval_wo_count == 0">
+                    <field name="retrieval_wo_count" widget="statinfo" string="Retrieval"/>
                 </button>
                 <button name="action_view_destruction_work_orders" type="object"
                         class="oe_stat_button" icon="fa-fire"
-                        invisible="destruction_count == 0">
-                    <field name="destruction_count" widget="statinfo" string="Destruction"/>
+                        invisible="destruction_wo_count == 0">
+                    <field name="destruction_wo_count" widget="statinfo" string="Destruction"/>
                 </button>
                 <button name="action_view_access_work_orders" type="object"
                         class="oe_stat_button" icon="fa-key"
-                        invisible="access_count == 0">
-                    <field name="access_count" widget="statinfo" string="Access"/>
+                        invisible="access_wo_count == 0">
+                    <field name="access_wo_count" widget="statinfo" string="Access"/>
                 </button>
             </xpath>
         </field>
