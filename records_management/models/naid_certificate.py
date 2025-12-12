@@ -127,6 +127,12 @@ class NaidCertificate(models.Model):
     witness_name = fields.Char(string="Witness Name")
     witness_signature = fields.Binary(string="Witness Signature")
 
+    certificate_type = fields.Selection([
+        ('shredding', 'Shredding Destruction'),
+        ('retrieval', 'Retrieval Certification'),
+        ('other', 'Other NAID Certificate'),
+    ], string='Certificate Type', default='shredding', required=True, tracking=True)
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

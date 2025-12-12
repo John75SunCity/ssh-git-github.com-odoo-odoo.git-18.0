@@ -1344,7 +1344,7 @@ class RecordsManagementController(http.Controller):
         destruction_certificates = request.env['naid.certificate'].sudo().search([
             ('partner_id', '=', partner.id),
             ('state', '=', 'completed')
-        ], order='certificate_date desc')
+        ], order='issue_date desc')
 
         # Get training courses available to customers
         training_courses = request.env['slide.channel'].sudo().search([
@@ -1510,7 +1510,7 @@ class RecordsManagementController(http.Controller):
 
         # Sorting options
         searchbar_sortings = {
-            'date': {'label': 'Date', 'order': 'certificate_date desc'},
+            'date': {'label': 'Date', 'order': 'issue_date desc'},
             'name': {'label': 'Certificate Number', 'order': 'name'},
             'state': {'label': 'Status', 'order': 'state'},
         }
@@ -5248,7 +5248,7 @@ class RecordsManagementController(http.Controller):
 
         certificates = Certificate.search(
             domain,
-            order='destruction_date desc',
+            order='issue_date desc',
             limit=20,
             offset=pager['offset']
         )

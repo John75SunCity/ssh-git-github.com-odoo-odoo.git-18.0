@@ -511,4 +511,32 @@ class PortalRequest(models.Model):
                 'target': 'current',
             }
         return {'type': 'ir.actions.act_window_close'}
-    # ...existing code...
+    
+    def _create_work_order(self):
+        """Create type-specific work order from this portal request."""
+        self.ensure_one()
+        
+        if self.request_type == 'retrieval':
+            WorkOrderModel = self.env['work.order.retrieval']
+        elif self.request_type in ['shredding', 'destruction']:
+            WorkOrderModel = self.env['work.order.shredding']
+        else:
+            raise UserError(_("No work order model defined for request type '%s'.") % self.request_type)
+        
+        wo_vals = {
+            'name': '%s - WO' % self.name,
+            'partner_id': self.partner_id.id,
+            'portal_request_id': self.id,
+            'priority': self.priority,
+            'state': 'scheduled',
+        }
+        # Copy additional common fields if available
+        if hasattr(self, 'department_id') and self.department_id:
+            wo_vals['department_id'] = self.department_id.id
+        if hasattr(self, 'customer_staging_location_id') and self.customer_staging_location_id:
+            wo_vals['customer_staging_location_id'] = self.customer_staging_location_id.id
+        if hasattr(self, 'description'):
+            wo_vals['description'] = self.description
+        
+        work_order = WorkOrderModel.create(wo_vals)
+        return work_order

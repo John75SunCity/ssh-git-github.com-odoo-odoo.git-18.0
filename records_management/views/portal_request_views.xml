@@ -128,7 +128,7 @@
                 <form>
                     <header>
                         <button name="action_submit" string="Submit Request" type="object" class="oe_highlight" invisible="state != 'draft'" />
-                        <button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="state != 'submitted'" groups="records_management.group_records_manager" />
+                        <button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="1" groups="records_management.group_records_manager" />
                         <button name="action_reject" string="Reject" type="object" invisible="state != 'submitted'" groups="records_management.group_records_manager" />
                         <button name="action_start_progress" string="Start Progress" type="object" invisible="state != 'approved'" groups="records_management.group_records_manager" />
                         <button name="action_complete" string="Mark Complete" type="object" invisible="state != 'in_progress'" groups="records_management.group_records_manager" />

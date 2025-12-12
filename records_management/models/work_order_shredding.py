@@ -618,27 +618,30 @@ class WorkOrderShredding(models.Model):
             return self.certificate_id
 
         certificate_vals = {
-            'name': _("Certificate for %s", self.name),
-            'certificate_type': 'destruction',
+            'certificate_number': self.env['ir.sequence'].next_by_code('naid.certificate') or 'New',
             'partner_id': self.partner_id.id,
-            'work_order_id': self.id,
             'destruction_date': self.completion_date or fields.Datetime.now(),
-            'total_weight': self.actual_weight,
-            'material_type': self.material_type,
+            'issue_date': fields.Datetime.now(),
+            'state': 'issued',
         }
         certificate = self.env['naid.certificate'].create(certificate_vals)
         
-        # Create destruction item line for the boxes count
-        if self.boxes_count > 0:
-            self.env['naid.certificate.destruction.item'].create({
-                'certificate_id': certificate.id,
-                'description': _("%d Boxes of %s", self.boxes_count, self.material_type or 'Mixed Media'),
-                'quantity': self.boxes_count,
-                'weight': self.actual_weight / self.boxes_count if self.boxes_count else 0,
-            })
+        # Create destruction item line for the boxes/bins
+        item_vals = {
+            'certificate_id': certificate.id,
+            'description': _("%d %s of %s (Weight: %.1f lbs)") % (
+                self.boxes_count or self.bin_quantity or 0,
+                'boxes' if self.boxes_count else 'bins',
+                self.material_type or 'Mixed Media',
+                self.actual_weight or 0
+            ),
+            'quantity': self.boxes_count or self.bin_quantity or 0,
+            'weight': self.actual_weight or 0,
+        }
+        self.env['naid.certificate.item'].create(item_vals)
         
         self.certificate_id = certificate
-        self.message_post(body=_("Destruction Certificate %s created for %d boxes.", certificate.name, self.boxes_count))
+        self.message_post(body=_("Destruction Certificate %s created.") % certificate.name)
         return certificate
 
     def action_scan_barcode(self, barcode_value):
