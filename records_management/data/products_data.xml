@@ -38,6 +38,68 @@
             <field name="description">NAID-compliant secure destruction per container</field>
         </record>
 
+        <!-- Shredding Bin Products - Specific Sizes -->
+        <record id="product_shredding_bin_23" model="product.product">
+            <field name="name">23 Gallon Shredinator Bin Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
+            <field name="default_code">SHRED-23</field>
+            <field name="list_price">20.00</field>
+            <field name="standard_price">12.00</field>
+            <field name="description">23 Gallon Shredinator desk-side bin - compact secure shredding</field>
+        </record>
+
+        <record id="product_shredding_bin_32g" model="product.product">
+            <field name="name">32 Gallon Shredding Bin Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
+            <field name="default_code">SHRED-32G</field>
+            <field name="list_price">35.00</field>
+            <field name="standard_price">20.00</field>
+            <field name="description">32 Gallon standard shredding bin - office floor placement</field>
+        </record>
+
+        <record id="product_shredding_bin_32c" model="product.product">
+            <field name="name">32 Gallon Console Bin Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
+            <field name="default_code">SHRED-32C</field>
+            <field name="list_price">30.00</field>
+            <field name="standard_price">18.00</field>
+            <field name="description">32 Gallon console bin - slim profile for reception areas</field>
+        </record>
+
+        <record id="product_shredding_bin_64" model="product.product">
+            <field name="name">64 Gallon Shredding Bin Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
+            <field name="default_code">SHRED-64</field>
+            <field name="list_price">65.00</field>
+            <field name="standard_price">38.00</field>
+            <field name="description">64 Gallon large capacity shredding bin - high volume areas</field>
+        </record>
+
+        <record id="product_shredding_bin_96" model="product.product">
+            <field name="name">96 Gallon Shredding Bin Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
+            <field name="default_code">SHRED-96</field>
+            <field name="list_price">95.00</field>
+            <field name="standard_price">55.00</field>
+            <field name="description">96 Gallon extra-large shredding bin - warehouse/bulk document areas</field>
+        </record>
+
+        <!-- Shred Box - Customer-Supplied Standard Box -->
+        <record id="product_shred_box" model="product.product">
+            <field name="name">Shred Box (Standard Box)</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
+            <field name="default_code">SHRED-BOX</field>
+            <field name="list_price">10.00</field>
+            <field name="standard_price">5.00</field>
+            <field name="description">Secure shredding of customer-supplied standard cardboard box of documents (banker box size)</field>
+        </record>
+
         <!-- Business Integration Configuration Parameters -->
         <record id="container_service_integration" model="ir.config_parameter">
             <field name="key">records_management.container_service_integration</field>

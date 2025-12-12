@@ -859,6 +859,188 @@
             </t>
         </template>
 
+        <!-- Quote Detail Template - View, Download PDF, Submit for Service -->
+        <template id="portal_quote_detail" name="Quote Detail">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Quote <t t-esc="order.name"/></t>
+                
+                <div class="container mt-4">
+                    <!-- Success Messages -->
+                    <t t-if="is_new">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fa fa-check-circle"></i>
+                            <strong>Quote Created!</strong> Your quote has been generated successfully. Review the details below, then download as PDF or submit for service.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </t>
+                    <t t-if="submitted">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fa fa-check-circle"></i>
+                            <strong>Quote Submitted!</strong> Your service request has been submitted. Our team will contact you to schedule service.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </t>
+                    
+                    <div class="row">
+                        <!-- Quote Details -->
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-file-text-o"></i>
+                                        Quote <t t-esc="order.name"/>
+                                    </h5>
+                                    <span t-att-class="'badge ' + ('bg-success' if order.state == 'sale' else 'bg-warning' if order.state == 'sent' else 'bg-secondary')">
+                                        <t t-if="order.state == 'draft'">Draft</t>
+                                        <t t-elif="order.state == 'sent'">Sent</t>
+                                        <t t-elif="order.state == 'sale'">Confirmed</t>
+                                        <t t-else=""><t t-esc="order.state.replace('_', ' ').title()"/></t>
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Quote Info -->
+                                    <div class="row mb-4">
+                                        <div class="col-md-6">
+                                            <p class="mb-1"><strong>Customer:</strong> <t t-esc="order.partner_id.name"/></p>
+                                            <p class="mb-1"><strong>Date:</strong> <t t-esc="order.date_order.strftime('%B %d, %Y') if order.date_order else ''"/></p>
+                                        </div>
+                                        <div class="col-md-6 text-end">
+                                            <p class="mb-1"><strong>Quote #:</strong> <t t-esc="order.name"/></p>
+                                            <t t-if="order.commitment_date">
+                                                <p class="mb-1"><strong>Requested Date:</strong> <t t-esc="order.commitment_date.strftime('%B %d, %Y')"/></p>
+                                            </t>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Line Items -->
+                                    <table class="table table-striped">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>Service/Product</th>
+                                                <th class="text-center">Qty</th>
+                                                <th class="text-end">Unit Price</th>
+                                                <th class="text-end">Subtotal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="order.order_line" t-as="line">
+                                                <tr>
+                                                    <td>
+                                                        <t t-if="line.product_id">
+                                                            <t t-esc="line.product_id.name"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <t t-esc="line.name"/>
+                                                        </t>
+                                                    </td>
+                                                    <td class="text-center"><t t-esc="int(line.product_uom_qty)"/></td>
+                                                    <td class="text-end"><t t-esc="currency_symbol"/><t t-esc="'%.2f' % line.price_unit"/></td>
+                                                    <td class="text-end"><t t-esc="currency_symbol"/><t t-esc="'%.2f' % line.price_subtotal"/></td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr class="table-light">
+                                                <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
+                                                <td class="text-end"><t t-esc="currency_symbol"/><t t-esc="'%.2f' % order.amount_untaxed"/></td>
+                                            </tr>
+                                            <t t-if="order.amount_tax">
+                                                <tr class="table-light">
+                                                    <td colspan="3" class="text-end"><strong>Tax:</strong></td>
+                                                    <td class="text-end"><t t-esc="currency_symbol"/><t t-esc="'%.2f' % order.amount_tax"/></td>
+                                                </tr>
+                                            </t>
+                                            <tr class="table-primary">
+                                                <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                                <td class="text-end"><strong><t t-esc="currency_symbol"/><t t-esc="'%.2f' % order.amount_total"/></strong></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    
+                                    <!-- Notes -->
+                                    <t t-if="order.note">
+                                        <div class="mt-3">
+                                            <strong>Notes:</strong>
+                                            <p class="text-muted"><t t-esc="order.note"/></p>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Actions Sidebar -->
+                        <div class="col-lg-4">
+                            <!-- Download PDF Card -->
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h6 class="mb-0"><i class="fa fa-file-pdf-o"></i> Download Quote</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    <p class="text-muted small">Download a PDF copy of this quote for your records.</p>
+                                    <a t-attf-href="/my/quotes/#{order.id}/pdf" class="btn btn-primary btn-lg w-100">
+                                        <i class="fa fa-download"></i> Download PDF
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- Submit for Service Card (only if draft) -->
+                            <t t-if="order.state == 'draft'">
+                                <div class="card mb-3">
+                                    <div class="card-header bg-success text-white">
+                                        <h6 class="mb-0"><i class="fa fa-paper-plane"></i> Submit for Service</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-muted small">Ready to proceed? Submit this quote to request service.</p>
+                                        <form method="post" t-attf-action="/my/quotes/#{order.id}/submit">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            
+                                            <div class="mb-3">
+                                                <label for="requested_date" class="form-label">Preferred Service Date</label>
+                                                <input type="date" id="requested_date" name="requested_date" class="form-control"/>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="notes" class="form-label">Additional Notes</label>
+                                                <textarea id="notes" name="notes" class="form-control" rows="3" 
+                                                          placeholder="Any special instructions or requests..."></textarea>
+                                            </div>
+                                            
+                                            <button type="submit" class="btn btn-success btn-lg w-100">
+                                                <i class="fa fa-check"></i> Submit for Service
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </t>
+                            
+                            <!-- Status Card (if already submitted) -->
+                            <t t-if="order.state in ['sent', 'sale']">
+                                <div class="card mb-3 border-success">
+                                    <div class="card-body text-center">
+                                        <i class="fa fa-check-circle fa-3x text-success mb-2"></i>
+                                        <h5 class="text-success">Quote Submitted</h5>
+                                        <p class="text-muted small">This quote has been submitted for service. Our team will contact you soon.</p>
+                                    </div>
+                                </div>
+                            </t>
+                            
+                            <!-- Back to Quotes -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <a href="/my/quotes" class="btn btn-outline-secondary w-100">
+                                        <i class="fa fa-arrow-left"></i> Back to Quotes
+                                    </a>
+                                    <a href="/my/quotes" class="btn btn-outline-primary w-100 mt-2">
+                                        <i class="fa fa-plus"></i> Create New Quote
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
         <!-- NOTE: portal_requests removed 2025-12-04 - Use portal_requests_template in portal_requests_template.xml -->
         
         <!-- Enhanced User Management Template -->

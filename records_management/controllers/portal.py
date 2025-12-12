@@ -6031,6 +6031,7 @@ class RecordsManagementController(http.Controller):
         # Shredding bin pricing
         shredding_prices = []
         bin_sizes = [
+            ('box', 'Shred Box (Standard Box)'),
             ('23', '23 Gallon Shredinator'),
             ('32g', '32 Gallon Bin'),
             ('32c', '32 Gallon Console'),
@@ -6039,7 +6040,7 @@ class RecordsManagementController(http.Controller):
         ]
         
         # Default base prices
-        base_shred_prices = {'23': 20.0, '32g': 35.0, '32c': 30.0, '64': 65.0, '96': 95.0}
+        base_shred_prices = {'box': 10.0, '23': 20.0, '32g': 35.0, '32c': 30.0, '64': 65.0, '96': 95.0}
         
         for bin_code, bin_name in bin_sizes:
             # Check for negotiated rate
@@ -6180,6 +6181,7 @@ class RecordsManagementController(http.Controller):
             if line_type == 'shredding' and bin_size:
                 # Get shredding bin product
                 xmlid_map = {
+                    'box': 'records_management.product_shred_box',
                     '23': 'records_management.product_shredding_bin_23',
                     '32g': 'records_management.product_shredding_bin_32g',
                     '32c': 'records_management.product_shredding_bin_32c',
@@ -6203,7 +6205,7 @@ class RecordsManagementController(http.Controller):
                 else:
                     price = base_shred_prices.get(bin_size, 35.0)
                 
-                bin_names = {'23': '23 Gallon', '32g': '32 Gallon Bin', '32c': '32 Gallon Console', '64': '64 Gallon', '96': '96 Gallon'}
+                bin_names = {'box': 'Shred Box', '23': '23 Gallon', '32g': '32 Gallon Bin', '32c': '32 Gallon Console', '64': '64 Gallon', '96': '96 Gallon'}
                 description = '%s Shredding Service' % bin_names.get(bin_size, 'Shredding')
                 
             elif line_type == 'pickup':
@@ -6250,13 +6252,114 @@ class RecordsManagementController(http.Controller):
             
             i += 1
         
+        # Log the quote creation
+        order.message_post(
+            body=_("Quote created via customer portal"),
+            message_type='notification',
+        )
+        
+        # Redirect to quote detail page where they can review, download PDF, or submit
+        return request.redirect('/my/quotes/%s?new=1' % order.id)
+
+    @http.route(['/my/quotes/<int:order_id>'], type='http', auth='user', website=True)
+    def portal_quote_detail(self, order_id, **kw):
+        """Display quote detail with options to download PDF or submit for service."""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Get the quote
+        order = request.env['sale.order'].sudo().search([
+            ('id', '=', order_id),
+            ('partner_id', 'child_of', partner.id),
+        ], limit=1)
+        
+        if not order:
+            return request.redirect('/my/quotes?error=not_found')
+        
+        values.update({
+            'order': order,
+            'is_new': kw.get('new') == '1',
+            'submitted': kw.get('submitted') == '1',
+            'partner': partner,
+            'currency_symbol': request.env.company.currency_id.symbol or '$',
+        })
+        
+        return request.render('records_management.portal_quote_detail', values)
+
+    @http.route(['/my/quotes/<int:order_id>/pdf'], type='http', auth='user', website=True)
+    def portal_quote_pdf(self, order_id, **kw):
+        """Download quote as PDF."""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Get the quote
+        order = request.env['sale.order'].sudo().search([
+            ('id', '=', order_id),
+            ('partner_id', 'child_of', partner.id),
+        ], limit=1)
+        
+        if not order:
+            return request.redirect('/my/quotes?error=not_found')
+        
         # Generate PDF
         report = request.env.ref('sale.action_report_saleorder')
         pdf_content, _ = report._render_qweb_pdf([order.id])
         return request.make_response(pdf_content, headers=[
             ('Content-Type', 'application/pdf'),
-            ('Content-Disposition', f'attachment; filename="Quote_{order.name}.pdf"')
+            ('Content-Disposition', 'attachment; filename="Quote_%s.pdf"' % order.name)
         ])
+
+    @http.route(['/my/quotes/<int:order_id>/submit'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
+    def portal_quote_submit(self, order_id, **post):
+        """Submit quote for service - confirms the sale order."""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Get the quote
+        order = request.env['sale.order'].sudo().search([
+            ('id', '=', order_id),
+            ('partner_id', 'child_of', partner.id),
+            ('state', '=', 'draft'),
+        ], limit=1)
+        
+        if not order:
+            return request.redirect('/my/quotes?error=not_found')
+        
+        # Add notes if provided
+        if post.get('notes'):
+            order.note = post['notes']
+        
+        # Add requested date if provided
+        if post.get('requested_date'):
+            order.commitment_date = post['requested_date']
+        
+        # Confirm the order
+        order.action_confirm()
+        
+        # Log the submission
+        order.message_post(
+            body=_("Quote submitted for service via customer portal"),
+            message_type='notification',
+        )
+        
+        # Create a portal request for tracking
+        portal_request_vals = {
+            'name': _('Service Request from Quote %s') % order.name,
+            'partner_id': partner.id,
+            'request_type': 'other',
+            'state': 'submitted',
+            'created_via_portal': True,
+            'description': _('Services requested via portal quote generator. See Sale Order %s for details.') % order.name,
+        }
+        
+        # Link to department if available
+        if hasattr(partner, 'department_id') and partner.department_id:
+            portal_request_vals['department_id'] = partner.department_id.id
+        
+        try:
+            request.env['portal.request'].sudo().create(portal_request_vals)
+        except Exception:
+            pass  # Don't fail if portal.request has issues
+        
+        return request.redirect('/my/quotes/%s?submitted=1' % order.id)
 
     @http.route(['/my/inventory/temp'], type='http', auth="user", website=True)
     def portal_inventory_temp(self, page=1, sortby=None, filterby=None, search=None, **kw):
