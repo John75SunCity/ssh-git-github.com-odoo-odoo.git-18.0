@@ -313,3 +313,4 @@ from . import zpl_label_generator  # ZPL label printing service
 from . import barcode_batch_print  # Batch print tracking
 from . import res_users
 from . import sale_order_line
+
