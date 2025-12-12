@@ -313,17 +313,3 @@ from . import zpl_label_generator  # ZPL label printing service
 from . import barcode_batch_print  # Batch print tracking
 from . import res_users
 from . import sale_order_line
-from . import scanbot_barcode_scanner_wizard
-
-import logging
-_logger = logging.getLogger(__name__)
-
-try:
-    from . import naid_performance_history  # noqa: F401
-except Exception as e:  # broad on purpose during staged syntax cleanup
-    _logger.warning("Skipped loading naid_performance_history: %s", e)
-
-# Additional models that were missing - now properly integrated above
-# These imports have been moved to their appropriate sections in the file
-
-# Wizard models are imported via records_management/wizards/__init__.py at module root.

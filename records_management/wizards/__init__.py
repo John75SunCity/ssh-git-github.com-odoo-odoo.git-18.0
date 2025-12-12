@@ -41,3 +41,4 @@ from . import work_order_bin_service_wizard
 from . import retrieval_scan_wizard
 from . import monthly_storage_billing_wizard
 from . import records_container_stock_in_wizard
+from . import scanbot_barcode_scanner_wizard
