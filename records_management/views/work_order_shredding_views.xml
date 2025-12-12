@@ -39,7 +39,6 @@
                                 groups="records_management.group_records_manager"
                                 confirm="This will unlink the invoice from this work order, allowing it to be billed again. Continue?"/>
                         <button name="action_cancel" string="Cancel" type="object" invisible="state not in ['scheduled']" />
-                        <button name="%(action_shredding_bin_scan_wizard)d" string="Scan Bin" type="action" class="btn-info" invisible="state not in ['scheduled','in_progress']"/>
                         <field name="state" widget="statusbar" statusbar_visible="scheduled,in_progress,completed,invoiced" />
                     </header>
                     <sheet>

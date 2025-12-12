@@ -549,23 +549,22 @@ class WorkOrderShredding(models.Model):
         }
 
     def action_complete_work(self):
-        """Complete the work order and handle billing based on customer preference."""
+        """Complete the work order and generate certificate."""
         self.ensure_one()
-        if self.state != 'in_progress':
-            raise UserError(_("Only in-progress work orders can be completed."))
-        self.write({'state': 'completed', 'completion_date': fields.Datetime.now()})
-        if self.certificate_required and not self.certificate_id:
-            self._generate_destruction_certificate()
-        self.message_post(body=_("Work order completed."))
-
-        # Handle billing preference
-        if self.partner_id.consolidated_billing:
-            self.state = 'pending_billing'
-            self.message_post(body=_("Marked as pending monthly billing."))
-        else:
-            self.action_create_invoice()
-            self.state = 'invoiced'
-            self.message_post(body=_("Immediate invoice created."))
+        
+        # Relaxed validation: Allow completion even without bins/items if activities are recorded
+        if not self.activity_line_ids:
+            raise UserError(_('Please record at least one activity before completing.'))
+        
+        self.write({
+            'state': 'completed',
+            'completion_date': fields.Datetime.now(),
+        })
+        
+        # Generate minimal certificate if no items
+        self._generate_destruction_certificate()
+        
+        return True
 
     def action_cancel(self):
         """Cancel the work order."""
