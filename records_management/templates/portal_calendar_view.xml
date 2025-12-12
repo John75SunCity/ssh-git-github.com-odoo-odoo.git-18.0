@@ -98,21 +98,19 @@
                     </div>
                 </div>
 
-                <!-- Event Details Modal -->
-                <div class="modal fade" id="eventDetailsModal" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
+                <!-- Event Details Modal (Bootstrap 5) -->
+                <div class="modal fade" id="eventDetailsModal" tabindex="-1" aria-labelledby="eventModalTitle" aria-hidden="true">
+                    <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="eventModalTitle">Event Details</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&amp;times;</span>
-                                </button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body" id="eventModalBody">
                                 <!-- Dynamic content -->
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 <a href="#" id="eventViewDetailsBtn" class="btn btn-primary" style="display: none;">View Details</a>
                             </div>
                         </div>
@@ -123,10 +121,19 @@
             <!-- FullCalendar CSS -->
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css"/>
 
-            <!-- FullCalendar JS -->
+            <!-- FullCalendar JS Library -->
             <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
-
-            <!-- Custom Calendar Script moved to static/src/js/portal_calendar.js -->
+            
+            <!-- 
+                Portal Calendar Widget loaded via web.assets_frontend bundle:
+                records_management/static/src/js/portal/portal_calendar_widget.js
+                
+                This follows Odoo 18 best practices:
+                - Vanilla JavaScript (no odoo.define or publicWidget)
+                - IIFE pattern for module isolation
+                - Native fetch() for AJAX
+                - Auto-initializes when #portal-calendar element is present
+            -->
         </t>
     </template>
 </odoo>

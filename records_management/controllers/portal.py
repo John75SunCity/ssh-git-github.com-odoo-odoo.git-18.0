@@ -8419,9 +8419,14 @@ class RecordsManagementController(http.Controller):
         """
         AJAX endpoint to fetch calendar events for a date range.
         Used by FullCalendar or similar JS calendar libraries.
+        Returns a flat array of event objects (FullCalendar format).
         """
         partner = request.env.user.partner_id
+        events = []
 
+        # ====================================================================
+        # 1. PORTAL REQUESTS (Pickups, Retrievals, Destructions, etc.)
+        # ====================================================================
         domain = [
             ('partner_id', '=', partner.id),
             ('scheduled_date', '!=', False),
@@ -8435,24 +8440,96 @@ class RecordsManagementController(http.Controller):
         PortalRequest = request.env['portal.request'].sudo()
         requests = PortalRequest.search(domain)
 
-        events = []
+        color_map = {
+            'destruction': '#dc3545',      # Red for destruction
+            'shredding': '#8B0000',        # Dark red for shredding
+            'pickup': '#007bff',           # Blue for pickup
+            'retrieval': '#28a745',        # Green for retrieval
+            'delivery': '#ffc107',         # Yellow for delivery
+            'scan': '#6f42c1',             # Purple for scanning
+            'service': '#6c757d',          # Gray for generic service
+        }
+
         for req in requests:
             event_type = req.request_type or 'service'
-            color_map = {
-                'destruction': '#8B0000',
-                'shredding': '#8B0000',
-                'pickup': '#007bff',
-                'retrieval': '#28a745',
-                'delivery': '#ffc107',
-                'scan': '#6f42c1',
-            }
             events.append({
-                'id': req.id,
+                'id': 'request_%s' % req.id,
                 'title': req.name or 'Service Request',
                 'start': req.scheduled_date.isoformat() if req.scheduled_date else None,
-                'color': color_map.get(event_type, '#6c757d'),
-                'type': event_type,
+                'backgroundColor': color_map.get(event_type, '#6c757d'),
+                'borderColor': color_map.get(event_type, '#6c757d'),
                 'url': '/my/requests/%s' % req.id,
+                'extendedProps': {
+                    'type': 'request',
+                    'request_type': event_type,
+                    'state': req.state,
+                }
             })
 
-        return {'events': events}
+        # ====================================================================
+        # 2. FSM TASKS (Field Service tasks)
+        # ====================================================================
+        try:
+            FsmTask = request.env['project.task'].sudo()
+            fsm_domain = [
+                ('partner_id', '=', partner.id),
+                ('is_fsm', '=', True),
+            ]
+            if start:
+                fsm_domain.append(('planned_date_begin', '>=', start))
+            if end:
+                fsm_domain.append(('planned_date_begin', '<=', end))
+
+            fsm_tasks = FsmTask.search(fsm_domain, limit=100)
+
+            for task in fsm_tasks:
+                events.append({
+                    'id': 'task_%s' % task.id,
+                    'title': task.name,
+                    'start': task.planned_date_begin.isoformat() if task.planned_date_begin else None,
+                    'end': task.planned_date_end.isoformat() if task.planned_date_end else None,
+                    'backgroundColor': '#17a2b8',  # Teal for FSM tasks
+                    'borderColor': '#17a2b8',
+                    'url': '/my/task/%s' % task.id,
+                    'extendedProps': {
+                        'type': 'service',
+                        'work_order_type': 'field_service',
+                        'stage': task.stage_id.name if task.stage_id else 'N/A',
+                    }
+                })
+        except Exception:
+            # FSM module may not be installed
+            pass
+
+        # ====================================================================
+        # 3. SHREDDING BIN SERVICES (Recurring)
+        # ====================================================================
+        try:
+            from datetime import datetime, timedelta
+            ShredBin = request.env['shred.bin'].sudo()
+            shred_bins = ShredBin.search([
+                ('partner_id', '=', partner.commercial_partner_id.id),
+                ('active', '=', True),
+                ('service_frequency', '!=', False)
+            ])
+
+            for sbin in shred_bins:
+                if sbin.next_service_date:
+                    events.append({
+                        'id': 'shred_%s' % sbin.id,
+                        'title': _('Shredding: %s') % (sbin.bin_barcode or sbin.name),
+                        'start': sbin.next_service_date.isoformat() if sbin.next_service_date else None,
+                        'backgroundColor': '#8B0000',  # Dark red
+                        'borderColor': '#8B0000',
+                        'extendedProps': {
+                            'type': 'shredding',
+                            'frequency': sbin.service_frequency,
+                            'location': sbin.location_description or 'On-site',
+                        }
+                    })
+        except Exception:
+            # shred.bin model may not exist
+            pass
+
+        # Return flat array of events (FullCalendar format)
+        return events

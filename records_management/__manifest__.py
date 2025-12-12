@@ -876,6 +876,8 @@
             # "records_management/static/src/js/portal/portal_document_retrieval.js",
             # ✅ RE-ENABLED - Converted to vanilla JavaScript (organization chart visualization)
             "records_management/static/src/js/portal/portal_organization_diagram.js",
+            # ✅ NEW - Portal calendar widget (FullCalendar integration)
+            "records_management/static/src/js/portal/portal_calendar_widget.js",
             # TEMPORARILY DISABLED - Needs vanilla JS conversion (uses web.public.widget, web.ajax)
             # "records_management/static/src/js/portal/portal_interactive_features.js",
             "records_management/static/src/xml/intelligent_search_templates.xml",
