@@ -113,6 +113,15 @@ class ContainerAccessWorkOrder(models.Model):
         string='Portal Request',
         help="Link to the original customer request from the portal."
     )
+    
+    # Sale Order Integration (for native Odoo invoicing)
+    sale_order_id = fields.Many2one(
+        comodel_name='sale.order',
+        string="Sales Order",
+        help="Linked sales order for native Odoo invoicing",
+        tracking=True,
+        copy=False
+    )
     requestor_name = fields.Char(
         string='Requestor Name',
         tracking=True,

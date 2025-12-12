@@ -74,6 +74,15 @@ class ContainerDestructionWorkOrder(models.Model):
     )
     portal_request_id = fields.Many2one(comodel_name='portal.request', string='Portal Request', ondelete='set null')
 
+    # Sale Order Integration (for native Odoo invoicing)
+    sale_order_id = fields.Many2one(
+        comodel_name='sale.order',
+        string="Sales Order",
+        help="Linked sales order for native Odoo invoicing",
+        tracking=True,
+        copy=False
+    )
+
     # Pickup/Service Location
     customer_staging_location_id = fields.Many2one(
         comodel_name='customer.staging.location',

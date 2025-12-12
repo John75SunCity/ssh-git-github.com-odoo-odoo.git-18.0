@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Work Order Wizard Views
+        
+        PURPOSE: Provide a guided interface for creating work orders using
+        EXISTING work order models (work.order.shredding, work.order.retrieval, etc.)
+        
+        NOTE: This does NOT create new menus - use existing work order menus
+    -->
+
+    <!-- Main Multi-Step Wizard Form -->
+    <record id="rm_work_order_wizard_view_form" model="ir.ui.view">
+        <field name="name">rm.work.order.wizard.form</field>
+        <field name="model">rm.work.order.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Work Order">
+                <!-- Progress Indicator -->
+                <header>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="type,customer,items,details,review"/>
+                </header>
+                
+                <sheet>
+                    <!-- Step 1: Work Order Type -->
+                    <group invisible="state != 'type'">
+                        <group string="Select Work Order Type" col="1">
+                            <p class="text-muted mb-3">
+                                Choose the type of service. Each creates its specialized work order model:
+                            </p>
+                            <field name="work_order_type" widget="radio"
+                                   options="{'horizontal': False}"/>
+                        </group>
+                    </group>
+
+                    <!-- Step 2: Customer Selection -->
+                    <group invisible="state != 'customer'">
+                        <group string="Customer Information" col="2">
+                            <field name="partner_id" 
+                                   options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="department_id" 
+                                   invisible="not partner_id"/>
+                        </group>
+                        <group string="Service Location" col="2" invisible="not partner_id">
+                            <field name="service_address_id"/>
+                            <field name="contact_name"/>
+                            <field name="contact_phone"/>
+                        </group>
+                    </group>
+
+                    <!-- Step 3: Item Selection (varies by type) -->
+                    <group invisible="state != 'items'">
+                        <!-- Container Selection (retrieval, destruction) -->
+                        <group string="Select Containers" col="1"
+                               invisible="work_order_type not in ['retrieval', 'destruction']">
+                            <p class="text-muted mb-3">
+                                Select the containers for this work order:
+                            </p>
+                            <field name="container_ids" nolabel="1" 
+                                   options="{'no_create': True}">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="barcode"/>
+                                    <field name="container_type_id"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </group>
+
+                        <!-- Shredding Bin Selection -->
+                        <group string="Select Shredding Bins" col="1"
+                               invisible="work_order_type != 'shredding'">
+                            <p class="text-muted mb-3">
+                                Select the bins to service:
+                            </p>
+                            <field name="shredding_bin_ids" nolabel="1" 
+                                   options="{'no_create': True}">
+                                <tree>
+                                    <field name="name" optional="show"/>
+                                    <field name="barcode" optional="show"/>
+                                    <field name="bin_size" optional="show"/>
+                                </tree>
+                            </field>
+                        </group>
+
+                        <!-- File Selection (access) -->
+                        <group string="Select Files" col="1"
+                               invisible="work_order_type != 'access'">
+                            <p class="text-muted mb-3">
+                                Select the files to access:
+                            </p>
+                            <field name="file_ids" nolabel="1" 
+                                   options="{'no_create': True}">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="barcode" optional="show"/>
+                                    <field name="container_id" optional="show"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+
+                    <!-- Step 4: Service Details -->
+                    <group invisible="state != 'details'">
+                        <group string="Scheduling" col="2">
+                            <field name="scheduled_date"/>
+                            <field name="priority"/>
+                        </group>
+                        
+                        <group string="Service Options" col="2">
+                            <!-- Shredding-specific options -->
+                            <field name="service_type"
+                                   invisible="work_order_type != 'shredding'"/>
+                            
+                            <!-- Retrieval-specific options -->
+                            <field name="urgency_level"
+                                   invisible="work_order_type != 'retrieval'"/>
+                            
+                            <!-- Destruction-specific options -->
+                            <field name="witness_required"
+                                   invisible="work_order_type != 'destruction'"/>
+                        </group>
+
+                        <group string="Notes" col="1">
+                            <field name="notes" placeholder="Special instructions or requirements..."/>
+                        </group>
+                        
+                        <group string="Invoicing" col="2">
+                            <field name="create_invoice"/>
+                        </group>
+                    </group>
+
+                    <!-- Step 5: Review -->
+                    <group invisible="state != 'review'">
+                        <group string="Work Order Preview" col="1">
+                            <field name="preview_summary" nolabel="1"/>
+                        </group>
+                        
+                        <div class="alert alert-info" role="alert">
+                            <strong>Note:</strong> This wizard creates records in the EXISTING work order models
+                            (work.order.shredding, work.order.retrieval, etc.) which integrate with portal and controllers.
+                        </div>
+                    </group>
+                </sheet>
+
+                <footer>
+                    <button name="action_previous" type="object" string="Back" 
+                            class="btn-secondary"
+                            invisible="state == 'type'"/>
+                    <button name="action_next" type="object" string="Next" 
+                            class="btn-primary"
+                            invisible="state == 'review'"/>
+                    <button name="action_create_work_order" type="object" 
+                            string="Create Work Order" 
+                            class="btn-primary"
+                            invisible="state != 'review'"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action - No Menu, launched from other places -->
+    <record id="rm_work_order_wizard_action" model="ir.actions.act_window">
+        <field name="name">Create Work Order</field>
+        <field name="res_model">rm.work.order.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

@@ -138,6 +138,7 @@
         "data/required_document_cron.xml",
         "data/scheduled_actions_data.xml",
         "data/temp_inventory_configurator_data.xml",
+        "data/rm_service_products.xml",  # Work order service products (pickup, retrieval, destruction, etc.)
         "data/training_courses_customer_setup.xml",
         "data/training_courses_hipaa_privacy.xml",
         "data/training_courses_naid_content.xml",
@@ -596,6 +597,8 @@
         "views/unlock_service_history_views.xml",
         "views/unlock_service_part_views.xml",
         "views/unified_work_order_views.xml",
+        "views/rm_sale_order_views.xml",  # Sale order extension for work order integration
+        "wizards/work_order_wizard_views.xml",  # Multi-step work order creation wizard
         "views/visitor_views.xml",
         "views/wizard_template_views.xml",
         "views/work_order_creation_wizard_views.xml",

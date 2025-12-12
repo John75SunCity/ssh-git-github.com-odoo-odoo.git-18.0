@@ -43,3 +43,4 @@ from . import monthly_storage_billing_wizard
 from . import records_container_stock_in_wizard
 from . import scanbot_barcode_scanner_wizard
 from . import barcode_sheet_wizard
+from . import work_order_wizard  # Multi-step work order creation wizard

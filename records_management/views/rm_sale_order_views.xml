@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Sale Order Extension Views for Work Order Integration
+        
+        PURPOSE: Extend native sale.order views to show work order linkage
+        This does NOT create new menus - just extends existing sale.order views
+        with smart buttons to navigate to linked work orders.
+        
+        INTEGRATION PATTERN:
+        - Existing work order models remain the source of truth
+        - sale.order provides native Odoo invoicing capability
+        - Smart buttons navigate between sale.order and work orders
+    -->
+    
+    <!-- Extend Sale Order Form with Work Order Smart Buttons -->
+    <record id="view_sale_order_form_rm_extension" model="ir.ui.view">
+        <field name="name">sale.order.form.rm.extension</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <!-- Add RM Work Order toggle and type in header area -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="is_rm_work_order" invisible="not is_rm_work_order"/>
+                <field name="work_order_type" invisible="not is_rm_work_order"/>
+            </xpath>
+            
+            <!-- Add smart buttons for work orders when this is an RM work order -->
+            <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <button name="action_view_shredding_work_orders" type="object"
+                        class="oe_stat_button" icon="fa-recycle"
+                        invisible="shredding_count == 0">
+                    <field name="shredding_count" widget="statinfo" string="Shredding"/>
+                </button>
+                <button name="action_view_retrieval_work_orders" type="object"
+                        class="oe_stat_button" icon="fa-truck"
+                        invisible="retrieval_count == 0">
+                    <field name="retrieval_count" widget="statinfo" string="Retrieval"/>
+                </button>
+                <button name="action_view_destruction_work_orders" type="object"
+                        class="oe_stat_button" icon="fa-fire"
+                        invisible="destruction_count == 0">
+                    <field name="destruction_count" widget="statinfo" string="Destruction"/>
+                </button>
+                <button name="action_view_access_work_orders" type="object"
+                        class="oe_stat_button" icon="fa-key"
+                        invisible="access_count == 0">
+                    <field name="access_count" widget="statinfo" string="Access"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- Extend Sale Order Tree to show work order type -->
+    <record id="view_sale_order_tree_rm_extension" model="ir.ui.view">
+        <field name="name">sale.order.tree.rm.extension</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="work_order_type" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- Extend Sale Order Search to filter by RM work orders -->
+    <record id="view_sale_order_search_rm_extension" model="ir.ui.view">
+        <field name="name">sale.order.search.rm.extension</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='my_quotation']" position="after">
+                <separator/>
+                <filter name="rm_work_orders" string="RM Work Orders" 
+                        domain="[('is_rm_work_order', '=', True)]"/>
+                <filter name="rm_shredding" string="Shredding Orders"
+                        domain="[('work_order_type', '=', 'shredding')]"/>
+                <filter name="rm_retrieval" string="Retrieval Orders"
+                        domain="[('work_order_type', '=', 'retrieval')]"/>
+                <filter name="rm_destruction" string="Destruction Orders"
+                        domain="[('work_order_type', '=', 'destruction')]"/>
+                <filter name="rm_access" string="Access Orders"
+                        domain="[('work_order_type', '=', 'access')]"/>
+            </xpath>
+        </field>
+    </record>
+    
+</odoo>

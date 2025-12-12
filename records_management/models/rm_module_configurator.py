@@ -161,6 +161,13 @@ class RmModuleConfigurator(models.Model):
     photo_enabled = fields.Boolean(default=True)
     photo_portal_access = fields.Boolean(default=True, help="Allow portal users to view container/document photos.")
     key_restriction_enabled = fields.Boolean(default=True, help="Enable key access restriction management for partners.")
+    
+    # Unified Work Order System (sale.order extension)
+    unified_work_order_enabled = fields.Boolean(
+        default=True,
+        help="Enable the unified work order system based on Odoo's sale.order. "
+             "When enabled, work orders leverage native quotation → order → invoice workflow."
+    )
 
     current_value = fields.Char(compute="_compute_current_value", store=True)
     display_name = fields.Char(compute="_compute_display_name", store=True)

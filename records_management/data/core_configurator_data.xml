@@ -24,6 +24,7 @@
             <field name="photo_enabled">True</field>
             <field name="photo_portal_access">False</field>
             <field name="key_restriction_enabled">True</field>
+            <field name="unified_work_order_enabled">True</field>
         </record>
 
         <record id="config_chain_of_custody_toggle" model="rm.module.configurator">
@@ -134,6 +135,16 @@
             <field name="sequence">55</field>
             <field name="description">Enable key restriction rules and menu entries for secure access management.</field>
             <field name="key_restriction_enabled">True</field>
+        </record>
+
+        <record id="config_unified_work_order_toggle" model="rm.module.configurator">
+            <field name="name">Unified Work Orders (sale.order)</field>
+            <field name="config_key">unified.work.order.enabled</field>
+            <field name="config_type">feature_toggle</field>
+            <field name="category">workflow</field>
+            <field name="sequence">60</field>
+            <field name="description">Enable the unified work order system based on Odoo's native sale.order. This leverages Odoo's quotation → sales order → invoice workflow for all work orders (pickup, retrieval, destruction, shredding, etc.).</field>
+            <field name="unified_work_order_enabled">True</field>
         </record>
     </data>
 </odoo>

@@ -69,6 +69,15 @@ class WorkOrderRetrieval(models.Model):
 
     urgency_reason = fields.Text(string='Urgency Reason')
 
+    # Sale Order Integration (for native Odoo invoicing)
+    sale_order_id = fields.Many2one(
+        comodel_name='sale.order',
+        string="Sales Order",
+        help="Linked sales order for native Odoo invoicing",
+        tracking=True,
+        copy=False
+    )
+
     # Work Order Details
     work_order_type = fields.Selection([
         ('document_retrieval', 'Document Retrieval'),

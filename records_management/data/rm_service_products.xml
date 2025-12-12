@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- ============================================================================
+             RECORDS MANAGEMENT SERVICE PRODUCTS
+             
+             Default products for Records Management work order billing.
+             These products integrate with Odoo's native sales/invoicing workflow.
+             ============================================================================ -->
+
+        <!-- Product Category for RM Services -->
+        <record id="product_category_rm_services" model="product.category">
+            <field name="name">Records Management Services</field>
+            <field name="parent_id" ref="product.product_category_all"/>
+        </record>
+
+        <!-- ==================== PICKUP SERVICES ==================== -->
+        
+        <record id="product_rm_pickup_standard" model="product.product">
+            <field name="name">Standard Container Pickup</field>
+            <field name="default_code">REC-PICKUP</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">25.00</field>
+            <field name="standard_price">10.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Standard container pickup service. Per container fee.</field>
+        </record>
+
+        <record id="product_rm_pickup_rush" model="product.product">
+            <field name="name">Rush Pickup (Same Day)</field>
+            <field name="default_code">REC-PICKUP-RUSH</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">75.00</field>
+            <field name="standard_price">25.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Rush same-day pickup service. Additional fee per pickup.</field>
+        </record>
+
+        <record id="product_rm_trip_charge" model="product.product">
+            <field name="name">Trip Charge</field>
+            <field name="default_code">REC-TRIP</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">45.00</field>
+            <field name="standard_price">20.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Standard trip charge for service visits.</field>
+        </record>
+
+        <!-- ==================== DELIVERY SERVICES ==================== -->
+
+        <record id="product_rm_delivery_standard" model="product.product">
+            <field name="name">Standard Container Delivery</field>
+            <field name="default_code">REC-DELIVERY</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">25.00</field>
+            <field name="standard_price">10.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Standard container delivery service. Per container fee.</field>
+        </record>
+
+        <record id="product_rm_delivery_rush" model="product.product">
+            <field name="name">Rush Delivery (Same Day)</field>
+            <field name="default_code">REC-DELIVERY-RUSH</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">95.00</field>
+            <field name="standard_price">35.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Rush same-day delivery service.</field>
+        </record>
+
+        <!-- ==================== RETRIEVAL SERVICES ==================== -->
+
+        <record id="product_rm_retrieval_standard" model="product.product">
+            <field name="name">Container Retrieval</field>
+            <field name="default_code">REC-RETRIEVAL</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">35.00</field>
+            <field name="standard_price">15.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Standard container retrieval from storage. Per container fee.</field>
+        </record>
+
+        <record id="product_rm_retrieval_rush" model="product.product">
+            <field name="name">Rush Retrieval (2-4 hours)</field>
+            <field name="default_code">REC-RETRIEVAL-RUSH</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">85.00</field>
+            <field name="standard_price">35.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Rush retrieval service with 2-4 hour delivery.</field>
+        </record>
+
+        <record id="product_rm_retrieval_emergency" model="product.product">
+            <field name="name">Emergency Retrieval (1 hour)</field>
+            <field name="default_code">REC-RETRIEVAL-EMRG</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">150.00</field>
+            <field name="standard_price">60.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Emergency retrieval with 1-hour guaranteed delivery.</field>
+        </record>
+
+        <!-- ==================== DESTRUCTION SERVICES ==================== -->
+
+        <record id="product_rm_destruction_container" model="product.product">
+            <field name="name">Container Destruction</field>
+            <field name="default_code">REC-DESTRUCTION</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">15.00</field>
+            <field name="standard_price">5.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Secure NAID AAA compliant destruction. Per container fee.</field>
+        </record>
+
+        <record id="product_rm_destruction_witnessed" model="product.product">
+            <field name="name">Witnessed Destruction</field>
+            <field name="default_code">REC-DESTRUCTION-WIT</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">125.00</field>
+            <field name="standard_price">50.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Witnessed destruction service. Flat fee per event.</field>
+        </record>
+
+        <record id="product_rm_destruction_onsite" model="product.product">
+            <field name="name">On-Site Mobile Destruction</field>
+            <field name="default_code">REC-DESTRUCTION-ONSITE</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">250.00</field>
+            <field name="standard_price">100.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">On-site mobile shredding service. Minimum charge per visit.</field>
+        </record>
+
+        <record id="product_rm_destruction_weight" model="product.product">
+            <field name="name">Destruction by Weight</field>
+            <field name="default_code">REC-DESTRUCTION-LB</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">0.10</field>
+            <field name="standard_price">0.03</field>
+            <field name="uom_id" ref="uom.product_uom_lb"/>
+            <field name="uom_po_id" ref="uom.product_uom_lb"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">delivery</field>
+            <field name="description_sale">Destruction charge per pound of material destroyed.</field>
+        </record>
+
+        <!-- ==================== SHREDDING BIN SERVICES ==================== -->
+
+        <record id="product_rm_bin_service_23" model="product.product">
+            <field name="name">Shredding Bin Service - 23 Gallon</field>
+            <field name="default_code">REC-BIN-23</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">25.00</field>
+            <field name="standard_price">8.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Service fee for 23-gallon console. Per service.</field>
+        </record>
+
+        <record id="product_rm_bin_service_32g" model="product.product">
+            <field name="name">Shredding Bin Service - 32 Gallon (Gray)</field>
+            <field name="default_code">REC-BIN-32G</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">35.00</field>
+            <field name="standard_price">12.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Service fee for 32-gallon gray bin. Per service.</field>
+        </record>
+
+        <record id="product_rm_bin_service_32c" model="product.product">
+            <field name="name">Shredding Bin Service - 32 Gallon (Cream)</field>
+            <field name="default_code">REC-BIN-32C</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">35.00</field>
+            <field name="standard_price">12.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Service fee for 32-gallon cream bin. Per service.</field>
+        </record>
+
+        <record id="product_rm_bin_service_64" model="product.product">
+            <field name="name">Shredding Bin Service - 64 Gallon</field>
+            <field name="default_code">REC-BIN-64</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">45.00</field>
+            <field name="standard_price">15.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Service fee for 64-gallon bin. Per service.</field>
+        </record>
+
+        <record id="product_rm_bin_service_96" model="product.product">
+            <field name="name">Shredding Bin Service - 96 Gallon</field>
+            <field name="default_code">REC-BIN-96</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">55.00</field>
+            <field name="standard_price">18.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Service fee for 96-gallon bin. Per service.</field>
+        </record>
+
+        <!-- Bin Rental -->
+        <record id="product_rm_bin_rental_monthly" model="product.product">
+            <field name="name">Shredding Bin Rental - Monthly</field>
+            <field name="default_code">REC-BIN-RENTAL</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">15.00</field>
+            <field name="standard_price">5.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Monthly rental fee per bin.</field>
+        </record>
+
+        <!-- ==================== SCANNING SERVICES ==================== -->
+
+        <record id="product_rm_scanning_standard" model="product.product">
+            <field name="name">Document Scanning - Standard</field>
+            <field name="default_code">REC-SCAN</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">0.15</field>
+            <field name="standard_price">0.05</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">delivery</field>
+            <field name="description_sale">Standard document scanning. Per page.</field>
+        </record>
+
+        <record id="product_rm_scanning_large" model="product.product">
+            <field name="name">Document Scanning - Large Format</field>
+            <field name="default_code">REC-SCAN-LG</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">2.50</field>
+            <field name="standard_price">1.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">delivery</field>
+            <field name="description_sale">Large format document scanning (11x17 and larger). Per page.</field>
+        </record>
+
+        <record id="product_rm_scanning_prep" model="product.product">
+            <field name="name">Document Prep for Scanning</field>
+            <field name="default_code">REC-SCAN-PREP</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">35.00</field>
+            <field name="standard_price">15.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">delivery</field>
+            <field name="description_sale">Document preparation for scanning. Per hour (enter hours as quantity).</field>
+        </record>
+
+        <!-- ==================== STORAGE SERVICES ==================== -->
+
+        <record id="product_rm_storage_monthly" model="product.product">
+            <field name="name">Container Storage - Monthly</field>
+            <field name="default_code">REC-STORAGE</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">3.50</field>
+            <field name="standard_price">1.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Monthly storage fee per container.</field>
+        </record>
+
+        <!-- ==================== ACCESS SERVICES ==================== -->
+
+        <record id="product_rm_access_research" model="product.product">
+            <field name="name">Research Room Access</field>
+            <field name="default_code">REC-ACCESS</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">50.00</field>
+            <field name="standard_price">20.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">delivery</field>
+            <field name="description_sale">On-site research room access. Per hour (enter hours as quantity).</field>
+        </record>
+
+        <!-- ==================== AUDIT SERVICES ==================== -->
+
+        <record id="product_rm_audit_inventory" model="product.product">
+            <field name="name">Inventory Audit</field>
+            <field name="default_code">REC-AUDIT</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">150.00</field>
+            <field name="standard_price">60.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">Complete inventory audit service. Per audit.</field>
+        </record>
+
+        <!-- ==================== CERTIFICATE SERVICES ==================== -->
+
+        <record id="product_rm_certificate_destruction" model="product.product">
+            <field name="name">Certificate of Destruction</field>
+            <field name="default_code">REC-CERT</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_rm_services"/>
+            <field name="list_price">0.00</field>
+            <field name="standard_price">0.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+            <field name="invoice_policy">order</field>
+            <field name="description_sale">NAID AAA compliant Certificate of Destruction. Included with destruction service.</field>
+        </record>
+
+    </data>
+</odoo>
