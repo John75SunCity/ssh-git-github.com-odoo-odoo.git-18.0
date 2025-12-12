@@ -280,6 +280,46 @@
                             <t t-call="portal.pager"/>
                         </div>
                     </t>
+
+                    <!-- View Toggle Script -->
+                    <script type="text/javascript">
+                        function toggleCoordinatorView(viewMode) {
+                            var kanbanView = document.querySelector('.portal-kanban-view');
+                            var listView = document.querySelector('.portal-list-view');
+                            var toggleButtons = document.querySelectorAll('.view-toggle-btn');
+                            
+                            if (!kanbanView || !listView) return;
+                            
+                            if (viewMode === 'kanban') {
+                                kanbanView.classList.remove('d-none');
+                                listView.classList.add('d-none');
+                            } else {
+                                kanbanView.classList.add('d-none');
+                                listView.classList.remove('d-none');
+                            }
+                            
+                            toggleButtons.forEach(function(btn) {
+                                btn.classList.remove('active');
+                                if ((viewMode === 'kanban' &amp;&amp; btn.textContent.includes('Kanban')) ||
+                                    (viewMode === 'list' &amp;&amp; btn.textContent.includes('List'))) {
+                                    btn.classList.add('active');
+                                }
+                            });
+                            
+                            try {
+                                localStorage.setItem('coordinator_view_mode', viewMode);
+                            } catch (e) {}
+                        }
+                        
+                        // Initialize from stored preference (default: list)
+                        document.addEventListener('DOMContentLoaded', function() {
+                            var stored = 'list';
+                            try {
+                                stored = localStorage.getItem('coordinator_view_mode') || 'list';
+                            } catch (e) {}
+                            toggleCoordinatorView(stored);
+                        });
+                    </script>
                 </div>
             </t>
         </template>
@@ -368,50 +408,6 @@
             <t t-else="">
                 <span class="badge bg-secondary" t-esc="wo.state"/>
             </t>
-        </template>
-        
-        <!-- Coordinator View Toggle Script -->
-        <template id="portal_coordinator_view_toggle_script" name="Coordinator View Toggle Script" inherit_id="records_management.portal_my_coordinators">
-            <xpath expr="//div[hasclass('container-fluid')]" position="after">
-                <script type="text/javascript">
-                    function toggleCoordinatorView(viewMode) {
-                        var kanbanView = document.querySelector('.portal-kanban-view');
-                        var listView = document.querySelector('.portal-list-view');
-                        var toggleButtons = document.querySelectorAll('.view-toggle-btn');
-                        
-                        if (!kanbanView || !listView) return;
-                        
-                        if (viewMode === 'kanban') {
-                            kanbanView.classList.remove('d-none');
-                            listView.classList.add('d-none');
-                        } else {
-                            kanbanView.classList.add('d-none');
-                            listView.classList.remove('d-none');
-                        }
-                        
-                        toggleButtons.forEach(function(btn) {
-                            btn.classList.remove('active');
-                            if ((viewMode === 'kanban' &amp;&amp; btn.textContent.includes('Kanban')) ||
-                                (viewMode === 'list' &amp;&amp; btn.textContent.includes('List'))) {
-                                btn.classList.add('active');
-                            }
-                        });
-                        
-                        try {
-                            localStorage.setItem('coordinator_view_mode', viewMode);
-                        } catch (e) {}
-                    }
-                    
-                    // Initialize from stored preference (default: list)
-                    document.addEventListener('DOMContentLoaded', function() {
-                        var stored = 'list';
-                        try {
-                            stored = localStorage.getItem('coordinator_view_mode') || 'list';
-                        } catch (e) {}
-                        toggleCoordinatorView(stored);
-                    });
-                </script>
-            </xpath>
         </template>
     </data>
 </odoo>
