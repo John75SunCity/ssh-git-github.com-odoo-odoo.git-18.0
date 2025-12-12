@@ -222,7 +222,7 @@
                                     </p>
                                 </group>
                             </page>
-                            <page string="Billing Preview" attrs="{'invisible': [('state', 'not in', ['in_progress', 'completed', 'pending_billing'])]}">
+                            <page string="Billing Preview" invisible="[('state', 'not in', ['in_progress', 'completed', 'pending_billing'])]">
                                 <group>
                                     <group string="Service Details">
                                         <field name="service_product_id"/>
