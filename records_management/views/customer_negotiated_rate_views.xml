@@ -5,34 +5,131 @@
             <field name="name">customer.negotiated.rate.view.list</field>
             <field name="model">customer.negotiated.rate</field>
             <field name="arch" type="xml">
-                <list>
-                    <field name="name" />
+                <list decoration-success="is_current == True" decoration-muted="state == 'expired'">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="rate_type" widget="badge"/>
+                    <field name="bin_size" optional="show"/>
+                    <field name="container_type_id" optional="show"/>
+                    <field name="per_service_rate" widget="monetary" optional="show"/>
+                    <field name="monthly_rate" widget="monetary" optional="show"/>
+                    <field name="effective_date"/>
+                    <field name="expiration_date" optional="show"/>
+                    <field name="is_current" widget="boolean"/>
+                    <field name="state" widget="badge"/>
                 </list>
             </field>
         </record>
+        
         <record id="customer_negotiated_rate_view_form" model="ir.ui.view">
             <field name="name">customer.negotiated.rate.view.form</field>
             <field name="model">customer.negotiated.rate</field>
             <field name="arch" type="xml">
                 <form string="Customer Negotiated Rate">
+                    <header>
+                        <field name="state" widget="statusbar" 
+                               statusbar_visible="draft,submitted,approved,active"/>
+                    </header>
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                            </button>
+                        </div>
+                        
                         <div class="oe_title">
-                            <label for="name" />
+                            <label for="name"/>
                             <h1>
-                                <field name="name" placeholder="Name..." />
+                                <field name="name" placeholder="Rate Name..."/>
                             </h1>
                         </div>
+                        
+                        <group>
+                            <group string="Customer">
+                                <field name="partner_id"/>
+                                <field name="billing_profile_id" 
+                                       domain="[('partner_id', '=', partner_id)]"/>
+                                <field name="contract_reference"/>
+                            </group>
+                            <group string="Rate Configuration">
+                                <field name="rate_type"/>
+                                <field name="container_type_id" 
+                                       invisible="rate_type != 'storage'"/>
+                                <field name="service_type_id" 
+                                       invisible="rate_type != 'service'"/>
+                                <!-- Shredding-specific fields -->
+                                <field name="bin_size" 
+                                       invisible="rate_type != 'shredding'"/>
+                                <field name="bin_product_id" 
+                                       invisible="rate_type != 'shredding'"
+                                       domain="[('is_records_management_product', '=', True)]"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <group string="Pricing">
+                                <field name="monthly_rate" invisible="rate_type == 'shredding'"/>
+                                <field name="per_service_rate"/>
+                                <field name="per_hour_rate" optional="hide"/>
+                                <field name="per_document_rate" optional="hide"/>
+                                <field name="setup_fee" optional="hide"/>
+                                <field name="discount_percentage" optional="hide"/>
+                            </group>
+                            <group string="Validity">
+                                <field name="effective_date"/>
+                                <field name="expiration_date"/>
+                                <field name="is_current" readonly="1"/>
+                                <field name="auto_apply"/>
+                                <field name="priority"/>
+                            </group>
+                        </group>
+                        
+                        <group string="Volume Limits" invisible="rate_type != 'volume_discount'">
+                            <field name="minimum_volume"/>
+                            <field name="maximum_volume"/>
+                        </group>
+                        
+                        <group string="Analytics" invisible="rate_type not in ['storage', 'shredding']">
+                            <group>
+                                <field name="base_rate_comparison" readonly="1"/>
+                                <field name="savings_amount" readonly="1"/>
+                                <field name="savings_percentage" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="containers_using_rate" readonly="1" 
+                                       invisible="rate_type != 'storage'"/>
+                                <field name="monthly_revenue_impact" readonly="1"/>
+                            </group>
+                        </group>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
         </record>
+        
         <record id="customer_negotiated_rate_view_search" model="ir.ui.view">
             <field name="name">customer.negotiated.rate.view.search</field>
             <field name="model">customer.negotiated.rate</field>
             <field name="arch" type="xml">
                 <search>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="rate_type"/>
+                    <field name="bin_size"/>
+                    <separator/>
+                    <filter string="Active Rates" name="active_rates" domain="[('is_current', '=', True)]"/>
+                    <filter string="Storage" name="storage" domain="[('rate_type', '=', 'storage')]"/>
+                    <filter string="Shredding" name="shredding" domain="[('rate_type', '=', 'shredding')]"/>
+                    <filter string="Service" name="service" domain="[('rate_type', '=', 'service')]"/>
+                    <separator/>
                     <group expand="1" string="Group By">
-                        <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}" />
+                        <filter string="Customer" name="group_customer" context="{'group_by':'partner_id'}"/>
+                        <filter string="Rate Type" name="group_type" context="{'group_by':'rate_type'}"/>
+                        <filter string="Bin Size" name="group_bin_size" context="{'group_by':'bin_size'}"/>
+                        <filter string="Status" name="group_state" context="{'group_by':'state'}"/>
                     </group>
                 </search>
             </field>

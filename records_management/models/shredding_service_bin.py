@@ -214,6 +214,16 @@ class ShreddingServiceBin(models.Model):
     # ============================================================================
     # BILLING INTEGRATION
     # ============================================================================
+    product_id = fields.Many2one(
+        comodel_name='product.product',
+        string="Service Product",
+        domain="[('is_records_management_product', '=', True)]",
+        compute='_compute_product_from_size',
+        store=True,
+        readonly=False,
+        help="Product used for invoicing. Auto-set from bin size but can be overridden."
+    )
+    
     base_rate_per_service = fields.Monetary(
         string="Base Rate per Service",
         compute='_compute_billing_rates',
@@ -494,18 +504,56 @@ class ShreddingServiceBin(models.Model):
                 }
                 record.base_rate_per_service = fallback_rates.get(record.bin_size, 35.00)
 
+    @api.depends('bin_size')
+    def _compute_product_from_size(self):
+        """Auto-select product based on bin size for invoicing."""
+        # Build mapping of bin size to product (search once per bin size)
+        size_products = {}
+        for record in self:
+            if not record.bin_size:
+                record.product_id = False
+                continue
+            
+            if record.bin_size not in size_products:
+                # Search for product matching bin size
+                # Convention: Product name contains bin size like "32 Gallon" or internal ref
+                size_name_map = {
+                    '23': '23 Gallon',
+                    '32g': '32 Gallon Bin',
+                    '32c': '32 Gallon Console',
+                    '64': '64 Gallon',
+                    '96': '96 Gallon',
+                }
+                size_name = size_name_map.get(record.bin_size, '')
+                product = self.env['product.product'].search([
+                    ('is_records_management_product', '=', True),
+                    '|',
+                    ('name', 'ilike', size_name),
+                    ('default_code', '=', record.bin_size),
+                ], limit=1)
+                size_products[record.bin_size] = product
+            
+            record.product_id = size_products.get(record.bin_size, False)
+
     @api.depends('bin_size', 'current_customer_id')
     def _compute_price_per_service(self):
-        for bin in self:
-            if bin.bin_size and bin.current_customer_id:
+        """Compute price from customer negotiated rate or base rate."""
+        for bin_rec in self:
+            if bin_rec.bin_size and bin_rec.current_customer_id:
                 # Lookup negotiated rate for customer/bin size
                 rate = self.env['customer.negotiated.rate'].search([
-                    ('partner_id', '=', bin.current_customer_id.id),
-                    ('bin_size', '=', bin.bin_size)
+                    ('partner_id', '=', bin_rec.current_customer_id.id),
+                    ('rate_type', '=', 'shredding'),
+                    ('bin_size', '=', bin_rec.bin_size),
+                    ('is_current', '=', True),
                 ], limit=1)
-                bin.price_per_service = rate.price if rate else 0.0
+                if rate and rate.per_service_rate:
+                    bin_rec.price_per_service = rate.per_service_rate
+                else:
+                    # Fall back to base rate
+                    bin_rec.price_per_service = bin_rec.base_rate_per_service
             else:
-                bin.price_per_service = 0.0
+                bin_rec.price_per_service = bin_rec.base_rate_per_service or 0.0
 
     @api.depends('service_event_ids')
     def _compute_service_statistics(self):

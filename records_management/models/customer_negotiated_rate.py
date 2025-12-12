@@ -64,10 +64,24 @@ class CustomerNegotiatedRate(models.Model):
     rate_type = fields.Selection([
         ('storage', 'Storage'),
         ('service', 'Service'),
+        ('shredding', 'Shredding Bin Service'),
         ('volume_discount', 'Volume Discount')
     ], string='Rate Type', required=True, default='storage', tracking=True)
     container_type_id = fields.Many2one(comodel_name='records.container.type', string='Container Type', help="Apply this rate to a specific container type.")
     service_type_id = fields.Many2one(comodel_name='records.service.type', string='Service Type', help="Apply this rate to a specific service type.")
+    bin_size = fields.Selection([
+        ('23', '23 Gallon Shredinator'),
+        ('32g', '32 Gallon Bin'),
+        ('32c', '32 Gallon Console'),
+        ('64', '64 Gallon Bin'),
+        ('96', '96 Gallon Bin'),
+    ], string="Shredding Bin Size", help="For shredding rates, specify the bin size this rate applies to.")
+    bin_product_id = fields.Many2one(
+        comodel_name='product.product',
+        string="Shredding Product",
+        domain="[('is_records_management_product', '=', True)]",
+        help="Product to use when invoicing this bin size for this customer"
+    )
     effective_date = fields.Date(string='Effective Date', required=True, default=fields.Date.context_today, tracking=True)
     expiration_date = fields.Date(string='Expiration Date', tracking=True)
     is_current = fields.Boolean(string='Is Currently Active', compute='_compute_is_current', store=True)

@@ -1012,25 +1012,50 @@ class WorkOrderShredding(models.Model):
         
         invoice = self.env['account.move'].create(invoice_vals)
         
-        # Get the default shredding service product
-        shredding_product = self.env.ref(
+        # Get the default shredding service product (fallback)
+        default_shredding_product = self.env.ref(
             'records_management.product_shredding_service', 
             raise_if_not_found=False
         )
         
         # Create invoice lines for each billable event
         for event in self.service_event_ids.filtered(lambda e: e.is_billable):
+            bin_rec = event.bin_id
+            
+            # Get price from negotiated rate or bin's base rate
+            if bin_rec and bin_rec.current_customer_id:
+                # Check for customer negotiated rate
+                negotiated_rate = self.env['customer.negotiated.rate'].search([
+                    ('partner_id', '=', self.partner_id.id),
+                    ('rate_type', '=', 'shredding'),
+                    ('bin_size', '=', bin_rec.bin_size),
+                    ('is_current', '=', True),
+                ], limit=1)
+                
+                if negotiated_rate:
+                    price = negotiated_rate.per_service_rate or event.billable_amount
+                    product = negotiated_rate.bin_product_id or bin_rec.product_id or default_shredding_product
+                else:
+                    price = event.billable_amount
+                    product = bin_rec.product_id or default_shredding_product
+            else:
+                price = event.billable_amount
+                product = bin_rec.product_id if bin_rec else default_shredding_product
+            
+            # Build line description
+            size_label = dict(bin_rec._fields['bin_size'].selection).get(bin_rec.bin_size, '') if bin_rec else ''
             line_vals = {
                 'move_id': invoice.id,
-                'name': _("%s - Bin %s") % (
+                'name': _("%s - %s Bin %s") % (
                     dict(event._fields['service_type'].selection).get(event.service_type),
-                    event.bin_id.barcode
+                    size_label,
+                    bin_rec.barcode if bin_rec else 'Unknown'
                 ),
                 'quantity': 1,
-                'price_unit': event.billable_amount,
+                'price_unit': price,
             }
-            if shredding_product:
-                line_vals['product_id'] = shredding_product.id
+            if product:
+                line_vals['product_id'] = product.id
             
             self.env['account.move.line'].create(line_vals)
         
