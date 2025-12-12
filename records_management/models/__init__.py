@@ -313,6 +313,7 @@ from . import zpl_label_generator  # ZPL label printing service
 from . import barcode_batch_print  # Batch print tracking
 from . import res_users
 from . import sale_order_line
+from . import scanbot_barcode_scanner_wizard
 
 import logging
 _logger = logging.getLogger(__name__)
