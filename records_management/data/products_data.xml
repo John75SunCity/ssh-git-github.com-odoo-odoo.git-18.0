@@ -95,8 +95,8 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">SHRED-BOX</field>
-            <field name="list_price">10.00</field>
-            <field name="standard_price">5.00</field>
+            <field name="list_price">6.00</field>
+            <field name="standard_price">3.00</field>
             <field name="description">Secure shredding of customer-supplied standard cardboard box of documents (banker box size)</field>
         </record>
 
@@ -114,6 +114,17 @@
         <record id="shredding_service_integration" model="ir.config_parameter">
             <field name="key">records_management.shredding_service_integration</field>
             <field name="value">NAID AAA compliant destruction with certificate generation</field>
+        </record>
+
+        <!-- Perm Out Fee - Per-container fee for permanent removal from inventory -->
+        <record id="product_perm_out_fee" model="product.product">
+            <field name="name">Perm Out Fee</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
+            <field name="default_code">RM-PERMOUT-FEE</field>
+            <field name="list_price">10.00</field>
+            <field name="standard_price">5.00</field>
+            <field name="description">Per-container fee for permanent removal from inventory. Charged on both perm-out and destruction orders.</field>
         </record>
 
         <!-- Container Type Specific Services (Actual Business Specifications) -->
@@ -194,9 +205,9 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-RETRIEVAL</field>
-            <field name="list_price">35.00</field>
-            <field name="standard_price">22.00</field>
-<field name="description">Individual document retrieval service (per request)</field>
+            <field name="list_price">3.50</field>
+            <field name="standard_price">2.00</field>
+<field name="description">Individual document retrieval service (per container)</field>
         </record>
 
         <record id="product_scanning_service" model="product.product">

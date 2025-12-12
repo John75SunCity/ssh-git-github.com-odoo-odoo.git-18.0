@@ -2375,11 +2375,12 @@ class RecordsContainer(models.Model):
         """
         Create invoice charges for container destruction.
         
-        Destruction includes:
-        - Per-item removal fee
-        - Per-item shredding fee
+        Destruction Bundle includes (per container):
+        1. Retrieval Fee - pulling from stock location
+        2. Perm Out Fee - removing from inventory permanently  
+        3. Shred Box Fee - physical shredding of contents
         
-        Creates 2 invoice line items.
+        Creates 3 invoice line items per container.
         """
         self.ensure_one()
         
@@ -2389,22 +2390,30 @@ class RecordsContainer(models.Model):
         # Get or create draft invoice for customer
         invoice = self._get_or_create_draft_invoice()
         
-        # Get product for removal fee
-        removal_product = self._get_removal_fee_product()
+        # Get fee products
+        retrieval_product = self._get_retrieval_fee_product()
+        perm_out_product = self._get_perm_out_fee_product()
         shredding_product = self._get_shredding_fee_product()
         
-        # Create invoice lines
+        # Create invoice lines (3 charges for destruction)
         invoice_line_vals = [
             {
-                'product_id': removal_product.id,
-                'name': _('Container Removal Fee - %s') % (self.barcode or self.name),
+                'product_id': retrieval_product.id,
+                'name': _('Retrieval Fee - %s') % (self.barcode or self.name),
                 'quantity': 1,
-                'price_unit': removal_product.list_price,
+                'price_unit': retrieval_product.list_price,
+                'move_id': invoice.id,
+            },
+            {
+                'product_id': perm_out_product.id,
+                'name': _('Perm Out Fee - %s') % (self.barcode or self.name),
+                'quantity': 1,
+                'price_unit': perm_out_product.list_price,
                 'move_id': invoice.id,
             },
             {
                 'product_id': shredding_product.id,
-                'name': _('Container Shredding Fee - %s') % (self.barcode or self.name),
+                'name': _('Shred Box Fee - %s') % (self.barcode or self.name),
                 'quantity': 1,
                 'price_unit': shredding_product.list_price,
                 'move_id': invoice.id,
@@ -2413,12 +2422,16 @@ class RecordsContainer(models.Model):
         
         self.env['account.move.line'].create(invoice_line_vals)
         
+        # Calculate total
+        total = retrieval_product.list_price + perm_out_product.list_price + shredding_product.list_price
+        
         # Log charge creation
         self.message_post(
-            body=_("Destruction charges created:<br/>• Removal fee: %s<br/>• Shredding fee: %s<br/>Total: %s") % (
-                removal_product.list_price,
+            body=_("Destruction charges created:<br/>• Retrieval Fee: $%.2f<br/>• Perm Out Fee: $%.2f<br/>• Shred Box Fee: $%.2f<br/><strong>Total: $%.2f</strong>") % (
+                retrieval_product.list_price,
+                perm_out_product.list_price,
                 shredding_product.list_price,
-                removal_product.list_price + shredding_product.list_price
+                total
             ),
             subject=_("Destruction Charges Created")
         )
@@ -2429,10 +2442,12 @@ class RecordsContainer(models.Model):
         """
         Create invoice charges for permanent removal (perm-out).
         
-        Perm-Out includes:
-        - Per-item removal fee ONLY (no shredding)
+        Perm-Out Bundle includes (per container):
+        1. Retrieval Fee - pulling from stock location
+        2. Perm Out Fee - removing from inventory permanently
         
-        Creates 1 invoice line item.
+        NO shredding fee - customer takes their boxes.
+        Creates 2 invoice line items per container.
         """
         self.ensure_one()
         
@@ -2442,23 +2457,40 @@ class RecordsContainer(models.Model):
         # Get or create draft invoice for customer
         invoice = self._get_or_create_draft_invoice()
         
-        # Get product for removal fee
-        removal_product = self._get_removal_fee_product()
+        # Get fee products
+        retrieval_product = self._get_retrieval_fee_product()
+        perm_out_product = self._get_perm_out_fee_product()
         
-        # Create invoice line
-        invoice_line_vals = {
-            'product_id': removal_product.id,
-            'name': _('Container Removal Fee (Perm-Out) - %s') % (self.barcode or self.name),
-            'quantity': 1,
-            'price_unit': removal_product.list_price,
-            'move_id': invoice.id,
-        }
+        # Create invoice lines (2 charges for perm-out)
+        invoice_line_vals = [
+            {
+                'product_id': retrieval_product.id,
+                'name': _('Retrieval Fee - %s') % (self.barcode or self.name),
+                'quantity': 1,
+                'price_unit': retrieval_product.list_price,
+                'move_id': invoice.id,
+            },
+            {
+                'product_id': perm_out_product.id,
+                'name': _('Perm Out Fee - %s') % (self.barcode or self.name),
+                'quantity': 1,
+                'price_unit': perm_out_product.list_price,
+                'move_id': invoice.id,
+            }
+        ]
         
         self.env['account.move.line'].create(invoice_line_vals)
         
+        # Calculate total
+        total = retrieval_product.list_price + perm_out_product.list_price
+        
         # Log charge creation
         self.message_post(
-            body=_("Removal charges created (Perm-Out):<br/>• Removal fee: %s") % removal_product.list_price,
+            body=_("Perm-Out charges created:<br/>• Retrieval Fee: $%.2f<br/>• Perm Out Fee: $%.2f<br/><strong>Total: $%.2f</strong>") % (
+                retrieval_product.list_price,
+                perm_out_product.list_price,
+                total
+            ),
             subject=_("Perm-Out Charges Created")
         )
         
@@ -2483,38 +2515,71 @@ class RecordsContainer(models.Model):
         
         return invoice
     
-    def _get_removal_fee_product(self):
-        """Get or create product for removal fees"""
-        product = self.env['product.product'].search([
-            ('default_code', '=', 'RM-REMOVAL-FEE'),
-        ], limit=1)
+    def _get_retrieval_fee_product(self):
+        """Get or create product for retrieval fees (pulling from stock location)"""
+        product = self.env.ref('records_management.product_retrieval_service', raise_if_not_found=False)
+        
+        if not product:
+            product = self.env['product.product'].search([
+                ('default_code', 'in', ['REC-RETRIEVAL', 'RM-RETRIEVAL-FEE']),
+            ], limit=1)
         
         if not product:
             product = self.env['product.product'].create({
-                'name': 'Container Removal Fee',
-                'default_code': 'RM-REMOVAL-FEE',
+                'name': 'Document Retrieval Service',
+                'default_code': 'REC-RETRIEVAL',
                 'type': 'service',
-                'list_price': 15.00,  # Default price - configurable
+                'list_price': 3.50,  # Default - edit in Products to change
                 'invoice_policy': 'order',
-                'description': 'Per-container removal fee for destruction or perm-out services',
+                'description': 'Per-container retrieval fee for pulling containers from stock location',
             })
         
         return product
     
-    def _get_shredding_fee_product(self):
-        """Get or create product for shredding fees"""
-        product = self.env['product.product'].search([
-            ('default_code', '=', 'RM-SHREDDING-FEE'),
-        ], limit=1)
+    def _get_perm_out_fee_product(self):
+        """Get or create product for perm-out fees (permanent removal from inventory)"""
+        product = self.env.ref('records_management.product_perm_out_fee', raise_if_not_found=False)
+        
+        if not product:
+            product = self.env['product.product'].search([
+                ('default_code', '=', 'RM-PERMOUT-FEE'),
+            ], limit=1)
         
         if not product:
             product = self.env['product.product'].create({
-                'name': 'Container Shredding Fee',
-                'default_code': 'RM-SHREDDING-FEE',
+                'name': 'Perm Out Fee',
+                'default_code': 'RM-PERMOUT-FEE',
                 'type': 'service',
-                'list_price': 25.00,  # Default price - configurable
+                'list_price': 10.00,  # Default - edit in Products to change
                 'invoice_policy': 'order',
-                'description': 'Per-container shredding fee for destruction services',
+                'description': 'Per-container fee for permanent removal from inventory (perm-out)',
+            })
+        
+        return product
+    
+    def _get_removal_fee_product(self):
+        """Legacy method - redirects to perm out fee product"""
+        return self._get_perm_out_fee_product()
+    
+    def _get_shredding_fee_product(self):
+        """Get or create product for shredding fees (Shred Box - per container)"""
+        # First try to get the Shred Box product (from XML data)
+        product = self.env.ref('records_management.product_shred_box', raise_if_not_found=False)
+        
+        # Fallback to legacy code lookup
+        if not product:
+            product = self.env['product.product'].search([
+                ('default_code', 'in', ['SHRED-BOX', 'RM-SHREDDING-FEE']),
+            ], limit=1)
+        
+        if not product:
+            product = self.env['product.product'].create({
+                'name': 'Shred Box (Standard Box)',
+                'default_code': 'SHRED-BOX',
+                'type': 'service',
+                'list_price': 10.00,  # Default price - configurable
+                'invoice_policy': 'order',
+                'description': 'Per-container shredding fee for destruction services (standard box)',
             })
         
         return product
