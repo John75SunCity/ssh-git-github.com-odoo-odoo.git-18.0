@@ -62,7 +62,7 @@
                                                     </td>
                                                     <td>
                                                         <t t-if="bin.bin_size">
-                                                            <t t-set="size_dict" t-value="dict([('small', 'Small'), ('medium', 'Medium'), ('large', 'Large'), ('xlarge', 'Extra Large')])"/>
+                                                            <t t-set="size_dict" t-value="{'small': 'Small', 'medium': 'Medium', 'large': 'Large', 'xlarge': 'Extra Large'}"/>
                                                             <span class="badge badge-secondary">
                                                                 <t t-esc="size_dict.get(bin.bin_size, bin.bin_size)"/>
                                                             </span>
@@ -76,7 +76,7 @@
                                                     </td>
                                                     <td>
                                                         <t t-if="bin.current_fill_level">
-                                                            <t t-set="fill_dict" t-value="dict([('empty', 'Empty'), ('quarter', '25%'), ('half', '50%'), ('three_quarter', '75%'), ('full', 'Full')])"/>
+                                                            <t t-set="fill_dict" t-value="{'empty': 'Empty', 'quarter': '25%', 'half': '50%', 'three_quarter': '75%', 'full': 'Full'}"/>
                                                             <span t-att-class="'badge badge-' + ('success' if bin.current_fill_level == 'empty' else 'warning' if bin.current_fill_level in ['quarter', 'half'] else 'danger')">
                                                                 <t t-esc="fill_dict.get(bin.current_fill_level, bin.current_fill_level)"/>
                                                             </span>
@@ -95,7 +95,7 @@
                                                     </td>
                                                     <td>
                                                         <t t-if="bin.status">
-                                                            <t t-set="status_dict" t-value="dict([('available', 'Available'), ('in_service', 'In Service'), ('checked_out', 'Checked Out'), ('maintenance', 'Maintenance'), ('retired', 'Retired')])"/>
+                                                            <t t-set="status_dict" t-value="{'available': 'Available', 'in_service': 'In Service', 'checked_out': 'Checked Out', 'maintenance': 'Maintenance', 'retired': 'Retired'}"/>
                                                             <span t-att-class="'badge badge-' + ('success' if bin.status == 'available' else 'primary' if bin.status == 'checked_out' else 'warning')">
                                                                 <t t-esc="status_dict.get(bin.status, bin.status)"/>
                                                             </span>
@@ -162,7 +162,7 @@
                                                     <th>Bin Size:</th>
                                                     <td>
                                                         <t t-if="bin.bin_size">
-                                                            <t t-set="size_dict" t-value="dict([('small', 'Small'), ('medium', 'Medium'), ('large', 'Large'), ('xlarge', 'Extra Large')])"/>
+                                                            <t t-set="size_dict" t-value="{'small': 'Small', 'medium': 'Medium', 'large': 'Large', 'xlarge': 'Extra Large'}"/>
                                                             <span class="badge badge-secondary">
                                                                 <t t-esc="size_dict.get(bin.bin_size, bin.bin_size)"/>
                                                             </span>
@@ -176,7 +176,7 @@
                                                     <th>Status:</th>
                                                     <td>
                                                         <t t-if="bin.status">
-                                                            <t t-set="status_dict" t-value="dict([('available', 'Available'), ('in_service', 'In Service'), ('checked_out', 'Checked Out'), ('maintenance', 'Maintenance'), ('retired', 'Retired')])"/>
+                                                            <t t-set="status_dict" t-value="{'available': 'Available', 'in_service': 'In Service', 'checked_out': 'Checked Out', 'maintenance': 'Maintenance', 'retired': 'Retired'}"/>
                                                             <span t-att-class="'badge badge-' + ('success' if bin.status == 'available' else 'primary' if bin.status == 'checked_out' else 'warning')">
                                                                 <t t-esc="status_dict.get(bin.status, bin.status)"/>
                                                             </span>
@@ -190,7 +190,7 @@
                                                     <th>Scan Status:</th>
                                                     <td>
                                                         <t t-if="bin.barcode_scan_status">
-                                                            <t t-set="scan_dict" t-value="dict([('not_scanned', 'Not Scanned'), ('scanned_in', 'Scanned In'), ('scanned_out', 'Scanned Out')])"/>
+                                                            <t t-set="scan_dict" t-value="{'not_scanned': 'Not Scanned', 'scanned_in': 'Scanned In', 'scanned_out': 'Scanned Out'}"/>
                                                             <span t-att-class="'badge badge-' + ('success' if bin.barcode_scan_status == 'scanned_in' else 'warning')">
                                                                 <t t-esc="scan_dict.get(bin.barcode_scan_status, bin.barcode_scan_status)"/>
                                                             </span>
@@ -222,7 +222,7 @@
                                                     <th style="width: 40%;">Fill Level:</th>
                                                     <td>
                                                         <t t-if="bin.current_fill_level">
-                                                            <t t-set="fill_dict" t-value="dict([('empty', 'Empty'), ('quarter', '25%'), ('half', '50%'), ('three_quarter', '75%'), ('full', 'Full')])"/>
+                                                            <t t-set="fill_dict" t-value="{'empty': 'Empty', 'quarter': '25%', 'half': '50%', 'three_quarter': '75%', 'full': 'Full'}"/>
                                                             <span t-att-class="'badge badge-' + ('success' if bin.current_fill_level == 'empty' else 'warning' if bin.current_fill_level in ['quarter', 'half'] else 'danger')">
                                                                 <t t-esc="fill_dict.get(bin.current_fill_level, bin.current_fill_level)"/>
                                                             </span>

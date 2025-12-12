@@ -71,7 +71,7 @@
                                                     <th>File Category:</th>
                                                     <td>
                                                         <t t-if="file.file_category">
-                                                            <t t-set="file_categories" t-value="dict([('permanent', 'Permanent'), ('temporary', 'Temporary'), ('archived', 'Archived'), ('active', 'Active')])"/>
+                                                            <t t-set="file_categories" t-value="{'permanent': 'Permanent', 'temporary': 'Temporary', 'archived': 'Archived', 'active': 'Active'}"/>
                                                             <span class="badge badge-primary">
                                                                 <t t-esc="file_categories.get(file.file_category, file.file_category)"/>
                                                             </span>

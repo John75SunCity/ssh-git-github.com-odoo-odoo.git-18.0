@@ -53,7 +53,7 @@
                                             <p class="mb-1">Current status and capacity utilization of all containers.</p>
                                         </a>
 
-                                        <a href="/records/report/activity" class="list-group-item list-group-item-action">
+                                        <a href="/my/reports/activity" class="list-group-item list-group-item-action">
                                             <div class="d-flex w-100 justify-content-between">
                                                 <h5 class="mb-1">
                                                     <i class="fa fa-history text-warning"></i>

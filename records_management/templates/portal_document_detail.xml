@@ -70,7 +70,7 @@
                                                     <th>State:</th>
                                                     <td>
                                                         <t t-if="hasattr(document, 'state') and document.state">
-                                                            <t t-set="state_dict" t-value="dict([('draft', 'Draft'), ('processed', 'Processed'), ('approved', 'Approved'), ('archived', 'Archived')])"/>
+                                                            <t t-set="state_dict" t-value="{'draft': 'Draft', 'processed': 'Processed', 'approved': 'Approved', 'archived': 'Archived'}"/>
                                                             <span t-att-class="'badge badge-' + ('success' if document.state == 'approved' else 'warning' if document.state == 'draft' else 'info')">
                                                                 <t t-esc="state_dict.get(document.state, document.state)"/>
                                                             </span>
@@ -133,7 +133,7 @@
                                                 <tr t-if="hasattr(document, 'file_format') and document.file_format">
                                                     <th>File Format:</th>
                                                     <td>
-                                                        <t t-set="format_dict" t-value="dict([('pdf', 'PDF'), ('jpg', 'JPEG'), ('png', 'PNG'), ('tiff', 'TIFF')])"/>
+                                                        <t t-set="format_dict" t-value="{'pdf': 'PDF', 'jpg': 'JPEG', 'png': 'PNG', 'tiff': 'TIFF'}"/>
                                                         <span class="badge badge-secondary">
                                                             <t t-esc="format_dict.get(document.file_format, document.file_format.upper())"/>
                                                         </span>
@@ -150,7 +150,7 @@
                                                 <tr t-if="hasattr(document, 'scan_quality') and document.scan_quality">
                                                     <th>Scan Quality:</th>
                                                     <td>
-                                                        <t t-set="quality_dict" t-value="dict([('low', 'Low'), ('medium', 'Medium'), ('high', 'High'), ('premium', 'Premium')])"/>
+                                                        <t t-set="quality_dict" t-value="{'low': 'Low', 'medium': 'Medium', 'high': 'High', 'premium': 'Premium'}"/>
                                                         <span t-att-class="'badge badge-' + ('success' if document.scan_quality in ['high', 'premium'] else 'warning')">
                                                             <t t-esc="quality_dict.get(document.scan_quality, document.scan_quality)"/>
                                                         </span>
