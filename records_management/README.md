@@ -517,3 +517,4 @@ No configuration change required—if local assets exist, CDN is never contacted
 - If adding source maps, store them alongside and ensure license compliance.
 
 ---
+# Forced redeploy Thu Dec 11 20:41:59 MST 2025
