@@ -95,48 +95,48 @@
                     </div>
                 </div>
 
-                <!-- Statistics Cards -->
-                <div class="row mb-4" id="diagram-stats">
-                    <div class="col-md-3">
+                <!-- Statistics Cards - Compact -->
+                <div class="row mb-2" id="diagram-stats">
+                    <div class="col-md-3 col-6">
                         <div class="card text-center border-primary">
-                            <div class="card-body">
-                                <h5 class="card-title text-primary">
-                                    <i class="fa fa-building"/>
-                                </h5>
-                                <h4 class="mb-0" id="companies-count">-</h4>
+                            <div class="card-body py-2 px-1">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="fa fa-building text-primary mr-2"/>
+                                    <span class="h5 mb-0" id="companies-count">-</span>
+                                </div>
                                 <small class="text-muted">Companies</small>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-6">
                         <div class="card text-center border-success">
-                            <div class="card-body">
-                                <h5 class="card-title text-success">
-                                    <i class="fa fa-sitemap"/>
-                                </h5>
-                                <h4 class="mb-0" id="departments-count">-</h4>
+                            <div class="card-body py-2 px-1">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="fa fa-sitemap text-success mr-2"/>
+                                    <span class="h5 mb-0" id="departments-count">-</span>
+                                </div>
                                 <small class="text-muted">Departments</small>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-6">
                         <div class="card text-center border-info">
-                            <div class="card-body">
-                                <h5 class="card-title text-info">
-                                    <i class="fa fa-users"/>
-                                </h5>
-                                <h4 class="mb-0" id="users-count">-</h4>
+                            <div class="card-body py-2 px-1">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="fa fa-users text-info mr-2"/>
+                                    <span class="h5 mb-0" id="users-count">-</span>
+                                </div>
                                 <small class="text-muted">People</small>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-6">
                         <div class="card text-center border-warning">
-                            <div class="card-body">
-                                <h5 class="card-title text-warning">
-                                    <i class="fa fa-link"/>
-                                </h5>
-                                <h4 class="mb-0" id="connections-count">-</h4>
+                            <div class="card-body py-2 px-1">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="fa fa-link text-warning mr-2"/>
+                                    <span class="h5 mb-0" id="connections-count">-</span>
+                                </div>
                                 <small class="text-muted">Connections</small>
                             </div>
                         </div>
@@ -147,16 +147,27 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
+                            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
                                 <h5 class="mb-0">Interactive Organization Map</h5>
-                                <div class="diagram-legend">
-                                    <small class="text-muted">
-                                        <span class="badge badge-warning">Companies</span>
-                                        <span class="badge badge-success">Departments</span>
-                                        <span class="badge badge-info">Internal Users</span>
-                                        <span class="badge badge-pink">Portal Users</span>
-                                        <span class="badge badge-danger">You</span>
-                                    </small>
+                                <div class="diagram-filters btn-group" role="group" aria-label="Filter nodes">
+                                    <button type="button" class="btn btn-sm btn-outline-warning filter-btn active" data-filter="company" title="Show/hide companies">
+                                        <i class="fa fa-building mr-1"/> Companies
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-success filter-btn active" data-filter="department" title="Show/hide departments">
+                                        <i class="fa fa-sitemap mr-1"/> Departments
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-info filter-btn active" data-filter="internal" title="Show/hide internal users">
+                                        <i class="fa fa-user-tie mr-1"/> Internal
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-pink filter-btn active" data-filter="portal" title="Show/hide portal users" style="border-color: #e91e63; color: #e91e63;">
+                                        <i class="fa fa-user mr-1"/> Portal
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger filter-btn active" data-filter="current_user" title="Highlight yourself">
+                                        <i class="fa fa-star mr-1"/> You
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-secondary ml-2" id="reset-filters" title="Reset all filters">
+                                        <i class="fa fa-refresh"/> All
+                                    </button>
                                 </div>
                             </div>
                             <div class="card-body p-0">
@@ -312,6 +323,42 @@
                 .card .card-body h4 {
                     font-weight: bold;
                 }
+                
+                /* Filter button styles */
+                .diagram-filters {
+                    flex-wrap: wrap;
+                    gap: 0.25rem;
+                }
+                
+                .diagram-filters .filter-btn {
+                    font-size: 0.75rem;
+                    padding: 0.25rem 0.5rem;
+                    transition: all 0.2s ease;
+                }
+                
+                .diagram-filters .filter-btn.active {
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                }
+                
+                .diagram-filters .filter-btn:not(.active) {
+                    opacity: 0.7;
+                }
+                
+                .diagram-filters .filter-btn:hover {
+                    opacity: 1;
+                    transform: translateY(-1px);
+                }
+                
+                .btn-pink, .btn-outline-pink:hover {
+                    background-color: #e91e63;
+                    border-color: #e91e63;
+                    color: #fff;
+                }
+                
+                .btn-outline-pink {
+                    border-color: #e91e63;
+                    color: #e91e63;
+                }
 
                 @media (max-width: 768px) {
                     #organization-diagram-container {
@@ -321,6 +368,11 @@
                     .btn-toolbar {
                         margin-top: 1rem;
                         width: 100%;
+                        justify-content: center;
+                    }
+                    
+                    .diagram-filters {
+                        margin-top: 0.5rem;
                         justify-content: center;
                     }
                 }

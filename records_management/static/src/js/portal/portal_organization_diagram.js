@@ -133,6 +133,27 @@
                     this._startLiveChat();
                 });
             }
+            
+            // Filter buttons
+            const filterButtons = this.container.querySelectorAll('.filter-btn');
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this._onFilterClick(btn);
+                });
+            });
+            
+            // Reset filters button
+            const resetBtn = this.container.querySelector('#reset-filters');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this._resetFilters();
+                });
+            }
+            
+            // Initialize active filters (all types visible by default)
+            this.activeFilters = new Set(['company', 'department', 'internal', 'portal', 'current_user']);
         }
 
         _loadVisNetwork() {
@@ -738,6 +759,132 @@
             } else {
                 console.log('[OrgDiagramPortal] Search: No matches found for "' + query + '"');
             }
+        }
+
+        _onFilterClick(button) {
+            const filterType = button.getAttribute('data-filter');
+            if (!filterType) return;
+            
+            // Toggle active state
+            button.classList.toggle('active');
+            
+            // Update active filters set
+            if (button.classList.contains('active')) {
+                this.activeFilters.add(filterType);
+                // Solid button style when active
+                button.classList.remove('btn-outline-warning', 'btn-outline-success', 'btn-outline-info', 'btn-outline-danger');
+                const colorMap = {
+                    'company': 'btn-warning',
+                    'department': 'btn-success',
+                    'internal': 'btn-info',
+                    'portal': 'btn-pink',
+                    'current_user': 'btn-danger'
+                };
+                if (filterType === 'portal') {
+                    button.style.backgroundColor = '#e91e63';
+                    button.style.borderColor = '#e91e63';
+                    button.style.color = '#fff';
+                } else {
+                    button.classList.add(colorMap[filterType] || 'btn-secondary');
+                }
+            } else {
+                this.activeFilters.delete(filterType);
+                // Outline button style when inactive
+                button.classList.remove('btn-warning', 'btn-success', 'btn-info', 'btn-danger', 'btn-pink');
+                const outlineMap = {
+                    'company': 'btn-outline-warning',
+                    'department': 'btn-outline-success',
+                    'internal': 'btn-outline-info',
+                    'portal': 'btn-outline-pink',
+                    'current_user': 'btn-outline-danger'
+                };
+                if (filterType === 'portal') {
+                    button.style.backgroundColor = 'transparent';
+                    button.style.borderColor = '#e91e63';
+                    button.style.color = '#e91e63';
+                } else {
+                    button.classList.add(outlineMap[filterType] || 'btn-outline-secondary');
+                }
+            }
+            
+            // Apply filters to diagram
+            this._applyFilters();
+        }
+
+        _resetFilters() {
+            // Reset all filter buttons to active state
+            const filterButtons = this.container.querySelectorAll('.filter-btn');
+            this.activeFilters = new Set(['company', 'department', 'internal', 'portal', 'current_user']);
+            
+            filterButtons.forEach(btn => {
+                const filterType = btn.getAttribute('data-filter');
+                btn.classList.add('active');
+                
+                // Apply solid button styles
+                btn.classList.remove('btn-outline-warning', 'btn-outline-success', 'btn-outline-info', 'btn-outline-danger');
+                const colorMap = {
+                    'company': 'btn-warning',
+                    'department': 'btn-success',
+                    'internal': 'btn-info',
+                    'portal': 'btn-pink',
+                    'current_user': 'btn-danger'
+                };
+                if (filterType === 'portal') {
+                    btn.style.backgroundColor = '#e91e63';
+                    btn.style.borderColor = '#e91e63';
+                    btn.style.color = '#fff';
+                } else {
+                    btn.classList.add(colorMap[filterType] || 'btn-secondary');
+                }
+            });
+            
+            // Re-render diagram with all nodes visible
+            this._applyFilters();
+        }
+
+        _applyFilters() {
+            if (!this.network || !this.diagramData.nodes) return;
+            
+            // Determine which node types should be visible
+            const visibleTypes = this.activeFilters;
+            
+            // Create filtered node set
+            const filteredNodes = this.diagramData.nodes.map(node => {
+                // Map node type to filter type
+                let nodeFilterType = node.type;
+                
+                // Handle person nodes - check if internal or portal
+                if (node.type === 'person') {
+                    // Check node properties to determine user type
+                    if (node.is_current_user) {
+                        nodeFilterType = 'current_user';
+                    } else if (node.is_portal) {
+                        nodeFilterType = 'portal';
+                    } else {
+                        nodeFilterType = 'internal';
+                    }
+                }
+                
+                // Check visibility
+                const isVisible = visibleTypes.has(nodeFilterType) || 
+                                 (node.is_current_user && visibleTypes.has('current_user'));
+                
+                return {
+                    ...node,
+                    hidden: !isVisible
+                };
+            });
+            
+            // Update the network with filtered nodes
+            if (this.network) {
+                const nodesDataSet = new vis.DataSet(filteredNodes);
+                this.network.setData({
+                    nodes: nodesDataSet,
+                    edges: new vis.DataSet(this.diagramData.edges)
+                });
+            }
+            
+            console.log('[OrgDiagramPortal] Filters applied: ' + Array.from(visibleTypes).join(', '));
         }
 
         _onLayoutChanged() {

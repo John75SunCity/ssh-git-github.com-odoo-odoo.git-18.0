@@ -7917,6 +7917,7 @@ class RecordsManagementController(http.Controller):
                     'job_title': f'{role_label} ({du.access_level})',
                     'image': f'/web/image/res.users/{user.id}/avatar_128' if user.id else '',
                     'is_current_user': user.id == current_user.id,
+                    'is_portal': user.share,  # True if portal user
                     'role': du.role,
                     'access_level': du.access_level,
                 })
@@ -7949,6 +7950,7 @@ class RecordsManagementController(http.Controller):
                 'job_title': 'Portal User',
                 'image': f'/web/image/res.users/{current_user.id}/avatar_128',
                 'is_current_user': True,
+                'is_portal': current_user.share,  # True if portal user
             })
             added_ids.add(current_user_node_id)
             
