@@ -14,6 +14,10 @@
                                 <i class="fa fa-trash-alt"></i>
                                 Shredding Bins
                             </h3>
+                            <!-- View Toggle -->
+                            <t t-call="records_management.portal_view_toggle">
+                                <t t-set="view_mode" t-value="'list'"/>
+                            </t>
                         </div>
                         <div class="card-body">
                             <t t-if="not bins">
@@ -41,7 +45,13 @@
                                     </div>
                                 </div>
 
-                                <div class="table-responsive">
+                                <!-- Kanban View (Hidden by default) -->
+                                <div class="portal-kanban-view d-none mb-4">
+                                    <t t-call="records_management.portal_shredding_bins_kanban_board"/>
+                                </div>
+
+                                <!-- List View -->
+                                <div class="table-responsive portal-list-view">
                                     <table class="table table-hover">
                                         <thead class="thead-light">
                                             <tr>

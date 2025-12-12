@@ -60,6 +60,10 @@
                         <button class="btn btn-outline-success" type="button" data-bs-toggle="modal" data-bs-target="#importContainersModal">
                             <i class="fa fa-upload"></i> Import
                         </button>
+                        <!-- View Toggle -->
+                        <t t-call="records_management.portal_view_toggle">
+                            <t t-set="view_mode" t-value="'list'"/>
+                        </t>
                     </div>
                 </div>
                 
@@ -199,8 +203,22 @@
                     </form>
                 </div>
 
-                <!-- Container Table (Responsive) -->
-                <div class="table-responsive">
+                <!-- Kanban View (Hidden by default) -->
+                <div class="portal-kanban-view d-none mb-4">
+                    <t t-if="containers">
+                        <t t-call="records_management.portal_container_kanban_board"/>
+                    </t>
+                    <t t-if="not containers">
+                        <div class="alert alert-info text-center py-5">
+                            <i class="fa fa-box fa-3x mb-3 text-muted"></i>
+                            <h4>No Containers Found</h4>
+                            <p class="mb-0">You don't have any containers matching the current filters.</p>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- List View - Container Table (Responsive) -->
+                <div class="table-responsive portal-list-view">
                     <table class="table table-striped table-hover" id="containersTable">
                         <thead>
                             <tr>

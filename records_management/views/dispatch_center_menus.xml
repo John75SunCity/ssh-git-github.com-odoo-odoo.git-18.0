@@ -65,7 +65,7 @@
         <record id="action_dispatch_retrieval" model="ir.actions.act_window">
             <field name="name">Retrieval Orders</field>
             <field name="res_model">unified.work.order</field>
-            <field name="view_mode">list,kanban</field>
+            <field name="view_mode">list,kanban,form</field>
             <field name="domain">[('work_order_type', '=', 'retrieval')]</field>
             <field name="context">{'search_default_filter_open': 1}</field>
         </record>
@@ -78,7 +78,7 @@
         <record id="action_dispatch_delivery" model="ir.actions.act_window">
             <field name="name">Delivery Orders</field>
             <field name="res_model">unified.work.order</field>
-            <field name="view_mode">list,kanban</field>
+            <field name="view_mode">list,kanban,form</field>
             <field name="domain">[('work_order_type', '=', 'delivery')]</field>
             <field name="context">{'search_default_filter_open': 1}</field>
         </record>
@@ -91,7 +91,7 @@
         <record id="action_dispatch_pickup" model="ir.actions.act_window">
             <field name="name">Pickup Orders</field>
             <field name="res_model">unified.work.order</field>
-            <field name="view_mode">list,kanban</field>
+            <field name="view_mode">list,kanban,form</field>
             <field name="domain">[('work_order_type', '=', 'pickup')]</field>
             <field name="context">{'search_default_filter_open': 1}</field>
         </record>
@@ -104,7 +104,7 @@
         <record id="action_dispatch_container_access" model="ir.actions.act_window">
             <field name="name">Container Access</field>
             <field name="res_model">unified.work.order</field>
-            <field name="view_mode">list,kanban</field>
+            <field name="view_mode">list,kanban,form</field>
             <field name="domain">[('work_order_type', '=', 'container_access')]</field>
             <field name="context">{'search_default_filter_open': 1}</field>
         </record>
@@ -123,7 +123,7 @@
         <record id="action_dispatch_container_destruction" model="ir.actions.act_window">
             <field name="name">Container Destruction</field>
             <field name="res_model">unified.work.order</field>
-            <field name="view_mode">list,kanban</field>
+            <field name="view_mode">list,kanban,form</field>
             <field name="domain">[('work_order_type', '=', 'container_destruction')]</field>
             <field name="context">{'search_default_filter_open': 1}</field>
         </record>
@@ -136,7 +136,7 @@
         <record id="action_dispatch_shredding" model="ir.actions.act_window">
             <field name="name">Shredding Services</field>
             <field name="res_model">unified.work.order</field>
-            <field name="view_mode">list,kanban</field>
+            <field name="view_mode">list,kanban,form</field>
             <field name="domain">[('work_order_type', '=', 'shredding')]</field>
             <field name="context">{'search_default_filter_open': 1}</field>
         </record>

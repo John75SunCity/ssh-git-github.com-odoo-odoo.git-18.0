@@ -1,0 +1,214 @@
+/* =============================================================================
+   PORTAL KANBAN STYLES
+   Reusable kanban board styling for customer portal views
+   ============================================================================= */
+
+/* View Toggle Buttons */
+.view-toggle-btn.active {
+    background-color: var(--primary) !important;
+    color: white !important;
+    border-color: var(--primary) !important;
+}
+
+/* Kanban Board Container */
+.portal-kanban-board {
+    margin-bottom: 1.5rem;
+}
+
+/* Kanban Column */
+.kanban-column {
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.kanban-column-header {
+    padding: 0.75rem 1rem;
+    border-radius: 8px 8px 0 0;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.kanban-column-header i {
+    margin-right: 0.5rem;
+}
+
+.kanban-column-body {
+    padding: 0.75rem;
+    flex: 1;
+    overflow-y: auto;
+    max-height: 500px;
+}
+
+/* Kanban Card */
+.kanban-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.kanban-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.kanban-card-header {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.kanban-card-title {
+    font-size: 0.85rem;
+    word-break: break-word;
+    flex: 1;
+}
+
+.kanban-card-body {
+    padding: 0.5rem 0.75rem;
+}
+
+.kanban-card-description {
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+}
+
+.kanban-card-meta {
+    font-size: 0.75rem;
+}
+
+.kanban-card-meta small {
+    display: block;
+    line-height: 1.4;
+}
+
+.kanban-card-footer {
+    padding: 0.5rem 0.75rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.kanban-card-footer .btn {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Empty State */
+.kanban-empty-state {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #6c757d;
+}
+
+.kanban-empty-state i {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    opacity: 0.5;
+}
+
+/* More Indicator */
+.kanban-more-indicator {
+    text-align: center;
+    padding: 0.5rem;
+    border-top: 1px dashed #dee2e6;
+    margin-top: 0.5rem;
+}
+
+/* Badge Styles */
+.badge-sm {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem;
+}
+
+/* Fill Level Bar */
+.fill-level-bar .progress {
+    border-radius: 4px;
+    background-color: #e9ecef;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .kanban-column {
+        min-height: 200px;
+        margin-bottom: 1rem;
+    }
+    
+    .kanban-column-body {
+        max-height: 300px;
+    }
+    
+    .kanban-card-header {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .kanban-card-title {
+        font-size: 0.8rem;
+    }
+}
+
+/* List/Kanban View Toggle Animation */
+.portal-list-view,
+.portal-kanban-view {
+    transition: opacity 0.2s ease;
+}
+
+.portal-list-view.d-none,
+.portal-kanban-view.d-none {
+    opacity: 0;
+}
+
+/* Scrollbar Styling for Kanban Columns */
+.kanban-column-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.kanban-column-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.kanban-column-body::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.kanban-column-body::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Priority/Urgency Indicators */
+.kanban-card[data-priority="high"] {
+    border-left: 3px solid #dc3545;
+}
+
+.kanban-card[data-priority="medium"] {
+    border-left: 3px solid #ffc107;
+}
+
+/* Column hover effect */
+.kanban-column:hover {
+    background: #f0f4f8;
+}
+
+/* Print Styles */
+@media print {
+    .portal-kanban-board {
+        display: none;
+    }
+    
+    .view-toggle-btn {
+        display: none;
+    }
+}

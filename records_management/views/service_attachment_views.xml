@@ -154,7 +154,7 @@
         <record id="action_service_attachment" model="ir.actions.act_window">
             <field name="name">Service Attachments Hub</field>
             <field name="res_model">service.attachment</field>
-            <field name="view_mode">kanban,list,calendar</field>
+            <field name="view_mode">kanban,list,calendar,form</field>
             <field name="search_view_id" ref="service_attachment_view_search"/>
             <field name="context">{'search_default_group_category': 1}</field>
             <field name="help" type="html">
@@ -180,7 +180,7 @@
         <record id="action_service_attachment_today" model="ir.actions.act_window">
             <field name="name">Today's Uploads</field>
             <field name="res_model">service.attachment</field>
-            <field name="view_mode">kanban,list,calendar</field>
+            <field name="view_mode">kanban,list,calendar,form</field>
             <field name="search_view_id" ref="service_attachment_view_search"/>
             <field name="context">{'search_default_filter_today': 1, 'search_default_group_category': 1}</field>
             <field name="help" type="html">
@@ -193,7 +193,7 @@
         <record id="action_service_attachment_photos" model="ir.actions.act_window">
             <field name="name">Service Photos</field>
             <field name="res_model">service.attachment</field>
-            <field name="view_mode">kanban,list,calendar</field>
+            <field name="view_mode">kanban,list,calendar,form</field>
             <field name="search_view_id" ref="service_attachment_view_search"/>
             <field name="domain">[('attachment_category', '=', 'image')]</field>
             <field name="context">{'search_default_group_date': 1}</field>

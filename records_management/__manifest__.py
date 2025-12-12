@@ -743,6 +743,7 @@
         "templates/portal_centralized_docs.xml",
         "templates/portal_calendar_view.xml",  # NEW: Service calendar (shredding, pickups, retrievals)
         "templates/portal_coordinators_template.xml",  # NEW: Coordinators work order dashboard
+        "templates/portal_kanban_components.xml",  # NEW: Reusable kanban board components for portal
         # Service Photos Portal (technician job photos - NOT inventory documents)
         "templates/portal_service_photos.xml",
         # Request & Workflow Templates
@@ -850,6 +851,7 @@
             "records_management/static/src/css/customer_portal_diagram.css",
             "records_management/static/src/css/barcode_scanner.css",
             "records_management/static/src/css/portal_permission_indicator.css",
+            "records_management/static/src/css/portal_kanban.css",
 
             # ============================================================
             # VANILLA JS PORTAL WIDGETS (Odoo 18 Compatible - IIFE Pattern)
@@ -878,6 +880,8 @@
             "records_management/static/src/js/portal/portal_quote_generator_widget.js",
             # ✅ Interactive Features - core portal utilities (ALREADY vanilla JS!)
             "records_management/static/src/js/portal/portal_interactive_features.js",
+            # ✅ Portal Kanban - view toggle and kanban board functionality
+            "records_management/static/src/js/portal_kanban.js",
 
             # Other Assets
             "records_management/static/src/js/field_label_customizer.js",

@@ -21,6 +21,10 @@
                                 <a href="/my/bulk-upload" class="btn btn-light btn-sm ml-2">
                                     <i class="fa fa-upload"></i> Bulk Import
                                 </a>
+                                <!-- View Toggle -->
+                                <t t-call="records_management.portal_view_toggle">
+                                    <t t-set="view_mode" t-value="'list'"/>
+                                </t>
                             </div>
                         </div>
                         <div class="card-body">
@@ -85,7 +89,14 @@
                                     </div>
                                 </div>
 
-                                <div class="table-responsive">
+                                <!-- Kanban View (Hidden by default) -->
+                                <div class="portal-kanban-view d-none mb-4">
+                                    <t t-set="inventory_items" t-value="documents"/>
+                                    <t t-call="records_management.portal_inventory_kanban_board"/>
+                                </div>
+
+                                <!-- List View -->
+                                <div class="table-responsive portal-list-view">
                                     <table class="table table-hover">
                                         <thead class="thead-light">
                                             <tr>

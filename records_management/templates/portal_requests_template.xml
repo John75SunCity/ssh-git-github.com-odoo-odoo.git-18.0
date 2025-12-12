@@ -100,22 +100,45 @@
                             </div>
 
                             <!-- Action Buttons -->
-                            <div class="mb-3">
-                                <a href="/my/request/new/destruction" class="btn btn-danger mr-2">
-                                    <i class="fa fa-trash"></i> Request Destruction
-                                </a>
-                                <a href="/my/request/new/pickup" class="btn btn-primary mr-2">
-                                    <i class="fa fa-truck"></i> Request Pickup
-                                </a>
-                                <a href="/my/inventory/containers/create" class="btn btn-success">
-                                    <i class="fa fa-plus"></i> Add Container
-                                </a>
+                            <div class="mb-3 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a href="/my/request/new/destruction" class="btn btn-danger mr-2">
+                                        <i class="fa fa-trash"></i> Request Destruction
+                                    </a>
+                                    <a href="/my/request/new/pickup" class="btn btn-primary mr-2">
+                                        <i class="fa fa-truck"></i> Request Pickup
+                                    </a>
+                                    <a href="/my/inventory/containers/create" class="btn btn-success">
+                                        <i class="fa fa-plus"></i> Add Container
+                                    </a>
+                                </div>
+                                <!-- View Toggle -->
+                                <t t-call="records_management.portal_view_toggle">
+                                    <t t-set="view_mode" t-value="'list'"/>
+                                </t>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Requests Table -->
-                    <div class="card">
+                    <!-- Kanban View (Hidden by default) -->
+                    <div class="portal-kanban-view d-none mb-4">
+                        <t t-if="requests">
+                            <t t-call="records_management.portal_request_kanban_board"/>
+                        </t>
+                        <t t-if="not requests">
+                            <div class="alert alert-info text-center py-5">
+                                <i class="fa fa-inbox fa-3x mb-3 text-muted"></i>
+                                <h4>No Requests Found</h4>
+                                <p class="mb-0">
+                                    You haven't submitted any requests yet.
+                                    Click the buttons above to create your first request.
+                                </p>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- List View (Requests Table) -->
+                    <div class="card portal-list-view">
                         <div class="card-body">
                             <t t-if="not requests">
                                 <div class="alert alert-info text-center py-5">

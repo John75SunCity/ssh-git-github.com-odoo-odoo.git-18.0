@@ -1,0 +1,731 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ============================================================================
+             PORTAL KANBAN COMPONENTS
+             Reusable kanban board components for customer portal views
+             ============================================================================ -->
+
+        <!-- View Toggle Button Group -->
+        <template id="portal_view_toggle" name="Portal View Toggle">
+            <div class="btn-group btn-group-sm" role="group" aria-label="View toggle">
+                <button type="button" 
+                        t-att-class="'btn btn-outline-secondary view-toggle-btn' + (' active' if view_mode == 'kanban' else '')"
+                        onclick="togglePortalView('kanban')"
+                        title="Kanban View">
+                    <i class="fa fa-th-large"></i>
+                </button>
+                <button type="button" 
+                        t-att-class="'btn btn-outline-secondary view-toggle-btn' + (' active' if view_mode != 'kanban' else '')"
+                        onclick="togglePortalView('list')"
+                        title="List View">
+                    <i class="fa fa-list"></i>
+                </button>
+            </div>
+        </template>
+
+        <!-- ============================================================================
+             REQUEST KANBAN BOARD
+             ============================================================================ -->
+        <template id="portal_request_kanban_board" name="Request Kanban Board">
+            <div class="portal-kanban-board" id="request-kanban-board">
+                <div class="row g-3">
+                    <!-- Draft Column -->
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <div class="kanban-column" data-state="draft">
+                            <div class="kanban-column-header bg-secondary text-white">
+                                <i class="fa fa-edit"></i> Draft
+                                <span class="badge bg-white text-secondary ms-1" t-esc="len(requests.filtered(lambda r: r.state == 'draft'))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="requests.filtered(lambda r: r.state == 'draft')" t-as="req">
+                                    <t t-call="records_management.portal_request_kanban_card"/>
+                                </t>
+                                <t t-if="not requests.filtered(lambda r: r.state == 'draft')">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">No drafts</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submitted Column -->
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <div class="kanban-column" data-state="submitted">
+                            <div class="kanban-column-header bg-info text-white">
+                                <i class="fa fa-paper-plane"></i> Submitted
+                                <span class="badge bg-white text-info ms-1" t-esc="len(requests.filtered(lambda r: r.state == 'submitted'))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="requests.filtered(lambda r: r.state == 'submitted')" t-as="req">
+                                    <t t-call="records_management.portal_request_kanban_card"/>
+                                </t>
+                                <t t-if="not requests.filtered(lambda r: r.state == 'submitted')">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">None pending</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Approved Column -->
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <div class="kanban-column" data-state="approved">
+                            <div class="kanban-column-header bg-success text-white">
+                                <i class="fa fa-check"></i> Approved
+                                <span class="badge bg-white text-success ms-1" t-esc="len(requests.filtered(lambda r: r.state == 'approved'))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="requests.filtered(lambda r: r.state == 'approved')" t-as="req">
+                                    <t t-call="records_management.portal_request_kanban_card"/>
+                                </t>
+                                <t t-if="not requests.filtered(lambda r: r.state == 'approved')">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">None approved</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- In Progress Column -->
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <div class="kanban-column" data-state="in_progress">
+                            <div class="kanban-column-header bg-primary text-white">
+                                <i class="fa fa-cog fa-spin"></i> In Progress
+                                <span class="badge bg-white text-primary ms-1" t-esc="len(requests.filtered(lambda r: r.state == 'in_progress'))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="requests.filtered(lambda r: r.state == 'in_progress')" t-as="req">
+                                    <t t-call="records_management.portal_request_kanban_card"/>
+                                </t>
+                                <t t-if="not requests.filtered(lambda r: r.state == 'in_progress')">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">None active</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Completed Column -->
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <div class="kanban-column" data-state="completed">
+                            <div class="kanban-column-header bg-success text-white">
+                                <i class="fa fa-check-circle"></i> Completed
+                                <span class="badge bg-white text-success ms-1" t-esc="len(requests.filtered(lambda r: r.state == 'completed'))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="requests.filtered(lambda r: r.state == 'completed')" t-as="req">
+                                    <t t-call="records_management.portal_request_kanban_card"/>
+                                </t>
+                                <t t-if="not requests.filtered(lambda r: r.state == 'completed')">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">None complete</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rejected/Cancelled Column -->
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <div class="kanban-column" data-state="closed">
+                            <div class="kanban-column-header bg-danger text-white">
+                                <i class="fa fa-times-circle"></i> Closed
+                                <span class="badge bg-white text-danger ms-1" t-esc="len(requests.filtered(lambda r: r.state in ['rejected', 'cancelled']))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="requests.filtered(lambda r: r.state in ['rejected', 'cancelled'])" t-as="req">
+                                    <t t-call="records_management.portal_request_kanban_card"/>
+                                </t>
+                                <t t-if="not requests.filtered(lambda r: r.state in ['rejected', 'cancelled'])">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">None closed</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Request Kanban Card -->
+        <template id="portal_request_kanban_card" name="Request Kanban Card">
+            <div class="kanban-card" t-att-data-id="req.id">
+                <div class="kanban-card-header">
+                    <strong class="kanban-card-title" t-esc="req.name"/>
+                    <t t-if="req.request_type">
+                        <span t-att-class="'badge badge-sm ' + ('bg-danger' if req.request_type == 'destruction' else 'bg-primary' if req.request_type == 'pickup' else 'bg-info')">
+                            <t t-esc="req.request_type"/>
+                        </span>
+                    </t>
+                </div>
+                <div class="kanban-card-body">
+                    <t t-if="req.description">
+                        <p class="kanban-card-description text-muted small mb-2" t-esc="(req.description[:50] + '...') if len(req.description or '') > 50 else req.description"/>
+                    </t>
+                    <div class="kanban-card-meta">
+                        <small class="text-muted">
+                            <i class="fa fa-calendar"></i>
+                            <t t-esc="req.create_date.strftime('%b %d') if req.create_date else 'N/A'"/>
+                        </small>
+                    </div>
+                </div>
+                <div class="kanban-card-footer">
+                    <a t-attf-href="/my/requests/#{req.id}" class="btn btn-sm btn-outline-primary w-100">
+                        <i class="fa fa-eye"></i> View
+                    </a>
+                </div>
+            </div>
+        </template>
+
+        <!-- ============================================================================
+             CONTAINER KANBAN BOARD
+             Container state values: 'pending', 'in', 'out', 'perm_out', 'destroyed'
+             ============================================================================ -->
+        <template id="portal_container_kanban_board" name="Container Kanban Board">
+            <div class="portal-kanban-board" id="container-kanban-board">
+                <div class="row g-3">
+                    <!-- In Storage Column -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="kanban-column" data-state="in">
+                            <div class="kanban-column-header bg-success text-white">
+                                <i class="fa fa-warehouse"></i> In Storage
+                                <span class="badge bg-white text-success ms-1" t-esc="len(containers.filtered(lambda c: c.state == 'in'))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="containers.filtered(lambda c: c.state == 'in')[:20]" t-as="container">
+                                    <t t-call="records_management.portal_container_kanban_card"/>
+                                </t>
+                                <t t-if="len(containers.filtered(lambda c: c.state == 'in')) > 20">
+                                    <div class="kanban-more-indicator">
+                                        <a href="/my/containers?state_filter=in" class="text-muted small">
+                                            + <t t-esc="len(containers.filtered(lambda c: c.state == 'in')) - 20"/> more...
+                                        </a>
+                                    </div>
+                                </t>
+                                <t t-if="not containers.filtered(lambda c: c.state == 'in')">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">No containers in storage</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Out (With Customer) Column -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="kanban-column" data-state="out">
+                            <div class="kanban-column-header bg-warning text-dark">
+                                <i class="fa fa-truck"></i> With You
+                                <span class="badge bg-white text-warning ms-1" t-esc="len(containers.filtered(lambda c: c.state == 'out'))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="containers.filtered(lambda c: c.state == 'out')[:20]" t-as="container">
+                                    <t t-call="records_management.portal_container_kanban_card"/>
+                                </t>
+                                <t t-if="len(containers.filtered(lambda c: c.state == 'out')) > 20">
+                                    <div class="kanban-more-indicator">
+                                        <a href="/my/containers?state_filter=out" class="text-muted small">
+                                            + <t t-esc="len(containers.filtered(lambda c: c.state == 'out')) - 20"/> more...
+                                        </a>
+                                    </div>
+                                </t>
+                                <t t-if="not containers.filtered(lambda c: c.state == 'out')">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">No containers out</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Storage Column -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="kanban-column" data-state="pending">
+                            <div class="kanban-column-header bg-info text-white">
+                                <i class="fa fa-clock"></i> Pending Storage
+                                <span class="badge bg-white text-info ms-1" t-esc="len(containers.filtered(lambda c: c.state == 'pending'))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="containers.filtered(lambda c: c.state == 'pending')[:20]" t-as="container">
+                                    <t t-call="records_management.portal_container_kanban_card"/>
+                                </t>
+                                <t t-if="not containers.filtered(lambda c: c.state == 'pending')">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">None pending</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Destroyed/Perm-Out Column -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="kanban-column" data-state="destroyed">
+                            <div class="kanban-column-header bg-secondary text-white">
+                                <i class="fa fa-archive"></i> Archived/Destroyed
+                                <span class="badge bg-white text-secondary ms-1" t-esc="len(containers.filtered(lambda c: c.state in ['destroyed', 'perm_out']))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="containers.filtered(lambda c: c.state in ['destroyed', 'perm_out'])[:10]" t-as="container">
+                                    <t t-call="records_management.portal_container_kanban_card"/>
+                                </t>
+                                <t t-if="len(containers.filtered(lambda c: c.state in ['destroyed', 'perm_out'])) > 10">
+                                    <div class="kanban-more-indicator">
+                                        <a href="/my/containers?state_filter=destroyed" class="text-muted small">
+                                            + <t t-esc="len(containers.filtered(lambda c: c.state in ['destroyed', 'perm_out'])) - 10"/> more...
+                                        </a>
+                                    </div>
+                                </t>
+                                <t t-if="not containers.filtered(lambda c: c.state in ['destroyed', 'perm_out'])">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">None archived</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Container Kanban Card -->
+        <template id="portal_container_kanban_card" name="Container Kanban Card">
+            <div class="kanban-card" t-att-data-id="container.id">
+                <div class="kanban-card-header">
+                    <strong class="kanban-card-title" t-esc="container.name or container.barcode"/>
+                    <t t-if="container.container_type_id">
+                        <span class="badge bg-light text-dark badge-sm" t-esc="container.container_type_id.name[:10]"/>
+                    </t>
+                </div>
+                <div class="kanban-card-body">
+                    <div class="kanban-card-meta">
+                        <t t-if="container.barcode">
+                            <small class="d-block text-muted">
+                                <i class="fa fa-barcode"></i> <t t-esc="container.barcode"/>
+                            </small>
+                        </t>
+                        <t t-if="container.location_id">
+                            <small class="d-block text-muted">
+                                <i class="fa fa-map-marker"></i> <t t-esc="container.location_id.name[:20]"/>
+                            </small>
+                        </t>
+                        <t t-if="container.destruction_due_date">
+                            <small class="d-block text-danger">
+                                <i class="fa fa-calendar-times-o"></i> Due: <t t-esc="container.destruction_due_date"/>
+                            </small>
+                        </t>
+                    </div>
+                </div>
+                <div class="kanban-card-footer">
+                    <a t-attf-href="/my/container/#{container.id}" class="btn btn-sm btn-outline-primary w-100">
+                        <i class="fa fa-eye"></i> View
+                    </a>
+                </div>
+            </div>
+        </template>
+
+        <!-- ============================================================================
+             SHREDDING BINS KANBAN BOARD
+             Fill levels: '0' (Empty), '25', '50', '75', '100' (Full)
+             ============================================================================ -->
+        <template id="portal_shredding_bins_kanban_board" name="Shredding Bins Kanban Board">
+            <div class="portal-kanban-board" id="bins-kanban-board">
+                <div class="row g-3">
+                    <!-- Empty Bins Column -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="kanban-column" data-fill="empty">
+                            <div class="kanban-column-header bg-success text-white">
+                                <i class="fa fa-battery-empty"></i> Empty
+                                <span class="badge bg-white text-success ms-1" t-esc="len(bins.filtered(lambda b: b.current_fill_level == '0'))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="bins.filtered(lambda b: b.current_fill_level == '0')" t-as="bin">
+                                    <t t-call="records_management.portal_shredding_bin_kanban_card"/>
+                                </t>
+                                <t t-if="not bins.filtered(lambda b: b.current_fill_level == '0')">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">No empty bins</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Partial Bins Column -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="kanban-column" data-fill="partial">
+                            <div class="kanban-column-header bg-warning text-dark">
+                                <i class="fa fa-battery-half"></i> Partial (25-75%)
+                                <span class="badge bg-white text-warning ms-1" t-esc="len(bins.filtered(lambda b: b.current_fill_level in ['25', '50', '75']))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="bins.filtered(lambda b: b.current_fill_level in ['25', '50', '75'])" t-as="bin">
+                                    <t t-call="records_management.portal_shredding_bin_kanban_card"/>
+                                </t>
+                                <t t-if="not bins.filtered(lambda b: b.current_fill_level in ['25', '50', '75'])">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">No partial bins</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Full Bins Column -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="kanban-column" data-fill="full">
+                            <div class="kanban-column-header bg-danger text-white">
+                                <i class="fa fa-battery-full"></i> Full
+                                <span class="badge bg-white text-danger ms-1" t-esc="len(bins.filtered(lambda b: b.current_fill_level == '100'))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="bins.filtered(lambda b: b.current_fill_level == '100')" t-as="bin">
+                                    <t t-call="records_management.portal_shredding_bin_kanban_card"/>
+                                </t>
+                                <t t-if="not bins.filtered(lambda b: b.current_fill_level == '100')">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">No full bins</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scheduled Pickup Column -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="kanban-column" data-fill="scheduled">
+                            <div class="kanban-column-header bg-info text-white">
+                                <i class="fa fa-truck"></i> Pickup/In Transit
+                                <span class="badge bg-white text-info ms-1" t-esc="len(bins.filtered(lambda b: b.status in ['full', 'in_transit', 'being_serviced']))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="bins.filtered(lambda b: b.status in ['full', 'in_transit', 'being_serviced'])" t-as="bin">
+                                    <t t-call="records_management.portal_shredding_bin_kanban_card"/>
+                                </t>
+                                <t t-if="not bins.filtered(lambda b: b.status in ['full', 'in_transit', 'being_serviced'])">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">None scheduled</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Shredding Bin Kanban Card -->
+        <template id="portal_shredding_bin_kanban_card" name="Shredding Bin Kanban Card">
+            <div class="kanban-card" t-att-data-id="bin.id">
+                <div class="kanban-card-header">
+                    <strong class="kanban-card-title" t-esc="bin.barcode or bin.name"/>
+                    <t t-if="bin.bin_size">
+                        <span class="badge bg-light text-dark badge-sm">
+                            <t t-if="bin.bin_size == '23'">23G</t>
+                            <t t-elif="bin.bin_size == '32g'">32G</t>
+                            <t t-elif="bin.bin_size == '32c'">32C</t>
+                            <t t-elif="bin.bin_size == '64'">64G</t>
+                            <t t-else="">96G</t>
+                        </span>
+                    </t>
+                </div>
+                <div class="kanban-card-body">
+                    <!-- Fill Level Visual Bar -->
+                    <div class="fill-level-bar mb-2">
+                        <div class="progress" style="height: 8px;">
+                            <div t-att-class="'progress-bar ' + ('bg-success' if bin.current_fill_level == '0' else 'bg-warning' if bin.current_fill_level in ['25', '50'] else 'bg-danger')"
+                                 role="progressbar"
+                                 t-att-style="'width: ' + (bin.current_fill_level + '%')">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kanban-card-meta">
+                        <t t-if="bin.location_id or bin.last_scan_location_id">
+                            <small class="d-block text-muted">
+                                <i class="fa fa-map-marker"></i> 
+                                <t t-esc="(bin.location_id.name if bin.location_id else bin.last_scan_location_id.name)[:20]"/>
+                            </small>
+                        </t>
+                        <t t-if="bin.last_service_date">
+                            <small class="d-block text-muted">
+                                <i class="fa fa-calendar"></i> Last: <t t-esc="bin.last_service_date"/>
+                            </small>
+                        </t>
+                    </div>
+                </div>
+                <div class="kanban-card-footer">
+                    <a t-attf-href="/my/shredding/bin/#{bin.id}" class="btn btn-sm btn-outline-primary w-100">
+                        <i class="fa fa-eye"></i> Details
+                    </a>
+                </div>
+            </div>
+        </template>
+
+        <!-- ============================================================================
+             CERTIFICATES KANBAN BOARD
+             ============================================================================ -->
+        <template id="portal_certificate_kanban_board" name="Certificate Kanban Board">
+            <div class="portal-kanban-board" id="certificate-kanban-board">
+                <div class="row g-3">
+                    <!-- Draft Column -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="kanban-column" data-state="draft">
+                            <div class="kanban-column-header bg-secondary text-white">
+                                <i class="fa fa-edit"></i> Pending
+                                <span class="badge bg-white text-secondary ms-1" t-esc="len(certificates.filtered(lambda c: c.state == 'draft'))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="certificates.filtered(lambda c: c.state == 'draft')" t-as="certificate">
+                                    <t t-call="records_management.portal_certificate_kanban_card"/>
+                                </t>
+                                <t t-if="not certificates.filtered(lambda c: c.state == 'draft')">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">No pending certificates</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Issued Column -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="kanban-column" data-state="issued">
+                            <div class="kanban-column-header bg-success text-white">
+                                <i class="fa fa-certificate"></i> Issued
+                                <span class="badge bg-white text-success ms-1" t-esc="len(certificates.filtered(lambda c: c.state == 'issued'))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="certificates.filtered(lambda c: c.state == 'issued')[:20]" t-as="certificate">
+                                    <t t-call="records_management.portal_certificate_kanban_card"/>
+                                </t>
+                                <t t-if="len(certificates.filtered(lambda c: c.state == 'issued')) > 20">
+                                    <div class="kanban-more-indicator">
+                                        <a href="/my/certificates?state=issued" class="text-muted small">
+                                            + <t t-esc="len(certificates.filtered(lambda c: c.state == 'issued')) - 20"/> more...
+                                        </a>
+                                    </div>
+                                </t>
+                                <t t-if="not certificates.filtered(lambda c: c.state == 'issued')">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">No issued certificates</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cancelled Column -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="kanban-column" data-state="cancelled">
+                            <div class="kanban-column-header bg-danger text-white">
+                                <i class="fa fa-times-circle"></i> Cancelled
+                                <span class="badge bg-white text-danger ms-1" t-esc="len(certificates.filtered(lambda c: c.state == 'cancelled'))"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-foreach="certificates.filtered(lambda c: c.state == 'cancelled')" t-as="certificate">
+                                    <t t-call="records_management.portal_certificate_kanban_card"/>
+                                </t>
+                                <t t-if="not certificates.filtered(lambda c: c.state == 'cancelled')">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">None cancelled</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Certificate Kanban Card -->
+        <template id="portal_certificate_kanban_card" name="Certificate Kanban Card">
+            <div class="kanban-card" t-att-data-id="certificate.id">
+                <div class="kanban-card-header">
+                    <strong class="kanban-card-title" t-esc="certificate.name"/>
+                </div>
+                <div class="kanban-card-body">
+                    <div class="kanban-card-meta">
+                        <t t-if="certificate.certificate_date">
+                            <small class="d-block text-muted">
+                                <i class="fa fa-calendar"></i> 
+                                <t t-esc="certificate.certificate_date.strftime('%b %d, %Y') if certificate.certificate_date else 'N/A'"/>
+                            </small>
+                        </t>
+                        <t t-if="certificate.container_ids">
+                            <small class="d-block text-muted">
+                                <i class="fa fa-archive"></i> <t t-esc="len(certificate.container_ids)"/> container(s)
+                            </small>
+                        </t>
+                    </div>
+                </div>
+                <div class="kanban-card-footer d-flex gap-1">
+                    <a t-attf-href="/my/certificate/#{certificate.id}" class="btn btn-sm btn-outline-primary flex-fill">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                    <a t-attf-href="/my/certificate/#{certificate.id}/download" class="btn btn-sm btn-success flex-fill">
+                        <i class="fa fa-download"></i>
+                    </a>
+                </div>
+            </div>
+        </template>
+
+        <!-- ============================================================================
+             INVENTORY/DOCUMENTS KANBAN BOARD
+             Uses actual records.document fields: active, is_permanent, destruction_eligible, pending_destruction
+             ============================================================================ -->
+        <template id="portal_inventory_kanban_board" name="Inventory Kanban Board">
+            <div class="portal-kanban-board" id="inventory-kanban-board">
+                <div class="row g-3">
+                    <!-- Active Documents Column (normal active items, not permanent, not eligible for destruction) -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="kanban-column" data-retention="active">
+                            <div class="kanban-column-header bg-success text-white">
+                                <i class="fa fa-check-circle"></i> Active
+                                <span class="badge bg-white text-success ms-1" t-esc="len(inventory_items.filtered(lambda i: i.active and not i.is_permanent and not i.destruction_eligible)) if inventory_items else 0"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-if="inventory_items">
+                                    <t t-foreach="inventory_items.filtered(lambda i: i.active and not i.is_permanent and not i.destruction_eligible)[:15]" t-as="item">
+                                        <t t-call="records_management.portal_inventory_kanban_card"/>
+                                    </t>
+                                </t>
+                                <t t-if="not inventory_items or not inventory_items.filtered(lambda i: i.active and not i.is_permanent and not i.destruction_eligible)">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">No active items</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Destruction Column (items pending review before destruction) -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="kanban-column" data-retention="pending">
+                            <div class="kanban-column-header bg-warning text-dark">
+                                <i class="fa fa-exclamation-triangle"></i> Pending Destruction
+                                <span class="badge bg-white text-warning ms-1" t-esc="len(inventory_items.filtered(lambda i: i.pending_destruction)) if inventory_items else 0"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-if="inventory_items">
+                                    <t t-foreach="inventory_items.filtered(lambda i: i.pending_destruction)[:15]" t-as="item">
+                                        <t t-call="records_management.portal_inventory_kanban_card"/>
+                                    </t>
+                                </t>
+                                <t t-if="not inventory_items or not inventory_items.filtered(lambda i: i.pending_destruction)">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">None pending</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ready for Destruction Column (eligible for destruction today) -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="kanban-column" data-retention="eligible">
+                            <div class="kanban-column-header bg-danger text-white">
+                                <i class="fa fa-trash"></i> Ready for Destruction
+                                <span class="badge bg-white text-danger ms-1" t-esc="len(inventory_items.filtered(lambda i: i.destruction_eligible and not i.pending_destruction)) if inventory_items else 0"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-if="inventory_items">
+                                    <t t-foreach="inventory_items.filtered(lambda i: i.destruction_eligible and not i.pending_destruction)[:15]" t-as="item">
+                                        <t t-call="records_management.portal_inventory_kanban_card"/>
+                                    </t>
+                                </t>
+                                <t t-if="not inventory_items or not inventory_items.filtered(lambda i: i.destruction_eligible and not i.pending_destruction)">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">None ready</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Permanent Retention Column (items flagged for permanent retention) -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="kanban-column" data-retention="permanent">
+                            <div class="kanban-column-header bg-info text-white">
+                                <i class="fa fa-lock"></i> Permanent Retention
+                                <span class="badge bg-white text-info ms-1" t-esc="len(inventory_items.filtered(lambda i: i.is_permanent)) if inventory_items else 0"/>
+                            </div>
+                            <div class="kanban-column-body">
+                                <t t-if="inventory_items">
+                                    <t t-foreach="inventory_items.filtered(lambda i: i.is_permanent)[:15]" t-as="item">
+                                        <t t-call="records_management.portal_inventory_kanban_card"/>
+                                    </t>
+                                </t>
+                                <t t-if="not inventory_items or not inventory_items.filtered(lambda i: i.is_permanent)">
+                                    <div class="kanban-empty-state">
+                                        <i class="fa fa-inbox text-muted"></i>
+                                        <small class="text-muted">None on permanent hold</small>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Inventory Kanban Card -->
+        <template id="portal_inventory_kanban_card" name="Inventory Kanban Card">
+            <div class="kanban-card" t-att-data-id="item.id">
+                <div class="kanban-card-header">
+                    <strong class="kanban-card-title" t-esc="item.name or item.display_name"/>
+                </div>
+                <div class="kanban-card-body">
+                    <div class="kanban-card-meta">
+                        <t t-if="item.document_type_id">
+                            <small class="d-block text-muted">
+                                <i class="fa fa-tag"></i> <t t-esc="item.document_type_id.name[:20]"/>
+                            </small>
+                        </t>
+                        <t t-if="item.destruction_eligible_date">
+                            <small class="d-block text-danger">
+                                <i class="fa fa-calendar-times-o"></i> Due: <t t-esc="item.destruction_eligible_date"/>
+                            </small>
+                        </t>
+                        <t t-if="item.file_id">
+                            <small class="d-block text-muted">
+                                <i class="fa fa-folder"></i> <t t-esc="item.file_id.name[:15] if item.file_id.name else ''"/>
+                            </small>
+                        </t>
+                    </div>
+                </div>
+                <div class="kanban-card-footer">
+                    <a t-attf-href="/my/document/#{item.id}" class="btn btn-sm btn-outline-primary w-100">
+                        <i class="fa fa-eye"></i> View
+                    </a>
+                </div>
+            </div>
+        </template>
+
+    </data>
+</odoo>

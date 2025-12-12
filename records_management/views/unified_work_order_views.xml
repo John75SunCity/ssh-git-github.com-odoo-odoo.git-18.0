@@ -237,7 +237,7 @@
         <record id="action_dispatch_center" model="ir.actions.act_window">
             <field name="name">Dispatch Center</field>
             <field name="res_model">unified.work.order</field>
-            <field name="view_mode">kanban,list,calendar</field>
+            <field name="view_mode">kanban,list,calendar,form</field>
             <field name="search_view_id" ref="unified_work_order_view_search"/>
             <field name="context">{
                 'search_default_filter_open': 1,
@@ -307,7 +307,7 @@
         <record id="action_todays_dispatch" model="ir.actions.act_window">
             <field name="name">Today's Dispatch</field>
             <field name="res_model">unified.work.order</field>
-            <field name="view_mode">kanban,list,calendar</field>
+            <field name="view_mode">kanban,list,calendar,form</field>
             <field name="search_view_id" ref="unified_work_order_view_search"/>
             <field name="context">{
                 'search_default_filter_today': 1,
