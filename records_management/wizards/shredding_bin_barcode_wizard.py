@@ -96,3 +96,15 @@ class ShreddingBinBarcodeWizard(models.TransientModel):
             cleaned = self.current_barcode.replace('%', '').replace(' ', '').replace('-', '')
             if len(cleaned) == 10 and cleaned.isdigit():
                 self.new_barcode = cleaned
+
+
+class ShreddingBinScanWizard(models.TransientModel):
+    _name = 'shredding.bin.scan.wizard'
+    _description = 'Bin Scan Wizard'
+
+    barcode = fields.Char(string='Barcode', required=True)
+    work_order_id = fields.Many2one('work.order.shredding', string='Work Order', default=lambda self: self.env.context.get('active_id'))
+
+    def action_confirm_scan(self):
+        self.ensure_one()
+        return self.work_order_id.action_scan_barcode(self.barcode)

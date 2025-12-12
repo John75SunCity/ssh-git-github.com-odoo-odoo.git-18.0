@@ -286,6 +286,14 @@ class WorkOrderShredding(models.Model):
         string='Scanned Containers',
         help="Containers that were scanned during this work order"
     )
+    scanned_bin_ids = fields.Many2many(
+        comodel_name='shredding.service.bin',
+        relation='work_order_shredding_scanned_bins',
+        column1='work_order_id',
+        column2='bin_id',
+        string='Scanned Bins',
+        help="Bins that were scanned during this work order"
+    )
     scanned_count = fields.Integer(
         string='Scanned Items',
         compute='_compute_scanned_count',
@@ -671,64 +679,47 @@ class WorkOrderShredding(models.Model):
                 'message': _('Work order must be scheduled or in progress to scan barcodes')
             }
         
-        # Find container by barcode
-        container = self.env['records.container'].search([
-            '|',
-            ('barcode', '=', barcode_value),
-            ('temp_barcode', '=', barcode_value)
-        ], limit=1)
+        # Normalize barcode (strip spaces, uppercase)
+        barcode_value = barcode_value.strip().upper()
         
-        if not container:
+        # Case-insensitive search
+        bin = self.env['shredding.service.bin'].search([('barcode', 'ilike', barcode_value)], limit=1)
+        
+        if not bin:
+            # Try without prefix if starts with 'BIN'
+            if barcode_value.startswith('BIN'):
+                bare_code = barcode_value[3:]
+                bin = self.env['shredding.service.bin'].search([('barcode', 'ilike', bare_code)], limit=1)
+        
+        if not bin:
             return {
                 'success': False,
-                'message': _('No container found with barcode: %s') % barcode_value
+                'message': _('No bin found with barcode: %s. Check import or use wizard to create.') % barcode_value
             }
-        # Find bin by barcode
-        bin = self.env['shredding.service.bin'].search([('barcode', '=', barcode_value)], limit=1)
-        if bin:
-            # Create movement record
-            self.env['shredding.bin.movement'].create({
-                'bin_id': bin.id,
-                'movement_date': fields.Datetime.now(),
-                'from_location_id': bin.location_id.id,
-                'to_location_id': self.partner_id.property_stock_customer.id,  # Customer location
-                'from_status': bin.status,
-                'to_status': 'in_service',
-                'performed_by_id': self.env.user.id,
-                'reason': _('Scanned to work order %s') % self.name
-            })
-            # Update bin location/customer
-            bin.write({
-                'location_id': self.partner_id.property_stock_customer.id,
-                'current_customer_id': self.partner_id.id,
-                'status': 'in_service'
-            })
+        
         # Check if already scanned
-        if container in self.scanned_barcode_ids:
+        if bin in self.scanned_bin_ids:  # Assuming One2many scanned_bin_ids
             return {
                 'success': False,
-                'message': _('Container %s already scanned') % container.name,
+                'message': _('Bin %s already scanned') % bin.barcode,
                 'warning': True
             }
         
         # Add to scanned list
         self.write({
-            'scanned_barcode_ids': [(4, container.id)],
+            'scanned_bin_ids': [(4, bin.id)],
             'last_scan_time': fields.Datetime.now(),
         })
         
         # Log in chatter
         self.message_post(
-            body=_('Container scanned: %s (Barcode: %s)') % (container.name, barcode_value),
+            body=_('Bin scanned: %s (Size: %s)') % (bin.barcode, bin.bin_size),
             subtype_xmlid='mail.mt_note'
         )
         
         return {
             'success': True,
-            'message': _('Scanned: %s') % container.name,
-            'container_id': container.id,
-            'container_name': container.name,
-            'total_scanned': len(self.scanned_barcode_ids)
+            'message': _('Bin %s scanned successfully. Price: %s') % (bin.barcode, bin.price_per_service)
         }
 
     def action_open_scanner(self):

@@ -55,5 +55,32 @@
             </t>
         </t>
     </template>
+
+<record id="shredding_bin_barcode_label" model="ir.actions.report">
+    <field name="name">Shredding Bin Barcode Label</field>
+    <field name="model">shredding.service.bin</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">records_management.shredding_bin_barcode_label_template</field>
+    <field name="report_file">records_management.shredding_bin_barcode_label</field>
+    <field name="print_report_name">"%s - Barcode Label" % (object.barcode or 'N/A')</field>
+    <field name="binding_model_id" ref="records_management.model_shredding_service_bin"/>
+    <field name="binding_type">report</field>
+</record>
+
+<template id="shredding_bin_barcode_label_template">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="web.external_layout">
+                <div class="page" style="width: 4in; height: 2in; text-align: center; padding: 0.25in;">
+                    <h3>Shredding Bin: <span t-esc="doc.barcode"/></h3>
+                    <barcode type="Code128" value="doc.barcode" height="50" width="300"/>
+                    <p>Size: <span t-esc="doc.bin_size"/></p>
+                    <p>Capacity: <span t-esc="doc.weight_capacity_lbs"/> lbs</p>
+                    <p>Price per Service: <span t-esc="doc.price_per_service" widget="monetary"/></p>
+                </div>
+            </t>
+        </t>
+    </t>
+</template>
     </data>
 </odoo>
