@@ -1,0 +1,11 @@
+<template id="portal_barcode_sheet_wizard_template" name="Generate Barcode Sheets">
+    <t t-call="portal.portal_layout">
+        <form method="post" action="/my/generate_barcode_sheets">
+            <label for="sheet_count">Number of Sheets</label>
+            <input type="number" name="sheet_count" value="1"/>
+            <label for="barcodes_per_sheet">Barcodes per Sheet</label>
+            <input type="number" name="barcodes_per_sheet" value="10"/>
+            <button type="submit">Generate PDF</button>
+        </form>
+    </t>
+</template>

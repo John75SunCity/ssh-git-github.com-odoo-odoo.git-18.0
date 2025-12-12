@@ -1,0 +1,6 @@
+<template id="portal_scanbot_scanner_template" name="Portal Scanbot Scanner">
+    <t t-call="portal.portal_layout">
+        <div id="scanbot_container" style="height: 400px; width: 100%;"/>
+        <!-- JS will initialize Scanbot here -->
+    </t>
+</template>

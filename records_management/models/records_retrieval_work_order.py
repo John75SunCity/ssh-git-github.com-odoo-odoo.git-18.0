@@ -358,28 +358,16 @@ class RecordsRetrievalWorkOrder(models.Model):
         }
 
     def action_open_camera_scanner(self):
-        """
-        Directly open the camera barcode scanner (bypasses wizard popup).
-        
-        This launches the Scanbot SDK camera scanner as a client action.
-        Scanned barcodes are automatically sent to action_scan_barcode().
-        Perfect for mobile scanning workflows on work orders.
-        
-        Returns:
-            dict: Client action to launch rm_camera_scanner
-        """
-        self.ensure_one()
-        if self.state not in ['draft', 'in_progress']:
-            raise UserError(_("Can only scan barcodes for draft or in-progress work orders."))
+        """Open Scanbot SDK camera scanner."""
         return {
-            'type': 'ir.actions.client',
-            'tag': 'rm_camera_scanner',
-            'name': _('Camera Scanner - %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'scanbot.barcode.scanner.wizard',
+            'view_mode': 'form',
+            'target': 'new',
             'context': {
-                'operation_mode': 'work_order',
-                'work_order_model': self._name,
-                'work_order_id': self.id,
-            },
+                'default_target_model': self._name,
+                'default_target_id': self.id,
+            }
         }
 
     def action_reset_to_draft(self):

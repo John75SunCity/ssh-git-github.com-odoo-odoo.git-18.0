@@ -1,0 +1,24 @@
+<odoo>
+    <report 
+        id="action_report_barcode_sheets"
+        model="barcode.sheet.wizard"
+        string="Printable Barcode Sheets"
+        report_type="qweb-pdf"
+        name="records_management.report_barcode_sheets_template"
+        file="records_management.report_barcode_sheets"
+    />
+    
+    <template id="report_barcode_sheets_template">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Printable Barcode Sheets</h2>
+                    <t t-foreach="data['barcodes']" t-as="barcode">
+                        <barcode type="Code128" value="barcode"/>
+                        <br/>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

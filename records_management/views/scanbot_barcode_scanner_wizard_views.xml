@@ -1,0 +1,25 @@
+<odoo>
+    <record id="scanbot_barcode_scanner_wizard_view_form" model="ir.ui.view">
+        <field name="name">scanbot.barcode.scanner.wizard.form</field>
+        <field name="model">scanbot.barcode.scanner.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Scan Barcode">
+                <div id="scanbot_container" style="height: 400px; width: 100%;">
+                    <!-- Scanbot SDK will be initialized here via JS -->
+                </div>
+                <field name="scanned_barcode" invisible="1"/>
+                <footer>
+                    <button string="Scan" type="object" name="action_open_scanbot_scanner" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_scanbot_barcode_scanner_wizard" model="ir.actions.act_window">
+        <field name="name">Scan Barcode</field>
+        <field name="res_model">scanbot.barcode.scanner.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

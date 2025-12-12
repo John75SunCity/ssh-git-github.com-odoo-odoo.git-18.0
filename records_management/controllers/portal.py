@@ -5716,6 +5716,11 @@ class RecordsManagementController(http.Controller):
     # BARCODE ROUTES (3 routes)
     # ============================================================================
 
+    @http.route(['/my/scan_barcode'], type='http', auth="user", website=True)
+    def portal_scan_barcode(self, **kw):
+        """Open Scanbot scanner in portal."""
+        return request.render('records_management.portal_scanbot_scanner_template', {})  # Template with JS to open scanner
+
     @http.route(['/my/barcode/main'], type='http', auth='user', website=True)
     def portal_barcode_main(self, **kw):
         """Barcode scanning center."""
