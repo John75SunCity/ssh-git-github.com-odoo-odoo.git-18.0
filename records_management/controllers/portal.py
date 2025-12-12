@@ -4085,7 +4085,7 @@ class RecordsManagementController(http.Controller):
 
         partner = request.env.user.partner_id.commercial_partner_id
 
-        if request_type not in ['retrieval', 'destruction', 'pickup', 'scanning', 'file_search']:
+        if request_type not in ['retrieval', 'destruction', 'pickup', 'scanning', 'file_search', 'shredding']:
             return request.redirect('/my/requests?error=invalid_type')
 
         if request.httprequest.method == 'GET':
@@ -4106,6 +4106,33 @@ class RecordsManagementController(http.Controller):
                     'state': container.state,
                 })
 
+            # Get pricing information for the request type (inline lookup)
+            NegotiatedRate = request.env['customer.negotiated.rate'].sudo()
+            BaseRate = request.env['base.rate'].sudo()
+            
+            # Build service-specific pricing
+            pricing_info = {'price': 0.0, 'source': 'base'}
+            negotiated = NegotiatedRate.search([
+                ('partner_id', '=', partner.id),
+                ('service_type', '=', request_type),
+                ('is_current', '=', True),
+            ], limit=1)
+            if negotiated:
+                pricing_info = {'price': negotiated.rate, 'source': 'negotiated'}
+            else:
+                base = BaseRate.search([
+                    ('service_type', '=', request_type),
+                    ('state', '=', 'active'),
+                ], limit=1)
+                if base:
+                    pricing_info = {'price': base.rate, 'source': 'base'}
+            
+            # Check if customer has any negotiated rates
+            has_negotiated_rates = NegotiatedRate.search_count([
+                ('partner_id', '=', partner.id),
+                ('is_current', '=', True),
+            ]) > 0
+            
             values = {
                 'request_type': request_type,
                 'partner': partner,
@@ -4114,6 +4141,10 @@ class RecordsManagementController(http.Controller):
                 'container_data': container_data,  # Safe data without ORM access
                 'files': files,
                 'page_name': f'request_create_{request_type}',
+                # Pricing data (inline lookup)
+                'pricing_info': pricing_info,
+                'has_negotiated_rates': has_negotiated_rates,
+                'currency_symbol': partner.company_id.currency_id.symbol if partner.company_id else '$',
             }
 
             # Route to specific template based on type
@@ -5975,17 +6006,138 @@ class RecordsManagementController(http.Controller):
 
     @http.route(['/my/quotes'], type='http', auth='user', website=True)
     def portal_quotes(self, **kw):
-        """Render the quote generator page with recent quotes."""
+        """Render the quote generator page with recent quotes and pricing catalog."""
         values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Recent quotes
         values['recent_quotes'] = request.env['sale.order'].sudo().search([
-            ('partner_id', 'child_of', request.env.user.partner_id.commercial_partner_id.id),
+            ('partner_id', 'child_of', partner.id),
             ('state', 'in', ['draft', 'sent'])
         ], order='date_order desc', limit=10)
+        
+        # Get customer negotiated rates (if any)
+        negotiated_rates = request.env['customer.negotiated.rate'].sudo().search([
+            ('partner_id', '=', partner.id),
+            ('is_current', '=', True),
+        ])
+        
+        # Build pricing catalog with negotiated rates taking precedence over base rates
+        base_rate = request.env['base.rate'].sudo().search([
+            ('company_id', '=', request.env.company.id),
+            ('state', '=', 'active'),
+        ], limit=1)
+        
+        # Shredding bin pricing
+        shredding_prices = []
+        bin_sizes = [
+            ('23', '23 Gallon Shredinator'),
+            ('32g', '32 Gallon Bin'),
+            ('32c', '32 Gallon Console'),
+            ('64', '64 Gallon Bin'),
+            ('96', '96 Gallon Bin'),
+        ]
+        
+        # Default base prices
+        base_shred_prices = {'23': 20.0, '32g': 35.0, '32c': 30.0, '64': 65.0, '96': 95.0}
+        
+        for bin_code, bin_name in bin_sizes:
+            # Check for negotiated rate
+            neg_rate = negotiated_rates.filtered(
+                lambda r: r.rate_type == 'shredding' and r.bin_size == bin_code
+            )
+            if neg_rate:
+                price = neg_rate[0].per_service_rate or base_shred_prices.get(bin_code, 35.0)
+                is_negotiated = True
+            else:
+                price = base_shred_prices.get(bin_code, 35.0)
+                is_negotiated = False
+            
+            shredding_prices.append({
+                'code': bin_code,
+                'name': bin_name,
+                'price': price,
+                'is_negotiated': is_negotiated,
+            })
+        
+        # Service pricing
+        service_prices = []
+        services = [
+            ('retrieval', 'Container Retrieval', 'document_retrieval_rate', 25.0),
+            ('pickup', 'Pickup Service', 'pickup_rate', 50.0),
+            ('delivery', 'Delivery Service', 'delivery_rate', 50.0),
+            ('destruction', 'Destruction Service', 'destruction_rate', 10.0),
+            ('scanning', 'Document Scanning (per page)', 'scanning_rate', 0.10),
+        ]
+        
+        for svc_code, svc_name, base_field, default_price in services:
+            # Check for negotiated service rate
+            neg_rate = negotiated_rates.filtered(
+                lambda r: r.rate_type == 'service' and r.service_type_id.code == svc_code if r.service_type_id else False
+            )
+            
+            if neg_rate:
+                price = neg_rate[0].per_service_rate or default_price
+                is_negotiated = True
+            elif base_rate and hasattr(base_rate, base_field):
+                price = getattr(base_rate, base_field) or default_price
+                is_negotiated = False
+            else:
+                price = default_price
+                is_negotiated = False
+            
+            service_prices.append({
+                'code': svc_code,
+                'name': svc_name,
+                'price': price,
+                'is_negotiated': is_negotiated,
+            })
+        
+        # Container storage pricing
+        container_types = request.env['records.container.type'].sudo().search([('active', '=', True)])
+        storage_prices = []
+        
+        for ct in container_types:
+            # Check for negotiated storage rate
+            neg_rate = negotiated_rates.filtered(
+                lambda r: r.rate_type == 'storage' and r.container_type_id.id == ct.id
+            )
+            
+            if neg_rate:
+                price = neg_rate[0].monthly_rate or 0.0
+                is_negotiated = True
+            elif hasattr(ct, 'standard_rate') and ct.standard_rate:
+                price = ct.standard_rate
+                is_negotiated = False
+            elif base_rate:
+                price = base_rate.get_container_rate(ct.code if hasattr(ct, 'code') else 'type_01')
+                is_negotiated = False
+            else:
+                price = 0.0
+                is_negotiated = False
+            
+            storage_prices.append({
+                'id': ct.id,
+                'name': ct.name,
+                'code': ct.code if hasattr(ct, 'code') else '',
+                'price': price,
+                'is_negotiated': is_negotiated,
+            })
+        
+        values.update({
+            'partner': partner,
+            'shredding_prices': shredding_prices,
+            'service_prices': service_prices,
+            'storage_prices': storage_prices,
+            'has_negotiated_rates': bool(negotiated_rates),
+            'currency_symbol': request.env.company.currency_id.symbol or '$',
+        })
+        
         return request.render('records_management.portal_quotes', values)
 
     @http.route(['/my/quotes/generate'], type='http', auth='user', methods=['POST'], website=True, csrf=True)
     def generate_quote(self, **post):
-        """Handle quote generation from portal form."""
+        """Handle quote generation from portal form with customer-specific pricing."""
         partner = request.env.user.partner_id.commercial_partner_id
         
         # Create sale order (quote)
@@ -5995,37 +6147,107 @@ class RecordsManagementController(http.Controller):
         }
         order = request.env['sale.order'].sudo().create(order_vals)
         
-        # Get products (assume they exist; create if needed in data)
-        shred_product = request.env['product.product'].sudo().search([('name', 'ilike', 'Shredding Box')], limit=1)
-        pickup_product = request.env['product.product'].sudo().search([('name', 'ilike', 'Pickup Fee')], limit=1)
+        # Get negotiated rates
+        negotiated_rates = request.env['customer.negotiated.rate'].sudo().search([
+            ('partner_id', '=', partner.id),
+            ('is_current', '=', True),
+        ])
         
-        # Get rates from negotiated or fallback
-        negotiated = request.env['customer.negotiated.rate'].sudo().search([
-            ('partner_id', '=', partner.id), ('state', '=', 'active')
+        # Base rate fallback
+        base_rate = request.env['base.rate'].sudo().search([
+            ('company_id', '=', request.env.company.id),
+            ('state', '=', 'active'),
         ], limit=1)
-        shred_rate = negotiated.destruction_rate if negotiated and hasattr(negotiated, 'destruction_rate') else 10.0
-        pickup_rate = negotiated.pickup_rate if negotiated and hasattr(negotiated, 'pickup_rate') else 50.0
         
-        # Add lines
+        # Default prices
+        base_shred_prices = {'23': 20.0, '32g': 35.0, '32c': 30.0, '64': 65.0, '96': 95.0}
+        
+        # Process quote lines
         i = 1
         while f'line_type_{i}' in post:
             line_type = post[f'line_type_{i}']
             qty = float(post.get(f'line_qty_{i}', 0))
-            if qty > 0:
-                if line_type == 'shredding' and shred_product:
-                    request.env['sale.order.line'].sudo().create({
-                        'order_id': order.id,
-                        'product_id': shred_product.id,
-                        'product_uom_qty': qty,
-                        'price_unit': shred_rate,
-                    })
-                elif line_type == 'pickup' and pickup_product:
-                    request.env['sale.order.line'].sudo().create({
-                        'order_id': order.id,
-                        'product_id': pickup_product.id,
-                        'product_uom_qty': 1,
-                        'price_unit': pickup_rate,
-                    })
+            bin_size = post.get(f'line_bin_size_{i}', '')
+            
+            if qty <= 0:
+                i += 1
+                continue
+            
+            product = None
+            price = 0.0
+            description = ''
+            
+            if line_type == 'shredding' and bin_size:
+                # Get shredding bin product
+                xmlid_map = {
+                    '23': 'records_management.product_shredding_bin_23',
+                    '32g': 'records_management.product_shredding_bin_32g',
+                    '32c': 'records_management.product_shredding_bin_32c',
+                    '64': 'records_management.product_shredding_bin_64',
+                    '96': 'records_management.product_shredding_bin_96',
+                }
+                try:
+                    product = request.env.ref(xmlid_map.get(bin_size, 'records_management.product_shredding_service'))
+                except Exception:
+                    product = request.env['product.product'].sudo().search([
+                        ('is_records_management_product', '=', True),
+                        ('default_code', 'ilike', 'SHRED')
+                    ], limit=1)
+                
+                # Get price from negotiated rate or fallback
+                neg_rate = negotiated_rates.filtered(
+                    lambda r: r.rate_type == 'shredding' and r.bin_size == bin_size
+                )
+                if neg_rate:
+                    price = neg_rate[0].per_service_rate or base_shred_prices.get(bin_size, 35.0)
+                else:
+                    price = base_shred_prices.get(bin_size, 35.0)
+                
+                bin_names = {'23': '23 Gallon', '32g': '32 Gallon Bin', '32c': '32 Gallon Console', '64': '64 Gallon', '96': '96 Gallon'}
+                description = '%s Shredding Service' % bin_names.get(bin_size, 'Shredding')
+                
+            elif line_type == 'pickup':
+                product = request.env['product.product'].sudo().search([
+                    ('name', 'ilike', 'Pickup')
+                ], limit=1)
+                price = base_rate.pickup_rate if base_rate else 50.0
+                description = 'Pickup Service'
+                
+            elif line_type == 'retrieval':
+                product = request.env['product.product'].sudo().search([
+                    ('name', 'ilike', 'Retrieval')
+                ], limit=1)
+                price = base_rate.document_retrieval_rate if base_rate else 25.0
+                description = 'Container Retrieval Service'
+                
+            elif line_type == 'destruction':
+                product = request.env['product.product'].sudo().search([
+                    ('name', 'ilike', 'Destruction')
+                ], limit=1)
+                price = base_rate.destruction_rate if base_rate else 10.0
+                description = 'Secure Destruction Service'
+                
+            elif line_type == 'scanning':
+                product = request.env['product.product'].sudo().search([
+                    ('name', 'ilike', 'Scanning')
+                ], limit=1)
+                price = base_rate.scanning_rate if base_rate else 0.10
+                description = 'Document Scanning Service'
+            
+            # Create order line
+            if product or description:
+                line_vals = {
+                    'order_id': order.id,
+                    'product_uom_qty': qty,
+                    'price_unit': price,
+                }
+                if product:
+                    line_vals['product_id'] = product.id
+                else:
+                    line_vals['name'] = description
+                    
+                request.env['sale.order.line'].sudo().create(line_vals)
+            
             i += 1
         
         # Generate PDF

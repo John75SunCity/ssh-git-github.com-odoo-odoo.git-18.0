@@ -595,36 +595,110 @@
                 
                 <div class="o_portal_quotes">
                     <div class="row">
+                        <!-- Quote Generator Form -->
                         <div class="col-lg-8">
-                            <div class="card">
+                            <div class="card mb-4">
                                 <div class="card-header bg-info text-white">
                                     <h5 class="mb-0">
                                         <i class="fa fa-calculator"></i>
                                         Quote Generator
+                                        <t t-if="has_negotiated_rates">
+                                            <span class="badge bg-success ms-2">
+                                                <i class="fa fa-star"></i> Negotiated Rates Applied
+                                            </span>
+                                        </t>
                                     </h5>
                                 </div>
                                 <div class="card-body">
                                     <form id="quote_form" method="post" action="/my/quotes/generate">
-                                        <!-- New: Autofill Fields for Company and Department -->
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        
+                                        <!-- Company/Department Info -->
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <label for="company">Company</label>
-                                                <input type="text" id="company" name="company" class="form-control" t-att-value="request.env.user.partner_id.name" readonly="readonly"/>
+                                                <label for="company" class="form-label">Company</label>
+                                                <input type="text" id="company" name="company" class="form-control" 
+                                                       t-att-value="partner.name" readonly="readonly"/>
                                             </div>
                                             <div class="col-md-6">
-                                                <label for="department">Department</label>
-                                                <input type="text" id="department" name="department" class="form-control" t-att-value="request.env.user.partner_id.department_id.name if hasattr(request.env.user.partner_id, 'department_id') and request.env.user.partner_id.department_id else ''"/>
+                                                <label for="department" class="form-label">Department</label>
+                                                <input type="text" id="department" name="department" class="form-control" 
+                                                       t-att-value="partner.department_id.name if hasattr(partner, 'department_id') and partner.department_id else ''"/>
                                             </div>
                                         </div>
 
                                         <div id="quote_lines">
-                                            <!-- Dynamic quote lines will be added here -->
+                                            <!-- First line by default -->
+                                            <div class="quote-line row mb-3 align-items-end" data-line="1">
+                                                <div class="col-md-4">
+                                                    <label class="form-label">Service Type</label>
+                                                    <select class="form-select service-type" name="line_type_1" onchange="updateBinSizeVisibility(this)">
+                                                        <option value="">-- Select Service --</option>
+                                                        <optgroup label="Shredding Services">
+                                                            <option value="shredding">Shredding Bin Service</option>
+                                                        </optgroup>
+                                                        <optgroup label="Other Services">
+                                                            <t t-foreach="service_prices" t-as="svc">
+                                                                <option t-att-value="svc['code']" 
+                                                                        t-att-data-price="svc['price']"
+                                                                        t-att-data-negotiated="'1' if svc['is_negotiated'] else '0'">
+                                                                    <t t-esc="svc['name']"/> - <t t-esc="currency_symbol"/><t t-esc="'%.2f' % svc['price']"/>
+                                                                    <t t-if="svc['is_negotiated']"> ★</t>
+                                                                </option>
+                                                            </t>
+                                                        </optgroup>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3 bin-size-col" style="display: none;">
+                                                    <label class="form-label">Bin Size</label>
+                                                    <select class="form-select bin-size" name="line_bin_size_1">
+                                                        <option value="">-- Select Size --</option>
+                                                        <t t-foreach="shredding_prices" t-as="bin">
+                                                            <option t-att-value="bin['code']" 
+                                                                    t-att-data-price="bin['price']"
+                                                                    t-att-data-negotiated="'1' if bin['is_negotiated'] else '0'">
+                                                                <t t-esc="bin['name']"/> - <t t-esc="currency_symbol"/><t t-esc="'%.2f' % bin['price']"/>
+                                                                <t t-if="bin['is_negotiated']"> ★</t>
+                                                            </option>
+                                                        </t>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Quantity</label>
+                                                    <input type="number" class="form-control qty-input" name="line_qty_1" 
+                                                           min="1" value="1" onchange="updateLineTotal(this)"/>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Line Total</label>
+                                                    <div class="line-total fw-bold text-primary">
+                                                        <t t-esc="currency_symbol"/>0.00
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeLine(this)" title="Remove line">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
+                                        
+                                        <div class="row mt-3">
+                                            <div class="col-md-8">
+                                                <button type="button" class="btn btn-secondary" onclick="addQuoteLine()">
+                                                    <i class="fa fa-plus"></i> Add Line
+                                                </button>
+                                            </div>
+                                            <div class="col-md-4 text-end">
+                                                <div class="h5 mb-0">
+                                                    Estimated Total: <span id="quote-total" class="text-primary"><t t-esc="currency_symbol"/>0.00</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <hr/>
+                                        
                                         <div class="text-center mt-4">
-                                            <button type="button" class="btn btn-secondary" onclick="addQuoteLine()">
-                                                <i class="fa fa-plus"></i> Add Line
-                                            </button>
-                                            <button type="submit" class="btn btn-primary">
+                                            <button type="submit" class="btn btn-primary btn-lg">
                                                 <i class="fa fa-file-pdf-o"></i> Generate PDF Quote
                                             </button>
                                         </div>
@@ -632,24 +706,156 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <!-- Sidebar: Pricing Info + Recent Quotes -->
                         <div class="col-lg-4">
+                            <!-- Your Pricing Card -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-success text-white">
+                                    <h6 class="mb-0">
+                                        <i class="fa fa-tag"></i> Your Pricing
+                                        <t t-if="has_negotiated_rates">
+                                            <span class="badge bg-warning text-dark ms-1">Special Rates</span>
+                                        </t>
+                                    </h6>
+                                </div>
+                                <div class="card-body p-2">
+                                    <!-- Shredding Prices -->
+                                    <h6 class="text-muted small mb-2">Shredding Bins</h6>
+                                    <table class="table table-sm table-borderless mb-3">
+                                        <t t-foreach="shredding_prices" t-as="bin">
+                                            <tr>
+                                                <td class="small"><t t-esc="bin['name']"/></td>
+                                                <td class="text-end small">
+                                                    <t t-esc="currency_symbol"/><t t-esc="'%.2f' % bin['price']"/>
+                                                    <t t-if="bin['is_negotiated']">
+                                                        <span class="badge bg-success" title="Negotiated Rate">★</span>
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </table>
+                                    
+                                    <!-- Service Prices -->
+                                    <h6 class="text-muted small mb-2">Services</h6>
+                                    <table class="table table-sm table-borderless mb-0">
+                                        <t t-foreach="service_prices" t-as="svc">
+                                            <tr>
+                                                <td class="small"><t t-esc="svc['name']"/></td>
+                                                <td class="text-end small">
+                                                    <t t-esc="currency_symbol"/><t t-esc="'%.2f' % svc['price']"/>
+                                                    <t t-if="svc['is_negotiated']">
+                                                        <span class="badge bg-success" title="Negotiated Rate">★</span>
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <!-- Recent Quotes -->
                             <div class="card">
                                 <div class="card-header">
-                                    <h6 class="mb-0">Recent Quotes</h6>
+                                    <h6 class="mb-0"><i class="fa fa-history"></i> Recent Quotes</h6>
                                 </div>
                                 <div class="card-body">
-                                    <t t-foreach="recent_quotes" t-as="quote">
-                                        <div class="mb-2">
-                                            <a t-attf-href="/my/quotes/#{quote.id}" class="text-decoration-none">
-                                                <small t-esc="quote.name"/>
-                                            </a>
-                                        </div>
+                                    <t t-if="recent_quotes">
+                                        <t t-foreach="recent_quotes" t-as="quote">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <a t-attf-href="/my/orders/#{quote.id}" class="text-decoration-none">
+                                                    <small t-esc="quote.name"/>
+                                                </a>
+                                                <small class="text-muted"><t t-esc="quote.date_order.strftime('%m/%d/%y') if quote.date_order else ''"/></small>
+                                            </div>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                        <p class="text-muted small mb-0">No recent quotes</p>
                                     </t>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                
+                <!-- Quote JavaScript -->
+                <script>
+                    var lineCounter = 1;
+                    var currencySymbol = '<t t-esc="currency_symbol"/>';
+                    
+                    function updateBinSizeVisibility(select) {
+                        var line = select.closest('.quote-line');
+                        var binSizeCol = line.querySelector('.bin-size-col');
+                        if (select.value === 'shredding') {
+                            binSizeCol.style.display = 'block';
+                        } else {
+                            binSizeCol.style.display = 'none';
+                            line.querySelector('.bin-size').value = '';
+                        }
+                        updateLineTotal(select);
+                    }
+                    
+                    function updateLineTotal(element) {
+                        var line = element.closest('.quote-line');
+                        var serviceSelect = line.querySelector('.service-type');
+                        var binSelect = line.querySelector('.bin-size');
+                        var qtyInput = line.querySelector('.qty-input');
+                        var totalDiv = line.querySelector('.line-total');
+                        
+                        var price = 0;
+                        if (serviceSelect.value === 'shredding' &amp;&amp; binSelect.value) {
+                            var option = binSelect.options[binSelect.selectedIndex];
+                            price = parseFloat(option.dataset.price || 0);
+                        } else if (serviceSelect.value) {
+                            var option = serviceSelect.options[serviceSelect.selectedIndex];
+                            price = parseFloat(option.dataset.price || 0);
+                        }
+                        
+                        var qty = parseInt(qtyInput.value) || 0;
+                        var total = price * qty;
+                        totalDiv.textContent = currencySymbol + total.toFixed(2);
+                        
+                        updateQuoteTotal();
+                    }
+                    
+                    function updateQuoteTotal() {
+                        var totalDivs = document.querySelectorAll('.line-total');
+                        var grandTotal = 0;
+                        totalDivs.forEach(function(div) {
+                            var text = div.textContent.replace(currencySymbol, '');
+                            grandTotal += parseFloat(text) || 0;
+                        });
+                        document.getElementById('quote-total').textContent = currencySymbol + grandTotal.toFixed(2);
+                    }
+                    
+                    function addQuoteLine() {
+                        lineCounter++;
+                        var container = document.getElementById('quote_lines');
+                        var firstLine = container.querySelector('.quote-line');
+                        var newLine = firstLine.cloneNode(true);
+                        
+                        newLine.setAttribute('data-line', lineCounter);
+                        newLine.querySelector('.service-type').name = 'line_type_' + lineCounter;
+                        newLine.querySelector('.service-type').value = '';
+                        newLine.querySelector('.bin-size').name = 'line_bin_size_' + lineCounter;
+                        newLine.querySelector('.bin-size').value = '';
+                        newLine.querySelector('.bin-size-col').style.display = 'none';
+                        newLine.querySelector('.qty-input').name = 'line_qty_' + lineCounter;
+                        newLine.querySelector('.qty-input').value = 1;
+                        newLine.querySelector('.line-total').textContent = currencySymbol + '0.00';
+                        
+                        container.appendChild(newLine);
+                    }
+                    
+                    function removeLine(button) {
+                        var lines = document.querySelectorAll('.quote-line');
+                        if (lines.length > 1) {
+                            button.closest('.quote-line').remove();
+                            updateQuoteTotal();
+                        }
+                    }
+                </script>
             </t>
         </template>
 
