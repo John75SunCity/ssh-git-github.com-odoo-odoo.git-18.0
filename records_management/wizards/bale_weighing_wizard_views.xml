@@ -12,14 +12,14 @@
             <field name="arch" type="xml">
                 <form string="Weigh New Bale">
                     <!-- Load Context Header -->
-                    <div class="alert alert-info mb-3" role="alert">
+                    <div class="bg-info-subtle border border-info rounded p-3 mb-3" role="status">
                         <div class="row">
                             <div class="col-md-6">
-                                <h4 class="alert-heading mb-1">
+                                <h4 class="mb-1">
                                     <i class="fa fa-truck"/> Load: <field name="load_id" readonly="1" class="o_field_widget"/>
                                 </h4>
                                 <p class="mb-1">
-                                    <strong>Buyer:</strong> <field name="buyer_name" readonly="1"/>
+                                    <strong>Buyer:</strong> <field name="buyer_id" readonly="1"/>
                                 </p>
                             </div>
                             <div class="col-md-6">
@@ -35,7 +35,7 @@
                         </div>
                         <!-- Progress Bar -->
                         <div class="progress mt-2" style="height: 25px;">
-                            <field name="load_progress" widget="progressbar"/>
+                            <field name="load_progress_percent" widget="progressbar"/>
                         </div>
                         <div class="text-center mt-1" invisible="not is_load_full">
                             <span class="badge bg-success">

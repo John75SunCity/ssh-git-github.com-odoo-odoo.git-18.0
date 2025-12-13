@@ -38,6 +38,25 @@ class BaleWeighingWizard(models.TransientModel):
         readonly=True
     )
     
+    buyer_id = fields.Many2one(
+        comodel_name='res.partner',
+        string='Buyer',
+        related='load_id.buyer_id',
+        readonly=True
+    )
+    
+    current_bale_count = fields.Integer(
+        string='Current Bale Count',
+        related='load_id.total_bales',
+        readonly=True
+    )
+    
+    is_load_full = fields.Boolean(
+        string='Load Full',
+        related='load_id.is_load_full',
+        readonly=True
+    )
+    
     load_progress = fields.Integer(
         string='Bales in Load',
         related='load_id.total_bales',
@@ -93,6 +112,12 @@ class BaleWeighingWizard(models.TransientModel):
     ], string='Source',
        default='daily_route',
        help="Origin of the paper in this bale")
+    
+    location_id = fields.Many2one(
+        comodel_name='records.location',
+        string='Storage Location',
+        help="Location where the bale is stored"
+    )
     
     notes = fields.Text(
         string='Notes',
