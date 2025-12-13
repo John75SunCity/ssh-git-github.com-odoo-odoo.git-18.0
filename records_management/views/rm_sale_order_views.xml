@@ -38,11 +38,6 @@
                         invisible="retrieval_wo_count == 0">
                     <field name="retrieval_wo_count" widget="statinfo" string="Retrieval"/>
                 </button>
-                <button name="action_view_destruction_work_orders" type="object"
-                        class="oe_stat_button" icon="fa-fire"
-                        invisible="destruction_wo_count == 0">
-                    <field name="destruction_wo_count" widget="statinfo" string="Destruction"/>
-                </button>
                 <button name="action_view_access_work_orders" type="object"
                         class="oe_stat_button" icon="fa-key"
                         invisible="access_wo_count == 0">

@@ -177,7 +177,7 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
                             </group>
                         </group>
                         <div class="alert alert-info" role="alert">
-                            <p><i class="fa fa-info-circle"/> <strong>Location Analytics</strong> aggregates service data across ALL bins deployed to this customer location.</p>
+                            <p><i class="fa fa-info-circle" title="Information"/> <strong>Location Analytics</strong> aggregates service data across ALL bins deployed to this customer location.</p>
                             <ul>
                                 <li><strong>Fill Pattern:</strong> Average fill level when bins are serviced (based on technician selection)</li>
                                 <li><strong>Weight Variance:</strong> Difference between expected (100% full) and actual weights</li>
