@@ -23,14 +23,15 @@
             <field name="domain">[]</field>
             <field name="context">{'search_default_in_progress': 1}</field>
         </record>
+        <!-- LEGACY: Container destruction now uses work.order.shredding
         <record id="action_dashboard_container_destruction" model="ir.actions.act_window">
-            <!-- OPTIMIZATION: Model container.destruction.work.order has state field - consider using default search filters -->
             <field name="name">Container Destruction</field>
             <field name="res_model">container.destruction.work.order</field>
             <field name="view_mode">list,form</field>
             <field name="domain">[]</field>
             <field name="context">{'search_default_in_progress': 1}</field>
         </record>
+        -->
         <record id="action_dashboard_shredding" model="ir.actions.act_window">
             <!-- OPTIMIZATION: Model work.order.shredding has state field - consider using default search filters -->
             <field name="name">Shredding Services</field>
@@ -143,14 +144,15 @@
             <field name="target">new</field>
             <field name="context">{'default_state': 'scheduled'}</field>
         </record>
+        <!-- LEGACY: Quick create destruction now uses work.order.shredding
         <record id="action_quick_create_container_destruction" model="ir.actions.act_window">
-            <!-- OPTIMIZATION: Model container.destruction.work.order has state field - consider using default search filters -->
             <field name="name">New Container Destruction</field>
             <field name="res_model">container.destruction.work.order</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="context">{'default_state': 'scheduled'}</field>
         </record>
+        -->
         <record id="action_work_order_performance" model="ir.actions.act_window">
             <field name="name">All Work Orders</field>
             <field name="res_model">unified.work.order</field>

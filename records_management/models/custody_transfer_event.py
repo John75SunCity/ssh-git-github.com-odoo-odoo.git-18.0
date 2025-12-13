@@ -73,7 +73,7 @@ class CustodyTransferEvent(models.Model):
         required=False,
         help='Party receiving custody.'
     )
-    destruction_work_order_id = fields.Many2one(comodel_name='container.destruction.work.order', string="Destruction Work Order")
+    destruction_work_order_id = fields.Many2one(comodel_name='work.order.shredding', string="Shredding Work Order")
     picking_extension_id = fields.Many2one(
         'stock.picking.records.extension',
         string='Stock Picking Extension',

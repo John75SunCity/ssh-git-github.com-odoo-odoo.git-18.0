@@ -176,10 +176,11 @@ class ShreddingCertificate(models.Model):
         string="Shredding Work Order",
         help="Records Management shredding work order."
     )
+    # Legacy field - now same as shredding_work_order_id
     destruction_work_order_id = fields.Many2one(
-        comodel_name='container.destruction.work.order',
-        string="Destruction Work Order",
-        help="Records Management container destruction work order."
+        comodel_name='work.order.shredding',
+        string="Destruction Work Order (Legacy)",
+        help="Alias for shredding work order."
     )
     hard_drive_ids = fields.One2many(
         comodel_name='shredding.hard_drive',

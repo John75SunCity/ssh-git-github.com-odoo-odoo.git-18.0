@@ -46,7 +46,7 @@ from . import container_access_report
 from . import container_access_visitor
 from . import container_access_work_order
 from . import container_content
-from . import container_destruction_work_order
+# from . import container_destruction_work_order  # REMOVED: Use work.order.shredding
 from . import container_retrieval
 from . import cross_department_sharing
 from . import cross_department_sharing_rule
@@ -224,7 +224,7 @@ from . import records_retention_policy_version_actions
 from . import records_retention_rule
 from . import records_retrieval_order
 from . import records_retrieval_order_line
-from . import records_retrieval_work_order
+# from . import records_retrieval_work_order  # REMOVED: Use work.order.retrieval
 from . import records_saved_search  # Advanced inventory search presets
 from . import records_security_audit
 from . import records_series

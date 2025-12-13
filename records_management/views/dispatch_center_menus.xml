@@ -21,12 +21,13 @@
                   action="action_dispatch_center"
                   sequence="1"/>
 
-        <!-- New Work Order Button (prominent placement) -->
+        <!-- New Work Order - Use the one in Operations menu, not duplicated here
         <menuitem id="menu_new_work_order"
                   name="➕ New Work Order"
                   parent="menu_dispatch_center_root"
                   action="action_work_order_creation_wizard"
                   sequence="2"/>
+        -->
 
         <!-- ============================================================================
              DISPATCH CENTER - QUICK VIEWS
@@ -169,11 +170,13 @@
                   action="records_management.action_work_order_shredding"
                   sequence="2"/>
 
+        <!-- LEGACY: Container Destruction (Full) - now using work.order.shredding
         <menuitem id="menu_dispatch_destruction_detail"
                   name="Container Destruction (Full)"
                   parent="menu_dispatch_detailed"
                   action="records_management.action_container_destruction_work_order"
                   sequence="3"/>
+        -->
 
         <!-- ============================================================================
              RECURRING SCHEDULES - Auto-generate recurring work orders

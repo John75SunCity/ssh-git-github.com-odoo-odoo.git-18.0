@@ -239,7 +239,7 @@
         <field name="context">{
             'default_calculation_purpose': 'fsm_quote',
         }</field>
-        <field name="binding_model_id" ref="records_management.model_container_destruction_work_order"/>
+        <field name="binding_model_id" ref="records_management.model_work_order_shredding"/>
         <field name="binding_view_types">form</field>
     </record>
 

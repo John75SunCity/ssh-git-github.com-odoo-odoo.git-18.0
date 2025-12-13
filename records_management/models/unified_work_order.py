@@ -44,7 +44,6 @@ class UnifiedWorkOrder(models.Model):
         ('pickup', 'Pickup'),
         ('container_access', 'Container Access'),
         # Destruction Services
-        ('container_destruction', 'Container Destruction'),
         ('shredding', 'Shredding Service'),
         # Other
         ('other', 'Other'),
@@ -106,7 +105,6 @@ class UnifiedWorkOrder(models.Model):
             'delivery': 10,     # Green
             'pickup': 3,        # Yellow
             'container_access': 9,  # Purple
-            'container_destruction': 1,  # Red
             'shredding': 2,     # Orange
         }
         for record in self:
@@ -176,29 +174,6 @@ class UnifiedWorkOrder(models.Model):
                     COALESCE(wo.portal_visible, true) AS portal_visible,
                     NULL::integer AS user_id
                 FROM work_order_shredding wo
-                WHERE wo.active = true OR wo.active IS NULL
-                
-                UNION ALL
-                
-                -- Container Destruction Work Orders (IDs: 3,000,001 - 3,999,999)
-                SELECT 
-                    (3000000 + wo.id)::bigint AS id,
-                    wo.name,
-                    COALESCE(wo.display_name, wo.name, 'Destruction #' || wo.id::text) AS display_name,
-                    'container.destruction.work.order' AS source_model,
-                    wo.id AS source_id,
-                    'container_destruction' AS work_order_type,
-                    'destruction' AS service_category,
-                    wo.state,
-                    COALESCE(wo.priority, '0') AS priority,
-                    wo.partner_id,
-                    wo.scheduled_destruction_date AS scheduled_date,
-                    wo.actual_destruction_date AS completion_date,
-                    wo.portal_request_id,
-                    CASE WHEN wo.portal_request_id IS NOT NULL THEN true ELSE false END AS is_portal_order,
-                    COALESCE(wo.portal_visible, true) AS portal_visible,
-                    wo.user_id
-                FROM container_destruction_work_order wo
                 WHERE wo.active = true OR wo.active IS NULL
                 
                 UNION ALL

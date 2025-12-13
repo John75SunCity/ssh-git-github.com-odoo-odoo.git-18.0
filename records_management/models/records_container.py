@@ -1389,13 +1389,11 @@ class RecordsContainer(models.Model):
         if self.state not in ["in"]:
             raise UserError(_("Only containers in storage can be retrieved"))
         
-        # Create retrieval work order
-        work_order = self.env['records.retrieval.work.order'].create({
-            'name': _('New'),
+        # Create retrieval work order (using new model)
+        work_order = self.env['work.order.retrieval'].create({
             'partner_id': self.partner_id.id,
             'company_id': self.company_id.id or self.env.company.id,
             'delivery_method': 'physical',
-            'scanned_barcode_ids': [(6, 0, [self.id])],
         })
         
         # Create billing charge for retrieval service
@@ -1441,7 +1439,7 @@ class RecordsContainer(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': _('Retrieval Work Order'),
-            'res_model': 'records.retrieval.work.order',
+            'res_model': 'work.order.retrieval',
             'res_id': work_order.id,
             'view_mode': 'form',
             'target': 'current',
@@ -2586,8 +2584,8 @@ class RecordsContainer(models.Model):
     
     def _check_and_close_destruction_work_order(self):
         """Check if all containers on destruction work order are destroyed, close if complete"""
-        # Find associated destruction work order
-        work_order = self.env['container.destruction.work.order'].search([
+        # Find associated destruction work order (using new model)
+        work_order = self.env['work.order.shredding'].search([
             ('container_ids', 'in', self.id),
             ('state', 'not in', ('completed', 'cancelled')),
         ], limit=1)

@@ -115,9 +115,9 @@
         <field name="res_model">hard.drive.scan.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
-        <field name="binding_model_id" ref="model_container_destruction_work_order"/>
+        <field name="binding_model_id" ref="model_work_order_shredding"/>
         <field name="binding_view_types">form</field>
-        <field name="context">{'default_destruction_work_order_id': active_id}</field>
+        <field name="context">{'default_shredding_work_order_id': active_id}</field>
     </record>
     </data>
 </odoo>

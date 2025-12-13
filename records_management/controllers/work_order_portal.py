@@ -56,8 +56,8 @@ class WorkOrderPortal(CustomerPortal):
             # Count each work order type
             # Only include currently supported unified or active work order models
             for model in [
-                'records.retrieval.order',  # unified retrieval order model
-                'container.destruction.work.order',
+                'work.order.retrieval',  # new retrieval work order model
+                'work.order.shredding',  # new shredding work order model
                 'container.access.work.order'
             ]:
                 try:
@@ -131,8 +131,8 @@ class WorkOrderPortal(CustomerPortal):
         all_work_orders = []
 
         work_order_models = {
-            'records.retrieval.order': _('Records Retrieval'),
-            'container.destruction.work.order': _('Container Destruction'),
+            'work.order.retrieval': _('Retrieval Work Order'),
+            'work.order.shredding': _('Shredding Work Order'),
             'container.access.work.order': _('Container Access'),
         }
 
@@ -229,8 +229,8 @@ class WorkOrderPortal(CustomerPortal):
 
         # Get work order type label
         type_labels = {
-            'records.retrieval.order': _('Records Retrieval'),
-            'container.destruction.work.order': _('Container Destruction'),
+            'work.order.retrieval': _('Retrieval Work Order'),
+            'work.order.shredding': _('Shredding Work Order'),
             'container.access.work.order': _('Container Access'),
         }
 
@@ -241,7 +241,7 @@ class WorkOrderPortal(CustomerPortal):
         }
 
         # Add model-specific information
-        if model == 'records.retrieval.order':
+        if model == 'work.order.retrieval':
             values.update({
                 'show_retrieval_lines': True,
                 'show_delivery_info': True,

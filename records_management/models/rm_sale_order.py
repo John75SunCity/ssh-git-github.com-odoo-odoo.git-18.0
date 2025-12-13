@@ -78,10 +78,10 @@ class RMSaleOrder(models.Model):
     )
     
     destruction_work_order_ids = fields.One2many(
-        comodel_name='container.destruction.work.order',
+        comodel_name='work.order.shredding',
         inverse_name='sale_order_id',
-        string="Destruction Work Orders",
-        help="Linked destruction work orders"
+        string="Shredding Work Orders",
+        help="Linked shredding work orders"
     )
     
     access_work_order_ids = fields.One2many(
@@ -158,12 +158,12 @@ class RMSaleOrder(models.Model):
         }
 
     def action_view_destruction_work_orders(self):
-        """View linked destruction work orders"""
+        """View linked shredding work orders"""
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Destruction Work Orders'),
-            'res_model': 'container.destruction.work.order',
+            'name': _('Shredding Work Orders'),
+            'res_model': 'work.order.shredding',
             'view_mode': 'tree,form',
             'domain': [('id', 'in', self.destruction_work_order_ids.ids)],
             'context': {'default_sale_order_id': self.id},
@@ -206,7 +206,6 @@ class RMSaleOrder(models.Model):
         model_to_type = {
             'work.order.shredding': 'shredding',
             'work.order.retrieval': 'retrieval',
-            'container.destruction.work.order': 'destruction',
             'container.access.work.order': 'access',
         }
         wo_type = model_to_type.get(work_order._name, 'other')

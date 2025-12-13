@@ -186,9 +186,10 @@
         # Container & Storage Reports
         "report/container_access_work_order_reports.xml",
         "report/container_content_reports.xml",
-        "report/container_destruction_work_order_reports.xml",
+        # "report/container_destruction_work_order_reports.xml",  # LEGACY: Use work.order.shredding
         "report/container_retrieval_reports.xml",
-        "report/container_retrieval_work_order_reports.xml",        # Certificate & Compliance Reports
+        # "report/container_retrieval_work_order_reports.xml",  # LEGACY stub file
+        # Certificate & Compliance Reports
         "report/certificate_template_data_reports.xml",        "report/naid_audit_log_reports.xml",
         "report/naid_certificate_item_reports.xml",
         "report/naid_certificate_reports.xml",        "report/naid_compliance_action_plan_reports.xml",
@@ -309,7 +310,7 @@
         "report/records_retention_policy_version_reports.xml",
         "report/records_retention_rule_reports.xml",
         "report/records_retrieval_order_reports.xml",
-        "report/records_retrieval_work_order_reports.xml",
+        # "report/records_retrieval_work_order_reports.xml",  # LEGACY: Use work.order.retrieval
         "report/records_security_audit_reports.xml",
         "report/records_series_reports.xml",
         "report/records_service_type_reports.xml",
@@ -489,7 +490,7 @@
         "views/portal_feedback_analytic_views.xml",
         "views/res_partner_key_restriction_views.xml",
         "views/res_users_records_profile_views.xml",
-        "views/records_retrieval_work_order_views.xml",
+        # "views/records_retrieval_work_order_views.xml",  # LEGACY: Use work.order.retrieval
         # ============================================================================
         # BARCODE OPERATION VIEWS: UI buttons for barcode-triggered workflows
         # ============================================================================
@@ -504,9 +505,9 @@
         "views/certificate_template_data_views.xml",
         "views/container_access_work_order_views.xml",
         "views/container_content_views.xml",
-        "views/container_destruction_work_order_views.xml",
+        # "views/container_destruction_work_order_views.xml",  # LEGACY: Use work.order.shredding
         "views/container_retrieval_item_views.xml",
-        "views/container_retrieval_work_order_views.xml",
+        # "views/container_retrieval_work_order_views.xml",  # LEGACY stub file
         "views/customer_category_views.xml",
         "views/customer_inventory_line_views.xml",
         "views/customer_inventory_report_line_views.xml",

@@ -23,13 +23,10 @@ class MobilePhoto(models.Model):
                                   domain=[('is_fsm', '=', True)],
                                   help="Related Field Service Management task")
     work_order_reference = fields.Reference([
-        ('container.destruction.work.order', 'Container Destruction Work Order'),
-        # Legacy retrieval models removed: container.retrieval.work.order consolidated into records.retrieval.order
-        ('container.access.work.order', 'Container Access Work Order'),
         ('work.order.shredding', 'Shredding Work Order'),
+        ('work.order.retrieval', 'Retrieval Work Order'),
+        ('container.access.work.order', 'Container Access Work Order'),
         ('project.task', 'Project Task/FSM Task'),
-        # Unified retrieval order model
-        ('records.retrieval.order', 'Retrieval Order')
     ], string="Work Order", help="Related work order for this photo")
 
     # Business Entity Relationships

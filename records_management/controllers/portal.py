@@ -3485,12 +3485,11 @@ class RecordsManagementController(http.Controller):
                     'container_ids': [(6, 0, container_ids)],
                 })
 
-            # Create retrieval work order
-            work_order = request.env['records.retrieval.work.order'].sudo().create({
-                'name': _('Portal File Retrieval - %s (%d files)') % (partner.name, len(files)),
+            # Create retrieval work order (using new model)
+            work_order = request.env['work.order.retrieval'].sudo().create({
                 'partner_id': partner.id,
                 'user_id': request.env.ref('base.user_admin').id,
-                'state': 'draft',
+                'state': 'scheduled',
                 'delivery_method': 'delivery',
                 'notes': _('File retrieval request from portal.\\n\\n%s\\n\\nDelivery Notes: %s') % (file_list, delivery_notes or 'None'),
             })
@@ -4479,13 +4478,11 @@ class RecordsManagementController(http.Controller):
 
         # Link to appropriate work order
         if hasattr(work_order, '_name'):
-            if work_order._name == 'records.retrieval.work.order':
+            if work_order._name == 'work.order.retrieval':
                 task_vals['retrieval_work_order_id'] = work_order.id
-            elif work_order._name == 'container.destruction.work.order':
-                task_vals['destruction_work_order_id'] = work_order.id
-                task_vals['destruction_type'] = work_order.destruction_method if hasattr(work_order, 'destruction_method') else 'off_site'
             elif work_order._name == 'work.order.shredding':
                 task_vals['shredding_work_order_id'] = work_order.id
+                task_vals['destruction_type'] = work_order.destruction_method if hasattr(work_order, 'destruction_method') else 'shredding'
             elif work_order._name == 'pickup.request':
                 task_vals['pickup_request_id'] = work_order.id
 
@@ -4646,14 +4643,12 @@ class RecordsManagementController(http.Controller):
             fsm_task = None
 
             if request_type == 'retrieval':
-                # Create retrieval work order
-                work_order = request.env['records.retrieval.work.order'].sudo().create({
-                    'name': f"Portal Retrieval - {partner.name} ({len(containers)} containers)",
+                # Create retrieval work order (using new model)
+                work_order = request.env['work.order.retrieval'].sudo().create({
                     'partner_id': partner.id,
-                    'user_id': request.env.ref('base.user_admin').id,  # Assign to admin
-                    'state': 'draft',
+                    'user_id': request.env.ref('base.user_admin').id,
+                    'state': 'scheduled',
                     'delivery_method': 'scan',
-                    'scanned_barcode_ids': [(6, 0, container_ids)],
                 })
 
                 # Auto-create FSM task
@@ -4666,17 +4661,16 @@ class RecordsManagementController(http.Controller):
 
                 # Link work order to portal request
                 portal_request.message_post(
-                    body=f'Retrieval work order created: <a href="/web#id={work_order.id}&model=records.retrieval.work.order">{work_order.name}</a>',
+                    body=f'Retrieval work order created: <a href="/web#id={work_order.id}&model=work.order.retrieval">{work_order.name}</a>',
                     subject='Work Order Created'
                 )
 
             elif request_type == 'destruction':
-                # Create destruction work order
-                work_order = request.env['container.destruction.work.order'].sudo().create({
-                    'name': f"Portal Destruction - {partner.name} ({len(containers)} containers)",
+                # Create destruction work order (using new model)
+                work_order = request.env['work.order.shredding'].sudo().create({
                     'partner_id': partner.id,
                     'user_id': request.env.ref('base.user_admin').id,
-                    'state': 'draft',
+                    'state': 'scheduled',
                     'destruction_method': 'shredding',
                     'container_ids': [(6, 0, container_ids)],
                 })
@@ -4691,7 +4685,7 @@ class RecordsManagementController(http.Controller):
 
                 # Link work order to portal request
                 portal_request.message_post(
-                    body=f'Destruction work order created: <a href="/web#id={work_order.id}&model=container.destruction.work.order">{work_order.name}</a>',
+                    body=f'Destruction work order created: <a href="/web#id={work_order.id}&model=work.order.shredding">{work_order.name}</a>',
                     subject='Work Order Created'
                 )
 
@@ -4865,11 +4859,10 @@ class RecordsManagementController(http.Controller):
             work_order = None
 
             if request_type == 'retrieval':
-                work_order = request.env['records.retrieval.work.order'].sudo().create({
-                    'name': f"Portal File Retrieval - {partner.name} ({len(files)} files)",
+                work_order = request.env['work.order.retrieval'].sudo().create({
                     'partner_id': partner.id,
                     'user_id': request.env.ref('base.user_admin').id,
-                    'state': 'draft',
+                    'state': 'scheduled',
                     'delivery_method': 'scan',
                     'notes': f'File retrieval request for {len(files)} file folder(s).\\n\\n{file_list}',
                 })
@@ -4878,7 +4871,7 @@ class RecordsManagementController(http.Controller):
                 fsm_task = self._create_fsm_task_for_work_order(work_order, 'retrieval', partner, containers)
 
                 portal_request.message_post(
-                    body=f'Retrieval work order created: <a href="/web#id={work_order.id}&model=records.retrieval.work.order">{work_order.name}</a>',
+                    body=f'Retrieval work order created: <a href="/web#id={work_order.id}&model=work.order.retrieval">{work_order.name}</a>',
                     subject='Work Order Created'
                 )
 

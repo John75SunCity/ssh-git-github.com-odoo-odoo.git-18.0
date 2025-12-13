@@ -48,15 +48,15 @@
             </field>
         </record>
 
-        <!-- Container Destruction Barcode Action -->
+        <!-- Container Destruction Barcode Action (now uses work.order.shredding) -->
         <record id="action_barcode_destruction" model="ir.actions.act_window">
             <field name="name">⚠️ Container Destruction</field>
-            <field name="res_model">container.destruction.work.order</field>
+            <field name="res_model">work.order.shredding</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('state', 'in', ['draft', 'confirmed', 'authorized', 'scheduled', 'in_progress'])]</field>
+            <field name="domain">[('state', 'in', ['scheduled', 'in_progress'])]</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    No destruction work orders ready for scanning.
+                    No shredding work orders ready for scanning.
                 </p>
             </field>
         </record>
@@ -183,12 +183,13 @@
                   action="action_barcode_file_lookup"
                   sequence="30"/>
 
-        <!-- New Work Order Quick Action -->
+        <!-- New Work Order - Use the one in Operations menu, not duplicated here
         <menuitem id="menu_barcode_new_work_order"
                   name="➕ New Work Order"
                   parent="menu_rm_barcode_operations"
                   action="records_management.action_work_order_creation_wizard"
                   sequence="5"/>
+        -->
 
     </data>
 </odoo>

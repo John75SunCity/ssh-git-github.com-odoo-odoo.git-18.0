@@ -26,15 +26,15 @@ class AddToWorkOrderWizard(models.TransientModel):
     ], string='Work Order Type', required=True, default='retrieval')
     
     retrieval_work_order_id = fields.Many2one(
-        comodel_name='records.retrieval.work.order',
+        comodel_name='work.order.retrieval',
         string='Retrieval Work Order',
-        domain="[('partner_id', '=', partner_id), ('state', 'in', ['draft', 'in_progress'])]"
+        domain="[('partner_id', '=', partner_id), ('state', 'in', ['scheduled', 'in_progress'])]"
     )
     
     destruction_work_order_id = fields.Many2one(
-        comodel_name='container.destruction.work.order',
-        string='Destruction Work Order',
-        domain="[('partner_id', '=', partner_id), ('state', 'in', ['draft', 'scheduled', 'in_progress'])]"
+        comodel_name='work.order.shredding',
+        string='Shredding Work Order',
+        domain="[('partner_id', '=', partner_id), ('state', 'in', ['scheduled', 'in_progress'])]"
     )
     
     container_count = fields.Integer(

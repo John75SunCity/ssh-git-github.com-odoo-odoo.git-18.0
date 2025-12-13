@@ -6,9 +6,10 @@ A unified wizard that allows staff to create any type of work order
 from a single interface. Guides the user through type selection and
 then creates the appropriate work order record.
 
-NOTE: For retrieval work orders, we use the `records.retrieval.work.order` model
-(sequence prefix RRWO) which is the preferred/active retrieval model.
-The `work.order.retrieval` model (WO prefix) is deprecated and should not be used.
+Work Order Models:
+- work.order.retrieval: All retrieval, delivery, pickup, file operations
+- work.order.shredding: All shredding and destruction operations
+- container.access.work.order: On-site container access appointments
 
 Author: Records Management System
 Version: 18.0.1.0.0
@@ -309,21 +310,26 @@ class WorkOrderCreationWizard(models.TransientModel):
     # WORK ORDER CREATION METHODS
     # ============================================================================
     def _create_retrieval_order(self):
-        """Create a retrieval work order using records.retrieval.work.order model.
-        
-        NOTE: We use records.retrieval.work.order (RRWO sequence) as the preferred
-        retrieval model. The work.order.retrieval model is deprecated.
-        """
+        """Create a retrieval work order using work.order.retrieval model."""
         if not self.retrieval_container_ids:
             raise ValidationError(_("Please select at least one container to retrieve."))
         
-        # Use records.retrieval.work.order model (preferred)
         vals = {
             'partner_id': self.partner_id.id,
+            'department_id': self.department_id.id if self.department_id else False,
             'user_id': self.env.user.id,
-            'scanned_barcode_ids': [(6, 0, self.retrieval_container_ids.ids)],
+            'scheduled_date': self.scheduled_date,
+            'priority': self.priority,
+            'work_order_type': 'box_retrieval',
         }
-        work_order = self.env['records.retrieval.work.order'].create(vals)
+        work_order = self.env['work.order.retrieval'].create(vals)
+        # Add containers to retrieval items
+        for container in self.retrieval_container_ids:
+            self.env['retrieval.item.line'].create({
+                'work_order_id': work_order.id,
+                'box_id': container.id,
+                'item_description': container.name,
+            })
         # Post notes to chatter if provided
         if self.notes:
             work_order.message_post(body=self.notes)
@@ -332,58 +338,68 @@ class WorkOrderCreationWizard(models.TransientModel):
     def _create_delivery_order(self):
         """Create a delivery work order (return containers to customer).
         
-        Uses records.retrieval.work.order model.
+        Uses work.order.retrieval model with delivery type.
         """
         vals = {
             'partner_id': self.partner_id.id,
+            'department_id': self.department_id.id if self.department_id else False,
             'user_id': self.env.user.id,
-            'scanned_barcode_ids': [(6, 0, self.retrieval_container_ids.ids)] if self.retrieval_container_ids else [],
+            'scheduled_date': self.scheduled_date,
+            'priority': self.priority,
+            'work_order_type': 'box_retrieval',
         }
-        work_order = self.env['records.retrieval.work.order'].create(vals)
+        work_order = self.env['work.order.retrieval'].create(vals)
         work_order.message_post(body=self.notes or _("Delivery - Return containers to customer"))
         return work_order
 
     def _create_file_retrieval_order(self):
         """Create a file retrieval work order (pull individual files from containers).
         
-        This changes file status from 'in' to 'out'.
-        Uses records.retrieval.work.order model.
+        Uses work.order.retrieval model with document type.
         """
         vals = {
             'partner_id': self.partner_id.id,
+            'department_id': self.department_id.id if self.department_id else False,
             'user_id': self.env.user.id,
-            'scanned_barcode_ids': [(6, 0, self.retrieval_container_ids.ids)] if self.retrieval_container_ids else [],
+            'scheduled_date': self.scheduled_date,
+            'priority': self.priority,
+            'work_order_type': 'document_retrieval',
         }
-        work_order = self.env['records.retrieval.work.order'].create(vals)
+        work_order = self.env['work.order.retrieval'].create(vals)
         work_order.message_post(body=self.notes or _("File Retrieval - Pull individual files from containers"))
         return work_order
 
     def _create_file_refiling_order(self):
         """Create a file re-filing work order (return files to original containers).
         
-        This changes file status from 'out' to 'in' and directs technicians
-        to return the files to the containers from which they originated.
-        Uses records.retrieval.work.order model.
+        Uses work.order.retrieval model.
         """
         vals = {
             'partner_id': self.partner_id.id,
+            'department_id': self.department_id.id if self.department_id else False,
             'user_id': self.env.user.id,
-            'scanned_barcode_ids': [(6, 0, self.retrieval_container_ids.ids)] if self.retrieval_container_ids else [],
+            'scheduled_date': self.scheduled_date,
+            'priority': self.priority,
+            'work_order_type': 'document_retrieval',
         }
-        work_order = self.env['records.retrieval.work.order'].create(vals)
+        work_order = self.env['work.order.retrieval'].create(vals)
         work_order.message_post(body=self.notes or _("File Re-filing - Return files to their original containers"))
         return work_order
 
     def _create_pickup_order(self):
         """Create a pickup work order.
         
-        Uses records.retrieval.work.order model (preferred).
+        Uses work.order.retrieval model with bulk type.
         """
         vals = {
             'partner_id': self.partner_id.id,
+            'department_id': self.department_id.id if self.department_id else False,
             'user_id': self.env.user.id,
+            'scheduled_date': self.scheduled_date,
+            'priority': self.priority,
+            'work_order_type': 'bulk_retrieval',
         }
-        work_order = self.env['records.retrieval.work.order'].create(vals)
+        work_order = self.env['work.order.retrieval'].create(vals)
         pickup_note = self.notes or _("Pickup - Collect containers from customer location: %s") % (self.pickup_location or 'TBD')
         work_order.message_post(body=pickup_note)
         return work_order
@@ -399,34 +415,46 @@ class WorkOrderCreationWizard(models.TransientModel):
         return self.env['container.access.work.order'].create(vals)
 
     def _create_container_destruction_order(self):
-        """Create a container destruction work order."""
+        """Create a container destruction work order using work.order.shredding.
+        
+        Container destruction is handled by shredding work orders with
+        containers linked for billing.
+        """
         if not self.destruction_container_ids:
             raise ValidationError(_("Please select at least one container for destruction."))
         
         vals = {
             'partner_id': self.partner_id.id,
-            'scheduled_destruction_date': self.scheduled_date,
+            'department_id': self.department_id.id if self.department_id else False,
+            'scheduled_date': self.scheduled_date,
             'priority': self.priority,
-            'destruction_reason': self.notes,
-            'container_ids': [(6, 0, self.destruction_container_ids.ids)],
-            'destruction_method': self.destruction_method,
+            'shredding_service_type': 'offsite',  # Container destruction is always off-site
+            'material_type': 'paper',
+            'special_instructions': self.notes or _("Container Destruction"),
+            'scanned_barcode_ids': [(6, 0, self.destruction_container_ids.ids)],
             'witness_required': self.witness_required,
         }
-        return self.env['container.destruction.work.order'].create(vals)
+        work_order = self.env['work.order.shredding'].create(vals)
+        
+        # Create billing lines for each container
+        for container in self.destruction_container_ids:
+            self.env['work.order.line'].create_from_container_destruction(container, work_order)
+        
+        return work_order
 
     def _create_shredding_order(self):
         """Create a shredding work order."""
         # Map wizard service types to model service types
         service_type_map = {
-            'boxes': 'purge' if self.service_location_type == 'offsite' else 'onsite',
-            'bin': 'recurring_bin' if self.make_recurring else 'onsite',
+            'boxes': 'purge',  # One-time purge of boxes
+            'bin': 'offsite',  # Recurring bin service is default offsite
         }
         vals = {
             'partner_id': self.partner_id.id,
             'department_id': self.department_id.id if self.department_id else False,
             'scheduled_date': self.scheduled_date,
             'priority': self.priority,
-            'shredding_service_type': service_type_map.get(self.shredding_service_type, 'onsite'),
+            'shredding_service_type': service_type_map.get(self.shredding_service_type, 'offsite'),
             'material_type': self.material_type,
             'bin_quantity': self.bin_quantity,
             'special_instructions': self.notes,

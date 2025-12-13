@@ -184,7 +184,6 @@ class WorkOrderWizard(models.TransientModel):
             model_info = {
                 'shredding': 'work.order.shredding',
                 'retrieval': 'work.order.retrieval',
-                'destruction': 'container.destruction.work.order',
                 'access': 'container.access.work.order',
             }
             if wizard.work_order_type:
@@ -284,8 +283,9 @@ class WorkOrderWizard(models.TransientModel):
             return self._return_to_work_order('work.order.retrieval', work_order.id)
         
         elif self.work_order_type == 'destruction':
-            work_order = self._create_destruction_work_order(sale_order)
-            return self._return_to_work_order('container.destruction.work.order', work_order.id)
+            # Destruction now uses work.order.shredding
+            work_order = self._create_shredding_work_order(sale_order)
+            return self._return_to_work_order('work.order.shredding', work_order.id)
         
         elif self.work_order_type == 'access':
             work_order = self._create_access_work_order(sale_order)
@@ -325,7 +325,7 @@ class WorkOrderWizard(models.TransientModel):
         return self.env['work.order.retrieval'].create(vals)
     
     def _create_destruction_work_order(self, sale_order):
-        """Create a container.destruction.work.order record."""
+        """Create a work.order.shredding record (destruction consolidated into shredding)."""
         vals = {
             'partner_id': self.partner_id.id,
             'scheduled_date': self.scheduled_date,
@@ -336,7 +336,7 @@ class WorkOrderWizard(models.TransientModel):
         if sale_order:
             vals['sale_order_id'] = sale_order.id
         
-        return self.env['container.destruction.work.order'].create(vals)
+        return self.env['work.order.shredding'].create(vals)
     
     def _create_access_work_order(self, sale_order):
         """Create a container.access.work.order record."""

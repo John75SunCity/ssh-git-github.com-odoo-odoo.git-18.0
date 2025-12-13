@@ -23,13 +23,12 @@ if records:
     if invalid:
         raise UserError("Only containers that are 'In Storage' or 'Out' can be added to retrieval orders.\nInvalid: %s" % ', '.join(invalid.mapped('name')))
 
-    # Create new retrieval work order (name will be auto-generated from sequence)
-    work_order = env['records.retrieval.work.order'].create({
+    # Create new retrieval work order (using new model)
+    work_order = env['work.order.retrieval'].create({
         'partner_id': partner.id,
         'user_id': env.user.id,
-        'state': 'draft',
+        'state': 'scheduled',
         'delivery_method': 'physical',
-        'scanned_barcode_ids': [(6, 0, records.ids)],
     })
 
     # Post message with container details
@@ -42,7 +41,7 @@ if records:
     action = {
         'name': 'Retrieval Work Order',
         'type': 'ir.actions.act_window',
-        'res_model': 'records.retrieval.work.order',
+        'res_model': 'work.order.retrieval',
         'res_id': work_order.id,
         'view_mode': 'form',
         'target': 'current',
@@ -72,11 +71,10 @@ if records:
     if invalid:
         raise UserError("Only containers that are 'In Storage' or 'Out' can be scheduled for destruction.\nInvalid: %s" % ', '.join(invalid.mapped('name')))
 
-    # Create new destruction work order (name will be auto-generated from sequence)
-    work_order = env['container.destruction.work.order'].create({
+    # Create new shredding work order (using new model)
+    work_order = env['work.order.shredding'].create({
         'partner_id': partner.id,
-        'user_id': env.user.id,
-        'state': 'draft',
+        'state': 'scheduled',
         'destruction_method': 'shredding',
         'container_ids': [(6, 0, records.ids)],
     })
@@ -84,14 +82,14 @@ if records:
     # Post message with container details
     work_order.message_post(
         body='🔥 Created from bulk action with %d container(s): %s' % (len(records), ', '.join(records.mapped('name'))),
-        subject='Bulk Destruction Order Created'
+        subject='Bulk Shredding Order Created'
     )
 
     # Return action to open the new work order
     action = {
-        'name': 'Destruction Work Order',
+        'name': 'Shredding Work Order',
         'type': 'ir.actions.act_window',
-        'res_model': 'container.destruction.work.order',
+        'res_model': 'work.order.shredding',
         'res_id': work_order.id,
         'view_mode': 'form',
         'target': 'current',
