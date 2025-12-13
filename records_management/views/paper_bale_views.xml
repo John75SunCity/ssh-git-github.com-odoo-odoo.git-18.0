@@ -71,11 +71,10 @@
                 <form string="Paper Bale">
                     <header>
                         <button name="action_weigh_bale" string="Weigh Bale" type="object" class="btn-primary" invisible="state != 'draft'" />
-                        <button name="action_load_trailer" string="Load Trailer" type="object" class="btn-primary" invisible="state != 'weighed'" />
                         <button name="action_quality_inspection" string="Quality Check" type="object" class="btn-info" invisible="state == 'draft'" />
                         <button name="action_view_inspections" string="View Inspections" type="object" class="btn-secondary" />
                         <button name="action_view_movements" string="View Movements" type="object" class="btn-secondary" />
-                        <field name="state" widget="statusbar" statusbar_visible="draft,weighed,in_stock,shipped,recycled" />
+                        <field name="state" widget="statusbar" statusbar_visible="draft,pending_pickup,payment_pending,sold" />
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -101,11 +100,13 @@
                             </group>
                         </group>
                         <group>
-                            <group name="shipping_info" string="Shipping Information">
-                                <field name="shipment_id" readonly="1" />
+                            <group name="shipping_info" string="Load &amp; Invoice">
                                 <field name="load_id" />
+                                <field name="invoice_id" readonly="1"/>
+                                <field name="invoice_payment_state" readonly="1"/>
                             </group>
                             <group name="tracking_info" string="Tracking">
+                                <field name="shipment_id" readonly="1" />
                                 <field name="inspection_count" string="Inspections" />
                                 <field name="movement_count" string="Movements" />
                             </group>
@@ -160,12 +161,12 @@
                     <field name="bale_number" />
                     <field name="paper_grade" />
                     <field name="location_id" />
+                    <field name="load_id" />
                     <separator />
                     <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]" />
-                    <filter string="Weighed" name="weighed" domain="[('state', '=', 'weighed')]" />
-                    <filter string="In Stock" name="in_stock" domain="[('state', '=', 'in_stock')]" />
-                    <filter string="Shipped" name="shipped" domain="[('state', '=', 'shipped')]" />
-                    <filter string="Recycled" name="recycled" domain="[('state', '=', 'recycled')]" />
+                    <filter string="Pending Pickup" name="pending_pickup" domain="[('state', '=', 'pending_pickup')]" />
+                    <filter string="Payment Pending" name="payment_pending" domain="[('state', '=', 'payment_pending')]" />
+                    <filter string="Sold" name="sold" domain="[('state', '=', 'sold')]" />
                     <separator />
                     <filter string="WHT Grade" name="wht_grade" domain="[('paper_grade', '=', 'wht')]" />
                     <filter string="MIX Grade" name="mix_grade" domain="[('paper_grade', '=', 'mix')]" />
@@ -177,6 +178,7 @@
                     <group expand="0" string="Group By">
                         <filter string="State" name="group_state" context="{'group_by': 'state'}" />
                         <filter string="Paper Grade" name="group_grade" context="{'group_by': 'paper_grade'}" />
+                        <filter string="Load" name="group_load" context="{'group_by': 'load_id'}" />
                         <filter string="Source Date" name="group_source_date" context="{'group_by': 'source_date'}" />
                         <filter string="Location" name="group_location" context="{'group_by': 'location_id'}" />
                     </group>

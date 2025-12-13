@@ -242,7 +242,7 @@ class BaleWeighingWizard(models.TransientModel):
             'source_type': self.source_type,
             'weigh_date': self.weigh_datetime,
             'notes': self.notes,
-            'state': 'weighed',
+            'state': 'pending_pickup',  # Bale is weighed and waiting for load pickup
             # Signature fields
             'technician_id': self.technician_id.id,
             'technician_signature': self.technician_signature,

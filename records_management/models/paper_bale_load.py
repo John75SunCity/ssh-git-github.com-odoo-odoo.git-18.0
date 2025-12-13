@@ -159,8 +159,8 @@ class Load(models.Model):
             'technician_signature_datetime': fields.Datetime.now(),
         })
         
-        # Update all bales to shipped state
-        self.paper_bale_ids.write({'state': 'shipped'})
+        # Update all bales to payment_pending state (waiting for invoice payment)
+        self.paper_bale_ids.write({'state': 'payment_pending'})
         
         # Auto-create invoice
         if not self.invoice_id and self.buyer_id:
@@ -250,6 +250,9 @@ class Load(models.Model):
         })
 
         self.write({'invoice_id': invoice.id, 'state': 'invoiced'})
+        
+        # Update all bales to payment_pending state
+        self.paper_bale_ids.write({'state': 'payment_pending'})
 
         return {
             'type': 'ir.actions.act_window',

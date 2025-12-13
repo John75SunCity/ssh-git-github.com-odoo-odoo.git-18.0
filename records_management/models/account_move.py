@@ -245,3 +245,30 @@ class AccountMove(models.Model):
                     )
 
         return res
+
+    def write(self, vals):
+        """Override write to track payment status changes for paper bale loads."""
+        res = super(AccountMove, self).write(vals)
+        
+        # Check if payment_state changed to paid
+        if 'payment_state' in vals and vals.get('payment_state') in ('paid', 'in_payment'):
+            self._update_paper_bale_load_payment()
+        
+        return res
+    
+    def _update_paper_bale_load_payment(self):
+        """Update paper bale loads and their bales when invoice is paid."""
+        Load = self.env['paper.bale.load']
+        for move in self:
+            if move.move_type == 'out_invoice':
+                # Find any loads linked to this invoice
+                loads = Load.search([('invoice_id', '=', move.id)])
+                for load in loads:
+                    if load.state == 'invoiced':
+                        load.write({'state': 'paid'})
+                        load.paper_bale_ids.write({'state': 'sold'})
+                        load.message_post(
+                            body=_('Invoice %s paid. Load and all bales marked as Sold.') % move.name
+                        )
+
+        return res

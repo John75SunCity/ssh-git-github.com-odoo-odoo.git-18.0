@@ -22,9 +22,9 @@ class PaperBale(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('weighed', 'Weighed'),
-        ('in_stock', 'In Stock'),
-        ('shipped', 'Shipped'),
-        ('recycled', 'Recycled'),
+        ('pending_pickup', 'Pending Pickup'),  # After bale created, waiting for load pickup
+        ('payment_pending', 'Payment Pending'),  # Load picked up, invoice created but not paid
+        ('sold', 'Sold'),  # Invoice paid - final state
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', tracking=True, required=True)
 
@@ -55,9 +55,31 @@ class PaperBale(models.Model):
         help="Timestamp when signature was captured"
     )
 
-    location_id = fields.Many2one(comodel_name='stock.location', string="Current Location", tracking=True)
+    location_id = fields.Many2one(
+        comodel_name='stock.location', 
+        string="Current Location", 
+        tracking=True,
+        domain="[('usage', 'in', ['internal', 'transit', 'customer'])]",
+        help="Storage location - use virtual 'Customer Location' for sold bales"
+    )
     shipment_id = fields.Many2one(comodel_name='paper.load.shipment', string="Shipment", readonly=True)
     load_id = fields.Many2one(comodel_name='paper.bale.load', string="Load")
+    
+    # Invoice tracking for payment status
+    invoice_id = fields.Many2one(
+        comodel_name='account.move',
+        string='Related Invoice',
+        related='load_id.invoice_id',
+        store=True,
+        readonly=True,
+        help="Invoice linked through the load"
+    )
+    invoice_payment_state = fields.Selection(
+        related='invoice_id.payment_state',
+        string='Payment Status',
+        store=True,
+        readonly=True
+    )
 
     inspection_ids = fields.One2many('paper.bale.inspection', 'bale_id', string="Inspections")
     inspection_count = fields.Integer(compute='_compute_inspection_count', string="Inspection Count")
