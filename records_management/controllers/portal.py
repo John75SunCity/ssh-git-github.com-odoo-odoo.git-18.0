@@ -358,6 +358,96 @@ class RecordsManagementController(http.Controller):
             user.has_group("records_management.group_portal_department_user")
         )
 
+    def _get_recycling_stats(self, partner=None):
+        """
+        Calculate paper recycling statistics from completed shredding services.
+        
+        Returns dict with:
+        - total_lbs: All-time total actual weight recycled
+        - year_lbs: Current year total
+        - month_lbs: Current month total
+        - week_lbs: Current week total (if any services this week)
+        - bins_serviced: Total number of bin services (tips + swaps)
+        - shred_boxes_qty: Total shred boxes destroyed (customer-supplied)
+        - service_count: Total number of services
+        - co2_saved_lbs: Estimated CO2 savings (3.5 lbs CO2 per lb paper recycled)
+        - trees_saved: Estimated trees saved (1 tree per 1,000 lbs paper)
+        """
+        if partner is None:
+            partner = request.env.user.partner_id
+        
+        commercial_partner = partner.commercial_partner_id
+        ServiceEvent = request.env['shredding.service.event'].sudo()
+        WorkOrderLine = request.env['work.order.line'].sudo()
+        
+        # Base domain - only billable events (tips and swap_outs) for this customer
+        base_domain = [
+            ('service_customer_id', 'child_of', commercial_partner.id),
+            ('service_type', 'in', ['tip', 'swap_out']),
+        ]
+        
+        # Get all completed service events (bin services)
+        all_events = ServiceEvent.search(base_domain)
+        total_lbs = sum(e.actual_weight_lbs or 0 for e in all_events)
+        bins_serviced = len(all_events)
+        
+        # Get shred boxes destroyed (customer-supplied boxes)
+        shred_box_lines = WorkOrderLine.search([
+            ('work_order_id.partner_id', 'child_of', commercial_partner.id),
+            ('line_type', '=', 'shred_box'),
+            ('work_order_id.state', 'in', ['completed', 'done']),
+        ])
+        shred_boxes_qty = int(sum(line.quantity for line in shred_box_lines))
+        
+        # Current year
+        now = fields.Datetime.now()
+        year_start = datetime(now.year, 1, 1)
+        year_events = all_events.filtered(
+            lambda e: e.service_date and e.service_date >= year_start
+        )
+        year_lbs = sum(e.actual_weight_lbs or 0 for e in year_events)
+        year_bins = len(year_events)
+        
+        # Current month
+        month_start = datetime(now.year, now.month, 1)
+        month_events = all_events.filtered(
+            lambda e: e.service_date and e.service_date >= month_start
+        )
+        month_lbs = sum(e.actual_weight_lbs or 0 for e in month_events)
+        month_bins = len(month_events)
+        
+        # Current week (Monday start)
+        week_start = now - timedelta(days=now.weekday())
+        week_start = datetime(week_start.year, week_start.month, week_start.day)
+        week_events = all_events.filtered(
+            lambda e: e.service_date and e.service_date >= week_start
+        )
+        week_lbs = sum(e.actual_weight_lbs or 0 for e in week_events) if week_events else None
+        week_bins = len(week_events) if week_events else None
+        
+        # Environmental impact estimates
+        # ~3.5 lbs CO2 saved per lb of paper recycled (vs landfill)
+        co2_saved_lbs = round(total_lbs * 3.5, 1)
+        # ~1 tree saved per 1,000 lbs paper recycled
+        trees_saved = round(total_lbs / 1000, 1)
+        
+        return {
+            'total_lbs': round(total_lbs, 1),
+            'year_lbs': round(year_lbs, 1),
+            'month_lbs': round(month_lbs, 1),
+            'week_lbs': round(week_lbs, 1) if week_lbs else None,
+            'bins_serviced': bins_serviced,
+            'year_bins': year_bins,
+            'month_bins': month_bins,
+            'week_bins': week_bins,
+            'shred_boxes_qty': shred_boxes_qty,
+            'service_count': bins_serviced + shred_boxes_qty,
+            'co2_saved_lbs': co2_saved_lbs,
+            'trees_saved': trees_saved,
+            'current_year': now.year,
+            'current_month': now.strftime('%B'),
+        }
+
     # ============================================================================
     # DASHBOARD ROUTES
     # ============================================================================
@@ -434,6 +524,26 @@ class RecordsManagementController(http.Controller):
             return {
                 'success': False,
                 'error': 'Failed to load dashboard data'
+            }
+
+    @http.route("/my/recycling-stats", type="json", auth="user", methods=["POST"])
+    def get_recycling_stats(self, **post):
+        """
+        JSON endpoint for customer portal recycling statistics.
+        Returns paper recycling totals (all-time, year, month, week).
+        """
+        try:
+            partner = request.env.user.partner_id
+            stats = self._get_recycling_stats(partner)
+            return {
+                'success': True,
+                'data': stats
+            }
+        except Exception as e:
+            _logger.error("Error fetching recycling stats: %s", e)
+            return {
+                'success': False,
+                'error': 'Failed to load recycling statistics'
             }
 
     # ============================================================================

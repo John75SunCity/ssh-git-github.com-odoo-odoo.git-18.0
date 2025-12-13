@@ -813,7 +813,7 @@ class WorkOrderShredding(models.Model):
             }
         }
 
-    def action_tip_bin(self, bin_barcode):
+    def action_tip_bin(self, bin_barcode, fill_level='100'):
         """
         Record a TIP service for a bin.
         
@@ -822,6 +822,7 @@ class WorkOrderShredding(models.Model):
         
         Args:
             bin_barcode (str): Barcode of the bin being tipped
+            fill_level (str): Fill level at service time ('100', '75', '50', '25', '0')
             
         Returns:
             dict: Result with success status, message, and event details
@@ -853,7 +854,8 @@ class WorkOrderShredding(models.Model):
             bin_id=bin_record.id,
             customer_id=self.partner_id.id,
             shredding_work_order_id=self.id,
-            notes=_("Tipped during work order %s") % self.name
+            notes=_("Tipped during work order %s") % self.name,
+            fill_level=fill_level
         )
         
         # Update scan time
@@ -880,7 +882,7 @@ class WorkOrderShredding(models.Model):
             'total_billable': self.total_billable_amount,
         }
 
-    def action_swap_bin(self, old_bin_barcode, new_bin_barcode):
+    def action_swap_bin(self, old_bin_barcode, new_bin_barcode, fill_level='100'):
         """
         Record a SWAP service for bins.
         
@@ -891,6 +893,7 @@ class WorkOrderShredding(models.Model):
         Args:
             old_bin_barcode (str): Barcode of the full bin being picked up (BILLABLE)
             new_bin_barcode (str): Barcode of the empty bin being left (NOT billable)
+            fill_level (str): Fill level of old bin at service time ('100', '75', '50', '25', '0')
             
         Returns:
             dict: Result with success status and swap details
@@ -936,7 +939,8 @@ class WorkOrderShredding(models.Model):
             new_bin_id=new_bin.id,
             customer_id=self.partner_id.id,
             shredding_work_order_id=self.id,
-            notes=_("Swapped during work order %s") % self.name
+            notes=_("Swapped during work order %s") % self.name,
+            fill_level=fill_level
         )
         
         # Get the billable event (swap_out)

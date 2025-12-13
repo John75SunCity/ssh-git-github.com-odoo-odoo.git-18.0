@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <!-- ================================================================== -->
+    <!-- RECYCLING STATS CARD - PORTAL HOME                                -->
+    <!-- Shows paper recycling statistics for customer shredding services  -->
+    <!-- ================================================================== -->
+
+    <template id="portal_my_home_recycling_stats" name="Portal My Home : Recycling Stats" 
+              inherit_id="portal.portal_my_home" priority="45">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <!-- Recycling Impact Card -->
+            <div class="card shadow-sm border-success mb-4" id="recycling_stats_card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fa fa-recycle"/> Your Environmental Impact
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Loading state -->
+                    <div id="recycling_stats_loading" class="text-center py-4">
+                        <i class="fa fa-spinner fa-spin fa-2x text-muted"/>
+                        <p class="text-muted mt-2">Loading statistics...</p>
+                    </div>
+                    
+                    <!-- Stats content (hidden until loaded) -->
+                    <div id="recycling_stats_content" style="display: none;">
+                        <!-- Main Stats Row -->
+                        <div class="row text-center mb-3">
+                            <div class="col-6 col-md-3 mb-3">
+                                <div class="border rounded p-3 h-100">
+                                    <i class="fa fa-leaf fa-2x text-success mb-2"/>
+                                    <h3 class="text-success mb-0" id="stat_total_lbs">0</h3>
+                                    <small class="text-muted">Total lbs Recycled</small>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <div class="border rounded p-3 h-100">
+                                    <i class="fa fa-trash fa-2x text-primary mb-2"/>
+                                    <h3 class="text-primary mb-0" id="stat_bins_serviced">0</h3>
+                                    <small class="text-muted">Bins Serviced</small>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <div class="border rounded p-3 h-100">
+                                    <i class="fa fa-archive fa-2x text-info mb-2"/>
+                                    <h3 class="text-info mb-0" id="stat_shred_boxes">0</h3>
+                                    <small class="text-muted">Shred Boxes</small>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <div class="border rounded p-3 h-100">
+                                    <i class="fa fa-tree fa-2x text-success mb-2"/>
+                                    <h3 class="text-success mb-0" id="stat_trees_saved">0</h3>
+                                    <small class="text-muted">Trees Saved*</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Period Breakdown -->
+                        <div class="table-responsive">
+                            <table class="table table-sm table-borderless mb-0">
+                                <thead>
+                                    <tr class="border-bottom">
+                                        <th>Period</th>
+                                        <th class="text-end">Weight (lbs)</th>
+                                        <th class="text-end">Bins</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><i class="fa fa-calendar"/> This Year (<span id="stat_year">2025</span>)</td>
+                                        <td class="text-end" id="stat_year_lbs">0</td>
+                                        <td class="text-end" id="stat_year_bins">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fa fa-calendar-o"/> This Month (<span id="stat_month">December</span>)</td>
+                                        <td class="text-end" id="stat_month_lbs">0</td>
+                                        <td class="text-end" id="stat_month_bins">0</td>
+                                    </tr>
+                                    <tr id="week_row" style="display: none;">
+                                        <td><i class="fa fa-calendar-check-o"/> This Week</td>
+                                        <td class="text-end" id="stat_week_lbs">0</td>
+                                        <td class="text-end" id="stat_week_bins">0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Environmental Note -->
+                        <div class="alert alert-light border-success mt-3 mb-0 small">
+                            <i class="fa fa-info-circle text-success"/> 
+                            <strong>CO<sub>2</sub> Saved:</strong> ~<span id="stat_co2">0</span> lbs
+                            <span class="text-muted ms-2">(*Estimates based on EPA recycling data)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Error state -->
+                    <div id="recycling_stats_error" style="display: none;" class="text-center py-3">
+                        <i class="fa fa-exclamation-triangle fa-2x text-warning"/>
+                        <p class="text-muted mt-2">Unable to load statistics</p>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- JavaScript to load recycling stats via AJAX -->
+    <template id="portal_recycling_stats_js" inherit_id="portal.portal_my_home" priority="46">
+        <xpath expr="//t[@t-call='portal.portal_layout']" position="inside">
+            <script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function() {
+                    var statsCard = document.getElementById('recycling_stats_card');
+                    if (!statsCard) return;
+                    
+                    // Fetch recycling stats via JSON endpoint
+                    fetch('/my/recycling-stats', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({jsonrpc: '2.0', method: 'call', params: {}, id: 1}),
+                    })
+                    .then(function(response) { return response.json(); })
+                    .then(function(data) {
+                        var loading = document.getElementById('recycling_stats_loading');
+                        var content = document.getElementById('recycling_stats_content');
+                        var error = document.getElementById('recycling_stats_error');
+                        
+                        if (data.result &amp;&amp; data.result.success) {
+                            var stats = data.result.data;
+                            
+                            // Populate main stats
+                            document.getElementById('stat_total_lbs').textContent = stats.total_lbs.toLocaleString();
+                            document.getElementById('stat_bins_serviced').textContent = stats.bins_serviced.toLocaleString();
+                            document.getElementById('stat_shred_boxes').textContent = stats.shred_boxes_qty.toLocaleString();
+                            document.getElementById('stat_trees_saved').textContent = stats.trees_saved;
+                            
+                            // Populate period breakdown
+                            document.getElementById('stat_year').textContent = stats.current_year;
+                            document.getElementById('stat_year_lbs').textContent = stats.year_lbs.toLocaleString();
+                            document.getElementById('stat_year_bins').textContent = stats.year_bins.toLocaleString();
+                            
+                            document.getElementById('stat_month').textContent = stats.current_month;
+                            document.getElementById('stat_month_lbs').textContent = stats.month_lbs.toLocaleString();
+                            document.getElementById('stat_month_bins').textContent = stats.month_bins.toLocaleString();
+                            
+                            // Show week row if there's data
+                            if (stats.week_lbs !== null) {
+                                document.getElementById('week_row').style.display = '';
+                                document.getElementById('stat_week_lbs').textContent = stats.week_lbs.toLocaleString();
+                                document.getElementById('stat_week_bins').textContent = stats.week_bins.toLocaleString();
+                            }
+                            
+                            // CO2 saved
+                            document.getElementById('stat_co2').textContent = stats.co2_saved_lbs.toLocaleString();
+                            
+                            // Show content
+                            loading.style.display = 'none';
+                            content.style.display = '';
+                        } else {
+                            loading.style.display = 'none';
+                            error.style.display = '';
+                        }
+                    })
+                    .catch(function(err) {
+                        console.error('Error loading recycling stats:', err);
+                        document.getElementById('recycling_stats_loading').style.display = 'none';
+                        document.getElementById('recycling_stats_error').style.display = '';
+                    });
+                });
+            </script>
+        </xpath>
+    </template>
+
+    </data>
+</odoo>

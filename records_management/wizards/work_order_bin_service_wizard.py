@@ -50,6 +50,18 @@ class WorkOrderBinServiceWizard(models.TransientModel):
             "SWAP: Take full bin away, leave different empty bin.")
 
     # ============================================================================
+    # FILL LEVEL SELECTION
+    # ============================================================================
+    fill_level_at_service = fields.Selection([
+        ('100', 'Full (100%)'),
+        ('75', '3/4 Full (75%)'),
+        ('50', 'Half Full (50%)'),
+        ('25', '1/4 Full (25%)'),
+        ('0', 'Empty (0%)'),
+    ], string="Fill Level", default='100', required=True,
+       help="Estimate how full the bin was when serviced. Default is Full - only change if bin was not full.")
+
+    # ============================================================================
     # BARCODE INPUTS
     # ============================================================================
     bin_barcode = fields.Char(
@@ -177,7 +189,7 @@ class WorkOrderBinServiceWizard(models.TransientModel):
     def _process_tip(self, barcode):
         """Process a TIP scan."""
         self.ensure_one()
-        result = self.work_order_id.action_tip_bin(barcode)
+        result = self.work_order_id.action_tip_bin(barcode, fill_level=self.fill_level_at_service)
 
         if result.get('success') and result.get('event_id'):
             event = self.env['shredding.service.event'].browse(result['event_id'])
@@ -188,7 +200,7 @@ class WorkOrderBinServiceWizard(models.TransientModel):
     def _process_swap(self, old_barcode, new_barcode):
         """Process a SWAP scan."""
         self.ensure_one()
-        result = self.work_order_id.action_swap_bin(old_barcode, new_barcode)
+        result = self.work_order_id.action_swap_bin(old_barcode, new_barcode, fill_level=self.fill_level_at_service)
 
         if result.get('success') and result.get('event_ids'):
             for event_id in result['event_ids']:

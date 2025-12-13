@@ -41,9 +41,15 @@
                                     </p>
                                 </div>
                                 <group>
-                                    <field name="bin_barcode" 
-                                           placeholder="Scan bin barcode..."
-                                           class="o_field_highlight"/>
+                                    <group string="Step 1: Scan Bin">
+                                        <field name="bin_barcode" 
+                                               placeholder="Scan bin barcode..."
+                                               class="o_field_highlight"/>
+                                    </group>
+                                    <group string="Step 2: Fill Level (if not full)">
+                                        <field name="fill_level_at_service" widget="radio" 
+                                               options="{'horizontal': True}"/>
+                                    </group>
                                 </group>
                                 <footer>
                                     <button name="action_record_tip" string="Record TIP" 
@@ -72,6 +78,12 @@
                                         <field name="new_bin_barcode" 
                                                placeholder="Scan empty bin..."
                                                class="o_field_highlight"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Step 3: Fill Level of Full Bin (if not full)">
+                                        <field name="fill_level_at_service" widget="radio" 
+                                               options="{'horizontal': True}"/>
                                     </group>
                                 </group>
                                 <footer>

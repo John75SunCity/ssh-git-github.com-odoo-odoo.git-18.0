@@ -327,7 +327,7 @@ class ShreddingServiceEvent(models.Model):
         return True
 
     @api.model
-    def create_tip_event(self, bin_id, customer_id=None, work_order_id=None, shredding_work_order_id=None, notes=None):
+    def create_tip_event(self, bin_id, customer_id=None, work_order_id=None, shredding_work_order_id=None, notes=None, fill_level='100'):
         """
         Create a TIP service event - bin emptied in place.
         
@@ -339,6 +339,7 @@ class ShreddingServiceEvent(models.Model):
             work_order_id: project.task FSM work order ID
             shredding_work_order_id: work.order.shredding ID
             notes: Optional service notes
+            fill_level: Fill level at service time ('100', '75', '50', '25', '0')
         
         Returns:
             shredding.service.event record
@@ -352,6 +353,7 @@ class ShreddingServiceEvent(models.Model):
             'work_order_id': work_order_id,
             'shredding_work_order_id': shredding_work_order_id,
             'notes': notes,
+            'fill_level_at_service': fill_level,
         })
         
         # Update bin status
@@ -363,7 +365,7 @@ class ShreddingServiceEvent(models.Model):
         return event
 
     @api.model
-    def create_swap_events(self, old_bin_id, new_bin_id, customer_id, work_order_id=None, shredding_work_order_id=None, notes=None):
+    def create_swap_events(self, old_bin_id, new_bin_id, customer_id, work_order_id=None, shredding_work_order_id=None, notes=None, fill_level='100'):
         """
         Create a SWAP - pick up full bin, leave empty bin.
         
@@ -380,6 +382,7 @@ class ShreddingServiceEvent(models.Model):
             work_order_id: project.task FSM work order ID
             shredding_work_order_id: work.order.shredding ID
             notes: Optional service notes
+            fill_level: Fill level of old bin at service time ('100', '75', '50', '25', '0')
         
         Returns:
             tuple(swap_out_event, swap_in_event)
@@ -395,6 +398,7 @@ class ShreddingServiceEvent(models.Model):
             'work_order_id': work_order_id,
             'shredding_work_order_id': shredding_work_order_id,
             'notes': notes or _("Picked up full bin, replaced with %s") % new_bin.barcode,
+            'fill_level_at_service': fill_level,
         })
         
         # Update old bin - now in transit back to warehouse
