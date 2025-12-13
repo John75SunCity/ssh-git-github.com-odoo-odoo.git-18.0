@@ -19,7 +19,6 @@ class BinMigrationWizard(models.TransientModel):
     # Source selection
     source_model = fields.Selection([
         ('barcode.storage.box', 'Barcode Storage Box (Bin Barcode Inventory)'),
-        ('shred.bin', 'Shred Bin (Customer Shred Bins)'),
     ], string="Migrate From", required=True, default='barcode.storage.box')
     
     # Preview counts

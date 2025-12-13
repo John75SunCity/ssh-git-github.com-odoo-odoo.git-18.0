@@ -75,7 +75,7 @@ class BinKeyUnlockService(models.Model):
     # ============================================================================
     # LOCATION & ASSET
     # ============================================================================
-    shred_bin_id = fields.Many2one(comodel_name='shred.bin', string='Associated Bin')
+    shred_bin_id = fields.Many2one(comodel_name='shredding.service.bin', string='Associated Bin')
     bin_key_id = fields.Many2one(comodel_name='bin.key', string='Associated Key')
     unlock_bin_location = fields.Char(string='Bin Location Description', help="Physical location of the bin, e.g., 'Office 201, 2nd Floor'.")
 

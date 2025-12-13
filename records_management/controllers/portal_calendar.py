@@ -199,34 +199,26 @@ class PortalCalendarController(CustomerPortal):
         # ============================================================================
         # 1. SHREDDING SERVICES (Recurring bin services)
         # ============================================================================
-        ShredBin = request.env['shred.bin'].sudo()
+        ShredBin = request.env['shredding.service.bin'].sudo()
         shred_bins = ShredBin.search([
-            ('partner_id', '=', partner.commercial_partner_id.id),
-            ('active', '=', True),
-            ('service_frequency', '!=', False)
+            ('current_customer_id', '=', partner.commercial_partner_id.id),
+            ('status', '=', 'in_service')
         ])
 
         for bin in shred_bins:
-            # Generate recurring service dates based on frequency
-            service_dates = self._generate_recurring_dates(
-                bin.next_service_date or datetime.now(),
-                bin.service_frequency,
-                start_date,
-                end_date
-            )
-
-            for service_date in service_dates:
+            # Use next_service_date from shredding.service.bin
+            if bin.next_service_date:
                 events.append({
-                    'id': f'shred_{bin.id}_{service_date.strftime("%Y%m%d")}',
-                    'title': _('Shredding Service: %s') % bin.bin_barcode,
-                    'start': service_date.isoformat(),
+                    'id': f'shred_{bin.id}',
+                    'title': _('Shredding Service: %s') % bin.barcode,
+                    'start': bin.next_service_date.isoformat(),
                     'backgroundColor': '#8B0000',  # Dark red
                     'borderColor': '#8B0000',
                     'extendedProps': {
                         'type': 'shredding',
-                        'frequency': bin.service_frequency,
+                        'bin_size': bin.bin_size,
                         'bin_id': bin.id,
-                        'location': bin.location_description or 'On-site',
+                        'location': bin.current_department_id.name if bin.current_department_id else 'On-site',
                     }
                 })
 

@@ -196,6 +196,56 @@ class ShreddingServiceBin(models.Model):
     )
 
     # ============================================================================
+    # LOCATION-BASED FILL ANALYTICS (Route Optimization Heat Map)
+    # Tracks fill patterns by LOCATION, not by bin, since different bins
+    # may be deployed to the same customer location each month.
+    # ============================================================================
+    location_avg_fill_rate = fields.Float(
+        string="Location Avg Fill Rate",
+        compute='_compute_location_fill_analytics',
+        help="Average fill level (0-100%) at this location based on technician-recorded fill levels"
+    )
+
+    location_services_count = fields.Integer(
+        string="Location Service Count",
+        compute='_compute_location_fill_analytics',
+        help="Total services at this customer location (across all bins)"
+    )
+
+    location_fill_score = fields.Selection([
+        ('low', 'Low Volume'),
+        ('medium', 'Medium Volume'),
+        ('high', 'High Volume'),
+        ('critical', 'Critical - High Priority'),
+    ], string="Location Fill Score",
+       compute='_compute_location_fill_analytics',
+       help="Route optimization score based on fill patterns at this location")
+
+    location_days_to_full = fields.Integer(
+        string="Est. Days to Full",
+        compute='_compute_location_fill_analytics',
+        help="Estimated days until this location typically needs service"
+    )
+
+    location_total_estimated_weight = fields.Float(
+        string="Total Estimated Weight",
+        compute='_compute_location_weight_stats',
+        help="Sum of all estimated weights at this location"
+    )
+
+    location_total_actual_weight = fields.Float(
+        string="Total Actual Weight",
+        compute='_compute_location_weight_stats',
+        help="Sum of all actual weights at this location"
+    )
+
+    location_weight_variance = fields.Float(
+        string="Weight Variance (%)",
+        compute='_compute_location_weight_stats',
+        help="Percentage difference: (Actual - Estimated) / Estimated × 100"
+    )
+
+    # ============================================================================
     # WORK ORDER RELATIONSHIPS (Cross Work Order Support)
     # ============================================================================
     service_event_ids = fields.One2many(
@@ -444,27 +494,15 @@ class ShreddingServiceBin(models.Model):
 
     @api.depends('bin_size', 'weight_capacity_lbs')
     def _compute_estimated_weights(self):
-        """Calculate estimated weight per service from base rates."""
+        """
+        Calculate estimated weight per service - always the standard full capacity.
+        
+        This is the EXPECTED weight when a bin is serviced (assumes full).
+        Actual weight is calculated on service events based on technician-selected fill level.
+        """
         for record in self:
-            if not record.weight_capacity_lbs:
-                record.estimated_weight_per_service = 0.0
-                continue
-
-            # Get destruction base rate for weight estimation
-            base_rate = self.env['base.rates'].search([
-                ('rate_type', '=', 'destruction'),
-                ('active', '=', True),
-                ('effective_date', '<=', fields.Date.today()),
-                '|', ('expiry_date', '=', False), ('expiry_date', '>', fields.Date.today())
-            ], limit=1)
-
-            if base_rate and hasattr(base_rate, 'unit_type') and base_rate.unit_type == 'per_item':
-                # Estimate 60-80% capacity utilization per service
-                capacity_factor = 0.7  # 70% average fill
-                record.estimated_weight_per_service = record.weight_capacity_lbs * capacity_factor
-            else:
-                # Fallback estimation
-                record.estimated_weight_per_service = record.weight_capacity_lbs * 0.7
+            # Estimated weight = Standard capacity (100% full)
+            record.estimated_weight_per_service = record.weight_capacity_lbs or 0.0
 
     @api.depends('bin_size')
     def _compute_billing_rates(self):
@@ -576,6 +614,126 @@ class ShreddingServiceBin(models.Model):
                 lambda e: e.service_date and e.service_date >= current_billing_cutoff
             )
             record.current_period_services = len(current_period_events)
+
+    @api.depends('current_customer_id', 'service_event_ids')
+    def _compute_location_fill_analytics(self):
+        """
+        Compute fill analytics by LOCATION, not by individual bin.
+        This aggregates service history across all bins that have been
+        deployed to a customer location, enabling heat map route optimization.
+        
+        Uses fill_level_at_service from service events (technician-selected)
+        to calculate actual fill patterns at each location.
+        """
+        for record in self:
+            if not record.current_customer_id:
+                record.location_avg_fill_rate = 0.0
+                record.location_services_count = 0
+                record.location_fill_score = 'low'
+                record.location_days_to_full = 30
+                continue
+
+            # Find ALL service events for this customer location (across all bins)
+            location_events = self.env['shredding.service.event'].search([
+                ('customer_id', '=', record.current_customer_id.id),
+                ('service_type', 'in', ['tip', 'swap_out'])  # Only billable services
+            ], order='service_date desc', limit=100)
+
+            if not location_events:
+                record.location_avg_fill_rate = 0.0
+                record.location_services_count = 0
+                record.location_fill_score = 'low'
+                record.location_days_to_full = 30
+                continue
+
+            # Count services at this location
+            record.location_services_count = len(location_events)
+
+            # Calculate average fill level from technician-recorded fill_level_at_service
+            fill_levels = []
+            for event in location_events:
+                if event.fill_level_at_service:
+                    try:
+                        fill_levels.append(int(event.fill_level_at_service))
+                    except (ValueError, TypeError):
+                        fill_levels.append(100)  # Default to full if parse fails
+                else:
+                    fill_levels.append(100)  # Default to full
+
+            record.location_avg_fill_rate = sum(fill_levels) / len(fill_levels) if fill_levels else 100.0
+
+            # Calculate days between services to estimate fill rate
+            service_dates = [e.service_date for e in location_events if e.service_date]
+            if len(service_dates) >= 2:
+                days_between = []
+                for i in range(len(service_dates) - 1):
+                    if service_dates[i] and service_dates[i+1]:
+                        delta = (service_dates[i] - service_dates[i+1]).days
+                        if delta > 0:
+                            days_between.append(delta)
+                avg_days = sum(days_between) / len(days_between) if days_between else 30
+                record.location_days_to_full = max(1, int(avg_days))
+            else:
+                record.location_days_to_full = 30
+
+            # Assign fill score for route optimization heat map
+            avg_fill = record.location_avg_fill_rate
+            days_to_full = record.location_days_to_full
+            services_count = record.location_services_count
+
+            if avg_fill >= 80 or days_to_full <= 7:
+                record.location_fill_score = 'critical'
+            elif avg_fill >= 60 or days_to_full <= 14 or services_count >= 10:
+                record.location_fill_score = 'high'
+            elif avg_fill >= 40 or services_count >= 5:
+                record.location_fill_score = 'medium'
+            else:
+                record.location_fill_score = 'low'
+
+    @api.depends('current_customer_id', 'service_event_ids')
+    def _compute_location_weight_stats(self):
+        """
+        Compute weight statistics by location - compares estimated vs actual.
+        
+        This shows the variance between what we expect (estimated = 100% full)
+        and what actually happened (actual = based on technician fill level).
+        
+        Useful for:
+        - Identifying locations that consistently run below capacity
+        - Planning and forecasting
+        - Route optimization
+        """
+        for record in self:
+            if not record.current_customer_id:
+                record.location_total_estimated_weight = 0.0
+                record.location_total_actual_weight = 0.0
+                record.location_weight_variance = 0.0
+                continue
+
+            # Find ALL service events for this customer location
+            location_events = self.env['shredding.service.event'].search([
+                ('customer_id', '=', record.current_customer_id.id),
+                ('service_type', 'in', ['tip', 'swap_out'])
+            ], limit=100)
+
+            if not location_events:
+                record.location_total_estimated_weight = 0.0
+                record.location_total_actual_weight = 0.0
+                record.location_weight_variance = 0.0
+                continue
+
+            # Sum up weights
+            total_estimated = sum(e.estimated_weight_lbs or 0 for e in location_events)
+            total_actual = sum(e.actual_weight_lbs or 0 for e in location_events)
+
+            record.location_total_estimated_weight = total_estimated
+            record.location_total_actual_weight = total_actual
+
+            # Calculate variance percentage
+            if total_estimated > 0:
+                record.location_weight_variance = ((total_actual - total_estimated) / total_estimated) * 100
+            else:
+                record.location_weight_variance = 0.0
 
     @api.depends('barcode', 'bin_size', 'current_period_services', 'current_customer_id')
     def _compute_display_name(self):

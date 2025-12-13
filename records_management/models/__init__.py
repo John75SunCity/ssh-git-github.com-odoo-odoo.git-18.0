@@ -260,7 +260,6 @@ from . import scan_retrieval
 from . import hard_drive_scan
 from . import service_item
 from . import service_item_actions
-from . import shred_bin
 from . import shred_model_bin
 from . import shredding_certificate
 from . import shredding_hard_drive

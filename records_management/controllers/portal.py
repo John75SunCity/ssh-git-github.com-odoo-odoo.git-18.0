@@ -8555,9 +8555,9 @@ class RecordsManagementController(http.Controller):
         partner = request.env.user.partner_id
 
         # Get shredding bins for customer
-        ShredBin = request.env['shred.bin'].sudo()
+        ShredBin = request.env['shredding.service.bin'].sudo()
         bins = ShredBin.search([
-            ('partner_id', '=', partner.id)
+            ('current_customer_id', '=', partner.id)
         ])
 
         # Get destruction requests
@@ -8575,7 +8575,7 @@ class RecordsManagementController(http.Controller):
 
         # Calculate stats
         stats = {
-            'active_bins': bins.filtered(lambda b: b.state == 'active').mapped('id').__len__(),
+            'active_bins': bins.filtered(lambda b: b.status == 'in_service').mapped('id').__len__(),
             'total_bins': len(bins),
             'pending_requests': len(destruction_requests.filtered(lambda r: r.state == 'draft')),
             'completed_requests': len(destruction_requests.filtered(lambda r: r.state == 'done')),
@@ -8824,29 +8824,28 @@ class RecordsManagementController(http.Controller):
         # ====================================================================
         try:
             from datetime import datetime, timedelta
-            ShredBin = request.env['shred.bin'].sudo()
+            ShredBin = request.env['shredding.service.bin'].sudo()
             shred_bins = ShredBin.search([
-                ('partner_id', '=', partner.commercial_partner_id.id),
-                ('active', '=', True),
-                ('service_frequency', '!=', False)
+                ('current_customer_id', '=', partner.commercial_partner_id.id),
+                ('status', '=', 'in_service')
             ])
 
             for sbin in shred_bins:
                 if sbin.next_service_date:
                     events.append({
                         'id': 'shred_%s' % sbin.id,
-                        'title': _('Shredding: %s') % (sbin.bin_barcode or sbin.name),
+                        'title': _('Shredding: %s') % (sbin.barcode or sbin.name),
                         'start': sbin.next_service_date.isoformat() if sbin.next_service_date else None,
                         'backgroundColor': '#8B0000',  # Dark red
                         'borderColor': '#8B0000',
                         'extendedProps': {
                             'type': 'shredding',
-                            'frequency': sbin.service_frequency,
-                            'location': sbin.location_description or 'On-site',
+                            'bin_size': sbin.bin_size,
+                            'location': sbin.current_department_id.name if sbin.current_department_id else 'On-site',
                         }
                     })
         except Exception:
-            # shred.bin model may not exist
+            # shredding.service.bin model may not exist
             pass
 
         # Return flat array of events (FullCalendar format)

@@ -91,9 +91,10 @@ class BinKey(models.Model):
     # RELATIONSHIPS
     # ============================================================================
     bin_ids = fields.Many2many(
-        'shred.bin',
-        'bin_key_shred_bin_rel',
-        'key_id', 'bin_id',
+        comodel_name='shredding.service.bin',
+        relation='bin_key_shredding_service_bin_rel',
+        column1='key_id',
+        column2='bin_id',
         string='Associated Bins'
     )
     history_ids = fields.One2many('bin.key.history', 'key_id', string='Assignment History')

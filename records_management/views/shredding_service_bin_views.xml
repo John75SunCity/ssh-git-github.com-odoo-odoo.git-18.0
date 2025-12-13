@@ -149,6 +149,43 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
                         </div>
                     </page>
 
+                    <page string="Location Analytics" name="location_analytics">
+                        <group>
+                            <group name="location_fill" string="Fill Pattern Analytics">
+                                <field name="location_fill_score" widget="badge"
+                                    decoration-danger="location_fill_score == 'critical'"
+                                    decoration-warning="location_fill_score == 'high'"
+                                    decoration-success="location_fill_score == 'low'"
+                                    decoration-info="location_fill_score == 'medium'"/>
+                                <field name="location_avg_fill_rate" widget="progressbar"/>
+                                <field name="location_services_count"/>
+                                <field name="location_days_to_full"/>
+                            </group>
+                            <group name="location_weight" string="Weight Variance Analysis">
+                                <field name="location_total_estimated_weight"/>
+                                <field name="location_total_actual_weight"/>
+                                <field name="location_weight_variance" widget="percentage"
+                                       decoration-danger="location_weight_variance &lt; -10"
+                                       decoration-warning="location_weight_variance &lt; 0"
+                                       decoration-success="location_weight_variance &gt;= 0"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group name="location_info" string="Location Information">
+                                <field name="current_customer_id" readonly="1"/>
+                                <field name="current_department_id" readonly="1"/>
+                            </group>
+                        </group>
+                        <div class="alert alert-info" role="alert">
+                            <p><i class="fa fa-info-circle"/> <strong>Location Analytics</strong> aggregates service data across ALL bins deployed to this customer location.</p>
+                            <ul>
+                                <li><strong>Fill Pattern:</strong> Average fill level when bins are serviced (based on technician selection)</li>
+                                <li><strong>Weight Variance:</strong> Difference between expected (100% full) and actual weights</li>
+                                <li>Negative variance means bins are typically serviced before they're completely full</li>
+                            </ul>
+                        </div>
+                    </page>
+
                     <page string="Technical Details" name="technical">
                         <group>
                             <group name="barcode_info" string="Barcode Information">

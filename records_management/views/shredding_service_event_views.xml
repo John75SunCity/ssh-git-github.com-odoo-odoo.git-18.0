@@ -8,10 +8,20 @@
         <field name="arch" type="xml">
         <list>
             <field name="service_date"/>
-            <field name="service_type"/>
+            <field name="bin_id"/>
+            <field name="service_type" widget="badge"/>
+            <field name="fill_level_at_service" widget="badge"
+                   decoration-success="fill_level_at_service == '100'"
+                   decoration-info="fill_level_at_service == '75'"
+                   decoration-warning="fill_level_at_service == '50'"
+                   decoration-danger="fill_level_at_service in ('25', '0')"/>
             <field name="service_customer_id"/>
-            <field name="billable_amount"/>
-            <field name="notes"/>
+            <field name="estimated_weight_lbs" sum="Total Estimated"/>
+            <field name="actual_weight_lbs" sum="Total Actual"/>
+            <field name="weight_variance_lbs" sum="Total Variance"
+                   decoration-danger="weight_variance_lbs &lt; 0"/>
+            <field name="billable_amount" sum="Total Billable"/>
+            <field name="notes" optional="hide"/>
         </list>
     </field>
     </record>
@@ -34,12 +44,20 @@
                         <field name="bin_id"/>
                         <field name="service_date"/>
                         <field name="service_type"/>
+                        <field name="fill_level_at_service" widget="radio" options="{'horizontal': true}"/>
                         <field name="service_customer_id"/>
                         <field name="service_location_id"/>
                         <field name="service_department_id"/>
                     </group>
+                    <group name="weight_details" string="Weight Calculations">
+                        <field name="estimated_weight_lbs" readonly="1"/>
+                        <field name="actual_weight_lbs" readonly="1"/>
+                        <field name="weight_variance_lbs" readonly="1"
+                               decoration-danger="weight_variance_lbs &lt; 0"/>
+                    </group>
+                </group>
+                <group>
                     <group name="billing_details" string="Billing Details">
-                        <field name="actual_weight_lbs"/>
                         <field name="billable_amount"/>
                         <!-- Removed always-invisible 'currency_id'; event costs resolved via monetary fields -->
                         <field name="billing_status"/>

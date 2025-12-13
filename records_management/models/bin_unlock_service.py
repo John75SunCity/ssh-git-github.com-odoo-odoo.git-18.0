@@ -81,14 +81,14 @@ class BinUnlockService(models.Model):
     # ============================================================================
     partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
     bin_id = fields.Many2one(
-        'shred.bin',
+        comodel_name='shredding.service.bin',
         string='Bin',
         required=True,
-        domain="[('partner_id', '=', partner_id)]",
+        domain="[('current_customer_id', '=', partner_id)]",
         help="The physical bin to be unlocked"
     )
     key_id = fields.Many2one(comodel_name='bin.key', string='Key Used', help="The key used for the unlock operation")
-    bin_location = fields.Char(string='Bin Location', related='bin_id.customer_location', readonly=True)
+    bin_location = fields.Char(string='Bin Location', help="Location of the bin")
     key_serial_number = fields.Char(string='Key Serial Number', related='key_id.key_code', readonly=True)
 
     # ============================================================================

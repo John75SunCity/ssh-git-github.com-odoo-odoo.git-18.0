@@ -61,9 +61,9 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
-        <record id="seq_shred_bin" model="ir.sequence">
-            <field name="name">Shred Bin</field>
-            <field name="code">shred.bin</field>
+        <record id="seq_shredding_service_bin" model="ir.sequence">
+            <field name="name">Shredding Service Bin</field>
+            <field name="code">shredding.service.bin</field>
             <field name="prefix">SBN</field>
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>

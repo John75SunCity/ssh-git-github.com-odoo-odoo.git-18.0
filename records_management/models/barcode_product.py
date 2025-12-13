@@ -299,13 +299,11 @@ class BarcodeProduct(models.Model):
         index=True,
     )
     storage_box_ids = fields.One2many('records.storage.box', 'product_id', string='Storage Boxes', help='Storage boxes linked directly to this barcode product.')
-    shred_bin_ids = fields.One2many('shred.bin', 'product_id', string='Shred Bins', help='Shred bins linked directly to this barcode product.')
     pricing_tier_ids = fields.One2many('barcode.pricing.tier', 'product_id', string='Pricing Tiers')
     seasonal_pricing_ids = fields.One2many('barcode.seasonal.pricing', 'product_id', string='Seasonal Pricing Rules')
     generation_history_ids = fields.One2many('barcode.generation.history', 'product_id', string='Generation History')
 
     storage_box_count = fields.Integer(string='Storage Box Count', compute='_compute_counts', store=True)
-    shred_bin_count = fields.Integer(string='Shred Bin Count', compute='_compute_counts', store=True)
 
     # ============================================================================
     # COMPUTE METHODS
@@ -455,12 +453,11 @@ class BarcodeProduct(models.Model):
                 latest = histories_sorted[0]
             record.batch_id = latest.batch_id if latest else False
 
-    @api.depends('storage_box_ids', 'shred_bin_ids')
+    @api.depends('storage_box_ids')
     def _compute_counts(self):
         """Compute related object counters for stat buttons."""
         for record in self:
             record.storage_box_count = len(record.storage_box_ids)
-            record.shred_bin_count = len(record.shred_bin_ids)
 
     @api.depends('storage_rate', 'shred_rate', 'monthly_volume')
     def _compute_monthly_revenue(self):
@@ -697,14 +694,14 @@ class BarcodeProduct(models.Model):
         }
 
     def action_view_shred_bins(self):
-        """View related shred bins."""
+        """View related shred bins by barcode."""
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
             "name": "Shred Bins",
-            "res_model": "shred.bin",
+            "res_model": "shredding.service.bin",
             "view_mode": "list,form",
-            "domain": [("product_id", "=", self.id)],
+            "domain": [("barcode", "=", self.barcode)],
         }
 
     def action_view_revenue(self):

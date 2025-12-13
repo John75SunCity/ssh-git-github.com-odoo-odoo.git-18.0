@@ -104,13 +104,50 @@ class ShreddingServiceEvent(models.Model):
     )
 
     # ============================================================================
-    # WEIGHT AND BILLING
+    # FILL LEVEL AT SERVICE (Technician Selection)
+    # Default is FULL - technician only needs to change if bin was not full
     # ============================================================================
-    actual_weight_lbs = fields.Float(
-        string="Actual Weight (lbs)",
-        help="Actual weight of material serviced"
+    fill_level_at_service = fields.Selection([
+        ('100', 'Full (100%)'),
+        ('75', 'Three-Quarters (75%)'),
+        ('50', 'Half Full (50%)'),
+        ('25', 'Quarter Full (25%)'),
+        ('0', 'Empty (0%)')
+    ], string="Fill Level at Service",
+       default='100',
+       required=True,
+       tracking=True,
+       help="Fill level when bin was serviced. Default is Full - technician only changes if different.")
+
+    # ============================================================================
+    # WEIGHT CALCULATIONS (Estimated vs Actual)
+    # Estimated = Standard weight for bin size (always 100%)
+    # Actual = Estimated × Fill Level % (captures real field conditions)
+    # ============================================================================
+    estimated_weight_lbs = fields.Float(
+        string="Estimated Weight (lbs)",
+        compute='_compute_weights',
+        store=True,
+        help="Standard weight for this bin size when full (100%)"
     )
 
+    actual_weight_lbs = fields.Float(
+        string="Actual Weight (lbs)",
+        compute='_compute_weights',
+        store=True,
+        help="Calculated: Estimated Weight × Fill Level %. Reflects actual material serviced."
+    )
+
+    weight_variance_lbs = fields.Float(
+        string="Weight Variance (lbs)",
+        compute='_compute_weights',
+        store=True,
+        help="Difference between estimated and actual weight (negative = less than expected)"
+    )
+
+    # ============================================================================
+    # BILLING
+    # ============================================================================
     billable_amount = fields.Monetary(
         string="Billable Amount",
         currency_field='currency_id',
@@ -137,6 +174,39 @@ class ShreddingServiceEvent(models.Model):
     )
 
     notes = fields.Text(string="Service Notes")
+
+    # ============================================================================
+    # COMPUTE METHODS FOR WEIGHT CALCULATIONS
+    # ============================================================================
+    @api.depends('bin_id', 'bin_id.weight_capacity_lbs', 'fill_level_at_service')
+    def _compute_weights(self):
+        """
+        Calculate estimated and actual weights based on bin size and fill level.
+        
+        Estimated Weight = Standard weight for bin size (100% full)
+        Actual Weight = Estimated × Fill Level %
+        
+        Example: 32g Console = 90 lbs full
+        - Full (100%): Actual = 90 lbs
+        - Half (50%): Actual = 45 lbs  
+        - Quarter (25%): Actual = 22.5 lbs
+        """
+        for record in self:
+            if not record.bin_id:
+                record.estimated_weight_lbs = 0.0
+                record.actual_weight_lbs = 0.0
+                record.weight_variance_lbs = 0.0
+                continue
+
+            # Estimated = Standard weight for bin size (always 100%)
+            record.estimated_weight_lbs = record.bin_id.weight_capacity_lbs or 0.0
+
+            # Actual = Estimated × Fill Level %
+            fill_pct = int(record.fill_level_at_service or '100') / 100.0
+            record.actual_weight_lbs = record.estimated_weight_lbs * fill_pct
+
+            # Variance = Actual - Estimated (negative = less than expected)
+            record.weight_variance_lbs = record.actual_weight_lbs - record.estimated_weight_lbs
 
     # ============================================================================
     # COMPUTE METHODS FOR BILLING

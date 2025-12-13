@@ -323,7 +323,7 @@
         "report/revenue_forecast_reports.xml",
         "report/revenue_forecaster_reports.xml",
         # Shredding Reports
-        "report/shred_bin_reports.xml",        "report/shredding_bin_reports.xml",
+        "report/shredding_bin_reports.xml",
         "report/shredding_certificate_reports.xml",        "report/shredding_inventory_batch_reports.xml",        "report/shredding_rate_reports.xml",
         "report/shredding_service_bin_reports.xml",
         "report/shredding_service_event_reports.xml",
@@ -688,7 +688,6 @@
         "views/records_storage_department_user_views.xml",
         "views/records_work_vehicle_views.xml",
         "views/rm_module_configurator_views.xml",
-        "views/shred_bin_views.xml",
         "views/shredding_inventory_views.xml",
         "views/stock_move_sms_validation_views.xml",
         "views/system_diagram_data_views.xml",

@@ -30,8 +30,8 @@ class ProjectTask(models.Model):
     # Service Item Reference
     service_item_id = fields.Many2one(comodel_name='service.item', string='Service Item', index=True)
 
-    # Shred Bin Reference
-    shred_bin_id = fields.Many2one(comodel_name='shred.bin', string='Shred Bin', index=True)
+    # Shredding Service Bin Reference
+    shred_bin_id = fields.Many2one(comodel_name='shredding.service.bin', string='Shred Bin', index=True)
 
     work_order_type = fields.Selection([
         ('pickup', 'Pickup'),
