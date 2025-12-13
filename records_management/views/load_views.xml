@@ -89,6 +89,7 @@
             <field name="arch" type="xml">
                 <form string="Paper Bale Load Management">
                     <header>
+                        <button name="action_open_weigh_wizard" string="⚖️ Weigh New Bale" type="object" class="btn-success" invisible="state not in ['draft', 'loading']" />
                         <button name="action_mark_ready_for_pickup" string="Mark Ready for Pickup" type="object" class="btn-primary" invisible="state != 'draft'" />
                         <button name="action_mark_picked_up" string="Mark Picked Up" type="object" class="btn-primary" invisible="state != 'ready_for_pickup'" />
                         <button name="action_generate_manifest" string="Generate Manifest" type="object" class="btn-info" invisible="state != 'picked_up'" />
@@ -97,6 +98,22 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,ready_for_pickup,loading,picked_up,invoiced,paid" />
                     </header>
                     <sheet>
+                        <!-- Load Progress Banner -->
+                        <div class="alert alert-info mb-3" role="alert" invisible="state not in ['draft', 'loading']">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <strong>🚛 Load Progress:</strong>
+                                    <span><field name="total_bales" readonly="1"/> / 28 bales</span>
+                                    <span class="ms-2 text-muted">(<field name="bales_remaining" readonly="1"/> remaining)</span>
+                                </div>
+                                <div style="flex: 1; max-width: 300px; margin-left: 20px;">
+                                    <field name="load_progress_percent" widget="progressbar"/>
+                                </div>
+                            </div>
+                            <div class="mt-1 small text-muted" invisible="not is_load_full">
+                                <i class="fa fa-check-circle text-success"/> Load is FULL - Ready for pickup!
+                            </div>
+                        </div>
                         <div class="oe_title">
                             <h1>
                                 <field name="name" placeholder="Load Number" />
@@ -115,10 +132,19 @@
                                 <field name="active" widget="boolean_toggle" />
                             </group>
                             <group name="logistics" string="Logistics">
+                                <field name="scheduled_ship_date" widget="date" />
                                 <field name="pickup_date" widget="date" />
                                 <field name="driver_name" />
-                                <field name="driver_signature" />
+                                <field name="driver_signature" widget="signature"/>
+                                <field name="driver_signature_datetime" readonly="1" invisible="not driver_signature"/>
                                 <field name="completion_date" widget="date" invisible="state not in ['picked_up', 'invoiced', 'paid']" />
+                            </group>
+                        </group>
+                        <group name="signatures" string="Signatures" invisible="state == 'draft'">
+                            <group>
+                                <field name="technician_id"/>
+                                <field name="technician_signature" widget="signature"/>
+                                <field name="technician_signature_datetime" readonly="1" invisible="not technician_signature"/>
                             </group>
                         </group>
                         <group name="tracking" string="Notes">

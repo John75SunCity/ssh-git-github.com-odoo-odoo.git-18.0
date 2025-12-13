@@ -39,8 +39,20 @@ class Load(models.Model):
 
     # Logistical Information
     pickup_date = fields.Date(string='Pickup Date')
+    scheduled_ship_date = fields.Date(string='Scheduled Ship Date', tracking=True)
     driver_name = fields.Char(string="Driver's Name")
     driver_signature = fields.Binary(string="Driver's Signature", attachment=True)
+    driver_signature_datetime = fields.Datetime(string="Driver Signature Date/Time", readonly=True)
+    
+    # Technician signature for manifest
+    technician_id = fields.Many2one(
+        comodel_name='res.users',
+        string='Technician',
+        default=lambda self: self.env.user,
+        help="Technician responsible for this load"
+    )
+    technician_signature = fields.Binary(string="Technician's Signature", attachment=True)
+    technician_signature_datetime = fields.Datetime(string="Technician Signature Date/Time", readonly=True)
 
     # Destination
     buyer_id = fields.Many2one(comodel_name='res.partner', string='Buyer/Recycling Center', domain="[('is_company', '=', True)]")
@@ -49,6 +61,27 @@ class Load(models.Model):
     paper_bale_ids = fields.One2many('paper.bale', 'load_id', string='Paper Bales')
     total_bales = fields.Integer(string='Total Bales', compute='_compute_load_stats', store=True)
     total_weight = fields.Float(string='Total Weight (lbs)', compute='_compute_load_stats', store=True)
+    
+    # Load Progress (28 bales per load)
+    BALES_PER_LOAD = 28
+    load_progress_percent = fields.Float(
+        string='Load Progress %',
+        compute='_compute_load_progress',
+        store=True,
+        help="Progress toward 28-bale load capacity"
+    )
+    bales_remaining = fields.Integer(
+        string='Bales Remaining',
+        compute='_compute_load_progress',
+        store=True,
+        help="Number of bales needed to complete the load"
+    )
+    is_load_full = fields.Boolean(
+        string='Load Full',
+        compute='_compute_load_progress',
+        store=True,
+        help="True when load has 28 bales"
+    )
 
     # Computed Weight Totals by Paper Type
     total_weight_wht = fields.Float(string='WHT Weight (lbs)', compute='_compute_weight_by_type', store=True)
@@ -83,6 +116,16 @@ class Load(models.Model):
             load.total_bales = len(load.paper_bale_ids)
             load.total_weight = sum(b.weight for b in load.paper_bale_ids)
 
+    @api.depends('paper_bale_ids')
+    def _compute_load_progress(self):
+        """Calculate progress toward 28-bale load capacity."""
+        BALES_PER_LOAD = 28
+        for load in self:
+            bale_count = len(load.paper_bale_ids)
+            load.load_progress_percent = (bale_count / BALES_PER_LOAD) * 100
+            load.bales_remaining = max(0, BALES_PER_LOAD - bale_count)
+            load.is_load_full = bale_count >= BALES_PER_LOAD
+
     @api.depends('paper_bale_ids', 'paper_bale_ids.weight', 'paper_bale_ids.paper_grade')
     def _compute_weight_by_type(self):
         for load in self:
@@ -94,18 +137,54 @@ class Load(models.Model):
     # ACTION METHODS
     # ============================================================================
     def action_mark_ready_for_pickup(self):
+        """Mark load as ready for pickup when all bales are weighed."""
         self.ensure_one()
         if not self.paper_bale_ids:
             raise UserError(_("You cannot mark a load as ready without any bales."))
         self.write({'state': 'ready_for_pickup'})
 
     def action_mark_picked_up(self):
+        """Mark load as picked up and auto-create invoice."""
         self.ensure_one()
-        self.write({'state': 'picked_up', 'pickup_date': fields.Date.context_today(self)})
+        
+        if not self.driver_signature:
+            raise UserError(_("Please capture the driver's signature before marking as picked up."))
+        if not self.technician_signature:
+            raise UserError(_("Please capture the technician's signature before marking as picked up."))
+        
+        self.write({
+            'state': 'picked_up',
+            'pickup_date': fields.Date.context_today(self),
+            'driver_signature_datetime': fields.Datetime.now(),
+            'technician_signature_datetime': fields.Datetime.now(),
+        })
+        
+        # Update all bales to shipped state
+        self.paper_bale_ids.write({'state': 'shipped'})
+        
+        # Auto-create invoice
+        if not self.invoice_id and self.buyer_id:
+            return self.action_create_invoice()
+        
+        return True
+
+    def action_open_weigh_wizard(self):
+        """Open the bale weighing wizard for this load."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Weigh New Bale'),
+            'res_model': 'bale.weighing.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_load_id': self.id,
+            }
+        }
 
     def action_generate_manifest(self):
+        """Generate and print the load manifest PDF."""
         self.ensure_one()
-        # This will be the action to trigger the PDF report
         return self.env.ref('records_management.action_report_load_manifest').report_action(self)
 
     def action_create_invoice(self):

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ============================================================================ -->
+        <!-- BALE TAG REPORT - Print receipt to attach to bale -->
+        <!-- ============================================================================ -->
+        
+        <record id="action_report_bale_tag" model="ir.actions.report">
+            <field name="name">Bale Tag</field>
+            <field name="model">paper.bale</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">records_management.report_bale_tag</field>
+            <field name="report_file">records_management.report_bale_tag</field>
+            <field name="print_report_name">'Bale Tag - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="records_management.model_paper_bale"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="base.paperformat_us"/>
+        </record>
+        
+        <!-- Bale Tag Template - Compact label format -->
+        <template id="report_bale_tag">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="bale">
+                    <div class="page" style="page-break-after: always;">
+                        <!-- Compact tag format - fits on small label -->
+                        <div style="border: 3px solid #333; padding: 15px; max-width: 4in; margin: 0 auto;">
+                            
+                            <!-- Header with company logo -->
+                            <div class="text-center" style="border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 10px;">
+                                <img t-if="bale.company_id.logo" 
+                                     t-att-src="image_data_uri(bale.company_id.logo)" 
+                                     style="max-height: 40px;"/>
+                                <h3 style="margin: 5px 0 0 0; font-weight: bold;">BALE TAG</h3>
+                            </div>
+                            
+                            <!-- Load Number - Large and prominent -->
+                            <div class="text-center" style="background-color: #f0f0f0; padding: 10px; margin-bottom: 10px;">
+                                <div style="font-size: 12px; text-transform: uppercase; color: #666;">Load #</div>
+                                <div style="font-size: 24px; font-weight: bold;">
+                                    <t t-if="bale.load_id">
+                                        <span t-field="bale.load_id.name"/>
+                                    </t>
+                                    <t t-else="">
+                                        <span>N/A</span>
+                                    </t>
+                                </div>
+                            </div>
+                            
+                            <!-- Bale Number -->
+                            <div class="text-center" style="margin-bottom: 10px;">
+                                <div style="font-size: 12px; text-transform: uppercase; color: #666;">Bale #</div>
+                                <div style="font-size: 20px; font-weight: bold;">
+                                    <span t-field="bale.name"/>
+                                </div>
+                            </div>
+                            
+                            <!-- Paper Grade - Color coded -->
+                            <div class="text-center" style="margin-bottom: 10px;">
+                                <t t-if="bale.paper_grade == 'wht'">
+                                    <span style="background-color: #fff; border: 2px solid #333; padding: 5px 20px; font-size: 18px; font-weight: bold;">
+                                        WHT
+                                    </span>
+                                </t>
+                                <t t-elif="bale.paper_grade == 'mix'">
+                                    <span style="background-color: #ffeb3b; padding: 5px 20px; font-size: 18px; font-weight: bold;">
+                                        MIX
+                                    </span>
+                                </t>
+                                <t t-elif="bale.paper_grade == 'occ'">
+                                    <span style="background-color: #8d6e63; color: #fff; padding: 5px 20px; font-size: 18px; font-weight: bold;">
+                                        OCC
+                                    </span>
+                                </t>
+                            </div>
+                            
+                            <!-- Weight -->
+                            <div class="text-center" style="margin-bottom: 15px;">
+                                <div style="font-size: 12px; text-transform: uppercase; color: #666;">Weight</div>
+                                <div style="font-size: 28px; font-weight: bold;">
+                                    <span t-field="bale.weight"/> lbs
+                                </div>
+                            </div>
+                            
+                            <!-- Date/Time -->
+                            <div style="border-top: 1px solid #ccc; padding-top: 10px;">
+                                <table style="width: 100%; font-size: 11px;">
+                                    <tr>
+                                        <td><strong>Date:</strong></td>
+                                        <td class="text-end">
+                                            <span t-field="bale.weigh_date" t-options='{"widget": "date"}'/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Time:</strong></td>
+                                        <td class="text-end">
+                                            <span t-field="bale.weigh_date" t-options='{"widget": "time"}'/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Technician:</strong></td>
+                                        <td class="text-end">
+                                            <span t-field="bale.technician_id.name"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <!-- Signature -->
+                            <div style="border-top: 1px solid #ccc; padding-top: 10px; margin-top: 10px;">
+                                <div style="font-size: 10px; text-transform: uppercase; color: #666; margin-bottom: 5px;">
+                                    Signature:
+                                </div>
+                                <t t-if="bale.technician_signature">
+                                    <img t-att-src="image_data_uri(bale.technician_signature)" 
+                                         style="max-height: 40px; max-width: 150px;"/>
+                                </t>
+                                <t t-else="">
+                                    <div style="border-bottom: 1px solid #333; height: 30px;"/>
+                                </t>
+                            </div>
+                            
+                            <!-- Barcode for scanning (bale reference) -->
+                            <div class="text-center" style="margin-top: 10px;">
+                                <img t-att-src="'/report/barcode/?type=Code128&amp;value=%s&amp;width=200&amp;height=40' % bale.name"/>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+        
+    </data>
+</odoo>

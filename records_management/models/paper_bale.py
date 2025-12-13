@@ -28,14 +28,32 @@ class PaperBale(models.Model):
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', tracking=True, required=True)
 
-    weight = fields.Float(string="Weight (kg)", tracking=True)
+    weight = fields.Float(string="Weight (lbs)", tracking=True, help="Bale weight in pounds")
     weigh_date = fields.Datetime(string="Weigh Date", tracking=True)
 
     paper_grade = fields.Selection([
         ('wht', 'WHT'),
         ('mix', 'MIX'),
         ('occ', 'OCC (Cardboard)'),
-    ], string="Paper Grade", tracking=True)
+    ], string="Paper Grade", default='mix', tracking=True)
+
+    # Technician signature fields for NAID compliance
+    technician_id = fields.Many2one(
+        comodel_name='res.users',
+        string='Weighed By',
+        tracking=True,
+        help="Technician who weighed and categorized this bale"
+    )
+    technician_signature = fields.Binary(
+        string='Technician Signature',
+        attachment=True,
+        help="Digital signature confirming weight and grade"
+    )
+    signature_datetime = fields.Datetime(
+        string='Signature Date/Time',
+        readonly=True,
+        help="Timestamp when signature was captured"
+    )
 
     location_id = fields.Many2one(comodel_name='stock.location', string="Current Location", tracking=True)
     shipment_id = fields.Many2one(comodel_name='paper.load.shipment', string="Shipment", readonly=True)

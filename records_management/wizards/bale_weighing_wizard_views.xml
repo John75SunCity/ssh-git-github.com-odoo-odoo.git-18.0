@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ============================================================================ -->
+        <!-- Bale Weighing Wizard - Technician Workflow with Load Context                  -->
+        <!-- Shows current load progress, allows quick bale entry with signature           -->
+        <!-- ============================================================================ -->
+        
+        <record id="bale_weighing_wizard_view_form" model="ir.ui.view">
+            <field name="name">bale.weighing.wizard.view.form</field>
+            <field name="model">bale.weighing.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Weigh New Bale">
+                    <!-- Load Context Header -->
+                    <div class="alert alert-info mb-3" role="alert">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="alert-heading mb-1">
+                                    <i class="fa fa-truck"/> Load: <field name="load_id" readonly="1" class="o_field_widget"/>
+                                </h4>
+                                <p class="mb-1">
+                                    <strong>Buyer:</strong> <field name="buyer_name" readonly="1"/>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-end">
+                                    <h5 class="mb-0">
+                                        <field name="current_bale_count" readonly="1"/> / 28 Bales
+                                    </h5>
+                                    <small class="text-muted">
+                                        <field name="bales_remaining" readonly="1"/> remaining
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Progress Bar -->
+                        <div class="progress mt-2" style="height: 25px;">
+                            <field name="load_progress" widget="progressbar"/>
+                        </div>
+                        <div class="text-center mt-1" invisible="not is_load_full">
+                            <span class="badge bg-success">
+                                <i class="fa fa-check-circle"/> Load is FULL - Ready for pickup!
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Form -->
+                    <sheet>
+                        <group string="📋 New Bale Details">
+                            <group>
+                                <field name="next_bale_number" readonly="1" string="Bale Number (Preview)"/>
+                                <field name="weight" string="Weight (lbs)" required="1"/>
+                            </group>
+                            <group>
+                                <field name="paper_grade" widget="radio" options="{'horizontal': true}" required="1"/>
+                                <field name="source_type" widget="radio" options="{'horizontal': true}"/>
+                            </group>
+                        </group>
+                        
+                        <group string="📍 Location &amp; Notes" cols="2">
+                            <field name="location_id" placeholder="Select bale location..."/>
+                            <field name="notes" placeholder="Optional notes..."/>
+                        </group>
+                        
+                        <separator string="✍️ Technician Signature"/>
+                        <group>
+                            <field name="technician_signature" widget="signature" required="1"/>
+                        </group>
+                    </sheet>
+                    
+                    <footer>
+                        <button name="action_confirm_and_print_tag" string="✓ Confirm &amp; Print Tag" type="object" class="btn-primary"/>
+                        <button name="action_confirm_and_create_bale" string="✓ Confirm Only" type="object" class="btn-secondary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Action to open wizard from Load form -->
+        <record id="action_bale_weighing_wizard" model="ir.actions.act_window">
+            <field name="name">Weigh New Bale</field>
+            <field name="res_model">bale.weighing.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_load_id': active_id}</field>
+        </record>
+        
+    </data>
+</odoo>

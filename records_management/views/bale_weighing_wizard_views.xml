@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ============================================================================ -->
+        <!-- BALE WEIGHING WIZARD - Optimized for Technicians -->
+        <!-- ============================================================================ -->
+        
+        <record id="bale_weighing_wizard_view_form" model="ir.ui.view">
+            <field name="name">bale.weighing.wizard.view.form</field>
+            <field name="model">bale.weighing.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Weigh &amp; Categorize Bale">
+                    <sheet>
+                        <!-- Load Context Header - Always visible at top -->
+                        <div class="alert alert-info mb-3" role="alert">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <strong><i class="fa fa-truck"/> Current Load:</strong>
+                                    <h3 class="mb-0"><field name="load_name" readonly="1"/></h3>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <strong>Progress:</strong>
+                                    <div class="progress mt-1" style="height: 25px;">
+                                        <div class="progress-bar bg-success" role="progressbar" 
+                                             t-attf-style="width: #{record.load_progress_percent.raw_value}%;">
+                                            <field name="load_progress"/> / 28 bales
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <strong>Remaining:</strong>
+                                    <h3 class="mb-0 text-warning"><field name="bales_remaining"/> bales</h3>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Load Selection (if not set) -->
+                        <group invisible="load_id">
+                            <group>
+                                <field name="load_id" options="{'no_create': True}"/>
+                                <button name="action_create_new_load" string="Create New Load" 
+                                        type="object" class="btn-secondary" icon="fa-plus"/>
+                            </group>
+                        </group>
+                        
+                        <!-- Next Bale Number Preview -->
+                        <div class="oe_title">
+                            <label for="next_bale_number" string="Next Bale #"/>
+                            <h1>
+                                <field name="next_bale_number" readonly="1" class="text-primary"/>
+                            </h1>
+                        </div>
+                        
+                        <!-- Bale Information -->
+                        <group>
+                            <group string="Bale Details">
+                                <field name="weight" widget="float" placeholder="Enter weight in lbs"/>
+                                <field name="paper_grade" widget="radio" options="{'horizontal': true}"/>
+                                <field name="source_type"/>
+                            </group>
+                            <group string="Timestamp">
+                                <field name="weigh_datetime" readonly="1"/>
+                                <field name="technician_id" readonly="1"/>
+                            </group>
+                        </group>
+                        
+                        <!-- Notes -->
+                        <group>
+                            <field name="notes" placeholder="Optional notes about this bale..."/>
+                        </group>
+                        
+                        <!-- Signature Section -->
+                        <separator string="Technician Signature"/>
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fa fa-pencil-square-o"/> Sign below to confirm the bale weight and paper grade classification.
+                        </div>
+                        <group>
+                            <field name="technician_signature" widget="signature" 
+                                   string="Sign Here"/>
+                        </group>
+                        
+                        <!-- Hidden field for load_id when in context -->
+                        <field name="load_id" invisible="1"/>
+                        <field name="load_progress_percent" invisible="1"/>
+                    </sheet>
+                    
+                    <footer>
+                        <button name="action_confirm_and_print_tag" string="Confirm &amp; Print Tag" 
+                                type="object" class="btn-primary" icon="fa-print"
+                                confirm="This will create the bale and print the tag. Continue?"/>
+                        <button name="action_confirm_and_create_bale" string="Confirm Only" 
+                                type="object" class="btn-secondary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Action to open wizard -->
+        <record id="action_bale_weighing_wizard" model="ir.actions.act_window">
+            <field name="name">Weigh New Bale</field>
+            <field name="res_model">bale.weighing.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <!-- Server Action for quick access from menu -->
+        <record id="action_server_open_weigh_wizard" model="ir.actions.server">
+            <field name="name">Quick Weigh Bale</field>
+            <field name="model_id" ref="records_management.model_bale_weighing_wizard"/>
+            <field name="state">code</field>
+            <field name="code">
+action = {
+    'type': 'ir.actions.act_window',
+    'name': 'Weigh New Bale',
+    'res_model': 'bale.weighing.wizard',
+    'view_mode': 'form',
+    'target': 'new',
+}
+            </field>
+        </record>
+        
+    </data>
+</odoo>

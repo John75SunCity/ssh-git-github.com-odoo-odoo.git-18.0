@@ -45,3 +45,4 @@ from . import scanbot_barcode_scanner_wizard
 from . import barcode_sheet_wizard
 from . import work_order_wizard  # Multi-step work order creation wizard
 from . import bin_migration_wizard  # Migrate bins from redundant models
+from . import bale_weighing_wizard  # Technician bale weighing workflow

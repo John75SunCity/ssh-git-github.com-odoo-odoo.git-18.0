@@ -1,88 +1,212 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    <!-- ============================================================================ -->
+    <!-- LOAD MANIFEST - Enhanced with bale details, signatures, and weight summary -->
+    <!-- ============================================================================ -->
     <template id="report_load_manifest">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
                     <div class="page">
                         <div class="oe_structure"/>
+                        
+                        <!-- Header -->
                         <div class="row">
-                            <div class="col-12">
-                                <h2>Load Manifest: <span t-field="doc.name"/></h2>
+                            <div class="col-8">
+                                <h2 style="margin-bottom: 0;">LOAD MANIFEST</h2>
+                                <h3 class="text-primary" style="margin-top: 5px;">
+                                    <span t-field="doc.name"/>
+                                </h3>
+                            </div>
+                            <div class="col-4 text-end">
+                                <div style="font-size: 14px;">
+                                    <strong>Total Bales:</strong> <span t-field="doc.total_bales"/> / 28
+                                </div>
+                                <div style="font-size: 14px;">
+                                    <strong>Total Weight:</strong> <span t-field="doc.total_weight"/> lbs
+                                </div>
                             </div>
                         </div>
 
-                        <div class="row mt32">
-                            <div class="col-6">
-                                <strong>Buyer:</strong>
-                                <p t-field="doc.buyer_id"/>
+                        <!-- Load Information -->
+                        <div class="row mt-3" style="border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9;">
+                            <div class="col-4">
+                                <strong>Buyer/Recycler:</strong><br/>
+                                <span t-field="doc.buyer_id"/>
                             </div>
-                            <div class="col-6">
-                                <strong>Scheduled Ship Date:</strong>
-                                <p t-field="doc.scheduled_ship_date"/>
+                            <div class="col-4">
+                                <strong>Pickup Date:</strong><br/>
+                                <span t-field="doc.pickup_date"/>
+                            </div>
+                            <div class="col-4">
+                                <strong>Driver:</strong><br/>
+                                <span t-field="doc.driver_name"/>
                             </div>
                         </div>
 
-                        <table class="table table-sm o_main_table mt32">
-                            <thead>
+                        <!-- Bale Detail Table -->
+                        <table class="table table-sm table-bordered mt-3">
+                            <thead style="background-color: #333; color: #fff;">
                                 <tr>
-                                    <th name="th_bale_number" class="text-left">Bale Number</th>
-                                    <th name="th_paper_type" class="text-left">Paper Type</th>
-                                    <th name="th_weight" class="text-right">Weight (lbs)</th>
+                                    <th class="text-center" style="width: 5%;">#</th>
+                                    <th style="width: 20%;">Bale #</th>
+                                    <th class="text-center" style="width: 10%;">Grade</th>
+                                    <th class="text-end" style="width: 15%;">Weight (lbs)</th>
+                                    <th style="width: 20%;">Date/Time</th>
+                                    <th style="width: 15%;">Technician</th>
+                                    <th class="text-center" style="width: 15%;">Signature</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                <t t-set="row_num" t-value="0"/>
                                 <t t-foreach="doc.paper_bale_ids" t-as="bale">
+                                    <t t-set="row_num" t-value="row_num + 1"/>
                                     <tr>
+                                        <td class="text-center"><t t-esc="row_num"/></td>
                                         <td><span t-field="bale.name"/></td>
-                                        <td><span t-field="bale.paper_type"/></td>
-                                        <td class="text-right"><span t-field="bale.weight"/></td>
+                                        <td class="text-center">
+                                            <t t-if="bale.paper_grade == 'wht'">
+                                                <span class="badge" style="background-color: #fff; border: 1px solid #333; color: #333;">WHT</span>
+                                            </t>
+                                            <t t-elif="bale.paper_grade == 'mix'">
+                                                <span class="badge" style="background-color: #ffeb3b; color: #333;">MIX</span>
+                                            </t>
+                                            <t t-elif="bale.paper_grade == 'occ'">
+                                                <span class="badge" style="background-color: #8d6e63; color: #fff;">OCC</span>
+                                            </t>
+                                        </td>
+                                        <td class="text-end"><span t-field="bale.weight"/></td>
+                                        <td>
+                                            <span t-field="bale.weigh_date" t-options='{"widget": "datetime", "format": "MM/dd/yyyy HH:mm"}'/>
+                                        </td>
+                                        <td><span t-field="bale.technician_id.name"/></td>
+                                        <td class="text-center">
+                                            <t t-if="bale.technician_signature">
+                                                <img t-att-src="image_data_uri(bale.technician_signature)" 
+                                                     style="max-height: 25px; max-width: 60px;"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="text-muted">-</span>
+                                            </t>
+                                        </td>
                                     </tr>
                                 </t>
                             </tbody>
                         </table>
 
-                        <div class="row justify-content-end">
-                            <div class="col-4">
-                                <table class="table table-sm">
-                                    <tr class="border-black">
-                                        <td><strong>Total Weight (WHT)</strong></td>
-                                        <td class="text-right">
-                                            <span t-field="doc.total_weight_wht"/> lbs
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Total Weight (MIX)</strong></td>
-                                        <td class="text-right">
-                                            <span t-field="doc.total_weight_mix"/> lbs
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Total Weight (OCC)</strong></td>
-                                        <td class="text-right">
-                                            <span t-field="doc.total_weight_occ"/> lbs
-                                        </td>
-                                    </tr>
-                                    <tr class="border-black">
-                                        <td><strong>Total Load Weight</strong></td>
-                                        <td class="text-right">
-                                            <span t-field="doc.total_weight"/> lbs
-                                        </td>
-                                    </tr>
+                        <!-- Weight Summary by Grade -->
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <table class="table table-sm table-bordered">
+                                    <thead style="background-color: #666; color: #fff;">
+                                        <tr>
+                                            <th colspan="2" class="text-center">WEIGHT SUMMARY BY GRADE</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <span class="badge" style="background-color: #fff; border: 1px solid #333; color: #333;">WHT</span>
+                                                White Paper
+                                            </td>
+                                            <td class="text-end"><strong><span t-field="doc.total_weight_wht"/> lbs</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="badge" style="background-color: #ffeb3b; color: #333;">MIX</span>
+                                                Mixed Paper
+                                            </td>
+                                            <td class="text-end"><strong><span t-field="doc.total_weight_mix"/> lbs</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="badge" style="background-color: #8d6e63; color: #fff;">OCC</span>
+                                                Cardboard
+                                            </td>
+                                            <td class="text-end"><strong><span t-field="doc.total_weight_occ"/> lbs</strong></td>
+                                        </tr>
+                                        <tr style="background-color: #333; color: #fff;">
+                                            <td><strong>TOTAL LOAD WEIGHT</strong></td>
+                                            <td class="text-end"><strong><span t-field="doc.total_weight"/> lbs</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <table class="table table-sm table-bordered">
+                                    <thead style="background-color: #666; color: #fff;">
+                                        <tr>
+                                            <th colspan="2" class="text-center">LOAD SUMMARY</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Total Bales</td>
+                                            <td class="text-end"><strong><span t-field="doc.total_bales"/> / 28</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Load Status</td>
+                                            <td class="text-end"><span t-field="doc.state"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Load Date</td>
+                                            <td class="text-end"><span t-field="doc.load_date" t-options='{"widget": "date"}'/></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pickup Date</td>
+                                            <td class="text-end"><span t-field="doc.pickup_date"/></td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
 
-                        <div class="row mt32">
-                            <div class="col-6">
-                                <strong>Driver's Signature:</strong>
-                                <div style="border-bottom: 1px solid black; height: 50px;"/>
+                        <!-- Signatures Section -->
+                        <div class="row mt-4" style="border: 2px solid #333; padding: 15px;">
+                            <div class="col-12 text-center mb-2">
+                                <strong style="font-size: 14px; text-transform: uppercase;">Authorization Signatures</strong>
+                            </div>
+                            <div class="col-6" style="border-right: 1px solid #ccc;">
+                                <div style="font-size: 12px; text-transform: uppercase; color: #666; margin-bottom: 5px;">
+                                    Driver Signature:
+                                </div>
+                                <t t-if="doc.driver_signature">
+                                    <img t-att-src="image_data_uri(doc.driver_signature)" 
+                                         style="max-height: 50px; max-width: 200px;"/>
+                                </t>
+                                <t t-else="">
+                                    <div style="border-bottom: 1px solid #333; height: 50px; margin-bottom: 5px;"/>
+                                </t>
+                                <div style="font-size: 11px;">
+                                    <strong>Name:</strong> <span t-field="doc.driver_name"/><br/>
+                                    <strong>Date:</strong> <span t-field="doc.driver_signature_datetime" t-options='{"widget": "datetime"}'/>
+                                </div>
                             </div>
                             <div class="col-6">
-                                <strong>Pickup Date:</strong>
-                                <div style="border-bottom: 1px solid black; height: 50px;"/>
+                                <div style="font-size: 12px; text-transform: uppercase; color: #666; margin-bottom: 5px;">
+                                    Technician Signature:
+                                </div>
+                                <t t-if="doc.technician_signature">
+                                    <img t-att-src="image_data_uri(doc.technician_signature)" 
+                                         style="max-height: 50px; max-width: 200px;"/>
+                                </t>
+                                <t t-else="">
+                                    <div style="border-bottom: 1px solid #333; height: 50px; margin-bottom: 5px;"/>
+                                </t>
+                                <div style="font-size: 11px;">
+                                    <strong>Name:</strong> <span t-field="doc.technician_id.name"/><br/>
+                                    <strong>Date:</strong> <span t-field="doc.technician_signature_datetime" t-options='{"widget": "datetime"}'/>
+                                </div>
                             </div>
+                        </div>
+
+                        <!-- Footer note -->
+                        <div class="text-center mt-3" style="font-size: 10px; color: #666;">
+                            <p>This manifest confirms the transfer of <span t-field="doc.total_bales"/> paper bales 
+                               totaling <span t-field="doc.total_weight"/> lbs from 
+                               <span t-field="doc.company_id.name"/> to <span t-field="doc.buyer_id.name"/>.</p>
+                            <p>Generated: <span t-esc="datetime.datetime.now().strftime('%m/%d/%Y %H:%M')"/></p>
                         </div>
                     </div>
                 </t>

@@ -240,6 +240,7 @@
         "report/temp_inventory_reports.xml",
         # Load & Paper Reports        "report/load_report_templates.xml",
         "report/load_reports.xml",
+        "report/bale_tag_reports.xml",  # Bale tag receipt for technicians
         "report/paper_bale_inspection_reports.xml",
         "report/paper_bale_line_reports.xml",
         "report/paper_bale_movement_reports.xml",
@@ -602,6 +603,7 @@
         "views/rm_sale_order_views.xml",  # Sale order extension for work order integration
         "wizards/work_order_wizard_views.xml",  # Multi-step work order creation wizard
         "wizards/bin_migration_wizard_views.xml",  # Migrate bins from redundant models
+        "wizards/bale_weighing_wizard_views.xml",  # Technician bale weighing workflow
         "views/visitor_views.xml",
         "views/wizard_template_views.xml",
         "views/work_order_creation_wizard_views.xml",
