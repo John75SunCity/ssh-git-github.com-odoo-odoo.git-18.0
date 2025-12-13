@@ -284,14 +284,14 @@
         <!-- Demo Paper Bales (required for recycling records) -->
         <record id="demo_bale_001" model="paper.bale">
             <field name="name">BALE-DEM-001</field>
-            <field name="state">in_stock</field>
+            <field name="state">pending_pickup</field>
             <field name="weight">500.0</field>
             <field name="paper_grade">occ</field>
         </record>
 
         <record id="demo_bale_002" model="paper.bale">
             <field name="name">BALE-DEM-002</field>
-            <field name="state">in_stock</field>
+            <field name="state">pending_pickup</field>
             <field name="weight">750.0</field>
             <field name="paper_grade">mix</field>
         </record>
