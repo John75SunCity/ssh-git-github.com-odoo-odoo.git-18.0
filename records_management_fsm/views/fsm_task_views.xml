@@ -88,7 +88,6 @@
                             <field name="shredding_work_order_id" readonly="1"/>
                             <field name="pickup_request_id" readonly="1"/>
                             <field name="access_work_order_id" readonly="1"/>
-                            <field name="retrieval_work_order_wo_id" readonly="1"/>
                         </group>
                     </group>
                     <group>
