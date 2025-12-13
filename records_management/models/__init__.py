@@ -303,6 +303,7 @@ from . import transitory_field_config
 from . import transitory_item
 from . import unlock_service_part
 from . import visitor
+from . import work_order_line  # Must be before work_order models (they reference it)
 from . import work_order_retrieval
 from . import work_order_shredding
 from . import unified_work_order  # Unified dispatch center view

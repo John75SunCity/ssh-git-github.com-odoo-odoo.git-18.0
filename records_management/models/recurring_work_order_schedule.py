@@ -180,14 +180,18 @@ class RecurringWorkOrderSchedule(models.Model):
         help="Specific bins to service. Leave empty to service all customer bins."
     )
     
-    # Shredding configuration
+    # Shredding configuration - simplified service types
+    # - offsite: Default. Materials collected and destroyed at our facility.
+    # - mobile: Premium. Mobile truck goes to customer site for on-site destruction.
+    # - purge: One-time large cleanup (special pricing may apply).
     shredding_service_type = fields.Selection([
-        ('onsite', 'On-Site Shredding'),
         ('offsite', 'Off-Site Shredding'),
-        ('mobile', 'Mobile Shredding Truck'),
-        ('recurring_bin', 'Recurring Bin Service'),
+        ('mobile', 'Mobile Shredding (On-Site)'),
         ('purge', 'One-Time Purge'),
-    ], string="Shredding Type", default='onsite')
+    ], string="Shredding Type", default='offsite',
+       help="Off-Site: We pick up and destroy at our facility (default). "
+            "Mobile: Our truck destroys on-site at your location (premium service). "
+            "One-Time Purge: Special bulk cleanup project.")
     
     material_type = fields.Selection([
         ('paper', 'Paper Documents'),

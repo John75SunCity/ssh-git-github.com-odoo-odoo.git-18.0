@@ -161,14 +161,18 @@ class WorkOrderShredding(models.Model):
     # ============================================================================
     # SERVICE TYPE AND BILLING
     # ============================================================================
+    # Service Types Simplified:
+    # - offsite: Default. Materials collected and destroyed at our facility.
+    # - mobile: Premium. Mobile truck goes to customer site for on-site destruction.
+    # - purge: One-time large cleanup (special pricing may apply).
     shredding_service_type = fields.Selection([
-        ('onsite', 'On-Site Shredding'),
         ('offsite', 'Off-Site Shredding'),
-        ('mobile', 'Mobile Shredding Truck'),
-        ('bin_onetime', 'One-Time Purge'),
-        ('bin_recurring', 'Recurring Bin Service'),
-        ('bin_mobile', 'Mobile Bin Service'),
-    ], string="Service Type", default='onsite', tracking=True)
+        ('mobile', 'Mobile Shredding (On-Site)'),
+        ('purge', 'One-Time Purge'),
+    ], string="Service Type", default='offsite', tracking=True,
+       help="Off-Site: We pick up and destroy at our facility (default). "
+            "Mobile: Our truck destroys on-site at your location (premium service). "
+            "One-Time Purge: Special bulk cleanup project.")
 
     material_type = fields.Selection([
         ('paper', 'Paper Documents'),
@@ -271,6 +275,29 @@ class WorkOrderShredding(models.Model):
     # currency_id provided by work.order.invoice.mixin
     active = fields.Boolean(default=True)
 
+    # ============================================================================
+    # WORK ORDER LINE ITEMS (Per-scan billing)
+    # ============================================================================
+    line_ids = fields.One2many(
+        comodel_name='work.order.line',
+        inverse_name='shredding_work_order_id',
+        string="Line Items",
+        copy=True,
+        help="Individual billable items. Each scan/container/bin creates a line."
+    )
+    line_count = fields.Integer(
+        string="Line Count",
+        compute='_compute_line_totals',
+        store=True
+    )
+    total_amount = fields.Monetary(
+        string="Total Amount",
+        compute='_compute_line_totals',
+        store=True,
+        currency_field='currency_id',
+        help="Sum of all line item subtotals"
+    )
+
     # Computed count fields for stat buttons
     certificate_count = fields.Integer(string="Certificates Count", compute='_compute_certificate_count', store=False)
     completion_percentage = fields.Float(string="Completion %", compute='_compute_completion_percentage', store=False)
@@ -336,6 +363,14 @@ class WorkOrderShredding(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
+    @api.depends('line_ids', 'line_ids.subtotal', 'line_ids.quantity')
+    def _compute_line_totals(self):
+        """Compute line count and total amount from line items."""
+        for order in self:
+            lines = order.line_ids.filtered(lambda l: l.state != 'cancelled')
+            order.line_count = len(lines)
+            order.total_amount = sum(lines.mapped('subtotal'))
+
     @api.depends('name', 'partner_id.name', 'state')
     def _compute_display_name(self):
         for order in self:

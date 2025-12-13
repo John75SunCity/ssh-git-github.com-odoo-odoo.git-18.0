@@ -103,6 +103,33 @@
                             </group>
                         </group>
                         <notebook>
+                            <!-- Line Items Tab (Sales Order Style) -->
+                            <page name="line_items" string="Line Items">
+                                <field name="line_ids" nolabel="1" widget="section_and_note_one2many">
+                                    <list editable="bottom" decoration-muted="state == 'cancelled'">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="barcode" optional="show"/>
+                                        <field name="scan_timestamp" optional="hide"/>
+                                        <field name="name"/>
+                                        <field name="line_type" optional="hide"/>
+                                        <field name="product_id"/>
+                                        <field name="container_id" optional="hide"/>
+                                        <field name="bin_id" optional="hide"/>
+                                        <field name="quantity"/>
+                                        <field name="uom_id" optional="hide"/>
+                                        <field name="unit_price" widget="monetary"/>
+                                        <field name="subtotal" widget="monetary" sum="Total"/>
+                                        <field name="state" widget="badge"
+                                               decoration-info="state == 'pending'"
+                                               decoration-success="state == 'processed'"
+                                               decoration-muted="state in ('invoiced', 'cancelled')"/>
+                                    </list>
+                                </field>
+                                <group class="oe_subtotal_footer">
+                                    <field name="line_count" string="Items"/>
+                                    <field name="total_amount" widget="monetary" class="oe_subtotal_footer_separator"/>
+                                </group>
+                            </page>
                             <page name="barcode_scanning" string="Barcode Scanning" invisible="state not in ['confirmed','assigned','in_progress']">
                                 <group>
                                     <group name="scan_status" string="Scanning Status">

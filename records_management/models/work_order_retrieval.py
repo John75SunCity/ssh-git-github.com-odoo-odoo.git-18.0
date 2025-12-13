@@ -147,6 +147,29 @@ class WorkOrderRetrieval(models.Model):
     )
 
     # ============================================================================
+    # WORK ORDER LINE ITEMS (Per-scan billing)
+    # ============================================================================
+    line_ids = fields.One2many(
+        comodel_name='work.order.line',
+        inverse_name='retrieval_work_order_id',
+        string="Line Items",
+        copy=True,
+        help="Individual billable items. Each container adds a line."
+    )
+    line_count = fields.Integer(
+        string="Line Count",
+        compute='_compute_line_totals',
+        store=True
+    )
+    total_amount = fields.Monetary(
+        string="Total Amount",
+        compute='_compute_line_totals',
+        store=True,
+        currency_field='currency_id',
+        help="Sum of all line item subtotals"
+    )
+
+    # ============================================================================
     # FSM INTEGRATION - All services scheduled via FSM tasks
     # ============================================================================
     fsm_task_id = fields.Many2one(
@@ -166,6 +189,14 @@ class WorkOrderRetrieval(models.Model):
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
+    @api.depends('line_ids', 'line_ids.subtotal', 'line_ids.quantity')
+    def _compute_line_totals(self):
+        """Compute line count and total amount from line items."""
+        for order in self:
+            lines = order.line_ids.filtered(lambda l: l.state != 'cancelled')
+            order.line_count = len(lines)
+            order.total_amount = sum(lines.mapped('subtotal'))
+
     @api.depends('name', 'partner_id', 'work_order_type')
     def _compute_display_name(self):
         """Compute the display name for the work order based on its name, partner, and type."""
