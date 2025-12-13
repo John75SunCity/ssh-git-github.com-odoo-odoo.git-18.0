@@ -76,12 +76,13 @@ class ProjectTaskFSMExtension(models.Model):
 
     # Work order links
     retrieval_work_order_id = fields.Many2one(
-        comodel_name='records.retrieval.work.order',
+        comodel_name='work.order.retrieval',
         string="Retrieval Work Order"
     )
     destruction_work_order_id = fields.Many2one(
-        comodel_name='container.destruction.work.order',
-        string="Destruction Work Order"
+        comodel_name='work.order.shredding',
+        string="Destruction Work Order (Legacy)",
+        help="Alias for shredding_work_order_id"
     )
     pickup_request_id = fields.Many2one(
         comodel_name='pickup.request',
@@ -99,10 +100,11 @@ class ProjectTaskFSMExtension(models.Model):
         comodel_name='container.access.work.order',
         string="Access Work Order"
     )
-    retrieval_work_order_wo_id = fields.Many2one(
-        comodel_name='work.order.retrieval',
-        string="Retrieval Work Order (WO)"
-    )
+    # REMOVED: Duplicate field - use retrieval_work_order_id instead
+    # retrieval_work_order_wo_id = fields.Many2one(
+    #     comodel_name='work.order.retrieval',
+    #     string="Retrieval Work Order (WO)"
+    # )
 
     # ============================================================================
     # COMPUTE METHODS

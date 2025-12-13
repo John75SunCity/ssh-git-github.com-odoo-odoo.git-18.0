@@ -77,12 +77,8 @@ class RMSaleOrder(models.Model):
         help="Linked retrieval work orders"
     )
     
-    destruction_work_order_ids = fields.One2many(
-        comodel_name='work.order.shredding',
-        inverse_name='sale_order_id',
-        string="Shredding Work Orders",
-        help="Linked shredding work orders"
-    )
+    # REMOVED: Duplicate of shredding_work_order_ids - use that field instead
+    # destruction_work_order_ids was causing "same label" warning
     
     access_work_order_ids = fields.One2many(
         comodel_name='container.access.work.order',
@@ -102,10 +98,7 @@ class RMSaleOrder(models.Model):
         compute='_compute_work_order_counts',
         string="Retrieval WOs"
     )
-    destruction_wo_count = fields.Integer(
-        compute='_compute_work_order_counts',
-        string="Destruction WOs"
-    )
+    # REMOVED: destruction_wo_count - redundant with shredding_wo_count
     access_wo_count = fields.Integer(
         compute='_compute_work_order_counts',
         string="Access WOs"
@@ -115,18 +108,15 @@ class RMSaleOrder(models.Model):
         string="Total Work Orders"
     )
 
-    @api.depends('shredding_work_order_ids', 'retrieval_work_order_ids', 
-                 'destruction_work_order_ids', 'access_work_order_ids')
+    @api.depends('shredding_work_order_ids', 'retrieval_work_order_ids', 'access_work_order_ids')
     def _compute_work_order_counts(self):
         for order in self:
             order.shredding_wo_count = len(order.shredding_work_order_ids)
             order.retrieval_wo_count = len(order.retrieval_work_order_ids)
-            order.destruction_wo_count = len(order.destruction_work_order_ids)
             order.access_wo_count = len(order.access_work_order_ids)
             order.total_work_order_count = (
                 order.shredding_wo_count + 
                 order.retrieval_wo_count + 
-                order.destruction_wo_count + 
                 order.access_wo_count
             )
 
@@ -157,17 +147,7 @@ class RMSaleOrder(models.Model):
             'context': {'default_sale_order_id': self.id},
         }
 
-    def action_view_destruction_work_orders(self):
-        """View linked shredding work orders"""
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Shredding Work Orders'),
-            'res_model': 'work.order.shredding',
-            'view_mode': 'tree,form',
-            'domain': [('id', 'in', self.destruction_work_order_ids.ids)],
-            'context': {'default_sale_order_id': self.id},
-        }
+    # REMOVED: action_view_destruction_work_orders - redundant with action_view_shredding_work_orders
 
     def action_view_access_work_orders(self):
         """View linked access work orders"""
