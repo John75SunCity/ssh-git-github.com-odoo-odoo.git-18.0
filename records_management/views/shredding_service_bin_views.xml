@@ -19,6 +19,7 @@
         <field name="status" widget="badge"/>
         <field name="is_customer_owned" widget="boolean_toggle" optional="hide"/>
         <field name="current_customer_id"/>
+        <field name="service_route" optional="hide"/>
         <field name="location_id" optional="hide"/>
         <field name="last_service_date" widget="date"/>
         <field name="total_services_count"/>
@@ -80,7 +81,9 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
         <field name="name" placeholder="Optional friendly name..."/>
         <field name="bin_size"/>
         <field name="barcode"/>
+        <field name="service_route"/>
         <field name="is_customer_owned"/>
+        <field name="is_imported"/>
         <field name="weight_capacity_lbs" widget="float"/>
         <field name="volume_capacity_cf" widget="float"/>
                     </group>

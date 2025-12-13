@@ -27,7 +27,7 @@ from . import barcode_storage_box
 from . import base_rate
 from . import base_rates
 from . import billing_period
-from . import bin_barcode_inventory
+# from . import bin_barcode_inventory  # DEPRECATED: Consolidated into shredding.service.bin
 from . import bin_issue_record
 from . import bin_key
 from . import bin_key_history
@@ -260,7 +260,7 @@ from . import scan_retrieval
 from . import hard_drive_scan
 from . import service_item
 from . import service_item_actions
-from . import shred_model_bin
+# from . import shred_model_bin  # DEPRECATED: Consolidated into shredding.service.bin
 from . import shredding_certificate
 from . import shredding_hard_drive
 from . import shredding_inventory_batch

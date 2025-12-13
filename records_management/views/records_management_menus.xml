@@ -462,7 +462,7 @@
               sequence="10"/>
 
         <menuitem id="menu_shredding_bins" name="Shred Bin History" parent="records_management.menu_shredding_operations" action="action_shredding_service_bin" sequence="20" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
-        <menuitem id="menu_shred_model_bins" name="Shred Model Bins" parent="records_management.menu_shredding_operations" action="action_shred_model_bin" sequence="30" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
+        <!-- menu_shred_model_bins REMOVED: Consolidated into shredding.service.bin -->
         <menuitem id="menu_hard_drive_scanner" name="Hard Drive Scanner" parent="records_management.menu_shredding_operations" action="action_hard_drive_scan_wizard" sequence="40" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
         <menuitem id="menu_destruction_services" name="Destruction Work Orders" parent="records_management.menu_shredding_operations" action="action_records_destruction" sequence="50" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
 

@@ -468,7 +468,7 @@
         "views/revenue_forecast_line_views.xml",
         "views/revenue_forecast_views.xml",
         "views/revenue_forecaster_views.xml",
-        "views/shred_model_bin_views.xml",
+        # "views/shred_model_bin_views.xml",  # DEPRECATED: Consolidated into shredding.service.bin
         "views/shredding_certificate_views.xml",
         "views/shredding_hard_drive_views.xml",
         "views/shredding_inventory_batch_views.xml",
@@ -634,7 +634,7 @@
         "views/barcode_menus.xml",
         "views/rm_barcode_operations_views.xml",  # Barcode Operations Center - mobile-friendly
         "views/base_rates_views.xml",
-        "views/bin_barcode_inventory_views.xml",
+        # "views/bin_barcode_inventory_views.xml",  # DEPRECATED: Consolidated into shredding.service.bin
         "views/bin_issue_report_wizard_views.xml",
         "views/bin_key_unlock_service_views.xml",
         "views/chain_of_custody_event_views.xml",

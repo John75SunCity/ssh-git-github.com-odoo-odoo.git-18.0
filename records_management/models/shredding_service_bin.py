@@ -59,6 +59,18 @@ class ShreddingServiceBin(models.Model):
         help="Check if this bin belongs to the customer rather than our company fleet"
     )
 
+    service_route = fields.Char(
+        string="Service Route",
+        tracking=True,
+        help="Operational route or schedule grouping for service logistics (e.g., 'Route A - Downtown')"
+    )
+
+    is_imported = fields.Boolean(
+        string="Imported Record",
+        default=False,
+        help="True if bin was imported from existing system (legacy migration)"
+    )
+
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
