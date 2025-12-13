@@ -114,8 +114,9 @@ class BaleWeighingWizard(models.TransientModel):
        help="Origin of the paper in this bale")
     
     location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string='Storage Location',
+        domain="[('usage', 'in', ['internal', 'transit'])]",
         help="Location where the bale is stored"
     )
     
